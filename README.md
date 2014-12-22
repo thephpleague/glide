@@ -74,9 +74,18 @@ $glide = new Glide\Server(
 // Enable private URLs
 $glide->setSignKey('your-signing-key');
 
-// Output Image
+// Output image based on current URL
 $glide->output(
     $request->getPathInfo(),
     $request->query->all()
+);
+
+// Output image manually
+$glide->output(
+    'image.jpg',
+    [
+        'w' => 300,
+        'fit' => 'crop',
+    ]
 );
 ```
