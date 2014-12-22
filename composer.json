@@ -1,12 +1,30 @@
 {
+    "name": "reinink/glide",
+    "description": "Adjust, resize and add effects to images using a simple URL based API.",
+    "keywords": [
+        "image",
+        "processing",
+        "manipulation",
+        "editing",
+        "gd",
+        "imagemagick",
+        "imagick"
+    ],
+    "homepage": "https://github.com/reinink/glide",
+    "license": "MIT",
+    "authors" : [
+        {
+            "name": "Jonathan Reinink",
+            "email": "jonathan@reinink.ca",
+            "homepage": "http://reinink.ca"
+        }
+    ],
     "require": {
         "intervention/image": "~2.0",
         "league/flysystem": "~0.5"
     },
-    "autoload":
-    {
-        "psr-4":
-        {
+    "autoload": {
+        "psr-4": {
             "Glide\\": "src/"
         }
     }
