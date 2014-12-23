@@ -2,6 +2,8 @@
 
 The purpose of this library is to offer extremely easy image manipulation in a similar fashion to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/).
 
+![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=1000)
+
 ## Highlights
 
 - Adjust, resize and add effects to images using a simple URL based API.
@@ -18,61 +20,61 @@ The purpose of this library is to offer extremely easy image manipulation in a s
 
 - **Width** `w`
     - The width in pixels of the output image.
-    - Example: `image.jpg?w=300`
+    - Example: [kayaks.jpg?w=1000](https://glide.herokuapp.com/kayaks.jpg?w=1000)
 - **Height** `h`
     - The height in pixels of the output image.
-    - Example: `image.jpg?h=300`
+    - Example: [kayaks.jpg?h=500](https://glide.herokuapp.com/kayaks.jpg?h=500)
 - **Fit** `fit`
     - Controls how the output image is fitted to its target dimensions.
     - Accepts: `clip`, `scale`, `crop`
-    - Example: `image.jpg?w=300&fit=crop`
+    - Example: [kayaks.jpg?w=500&fit=crop](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop)
 - **Crop Position** `crop`
     - Controls how the input image is aligned when the `fit` parameter is set to `crop`.
     - Accepts: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`
     - Default is `center`.
-    - Example: `image.jpg?crop=top-left`
+    - Example: [kayaks.jpg?w=500&fit=crop&crop=left](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop&crop=left)
 - **Rectangle** `rect`
     - Crops an image to specific dimensions prior to any other resize operation.
     - Accepts format: `width,height,x,y`
-    - Example: `image.jpg?rect=100,100,25,90`
+    - Example: [kayaks.jpg?rect=100,100,915,155](https://glide.herokuapp.com/kayaks.jpg?rect=100,100,915,155)
 - **Orientation** `ori`
     - Rotates an image by supplied angle.
     - Accepts: `auto`, `0`, `90`, `180`, `270`
     - By default it uses Exif data to automatically orient images correctly (`auto`).
-    - Example: `image.jpg?ori=90`
+    - Example: [kayaks.jpg?h=500&ori=90](https://glide.herokuapp.com/kayaks.jpg?h=500&ori=90)
 
 ### Adjustments
 
 - **Brightness** `bri`
     - Adjusts the image brightness.
     - Use values between `-100` and `+100`.
-    - Example: `image.jpg?bri=50`
+    - Example: [kayaks.jpg?w=1000&bri=50](https://glide.herokuapp.com/kayaks.jpg?w=1000&bri=50)
 - **Contrast** `con`
     - Adjusts the image contrast.
     - Use values between `-100` for min. contrast, `0` for no change and `+100` for max. contrast.
-    - Example: `image.jpg?con=50`
+    - Example: [kayaks.jpg?w=1000&con=50](https://glide.herokuapp.com/kayaks.jpg?w=1000&con=50)
 - **Gamma** `gam`
     - Adjusts the image gamma.
-    - Example: `image.jpg?gam=1.6`
+    - Example: [kayaks.jpg?w=1000&gam=2](https://glide.herokuapp.com/kayaks.jpg?w=1000&gam=2)
 - **Sharpen** `sharp`
     - Sharpen current image with an optional amount.
     - Use values between `0` and `100`.
-    - Example: `image.jpg?sharp=15`
+    - Example: [kayaks.jpg?w=1000&sharp=15](https://glide.herokuapp.com/kayaks.jpg?w=1000&sharp=15)
 
 ### Effects
 
 - **Blur** `blur`
     - Blurs an image by supplied blur strength.
     - Use values between `0` and `100`.
-    - Example: `image.jpg?blur=15`
+    - Example: [kayaks.jpg?w=1000&blur=15](https://glide.herokuapp.com/kayaks.jpg?w=1000&blur=15)
 - **Pixelate** `pixel`
     - Applies a pixelation effect to the current image with a given size of pixels.
     - Use values between `0` and `100`.
-    - Example: `image.jpg?pixel=12`
+    - Example: [kayaks.jpg?w=1000&pixel=12](https://glide.herokuapp.com/kayaks.jpg?w=1000&pixel=12)
 - **Filter** `filt`
     - Applies a filter to the image.
     - Accepts: `greyscale`, `sepia`
-    - Example: `image.jpg?filt=sepia`
+    - Example: [kayaks.jpg?w=1000&filt=sepia](https://glide.herokuapp.com/kayaks.jpg?w=1000&filt=sepia)
 
 ### Output
 
@@ -80,12 +82,12 @@ The purpose of this library is to offer extremely easy image manipulation in a s
     - Define the quality of the encoded image.
     - Use values between `0` and `100`.
     - Defaults to `90`.
-    - Example: `image.jpg?blur=15`
+    - Example: [kayaks.jpg?w=1000&q=50](https://glide.herokuapp.com/kayaks.jpg?w=1000&q=50)
 - **Format** `fm`
     - Encodes the image to the given format.
     - Accepts: `jpg`, `png`, `gif`.
     - Defaults to `jpg`.
-    - Example: `image.jpg?format=png`
+    - Example: [kayaks.jpg?w=1000&fm=png](https://glide.herokuapp.com/kayaks.jpg?w=1000&fm=png)
 
 ## Example
 
