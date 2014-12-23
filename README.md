@@ -30,7 +30,7 @@ The purpose of this library is to offer extremely easy image manipulation in a s
 - **Crop Position** `crop`
     - Controls how the input image is aligned when the `fit` parameter is set to `crop`.
     - Accepts: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`
-    - Example: `image.jpg?rect=100,100,25,90`
+    - Example: `image.jpg?crop=top-left`
 - **Orientation** `orient`
     - Rotates an image by supplied angle.
     - By default it uses Exif data to automatically orient images correctly. 
@@ -71,9 +71,6 @@ $glide = new Glide\Server(
     new Filesystem(new LocalAdapter('cache-folder'))
 );
 
-// Enable private URLs
-$glide->setSignKey('your-signing-key');
-
 // Output image based on current URL
 $glide->output(
     $request->getPathInfo(),
@@ -88,4 +85,34 @@ $glide->output(
         'fit' => 'crop',
     ]
 );
+```
+
+## Securing Images
+
+If you want additional security on your images, you can add a secure signature so that no one can alter the parameters.
+
+Start by setting a signing key in your Glide server:
+
+```php
+// Setup server and define source and cache
+$glide = new Glide\Server('images-folder', 'cache-folder');
+
+// Enable secure images by setting a signing key
+$glide->setSignKey('your-signing-key');
+```
+
+Next, generate a secure token when requesting images from your server. For example, instead of requesting `image.jpg?w=1000`, you would request `image.jpg?w=1000&token=6db10b02a4132a8714b6485d1138fc87` instead. Glide comes with a URL builder to make this process easy.
+
+```php
+// Create a instance of the URL builder
+$urlBuilder = new Glide\UrlBuilder('http://your-website.com', 'your-sign-key');
+
+// Generate a url
+$url = $urlBuilder->getUrl('image.jpg', ['w' => 1000]);
+
+// Use the url in your app
+echo '<img src="' . $url . '">';
+
+// Prints out
+// <img src="http://your-website.com/image.jpg?w=1000&token=af3dc18fc6bfb2afb521e587c348b904">
 ```

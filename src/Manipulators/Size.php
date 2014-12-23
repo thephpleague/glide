@@ -46,14 +46,16 @@ class Size implements Manipulator
             $image->orientate();
         }
 
-        if ($this->fit === 'clip') {
-            $image->resize($this->width, $this->height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-        } else if ($this->fit === 'scale') {
-            $image->resize($this->width, $this->height);
-        } else if ($this->fit === 'crop') {
-            $image->fit($this->width, $this->height);
+        if ($this->width or $this->height) {
+            if ($this->fit === 'clip') {
+                $image->resize($this->width, $this->height, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+            } else if ($this->fit === 'scale') {
+                $image->resize($this->width, $this->height);
+            } else if ($this->fit === 'crop') {
+                $image->fit($this->width, $this->height);
+            }
         }
 
         return $image;

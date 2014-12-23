@@ -18,7 +18,9 @@ class API
         ];
 
         foreach ($params as $name => $value) {
-            $this->$name($value);
+            if (method_exists($this, $name) and !in_array($name, ['__construct', 'run'])) {
+                $this->$name($value);
+            }
         }
     }
 

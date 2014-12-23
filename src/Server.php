@@ -2,60 +2,45 @@
 
 namespace Glide;
 
-use League\Flysystem\Filesystem;
-use League\Flysystem\Adapter\Local;
+use Exception;
 use Intervention\Image\ImageManager;
 
 class Server
 {
     private $source;
     private $cache;
-    private $manager;
+    private $driver;
     private $signKey;
 
-    public function __construct($source, $cache = null, $manager = null)
+    public function __construct($source, $cache = null, $driver = 'gd')
     {
         $this->setSource($source);
         $this->setCache($cache);
-        $this->setManager($manager);
+        $this->setDriver($driver);
     }
 
     public function setSource($source)
     {
-        if (is_string($source)) {
-            $this->source = new Filesystem(new Local($source));
-        } else if ($source instanceof Filesystem) {
-            $this->source = $source;
-        } else {
-            throw new \Exception('Not a valid source.');
-        }
+        $this->source = new Storage($source);
     }
 
     public function setCache($cache)
     {
-        if (is_string($cache)) {
-            $this->cache = new Filesystem(new Local($cache));
-        } else if ($cache instanceof Filesystem) {
-            $this->cache = $cache;
-        } else {
-            throw new \Exception('Not a valid cache.');
-        }
+        $this->cache = new Storage($cache);
     }
 
-    public function setManager($manager)
+    public function setDriver($driver)
     {
-        if (is_null($manager)) {
-            $this->manager = new ImageManager();
-        } elseif ($manager instanceof ImageManager) {
-            $this->manager = $manager;
-        } else {
-            throw new \Exception('Invalid manager, must be an instance of ImageManager.');
+        if (!in_array($driver, ['gd', 'imagick'])) {
+            throw new Exception('Not a valid driver, accepts "gd" or "imagick".');
         }
+
+        $this->driver = $driver;
     }
 
-    public function setBaseUrl($baseUrl)
+    public function getDriver()
     {
-        $this->baseUrl = $baseUrl;
+        return $this->driver;
     }
 
     public function setSignKey($signKey)
@@ -63,38 +48,53 @@ class Server
         $this->signKey = $signKey;
     }
 
-    public function output($filename, $params)
+    public function getSignKey()
     {
-        $url = new Url($filename, $params);
-
-        if (!$this->cache->has($url->getHash())) {
-            $this->generateImage($url);
-        }
-
-        $this->outputImage($url);
+        return $this->signKey;
     }
 
-    private function generateImage(Url $url)
+    public function output($filename, $params)
     {
-        if (!$this->source->has($url->getFilename())) {
-            throw new ImageNotFoundException('Could not find the file: ' . $url->getFilename());
+        return $this->outputImage(
+            $this->generate($filename, $params)
+        );
+    }
+
+    public function generate($filename, $params)
+    {
+        $request = new Request($filename, $params, $this->signKey);
+
+        if (!$this->cache->has($request->getHash())) {
+            $this->generateImage($request);
         }
 
-        $api = new API($url->getParams());
+        return $request;
+    }
+
+    private function generateImage(Request $request)
+    {
+        if (!$this->source->has($request->getFilename())) {
+            throw new ImageNotFoundException('Could not find the file: ' . $request->getFilename());
+        }
+
+        $api = new API($request->getParams());
+        $manager = new ImageManager(['driver' => $this->driver]);
 
         $this->cache->write(
-            $url->getHash(),
+            $request->getHash(),
             $api->run(
-                $this->manager->make(
+                $manager->make(
                     $this->source->read(
-                        $url->getFilename()
+                        $request->getFilename()
                     )
                 )
             )
         );
+
+        return $request;
     }
 
-    private function outputImage(Url $url)
+    private function outputImage(Request $request)
     {
         while (ob_get_level() > 0) {
             ob_end_flush();
@@ -102,17 +102,14 @@ class Server
 
         header_remove();
         header('Content-Type: image/jpeg');
-        header('Content-Length: ' . $this->cache->getSize($url->getHash()));
+        header('Content-Length: ' . $this->cache->getSize($request->getHash()));
         header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT');
         header('Cache-Control: public, max-age=31536000');
         header('Pragma: public');
         flush();
 
-        $stream = $this->cache->readStream($url->getHash());
-        rewind($stream);
-        fpassthru($stream);
-        fclose($stream);
+        $this->cache->readStream($request->getHash());
 
-        exit;
+        return $request;
     }
 }
