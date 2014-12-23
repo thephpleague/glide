@@ -1,18 +1,19 @@
 # Glide
 
-The purpose of this library is to offer extremely easy image manipulation in a similar fashion to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/).
+Glide is a wonderfully easy image manipulation library written in PHP. It's straightforward API is exposed via HTTP, similar to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/). It doesn't try to reinvent the wheel, but leverages powerful libraries like [Intervention Image](http://image.intervention.io/) (image handling and manipulation) and [Flysystem](http://flysystem.thephpleague.com/) (file system abstraction). Glide was created by [Jonathan Reinink](https://twitter.com/reinink).
 
-![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=1000)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=1000)](https://glide.herokuapp.com/kayaks.jpg?w=1000)
+> © Photo Joel Reynolds
 
 ## Highlights
 
-- Adjust, resize and add effects to images using a simple URL based API.
+- Adjust, resize and add effects to images using a simple HTTP based API.
 - Manipulated images are automatically cached and served with far-future expires headers.
 - Create your own image processing server or integrate directly into your app.
-- Supports the [GD Library](http://php.net/manual/en/book.image.php) and [Imagick PHP extension](http://php.net/manual/en/book.imagick.php).
+- Supports the [GD](http://php.net/manual/en/book.image.php) library and the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension.
 - Ability to secure image URLs using a private signing key.
-- Works with many different file systems, using the [Flysystem](http://flysystem.thephpleague.com/) library.
-- Powered by the [Intervention Image](http://image.intervention.io/) image handling and manipulation library.
+- Works with many different file systems, thanks to the [Flysystem](http://flysystem.thephpleague.com/) library.
+- Powered by the battle tested [Intervention Image](http://image.intervention.io/) image handling and manipulation library.
 
 ## The API
 
