@@ -61,10 +61,6 @@ class Size implements Manipulator
             throw new ParameterException('The crop position parameter only accepts "top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom" or "bottom-right".');
         }
 
-        if ($this->fit !== 'crop') {
-            throw new ParameterException('Crop position cannot be used unless fit is set to "crop".');
-        }
-
         $this->cropPosition = $cropPosition;
     }
 
