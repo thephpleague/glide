@@ -52,10 +52,6 @@ class Size implements Manipulator
             throw new ParameterException('Fit only accepts "clip", "scale" or "crop".');
         }
 
-        if (is_null($this->width) or is_null($this->height)) {
-            throw new ParameterException('The width or height must be set when using fit.');
-        }
-
         $this->fit = $fit;
     }
 
