@@ -130,9 +130,6 @@ If you want additional security on your images, you can add a secure signature s
 Start by setting a signing key in your Glide server:
 
 ```php
-// Setup server and define source and cache
-$glide = new Glide\Server('images-folder', 'cache-folder');
-
 // Enable secure images by setting a signing key
 $glide->setSignKey('your-signing-key');
 ```
@@ -155,17 +152,46 @@ echo '<img src="' . $url . '">';
 
 ## Configuration Options
 
-### Driver
+### Source & Cache
 
-By default Glide uses the [GD Library](http://php.net/manual/en/book.image.php). However you can also use Glide with Imagemagick if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
+Glide makes it possible to access images stored in a variety of file systems. It does this using the [Flysystem](http://flysystem.thephpleague.com/) file system abstraction library. For example, you may choose to store your source images on [Amazon S3](http://aws.amazon.com/s3/), but keep your rendered image cache on a local disk.
+
+To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. Alternatively, if you are only using a local disk, you can simply pass a path as a string.
 
 ```php
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local;
+
+// Using the constructor method
+$glide = new Glide\Server(
+    new Filesystem(new Local('source-folder')),
+    new Filesystem(new Local('cache-folder'))
+);
+
+// Using a the setter methods
+$glide->setSource(new Filesystem(new Local('source-folder')));
+$glide->setCache(new Filesystem(new Local('cache-folder')));
+
+// Using local disk only
+$glide->setSource('source-folder');
+$glide->setCache('cache-folder');
+```
+
+### Driver
+
+By default Glide uses the [GD Library](http://php.net/manual/en/book.image.php). However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
+
+```php
+// Using the constructor method
+$glide = new Glide\Server('source-folder', 'cache-folder', 'imagick');
+
+// Using a the setter method
 $glide->setDriver('imagick');
 ```
 
 ### Max Image Size
 
-If you're not securing images with a signing key, you may choose to limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
+If you're not securing images with a signing key, you can choose to limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
 
 ```php
 $glide->setMaxImageSize(2000*2000);
