@@ -2,8 +2,6 @@
 
 namespace Glide;
 
-use Exception;
-
 class UrlBuilder
 {
     private $baseUrl;

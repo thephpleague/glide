@@ -2,8 +2,6 @@
 
 namespace Glide;
 
-use Exception;
-
 class Request
 {
     private $filename;
@@ -16,10 +14,7 @@ class Request
         $this->setFilename($filename);
         $this->setSignKey($signKey);
         $this->setParams($params);
-
-        if (!$this->validateToken()) {
-            throw new InvalidTokenException();
-        }
+        $this->validateToken();
     }
 
     public function setFilename($filename)
@@ -61,11 +56,11 @@ class Request
         }
 
         if (!isset($this->paramToken)) {
-            return false;
+            throw new InvalidTokenException('Signing token is missing.');
         }
 
         if ($this->paramToken !== $this->getToken()) {
-            return false;
+            throw new InvalidTokenException('Invalid signing token.');
         }
 
         return true;

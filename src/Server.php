@@ -2,7 +2,6 @@
 
 namespace Glide;
 
-use Exception;
 use Intervention\Image\ImageManager;
 
 class Server
@@ -32,7 +31,7 @@ class Server
     public function setDriver($driver)
     {
         if (!in_array($driver, ['gd', 'imagick'])) {
-            throw new Exception('Not a valid driver, accepts "gd" or "imagick".');
+            throw new ConfigurationException('Not a valid driver, accepts "gd" or "imagick".');
         }
 
         $this->driver = $driver;

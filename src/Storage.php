@@ -2,7 +2,6 @@
 
 namespace Glide;
 
-use Exception;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
@@ -13,7 +12,7 @@ class Storage
     public function __construct($storage)
     {
         if (!is_string($storage) and !($storage instanceof Filesystem)) {
-            throw new Exception('Not a valid storage parameter.');
+            throw new ConfigurationException('Not a valid storage parameter.');
         }
 
         if (is_string($storage)) {

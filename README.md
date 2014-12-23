@@ -37,7 +37,7 @@ The purpose of this library is to offer extremely easy image manipulation in a s
     - Example: `image.jpg?rect=100,100,25,90`
 - **Orientation** `ori`
     - Rotates an image by supplied angle.
-    - Accepts: `auto`, `90`, `180`, `270`
+    - Accepts: `auto`, `0`, `90`, `180`, `270`
     - By default it uses Exif data to automatically orient images correctly (`auto`).
     - Example: `image.jpg?ori=90`
 
