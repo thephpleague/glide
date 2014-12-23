@@ -14,7 +14,7 @@ class API
             'adjustments' => new Manipulators\Adjustments(),
             'size' => new Manipulators\Size(),
             'effects' => new Manipulators\Effects(),
-            'encode' => new Manipulators\Encode(),
+            'output' => new Manipulators\Output(),
         ];
 
         foreach ($params as $name => $value) {
@@ -22,6 +22,15 @@ class API
                 $this->$name($value);
             }
         }
+    }
+
+    public function run(Image $image)
+    {
+        foreach ($this->manipulators as $manipulator) {
+            $image = $manipulator->run($image);
+        }
+
+        return $image;
     }
 
     public function bri($value)
@@ -39,9 +48,9 @@ class API
         $this->manipulators['adjustments']->setGamma($value);
     }
 
-    public function orient($value)
+    public function sharp($value)
     {
-        $this->manipulators['size']->setOrientation($value);
+        $this->manipulators['adjustments']->setSharpen($value);
     }
 
     public function w($value)
@@ -59,27 +68,43 @@ class API
         $this->manipulators['size']->setFit($value);
     }
 
+    public function crop($value)
+    {
+        $this->manipulators['size']->setCropPosition($value);
+    }
+
+    public function rect($value)
+    {
+        $this->manipulators['size']->setCropRectangle($value);
+    }
+
+    public function ori($value)
+    {
+        $this->manipulators['size']->setOrientation($value);
+    }
+
+    public function filt($value)
+    {
+        $this->manipulators['effects']->setFilter($value);
+    }
+
     public function blur($value)
     {
         $this->manipulators['effects']->setBlur($value);
     }
 
+    public function pixel($value)
+    {
+        $this->manipulators['effects']->setPixelate($value);
+    }
+
     public function fm($value)
     {
-        $this->manipulators['encode']->setFormat($value);
+        $this->manipulators['output']->setFormat($value);
     }
 
     public function q($value)
     {
-        $this->manipulators['encode']->setQuality($value);
-    }
-
-    public function run(Image $image)
-    {
-        foreach ($this->manipulators as $manipulator) {
-            $image = $manipulator->run($image);
-        }
-
-        return $image;
+        $this->manipulators['output']->setQuality($value);
     }
 }

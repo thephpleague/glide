@@ -9,7 +9,7 @@ class Adjustments implements Manipulator
     private $brightness;
     private $contrast;
     private $gamma;
-    private $colorize;
+    private $sharpen;
 
     public function setBrightness($brightness)
     {
@@ -26,13 +26,9 @@ class Adjustments implements Manipulator
         $this->gamma = $gamma;
     }
 
-    public function setColor($color)
+    public function setSharpen($sharpen)
     {
-        $colors = explode(',', $color);
-
-        $this->colorize['r'] = (int) $colors[0];
-        $this->colorize['g'] = (int) $colors[1];
-        $this->colorize['b'] = (int) $colors[2];
+        $this->sharpen = $sharpen;
     }
 
     public function run(Image $image)
@@ -47,6 +43,10 @@ class Adjustments implements Manipulator
 
         if ($this->gamma) {
             $image->gamma($this->gamma);
+        }
+
+        if ($this->sharpen) {
+            $image->sharpen($this->sharpen);
         }
 
         return $image;

@@ -50,4 +50,9 @@ class Storage
     {
         return $this->storage->write($hash, $content);
     }
+
+    public function delete($hash)
+    {
+        return $this->storage->delete($hash);
+    }
 }

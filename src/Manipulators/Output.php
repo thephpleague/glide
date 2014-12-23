@@ -4,7 +4,7 @@ namespace Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Encode implements Manipulator
+class Output implements Manipulator
 {
     private $format = 'jpg';
     private $quality = 90;
