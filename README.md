@@ -9,8 +9,8 @@ Glide is a wonderfully easy image manipulation library written in PHP. It's stra
 
 - Adjust, resize and add effects to images using a simple HTTP based API.
 - Manipulated images are automatically cached and served with far-future expires headers.
-- Create your own image processing server or integrate directly into your app.
-- Supports the [GD](http://php.net/manual/en/book.image.php) library and the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension.
+- Create your own image processing server or integrate Glide directly into your app.
+- Supports both the [GD](http://php.net/manual/en/book.image.php) library and the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension.
 - Ability to secure image URLs using a private signing key.
 - Works with many different file systems, thanks to the [Flysystem](http://flysystem.thephpleague.com/) library.
 - Powered by the battle tested [Intervention Image](http://image.intervention.io/) image handling and manipulation library.
@@ -128,19 +128,17 @@ $glide->output(
 
 ## Securing Images
 
-If you want additional security on your images, you can add a secure signature so that no one can alter the parameters.
-
-Start by setting a signing key in your Glide server:
+If you want additional security on your images, you can add a secure signature so that no one can alter the image parameters. Start by setting a signing key in your Glide server:
 
 ```php
 // Enable secure images by setting a signing key
 $glide->setSignKey('your-signing-key');
 ```
 
-Next, generate a secure token when requesting images from your server. For example, instead of requesting `image.jpg?w=1000`, you would request `image.jpg?w=1000&token=6db10b02a4132a8714b6485d1138fc87` instead. Glide comes with a URL builder to make this process easy.
+Next, generate a secure token whenever you request an image from your server. For example, instead of requesting `image.jpg?w=1000`, you would instead request `image.jpg?w=1000&token=6db10b02a4132a8714b6485d1138fc87`. Glide comes with a URL builder to make this process easy.
 
 ```php
-// Create a instance of the URL builder
+// Create an instance of the URL builder
 $urlBuilder = new Glide\UrlBuilder('http://your-website.com', 'your-sign-key');
 
 // Generate a url
@@ -157,7 +155,7 @@ echo '<img src="' . $url . '">';
 
 ### Source & Cache
 
-Glide makes it possible to access images stored in a variety of file systems. It does this using the [Flysystem](http://flysystem.thephpleague.com/) file system abstraction library. For example, you may choose to store your source images on [Amazon S3](http://aws.amazon.com/s3/), but keep your rendered image cache on a local disk.
+Glide makes it possible to access images stored in a variety of file systems. It does this using the [Flysystem](http://flysystem.thephpleague.com/) file system abstraction library. For example, you may choose to store your source images on [Amazon S3](http://aws.amazon.com/s3/), but keep your rendered images (the cache) on a local disk.
 
 To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. Alternatively, if you are only using a local disk, you can simply pass a path as a string.
 
@@ -171,7 +169,7 @@ $glide = new Glide\Server(
     new Filesystem(new Local('cache-folder'))
 );
 
-// Using a the setter methods
+// Using the setter methods
 $glide->setSource(new Filesystem(new Local('source-folder')));
 $glide->setCache(new Filesystem(new Local('cache-folder')));
 
@@ -182,13 +180,13 @@ $glide->setCache('cache-folder');
 
 ### Driver
 
-By default Glide uses the [GD Library](http://php.net/manual/en/book.image.php). However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
+By default Glide uses the [GD](http://php.net/manual/en/book.image.php) library. However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
 
 ```php
 // Using the constructor method
 $glide = new Glide\Server('source-folder', 'cache-folder', 'imagick');
 
-// Using a the setter method
+// Using the setter method
 $glide->setDriver('imagick');
 ```
 
