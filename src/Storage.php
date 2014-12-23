@@ -45,6 +45,11 @@ class Storage
         return $this->storage->getSize($hash);
     }
 
+    public function getMimetype($hash)
+    {
+        return $this->storage->getMimetype($hash);
+    }
+
     public function write($hash, $content)
     {
         return $this->storage->write($hash, $content);

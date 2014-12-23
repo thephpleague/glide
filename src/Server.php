@@ -10,6 +10,7 @@ class Server
     private $cache;
     private $driver;
     private $signKey;
+    private $maxImageSize;
 
     public function __construct($source, $cache = null, $driver = 'gd')
     {
@@ -52,6 +53,16 @@ class Server
         return $this->signKey;
     }
 
+    public function setMaxImageSize($maxImageSize)
+    {
+        $this->maxImageSize = $maxImageSize;
+    }
+
+    public function getMaxImageSize()
+    {
+        return $this->maxImageSize;
+    }
+
     public function output($filename, $params)
     {
         return $this->outputImage(
@@ -76,7 +87,7 @@ class Server
             throw new ImageNotFoundException('Could not find the file: ' . $request->getFilename());
         }
 
-        $api = new API($request->getParams());
+        $api = new API($request->getParams(), $this->maxImageSize);
         $manager = new ImageManager(['driver' => $this->driver]);
 
         $this->cache->write(
@@ -100,7 +111,7 @@ class Server
         }
 
         header_remove();
-        header('Content-Type: image/jpeg');
+        header('Content-Type: ' . $this->cache->getMimetype($request->getHash()));
         header('Content-Length: ' . $this->cache->getSize($request->getHash()));
         header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT');
         header('Cache-Control: public, max-age=31536000');

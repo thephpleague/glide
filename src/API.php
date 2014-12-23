@@ -8,11 +8,11 @@ class API
 {
     private $manipulators;
 
-    public function __construct($params)
+    public function __construct($params, $maxImageSize = null)
     {
         $this->manipulators = [
             'adjustments' => new Manipulators\Adjustments(),
-            'size' => new Manipulators\Size(),
+            'size' => new Manipulators\Size($maxImageSize),
             'effects' => new Manipulators\Effects(),
             'output' => new Manipulators\Output(),
         ];

@@ -7,12 +7,18 @@ use Intervention\Image\Image;
 
 class Size implements Manipulator
 {
+    private $maxImageSize;
     private $width;
     private $height;
     private $fit = 'clip';
     private $cropPosition = 'center';
     private $cropRectangle;
     private $orientation = 'auto';
+
+    public function __construct($maxImageSize = null)
+    {
+        $this->maxImageSize = $maxImageSize;
+    }
 
     public function setWidth($width)
     {
@@ -81,16 +87,16 @@ class Size implements Manipulator
 
         foreach ($this->cropRectangle as $name => $value) {
             if (!ctype_digit($value)) {
-                throw new ParameterException('The "' . $name . '" parameter must be a valid number.');
+                throw new ParameterException('Rectangle crop ' . $name . ' must be a valid number.');
             }
         }
 
         if ($this->cropRectangle['width'] <= 0) {
-            throw new ParameterException('The "width" parameter must be greater than 0.');
+            throw new ParameterException('Rectangle crop width must be greater than 0.');
         }
 
         if ($this->cropRectangle['height'] <= 0) {
-            throw new ParameterException('The "height" parameter must be greater than 0.');
+            throw new ParameterException('Rectangle crop height must be greater than 0.');
         }
     }
 
@@ -112,12 +118,24 @@ class Size implements Manipulator
         }
 
         if ($this->cropRectangle) {
+            if ($this->cropRectangle['width'] > $image->width()) {
+                throw new ParameterException('Rectangle crop width cannot be larger than the source image width.');
+            }
+
+            if ($this->cropRectangle['height'] > $image->height()) {
+                throw new ParameterException('Rectangle crop height cannot be larger than the source image height.');
+            }
+
             $image->crop(
                 $this->cropRectangle['width'],
                 $this->cropRectangle['height'],
                 $this->cropRectangle['x'],
                 $this->cropRectangle['y']
             );
+        }
+
+        if ($this->calculateImageSize($image) > $this->maxImageSize) {
+            throw new ParameterException('Image exceeds the maximum allowed size of ' . $this->maxImageSize . ' pixels.');
         }
 
         if ($this->width or $this->height) {
@@ -133,5 +151,24 @@ class Size implements Manipulator
         }
 
         return $image;
+    }
+
+    private function calculateImageSize(Image $image)
+    {
+        $ratio = $image->width() / $image->height();
+
+        if ($this->width and $this->height) {
+            return $this->width * $this->width;
+        }
+
+        if ($this->width and !$this->height) {
+            return $this->width * ($this->width / $ratio);
+        }
+
+        if (!$this->width and $this->height) {
+            return ($this->height * $ratio) * $this->height;
+        }
+
+        return $image->width() * $image->height();
     }
 }

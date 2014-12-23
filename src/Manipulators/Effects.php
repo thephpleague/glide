@@ -2,6 +2,7 @@
 
 namespace Glide\Manipulators;
 
+use Glide\ParameterException;
 use Intervention\Image\Image;
 
 class Effects implements Manipulator
@@ -12,16 +13,36 @@ class Effects implements Manipulator
 
     public function setFilter($filter)
     {
+        if (!in_array($filter, ['greyscale', 'sepia'])) {
+            throw new ParameterException('Filter only accepts "greyscale" or "sepia".');
+        }
+
         $this->filter = $filter;
     }
 
     public function setBlur($blur)
     {
+        if (!ctype_digit($blur)) {
+            throw new ParameterException('Blur must be a valid number.');
+        }
+
+        if ($blur < 0 or $blur > 100) {
+            throw new ParameterException('Blur must be between 0 and 100.');
+        }
+
         $this->blur = $blur;
     }
 
     public function setPixelate($pixelate)
     {
+        if (!ctype_digit($pixelate)) {
+            throw new ParameterException('Pixelate must be a valid number.');
+        }
+
+        if ($pixelate < 0 or $pixelate > 100) {
+            throw new ParameterException('Pixelate must be between 0 and 1000.');
+        }
+
         $this->pixelate = $pixelate;
     }
 

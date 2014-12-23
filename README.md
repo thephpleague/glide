@@ -33,7 +33,7 @@ The purpose of this library is to offer extremely easy image manipulation in a s
     - Example: `image.jpg?crop=top-left`
 - **Rectangle** `rect`
     - Crops an image to specific dimensions prior to any other resize operation.
-    - Accepts: `width,height,x,y`
+    - Accepts format: `width,height,x,y`
     - Example: `image.jpg?rect=100,100,25,90`
 - **Orientation** `ori`
     - Rotates an image by supplied angle.
@@ -83,7 +83,7 @@ The purpose of this library is to offer extremely easy image manipulation in a s
     - Example: `image.jpg?blur=15`
 - **Format** `fm`
     - Encodes the image to the given format.
-    - Accepts: `jpg`, `png`, `gif`, `tif`, `bmp`.
+    - Accepts: `jpg`, `png`, `gif`.
     - Defaults to `jpg`.
     - Example: `image.jpg?format=png`
 
@@ -151,4 +151,22 @@ echo '<img src="' . $url . '">';
 
 // Prints out
 // <img src="http://your-website.com/image.jpg?w=1000&token=af3dc18fc6bfb2afb521e587c348b904">
+```
+
+## Configuration Options
+
+### Driver
+
+By default Glide uses the [GD Library](http://php.net/manual/en/book.image.php). However you can also use Glide with Imagemagick if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
+
+```php
+$glide->setDriver('imagick');
+```
+
+### Max Image Size
+
+If you're not securing images with a signing key, you may choose to limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
+
+```php
+$glide->setMaxImageSize(2000*2000);
 ```
