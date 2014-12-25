@@ -30,7 +30,7 @@ Glide is a wonderfully easy image manipulation library written in PHP. It's stra
     - Accepts `clip`, `scale` or `crop`. Default is `clip`.
     - Example: [kayaks.jpg?w=500&fit=crop](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop)
 - **Crop Position** `crop`
-    - Sets where the image is cropped the `fit` parameter is set to `crop`.
+    - Sets where the image is cropped when the `fit` parameter is set to `crop`.
     - Accepts `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`. Default is `center`.
     - Example: [kayaks.jpg?w=500&fit=crop&crop=left](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop&crop=left)
 - **Rectangle** `rect`
@@ -158,7 +158,7 @@ If you want additional security on your images, you can add a secure signature s
 ```php
 // Add signing key in Glide configuration
 $glide = Glide\Factory::server([
-    'sign_key' => 'you-sign-key',
+    'sign_key' => 'your-sign-key',
 ]);
 ```
 
