@@ -39,7 +39,7 @@ class Effects implements ManipulatorInterface
             throw new ParameterException('Pixelate must be a valid number.');
         }
 
-        if ($pixelate < 0 or $pixelate > 100) {
+        if ($pixelate < 0 or $pixelate > 1000) {
             throw new ParameterException('Pixelate must be between 0 and 1000.');
         }
 
