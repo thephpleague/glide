@@ -76,7 +76,7 @@ class Server
         return $request;
     }
 
-    private function processRequest($filename, $params)
+    private function processRequest($filename, Array $params = [])
     {
         $request = new Request($filename, $params, $this->signKey);
 
