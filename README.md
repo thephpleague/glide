@@ -1,5 +1,14 @@
 # Glide
 
+[![Author](http://img.shields.io/badge/author-@reinink-blue.svg?style=flat-square)](https://twitter.com/reinink)
+[![Source Code](http://img.shields.io/badge/source-reinink/glide-blue.svg?style=flat-square)](https://github.com/reinink/glide)
+[![Latest Version](https://img.shields.io/github/release/reinink/glide.svg?style=flat-square)](https://github.com/reinink/glide/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/reinink/glide/master.svg?style=flat-square)](https://travis-ci.org/reinink/glide)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/reinink/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/reinink/glide/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/reinink/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/reinink/glide)
+[![Total Downloads](https://img.shields.io/packagist/dt/reinink/glide.svg?style=flat-square)](https://packagist.org/packages/reinink/glide)
+
 Glide is a wonderfully easy image manipulation library written in PHP. It's straightforward API is exposed via HTTP, similar to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/). It doesn't try to reinvent the wheel, but leverages powerful libraries like [Intervention Image](http://image.intervention.io/) (image handling and manipulation) and [Flysystem](http://flysystem.thephpleague.com/) (file system abstraction). Glide was created by [Jonathan Reinink](https://twitter.com/reinink).
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=1000)](https://glide.herokuapp.com/kayaks.jpg?w=1000)
