@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace Glide\Exceptions;
 
 class ConfigurationException extends \Exception
 {

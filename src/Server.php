@@ -2,21 +2,21 @@
 
 namespace Glide;
 
+use Glide\API\APIInterface;
 use Intervention\Image\ImageManager;
 
 class Server
 {
     private $source;
     private $cache;
-    private $driver;
+    private $api;
     private $signKey;
-    private $maxImageSize;
 
-    public function __construct($source, $cache = null, $driver = 'gd')
+    public function __construct($source, $cache, APIInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
-        $this->setDriver($driver);
+        $this->setAPI($api);
     }
 
     public function setSource($source)
@@ -24,23 +24,29 @@ class Server
         $this->source = new Storage($source);
     }
 
+    public function getSource()
+    {
+        return $this->source->get();
+    }
+
     public function setCache($cache)
     {
         $this->cache = new Storage($cache);
     }
 
-    public function setDriver($driver)
+    public function getCache()
     {
-        if (!in_array($driver, ['gd', 'imagick'])) {
-            throw new ConfigurationException('Not a valid driver, accepts "gd" or "imagick".');
-        }
-
-        $this->driver = $driver;
+        return $this->cache->get();
     }
 
-    public function getDriver()
+    public function setAPI(APIInterface $api)
     {
-        return $this->driver;
+        $this->api = $api;
+    }
+
+    public function getAPI()
+    {
+        return $this->api;
     }
 
     public function setSignKey($signKey)
@@ -53,72 +59,33 @@ class Server
         return $this->signKey;
     }
 
-    public function setMaxImageSize($maxImageSize)
+    public function output($filename, Array $params = [])
     {
-        $this->maxImageSize = $maxImageSize;
+        $request = $this->processRequest($filename, $params);
+
+        $output = new Output($this->cache, $request);
+        $output->output();
+
+        return $request;
     }
 
-    public function getMaxImageSize()
+    public function generate($filename, Array $params = [])
     {
-        return $this->maxImageSize;
+        $request = $this->processRequest($filename, $params);
+
+        return $request;
     }
 
-    public function output($filename, $params)
-    {
-        return $this->outputImage(
-            $this->generate($filename, $params)
-        );
-    }
-
-    public function generate($filename, $params)
+    private function processRequest($filename, $params)
     {
         $request = new Request($filename, $params, $this->signKey);
 
-        if (!$this->cache->has($request->getHash())) {
-            $this->generateImage($request);
-        }
-
-        return $request;
-    }
-
-    private function generateImage(Request $request)
-    {
-        if (!$this->source->has($request->getFilename())) {
-            throw new ImageNotFoundException('Could not find the file: ' . $request->getFilename());
-        }
-
-        $api = new API($request->getParams(), $this->maxImageSize);
-        $manager = new ImageManager(['driver' => $this->driver]);
-
-        $this->cache->write(
-            $request->getHash(),
-            $api->run(
-                $manager->make(
-                    $this->source->read(
-                        $request->getFilename()
-                    )
-                )
-            )
+        $generator = new Generator(
+            $this->source,
+            $this->cache,
+            $this->api
         );
-
-        return $request;
-    }
-
-    private function outputImage(Request $request)
-    {
-        while (ob_get_level() > 0) {
-            ob_end_flush();
-        }
-
-        header_remove();
-        header('Content-Type: ' . $this->cache->getMimetype($request->getHash()));
-        header('Content-Length: ' . $this->cache->getSize($request->getHash()));
-        header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT');
-        header('Cache-Control: public, max-age=31536000');
-        header('Pragma: public');
-        flush();
-
-        $this->cache->readStream($request->getHash());
+        $generator->generate($request);
 
         return $request;
     }

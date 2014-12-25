@@ -1,11 +1,11 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace Glide\API\Manipulators;
 
-use Glide\ParameterException;
+use Glide\Exceptions\ParameterException;
 use Intervention\Image\Image;
 
-class Effects implements Manipulator
+class Effects implements ManipulatorInterface
 {
     private $filter;
     private $blur;

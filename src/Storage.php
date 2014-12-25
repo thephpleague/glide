@@ -2,6 +2,7 @@
 
 namespace Glide;
 
+use Glide\Exceptions\ConfigurationException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 
@@ -20,6 +21,11 @@ class Storage
         }
 
         $this->storage = $storage;
+    }
+
+    public function get()
+    {
+        return $this->storage;
     }
 
     public function has($hash)

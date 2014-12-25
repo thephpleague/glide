@@ -1,10 +1,10 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace Glide\API\Manipulators;
 
 use Intervention\Image\Image;
 
-interface Manipulator
+interface ManipulatorInterface
 {
     public function run(Image $image);
 }

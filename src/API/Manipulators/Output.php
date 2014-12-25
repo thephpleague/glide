@@ -1,11 +1,11 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace Glide\API\Manipulators;
 
-use Glide\ParameterException;
+use Glide\Exceptions\ParameterException;
 use Intervention\Image\Image;
 
-class Output implements Manipulator
+class Output implements ManipulatorInterface
 {
     private $format = 'jpg';
     private $quality = 90;

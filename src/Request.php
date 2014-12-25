@@ -2,6 +2,8 @@
 
 namespace Glide;
 
+use Glide\Exceptions\InvalidTokenException;
+
 class Request
 {
     private $filename;

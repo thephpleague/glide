@@ -157,7 +157,7 @@ echo '<img src="' . $url . '">';
 
 Glide makes it possible to access images stored in a variety of file systems. It does this using the [Flysystem](http://flysystem.thephpleague.com/) file system abstraction library. For example, you may choose to store your source images on [Amazon S3](http://aws.amazon.com/s3/), but keep your rendered images (the cache) on a local disk.
 
-To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. Alternatively, if you are only using a local disk, you can simply pass a path as a string.
+To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. Alternatively, if you are only using the local disk, you can simply pass a path as a string.
 
 ```php
 use League\Flysystem\Filesystem;
@@ -183,10 +183,10 @@ $glide->setCache('cache-folder');
 By default Glide uses the [GD](http://php.net/manual/en/book.image.php) library. However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
 
 ```php
-// Using the constructor method
+// Enable using the constructor method
 $glide = new Glide\Server('source-folder', 'cache-folder', 'imagick');
 
-// Using the setter method
+// Enable using the setter method
 $glide->setDriver('imagick');
 ```
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace Glide\API\Manipulators;
 
-use Glide\ParameterException;
+use Glide\Exceptions\ParameterException;
 use Intervention\Image\Image;
 
-class Adjustments implements Manipulator
+class Adjustments implements ManipulatorInterface
 {
     private $brightness;
     private $contrast;

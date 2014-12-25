@@ -1,31 +1,38 @@
 <?php
 
-namespace Glide;
+namespace Glide\API;
 
+use Glide\Request;
 use Intervention\Image\Image;
+use Intervention\Image\ImageManager;
 
-class API
+class API implements APIInterface
 {
+    private $manager;
     private $manipulators;
 
-    public function __construct($params, $maxImageSize = null)
+    public function __construct(ImageManager $manager, $maxImageSize = null)
     {
+        $this->manager = $manager;
+
         $this->manipulators = [
             'adjustments' => new Manipulators\Adjustments(),
             'size' => new Manipulators\Size($maxImageSize),
             'effects' => new Manipulators\Effects(),
             'output' => new Manipulators\Output(),
         ];
+    }
 
-        foreach ($params as $name => $value) {
+    public function run(Request $request, $imageSource)
+    {
+        foreach ($request->getParams() as $name => $value) {
             if (method_exists($this, $name) and !in_array($name, ['__construct', 'run'])) {
                 $this->$name($value);
             }
         }
-    }
 
-    public function run(Image $image)
-    {
+        $image = $this->manager->make($imageSource);
+
         foreach ($this->manipulators as $manipulator) {
             $image = $manipulator->run($image);
         }

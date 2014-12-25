@@ -1,11 +1,11 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace Glide\API\Manipulators;
 
-use Glide\ParameterException;
+use Glide\Exceptions\ParameterException;
 use Intervention\Image\Image;
 
-class Size implements Manipulator
+class Size implements ManipulatorInterface
 {
     private $maxImageSize;
     private $width;
