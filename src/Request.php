@@ -77,4 +77,11 @@ class Request
     {
         return md5($this->filename . '?' . http_build_query($this->params));
     }
+
+    public function __get($key)
+    {
+        if (isset($this->params[$key])) {
+            return $this->params[$key];
+        }
+    }
 }

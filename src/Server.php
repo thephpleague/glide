@@ -2,51 +2,51 @@
 
 namespace Glide;
 
-use Glide\API\APIInterface;
-use Intervention\Image\ImageManager;
+use Glide\Exceptions\ImageNotFoundException;
+use League\Flysystem\Filesystem;
 
 class Server
 {
     private $source;
     private $cache;
-    private $api;
+    private $manipulator;
     private $signKey;
 
-    public function __construct($source, $cache, APIInterface $api)
+    public function __construct(Filesystem $source, Filesystem $cache, Manipulator $manipulator)
     {
         $this->setSource($source);
         $this->setCache($cache);
-        $this->setAPI($api);
+        $this->setManipulator($manipulator);
     }
 
-    public function setSource($source)
+    public function setSource(Filesystem $source)
     {
-        $this->source = new Storage($source);
+        $this->source = $source;
     }
 
     public function getSource()
     {
-        return $this->source->get();
+        return $this->source;
     }
 
-    public function setCache($cache)
+    public function setCache(Filesystem $cache)
     {
-        $this->cache = new Storage($cache);
+        $this->cache = $cache;
     }
 
     public function getCache()
     {
-        return $this->cache->get();
+        return $this->cache;
     }
 
-    public function setAPI(APIInterface $api)
+    public function setManipulator(Manipulator $manipulator)
     {
-        $this->api = $api;
+        $this->manipulator = $manipulator;
     }
 
-    public function getAPI()
+    public function getManipulator()
     {
-        return $this->api;
+        return $this->manipulator;
     }
 
     public function setSignKey($signKey)
@@ -59,33 +59,51 @@ class Server
         return $this->signKey;
     }
 
+    public function test($filename, Array $params = [])
+    {
+        return $this->make($filename, $params, true);
+    }
+
     public function output($filename, Array $params = [])
     {
-        $request = $this->processRequest($filename, $params);
+        $request = $this->make($filename, $params);
 
-        $output = new Output($this->cache, $request);
+        $output = new Output($this->cache, $request->getHash());
         $output->output();
 
         return $request;
     }
 
-    public function generate($filename, Array $params = [])
-    {
-        $request = $this->processRequest($filename, $params);
-
-        return $request;
-    }
-
-    private function processRequest($filename, Array $params = [])
+    public function make($filename, Array $params = [], $validateOnly = false)
     {
         $request = new Request($filename, $params, $this->signKey);
 
-        $generator = new Generator(
-            $this->source,
-            $this->cache,
-            $this->api
+        if ($this->cache->has($request->getHash())) {
+            return $request;
+        }
+
+        if (!$this->source->has($request->getFilename())) {
+            throw new ImageNotFoundException(
+                'Could not find the file: ' . $request->getFilename()
+            );
+        }
+
+        $this->manipulator->setImage(
+            $this->source->read(
+                $request->getFilename()
+            )
         );
-        $generator->generate($request);
+
+        $this->manipulator->validate($request);
+
+        if ($validateOnly) {
+            return $request;
+        }
+
+        $this->cache->write(
+            $request->getHash(),
+            $this->manipulator->run($request)
+        );
 
         return $request;
     }

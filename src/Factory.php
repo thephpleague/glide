@@ -2,19 +2,20 @@
 
 namespace Glide;
 
-use Glide\API\API;
 use Intervention\Image\ImageManager;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 
 class Factory
 {
     public static function server(Array $config)
     {
-        if (!isset($config['source'])) {
-            $config['source'] = null;
+        if (is_string($config['source'])) {
+            $config['source'] = new Filesystem(new Local($config['source']));
         }
 
-        if (!isset($config['cache'])) {
-            $config['cache'] = null;
+        if (is_string($config['cache'])) {
+            $config['cache'] = new Filesystem(new Local($config['cache']));
         }
 
         if (!isset($config['driver'])) {
@@ -28,9 +29,16 @@ class Factory
         $server = new Server(
             $config['source'],
             $config['cache'],
-            new API(
-                new ImageManager(['driver' => $config['driver']]),
-                $config['max_image_size']
+            new Manipulator(
+                new ImageManager([
+                    'driver' => $config['driver']
+                ]),
+                [
+                    new Manipulators\Adjustments(),
+                    new Manipulators\Size($config['max_image_size']),
+                    new Manipulators\Effects(),
+                    new Manipulators\Output(),
+                ]
             )
         );
 

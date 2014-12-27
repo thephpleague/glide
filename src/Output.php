@@ -2,38 +2,30 @@
 
 namespace Glide;
 
+use League\Flysystem\Filesystem;
+
 class Output
 {
-    private $storage;
-    private $request;
+    private $cache;
+    private $filename;
 
-    public function __construct(Storage $storage, Request $request)
+    public function __construct(Filesystem $cache, $filename)
     {
-        $this->setStorage($storage);
-        $this->setRequest($request);
-    }
-
-    public function setStorage(Storage $storage)
-    {
-        $this->storage = $storage;
-    }
-
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
+        $this->cache = $cache;
+        $this->filename = $filename;
     }
 
     public function output()
     {
-        $this->sendHeader();
+        $this->sendHeaders();
         $this->sendImage();
     }
 
-    private function sendHeader()
+    private function sendHeaders()
     {
         header_remove();
-        header('Content-Type: ' . $this->storage->getMimetype($this->request->getHash()));
-        header('Content-Length: ' . $this->storage->getSize($this->request->getHash()));
+        header('Content-Type: ' . $this->cache->getMimetype($this->filename));
+        header('Content-Length: ' . $this->cache->getSize($this->filename));
         header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT');
         header('Cache-Control: public, max-age=31536000');
         header('Pragma: public');
@@ -42,6 +34,9 @@ class Output
 
     private function sendImage()
     {
-        $this->storage->readStream($this->request->getHash());
+        $stream = $this->cache->readStream($this->filename);
+        rewind($stream);
+        fpassthru($stream);
+        fclose($stream);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Glide;
 
-use Glide\API\API;
 use Intervention\Image\ImageManager;
 use League\Flysystem\Adapter\NullAdapter;
 use League\Flysystem\Filesystem;
@@ -17,7 +16,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server = new Server(
             new Filesystem(new NullAdapter()),
             new Filesystem(new NullAdapter()),
-            new API(new ImageManager())
+            new Manipulator(
+                new ImageManager(),
+                [
+                    new Manipulators\Adjustments(),
+                    new Manipulators\Size(),
+                    new Manipulators\Effects(),
+                    new Manipulators\Output(),
+                ]
+            )
         );
     }
 
@@ -82,6 +89,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->generate('image.jpg'));
+        $this->assertInstanceOf('Glide\Request', $this->server->make('image.jpg'));
     }
 }
