@@ -4,7 +4,6 @@ namespace Glide;
 
 use Glide\Exceptions\ManipulationException;
 use Glide\Interfaces\API as APIInterface;
-use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 
 class API implements APIInterface
