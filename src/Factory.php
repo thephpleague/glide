@@ -29,7 +29,7 @@ class Factory
         $server = new Server(
             $config['source'],
             $config['cache'],
-            new Manipulator(
+            new API(
                 new ImageManager([
                     'driver' => $config['driver']
                 ]),

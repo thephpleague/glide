@@ -2,10 +2,11 @@
 
 namespace Glide\Manipulators;
 
+use Glide\Interfaces\Manipulator;
 use Glide\Request;
 use Intervention\Image\Image;
 
-class Adjustments implements ManipulatorInterface
+class Adjustments implements Manipulator
 {
     public function validate(Request $request, Image $image)
     {

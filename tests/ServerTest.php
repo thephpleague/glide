@@ -2,9 +2,6 @@
 
 namespace Glide;
 
-use Intervention\Image\ImageManager;
-use League\Flysystem\Adapter\NullAdapter;
-use League\Flysystem\Filesystem;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
@@ -14,17 +11,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->server = new Server(
-            new Filesystem(new NullAdapter()),
-            new Filesystem(new NullAdapter()),
-            new Manipulator(
-                new ImageManager(),
-                [
-                    new Manipulators\Adjustments(),
-                    new Manipulators\Size(),
-                    new Manipulators\Effects(),
-                    new Manipulators\Output(),
-                ]
-            )
+            Mockery::mock('League\Flysystem\FilesystemInterface'),
+            Mockery::mock('League\Flysystem\FilesystemInterface'),
+            Mockery::mock('Glide\Interfaces\API')
         );
     }
 
@@ -35,26 +24,36 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSource()
     {
-        $this->assertInstanceOf('League\Flysystem\Adapter\NullAdapter', $this->server->getSource()->getAdapter());
-        $this->server->setSource(new Filesystem(Mockery::mock('League\Flysystem\Adapter\Local')));
-        $this->assertInstanceOf('League\Flysystem\Adapter\Local', $this->server->getSource()->getAdapter());
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface'));
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getSource());
     }
 
     public function testGetSource()
     {
-        $this->assertInstanceOf('League\Flysystem\Filesystem', $this->server->getSource());
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getSource());
     }
 
     public function testSetCache()
     {
-        $this->assertInstanceOf('League\Flysystem\Adapter\NullAdapter', $this->server->getCache()->getAdapter());
-        $this->server->setCache(new Filesystem(Mockery::mock('League\Flysystem\Adapter\Local')));
-        $this->assertInstanceOf('League\Flysystem\Adapter\Local', $this->server->getCache()->getAdapter());
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface'));
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getCache());
     }
 
     public function testGetCache()
     {
-        $this->assertInstanceOf('League\Flysystem\Filesystem', $this->server->getCache());
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getCache());
+    }
+
+    public function testSetAPI()
+    {
+        $api = Mockery::mock('Glide\Interfaces\API');
+        $this->server->setAPI($api);
+        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getAPI());
+    }
+
+    public function testGetAPI()
+    {
+        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getAPI());
     }
 
     public function testSetSignKey()
@@ -68,12 +67,21 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->server->getSignKey());
     }
 
+    public function testTest()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+        }));
+
+        $this->assertInstanceOf('Glide\Request', $this->server->test('image.jpg'));
+    }
+
     /**
      * @runInSeparateProcess
      */
     public function testOutput()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\Filesystem', function ($mock) {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
@@ -85,7 +93,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testGenerate()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\Filesystem', function ($mock) {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
         }));
 

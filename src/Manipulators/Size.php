@@ -2,10 +2,11 @@
 
 namespace Glide\Manipulators;
 
+use Glide\Interfaces\Manipulator;
 use Glide\Request;
 use Intervention\Image\Image;
 
-class Size implements ManipulatorInterface
+class Size implements Manipulator
 {
     private $maxImageSize;
 

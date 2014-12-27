@@ -3,14 +3,14 @@
 namespace Glide;
 
 use Glide\Exceptions\ManipulationException;
+use Glide\Interfaces\API as APIInterface;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
 
-class Manipulator
+class API implements APIInterface
 {
     private $imageManager;
     private $manipulators;
-    private $image;
 
     public function __construct(ImageManager $imageManager, $manipulators)
     {
@@ -18,17 +18,14 @@ class Manipulator
         $this->manipulators = $manipulators;
     }
 
-    public function setImage($source)
+    public function validate(Request $request, $source)
     {
-        $this->image = $this->imageManager->make($source);
-    }
+        $image = $this->imageManager->make($source);
 
-    public function validate(Request $request)
-    {
         $errors = [];
 
         foreach ($this->manipulators as $manipulator) {
-            $errors = array_merge($errors, $manipulator->validate($request, $this->image));
+            $errors = array_merge($errors, $manipulator->validate($request, $image));
         }
 
         if ($errors) {
@@ -36,12 +33,14 @@ class Manipulator
         }
     }
 
-    public function run(Request $request)
+    public function run(Request $request, $source)
     {
+        $image = $this->imageManager->make($source);
+
         foreach ($this->manipulators as $manipulator) {
-            $manipulator->run($request, $this->image);
+            $manipulator->run($request, $image);
         }
 
-        return $this->image->getEncoded();
+        return $image->getEncoded();
     }
 }

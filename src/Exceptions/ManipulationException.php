@@ -2,7 +2,10 @@
 
 namespace Glide\Exceptions;
 
-class ManipulationException extends \Exception
+use Exception;
+use Glide\Interfaces\ErrorPageException;
+
+class ManipulationException extends Exception implements ErrorPageException
 {
     private $errors;
 

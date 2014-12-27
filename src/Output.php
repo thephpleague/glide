@@ -2,7 +2,7 @@
 
 namespace Glide;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface as Filesystem;
 
 class Output
 {

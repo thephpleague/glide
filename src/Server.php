@@ -3,20 +3,21 @@
 namespace Glide;
 
 use Glide\Exceptions\ImageNotFoundException;
-use League\Flysystem\Filesystem;
+use Glide\Interfaces\API;
+use League\Flysystem\FilesystemInterface as Filesystem;
 
 class Server
 {
     private $source;
     private $cache;
-    private $manipulator;
+    private $api;
     private $signKey;
 
-    public function __construct(Filesystem $source, Filesystem $cache, Manipulator $manipulator)
+    public function __construct(Filesystem $source, Filesystem $cache, API $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
-        $this->setManipulator($manipulator);
+        $this->setAPI($api);
     }
 
     public function setSource(Filesystem $source)
@@ -39,14 +40,14 @@ class Server
         return $this->cache;
     }
 
-    public function setManipulator(Manipulator $manipulator)
+    public function setAPI(API $api)
     {
-        $this->manipulator = $manipulator;
+        $this->api = $api;
     }
 
-    public function getManipulator()
+    public function getAPI()
     {
-        return $this->manipulator;
+        return $this->api;
     }
 
     public function setSignKey($signKey)
@@ -88,13 +89,11 @@ class Server
             );
         }
 
-        $this->manipulator->setImage(
-            $this->source->read(
-                $request->getFilename()
-            )
+        $source = $this->source->read(
+            $request->getFilename()
         );
 
-        $this->manipulator->validate($request);
+        $this->api->validate($request, $source);
 
         if ($validateOnly) {
             return $request;
@@ -102,7 +101,7 @@ class Server
 
         $this->cache->write(
             $request->getHash(),
-            $this->manipulator->run($request)
+            $this->api->run($request, $source)
         );
 
         return $request;

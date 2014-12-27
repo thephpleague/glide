@@ -2,7 +2,10 @@
 
 namespace Glide\Exceptions;
 
-class InvalidTokenException extends \Exception
+use Exception;
+use Glide\Interfaces\ErrorPageException;
+
+class InvalidTokenException extends Exception implements ErrorPageException
 {
     public function generateErrorPage()
     {
