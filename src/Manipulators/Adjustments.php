@@ -29,7 +29,7 @@ class Adjustments implements Manipulator
         }
 
         if ($brightness < -100 or $brightness > 100) {
-            return ['bri' => 'Brightness must be between -100 and 100.'];
+            return ['bri' => 'Brightness must be between `-100` and `100`.'];
         }
 
         return [];
@@ -46,7 +46,7 @@ class Adjustments implements Manipulator
         }
 
         if ($contrast < -100 or $contrast > 100) {
-            return ['con' => 'Contrast must be between -100 and 100.'];
+            return ['con' => 'Contrast must be between `-100` and `100`.'];
         }
 
         return [];
@@ -76,7 +76,7 @@ class Adjustments implements Manipulator
         }
 
         if ($sharpen < 0 or $sharpen > 100) {
-            return ['sharp' => 'Sharpen must be between 0 and 100.'];
+            return ['sharp' => 'Sharpen must be between `0` and `100`.'];
         }
 
         return [];

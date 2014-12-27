@@ -23,7 +23,7 @@ class Output implements Manipulator
         }
 
         if (!in_array($format, ['jpg', 'png', 'gif'])) {
-            return ['fm' => 'Format only accepts "jpg", "png" or "gif".'];
+            return ['fm' => 'Format only accepts `jpg`, `png` or `gif`.'];
         }
 
         return [];
@@ -40,7 +40,7 @@ class Output implements Manipulator
         }
 
         if ($quality < 0 or $quality > 100) {
-            return ['q' => 'Quality must be between 0 and 100.'];
+            return ['q' => 'Quality must be between `0` and `100`.'];
         }
 
         return [];

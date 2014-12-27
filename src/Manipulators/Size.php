@@ -44,7 +44,7 @@ class Size implements Manipulator
         }
 
         if ($width <= 0) {
-            return ['w' => 'Width must be greater than 0.'];
+            return ['w' => 'Width must be greater than `0`.'];
         }
 
         return [];
@@ -61,7 +61,7 @@ class Size implements Manipulator
         }
 
         if ($height <= 0) {
-            return ['h' => 'Height must be greater than 0.'];
+            return ['h' => 'Height must be greater than `0`.'];
         }
 
         return [];
@@ -74,7 +74,7 @@ class Size implements Manipulator
         }
 
         if (!in_array($fit, ['clip', 'scale', 'crop'])) {
-            return ['fit' => 'Fit only accepts "clip", "scale" or "crop".'];
+            return ['fit' => 'Fit only accepts `clip`, `scale` or `crop`.'];
         }
 
         return [];
@@ -87,7 +87,7 @@ class Size implements Manipulator
         }
 
         if (!in_array($cropPosition, ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'])) {
-            return ['crop' => 'The crop position parameter only accepts "top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom" or "bottom-right".'];
+            return ['crop' => 'The crop position parameter only accepts `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`.'];
         }
 
         return [];
@@ -102,7 +102,7 @@ class Size implements Manipulator
         $coordinates = explode(',', $cropRectangle);
 
         if (count($coordinates) !== 4) {
-            return ['rect' => 'Rectangle crop requires "width", "height", "x" and "y".'];
+            return ['rect' => 'Rectangle crop requires `width`, `height`, `x` and `y`.'];
         }
 
         $coordinates = [
@@ -119,7 +119,7 @@ class Size implements Manipulator
 
             if (in_array($name, ['width', 'height'])) {
                 if ($value <= 0) {
-                    return ['rect' => 'Rectangle crop ' . $name . ' must be greater than 0.'];
+                    return ['rect' => 'Rectangle crop ' . $name . ' must be greater than `0`.'];
                 }
             }
 
@@ -146,7 +146,7 @@ class Size implements Manipulator
         }
 
         if (!in_array($orientation, ['auto', '0', '90', '180', '270'])) {
-            return ['or' => 'Orientation must be set to "auto", "0", "90", "180" or "270"'];
+            return ['or' => 'Orientation must be set to `auto`, `0`, `90`, `180` or `270`'];
         }
 
         return [];
@@ -178,7 +178,7 @@ class Size implements Manipulator
         }
 
         if ($targetImageSize > $this->maxImageSize) {
-            return ['size' => 'Image exceeds the maximum allowed size of ' . $this->maxImageSize . ' pixels.'];
+            return ['size' => 'Image exceeds the maximum allowed size of `' . $this->maxImageSize . 'px`.'];
         }
 
         return [];

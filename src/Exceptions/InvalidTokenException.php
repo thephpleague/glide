@@ -11,6 +11,9 @@ class InvalidTokenException extends Exception implements ErrorPageException
     {
         $page = new ErrorPage($this);
         $page->setTitle('Invalid Signing Token');
+        $page->setErrors([
+            'token' => 'The provided token does not match the URL signature.'
+        ]);
         return $page->generate();
     }
 }

@@ -22,7 +22,7 @@ class ManipulationException extends Exception implements ErrorPageException
     public function generateErrorPage()
     {
         $page = new ErrorPage($this);
-        $page->setTitle('Invalid Manipulation');
+        $page->setTitle('Manipulation Error');
         $page->setErrors($this->errors);
         return $page->generate();
     }

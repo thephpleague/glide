@@ -24,7 +24,7 @@ class Effects implements Manipulator
         }
 
         if (!in_array($filter, ['greyscale', 'sepia'])) {
-            return ['filt' => 'Filter only accepts "greyscale" or "sepia".'];
+            return ['filt' => 'Filter only accepts `greyscale` or `sepia`.'];
         }
 
         return [];
@@ -41,7 +41,7 @@ class Effects implements Manipulator
         }
 
         if ($blur < 0 or $blur > 100) {
-            return ['blur' => 'Blur must be between 0 and 100.'];
+            return ['blur' => 'Blur must be between `0` and `100`.'];
         }
 
         return [];
@@ -58,7 +58,7 @@ class Effects implements Manipulator
         }
 
         if ($pixelate < 0 or $pixelate > 1000) {
-            return ['pixel' => 'Pixelate must be between 0 and 1000.'];
+            return ['pixel' => 'Pixelate must be between `0` and `1000`.'];
         }
 
         return [];

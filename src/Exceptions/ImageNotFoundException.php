@@ -11,6 +11,9 @@ class ImageNotFoundException extends Exception implements ErrorPageException
     {
         $page = new ErrorPage($this);
         $page->setTitle('Image Not Found');
+        $page->setErrors([
+            '404' => 'The requested image was not found.'
+        ]);
         return $page->generate();
     }
 }
