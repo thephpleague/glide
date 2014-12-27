@@ -22,7 +22,7 @@ class Size implements Manipulator
             $this->validateHeight($request->h),
             $this->validateFit($request->fit),
             $this->validateCropPosition($request->crop),
-            $this->validateCropRectangle($request->rect),
+            $this->validateCropRectangle($request->rect, $image),
             $this->validateOrientation($request->or)
         );
 
@@ -93,7 +93,7 @@ class Size implements Manipulator
         return [];
     }
 
-    public function validateCropRectangle($cropRectangle)
+    public function validateCropRectangle($cropRectangle, Image $image)
     {
         if (is_null($cropRectangle)) {
             return [];
@@ -105,57 +105,35 @@ class Size implements Manipulator
             return ['rect' => 'Rectangle crop requires "width", "height", "x" and "y".'];
         }
 
-        $width = $coordinates[0];
-        $height = $coordinates[1];
-        $x = $coordinates[2];
-        $y = $coordinates[3];
+        $coordinates = [
+            'width' => $coordinates[0],
+            'height' => $coordinates[1],
+            'x' => $coordinates[2],
+            'y' => $coordinates[3],
+        ];
 
-        if (!ctype_digit($width)) {
-            return ['rect' => 'Rectangle crop width must be a valid number.'];
-        }
+        foreach ($coordinates as $name => $value) {
+            if (!ctype_digit($value)) {
+                return ['rect' => 'Rectangle crop ' . $name . ' must be a valid number.'];
+            }
 
-        if (!ctype_digit($height)) {
-            return ['rect' => 'Rectangle crop height must be a valid number.'];
-        }
+            if (in_array($name, ['width', 'height'])) {
+                if ($value <= 0) {
+                    return ['rect' => 'Rectangle crop ' . $name . ' must be greater than 0.'];
+                }
+            }
 
-        if (!ctype_digit($x)) {
-            return ['rect' => 'Rectangle crop x must be a valid number.'];
-        }
+            if (in_array($name, ['width', 'x'])) {
+                if ($value > $image->width()) {
+                    return ['rect' => 'Rectangle crop ' . $name . ' cannot be larger than the source image width.'];
+                }
+            }
 
-        if (!ctype_digit($y)) {
-            return ['rect' => 'Rectangle crop y must be a valid number.'];
-        }
-
-        if ($width <= 0) {
-            return ['rect' => 'Rectangle crop width must be greater than 0.'];
-        }
-
-        if ($height <= 0) {
-            return ['rect' => 'Rectangle crop height must be greater than 0.'];
-        }
-
-        if ($x <= 0) {
-            return ['rect' => 'Rectangle crop x must be greater than 0.'];
-        }
-
-        if ($y <= 0) {
-            return ['rect' => 'Rectangle crop y must be greater than 0.'];
-        }
-
-        if ($width > $image->width()) {
-            return ['rect' => 'Rectangle crop width cannot be larger than the source image width.'];
-        }
-
-        if ($height > $image->height()) {
-            return ['rect' => 'Rectangle crop height cannot be larger than the source image height.'];
-        }
-
-        if ($x > $image->width()) {
-            return ['rect' => 'Rectangle crop x cannot be larger than the source image width.'];
-        }
-
-        if ($y > $image->height()) {
-            return ['rect' => 'Rectangle crop y cannot be larger than the source image height.'];
+            if (in_array($name, ['height', 'y'])) {
+                if ($value > $image->height()) {
+                    return ['rect' => 'Rectangle crop ' . $name . ' cannot be larger than the source image height.'];
+                }
+            }
         }
 
         return [];
@@ -209,7 +187,13 @@ class Size implements Manipulator
     public function run(Request $request, Image $image)
     {
         if ($request->rect) {
-            $image->crop(explode(',', $request->rect));
+            $coordinates = explode(',', $request->rect);
+            $image->crop(
+                (int) $coordinates[0],
+                (int) $coordinates[1],
+                (int) $coordinates[2],
+                (int) $coordinates[3]
+            );
         }
 
         if ($request->w or $request->h) {
