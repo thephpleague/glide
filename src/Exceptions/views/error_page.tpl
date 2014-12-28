@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Glide Error</title>
+    <title><?=$this->title?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         html {
@@ -71,12 +71,12 @@
 <h1><?=$this->title?></h1>
 
 <ul>
-<?php foreach ($this->errors as $function => $error): ?>
-    <li>
-        <div class="function"><?=$function?></div>
-        <div class="error"><?=preg_replace('/`(.*?)`/i', '<code>$1</code>', $error)?></div>
-    </li>
-<?php endforeach ?>
+    <?php foreach ($this->errors as $function => $error): ?>
+        <li>
+            <div class="function"><?=$function?></div>
+            <div class="error"><?=preg_replace('/`(.*?)`/i', '<code>$1</code>', $error)?></div>
+        </li>
+    <?php endforeach ?>
 </ul>
 
 </body>
