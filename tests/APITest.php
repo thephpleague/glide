@@ -6,8 +6,6 @@ use Mockery;
 
 class APITest extends \PHPUnit_Framework_TestCase
 {
-    private $api;
-
     public function testCreateInstance()
     {
         $this->assertInstanceOf('Glide\API', new API(Mockery::mock('Intervention\Image\ImageManager'), []));
