@@ -158,73 +158,103 @@ class Size implements Manipulator
             return [];
         }
 
-        $originalWidth = $image->width();
-        $originalHeight = $image->height();
+        $sourceWidth = $image->width();
+        $sourceHeight = $image->height();
 
         if ($request->rect) {
             $coordinates = explode(',', $request->rect);
-            $originalWidth = $coordinates[0];
-            $originalHeight = $coordinates[1];
+            $sourceWidth = $coordinates[0];
+            $sourceHeight = $coordinates[1];
         }
 
-        if ($request->w and $request->h) {
-            $targetImageSize = $request->w * $request->w;
-        } else if ($request->w and !$request->h) {
-            $targetImageSize = $request->w * ($request->w / ($originalWidth / $originalHeight));
-        } else if (!$request->w and $request->h) {
-            $targetImageSize = ($request->h * ($originalWidth / $originalHeight)) * $request->h;
-        } else {
-            $targetImageSize = $originalWidth * $originalHeight;
-        }
-
-        if ($targetImageSize > $this->maxImageSize) {
+        if ($this->maxImageSize < $this->calculateTargetSize($sourceWidth, $sourceHeight, $request->w, $request->h)) {
             return ['size' => 'Image exceeds the maximum allowed size of `' . $this->maxImageSize . 'px`.'];
         }
 
         return [];
     }
 
+    public function calculateTargetSize($sourceWidth, $sourceHeight, $targetWidth, $targetHeight)
+    {
+        if ($targetWidth and $targetHeight) {
+            return $targetWidth * $targetWidth;
+        }
+
+        if ($targetWidth and !$targetHeight) {
+            return $targetWidth * ($targetWidth / ($sourceWidth / $sourceHeight));
+        }
+
+        if (!$targetWidth and $targetHeight) {
+            return ($targetHeight * ($sourceWidth / $sourceHeight)) * $targetHeight;
+        }
+
+        return $sourceWidth * $sourceHeight;
+    }
+
     public function run(Request $request, Image $image)
     {
         if ($request->rect) {
-            $coordinates = explode(',', $request->rect);
-            $image->crop(
-                (int) $coordinates[0],
-                (int) $coordinates[1],
-                (int) $coordinates[2],
-                (int) $coordinates[3]
-            );
+            $this->runCropRectangle($image, $request->rect);
         }
 
         if ($request->w or $request->h) {
-            if (is_null($request->fit) or $request->fit === 'clip') {
-                $image->resize(
-                    $request->w,
-                    $request->h,
-                    function ($constraint) {
-                        $constraint->aspectRatio();
-                    }
-                );
-            } else if ($request->fit === 'scale') {
-                $image->resize(
-                    $request->w,
-                    $request->h
-                );
-            } else if ($request->fit === 'crop') {
-                $image->fit(
-                    $request->w,
-                    $request->h,
-                    function ($constraint) {
-                    },
-                    $request->crop ?: 'center'
-                );
-            }
+            $this->runResize($image, $request->fit, $request->w, $request->h, $request->crop);
         }
 
-        if (in_array($request->or, [null, 'auto'])) {
+        $this->runOrientate($image, $request->or);
+    }
+
+    public function runCropRectangle(Image $image, $cropRectangle)
+    {
+        $coordinates = explode(',', $cropRectangle);
+        $image->crop(
+            (int) $coordinates[0],
+            (int) $coordinates[1],
+            (int) $coordinates[2],
+            (int) $coordinates[3]
+        );
+    }
+
+    public function runClipResize(Image $image, $width, $height)
+    {
+        $image->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+    }
+
+    public function runResize(Image $image, $fit, $width, $height, $crop)
+    {
+        if (is_null($fit) or $fit === 'clip') {
+            $this->runClipResize($image, $width, $height);
+        }
+
+        if ($fit === 'scale') {
+            $this->runScaleResize($image, $width, $height);
+        }
+
+        if ($fit === 'crop') {
+            $this->runCropResize($image, $width, $height, $crop);
+        }
+    }
+
+    public function runScaleResize(Image $image, $width, $height)
+    {
+        $image->resize($width, $height);
+    }
+
+    public function runCropResize(Image $image, $width, $height, $crop)
+    {
+        $image->fit($width, $height, null, $crop ?: 'center');
+    }
+
+    public function runOrientate(Image $image, $orientation)
+    {
+        if (in_array($orientation, [null, 'auto'])) {
             $image->orientate();
-        } else if (in_array($request->or, ['90', '180', '270'])) {
-            $image->rotate($request->or);
+        }
+
+        if (in_array($orientation, ['90', '180', '270'])) {
+            $image->rotate($orientation);
         }
     }
 }
