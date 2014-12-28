@@ -7,7 +7,7 @@ class UrlBuilder
     private $baseUrl;
     private $signKey;
 
-    public function __construct($baseUrl, $signKey = null)
+    public function __construct($baseUrl = '', $signKey = null)
     {
         $this->setBaseUrl($baseUrl);
         $this->setSignKey($signKey);
@@ -35,9 +35,6 @@ class UrlBuilder
 
     public function getUrl($filename, Array $params = [])
     {
-        $params = array_map('trim', $params);
-        ksort($params);
-
         if ($this->signKey) {
             $params = $params + ['token' => $this->getToken($filename, $params)];
         }
@@ -45,8 +42,8 @@ class UrlBuilder
         return $this->baseUrl . '/' . $filename . '?' . http_build_query($params);
     }
 
-    private function getToken($filename, $params = [])
+    public function getToken($filename, $params = [])
     {
-        return md5($this->signKey . ':' . $filename . '?' . http_build_query($params));
+        return (new Token($filename, $params, $this->signKey))->generate();
     }
 }

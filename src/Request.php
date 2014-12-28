@@ -36,14 +36,12 @@ class Request
 
     public function setParams(Array $params)
     {
-        $params = array_map('trim', $params);
-        ksort($params);
-        $this->params = $params;
-
-        if (isset($this->params['token'])) {
-            $this->paramToken = $this->params['token'];
-            unset($this->params['token']);
+        if (isset($params['token'])) {
+            $this->paramToken = $params['token'];
+            unset($params['token']);
         }
+
+        $this->params = $params;
     }
 
     public function getParams()
@@ -70,7 +68,7 @@ class Request
 
     public function getToken()
     {
-        return md5($this->signKey . ':' . $this->filename . '?' . http_build_query($this->params));
+        return (new Token($this->filename, $this->params, $this->signKey))->generate();
     }
 
     public function getHash()
