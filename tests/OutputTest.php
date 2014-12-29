@@ -22,6 +22,11 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         $this->output = new Output($cache);
     }
 
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+
     public function testCreateInstance()
     {
         $this->assertInstanceOf('Glide\Output', $this->output);

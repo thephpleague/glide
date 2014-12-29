@@ -17,6 +17,11 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+
     public function testCreateInstance()
     {
         $this->assertInstanceOf('Glide\Server', $this->server);

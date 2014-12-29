@@ -66,25 +66,52 @@ class Effects implements Manipulator
 
     public function run(Request $request, Image $image)
     {
-        if ($request->filt === 'greyscale') {
-            $image->greyscale();
-        }
-
-        if ($request->filt === 'sepia') {
-            $image->greyscale()
-                  ->brightness(-10)
-                  ->contrast(10)
-                  ->colorize(38, 27, 12)
-                  ->brightness(-10)
-                  ->contrast(10);
+        if ($request->filt) {
+            $this->runFilter($image, $request->filt);
         }
 
         if ($request->blur) {
-            $image->blur($request->blur);
+            $this->runBlur($image, $request->blur);
         }
 
         if ($request->pixel) {
-            $image->pixelate($request->pixel);
+            $this->runPixelate($image, $request->pixel);
         }
+    }
+
+    public function runFilter(Image $image, $filter)
+    {
+        if ($filter === 'greyscale') {
+            $this->runGreyscaleFilter($image);
+        }
+
+        if ($filter === 'sepia') {
+            $this->runSepiaFilter($image);
+        }
+    }
+
+    public function runGreyscaleFilter(Image $image)
+    {
+        $image->greyscale();
+    }
+
+    public function runSepiaFilter(Image $image)
+    {
+        $image->greyscale()
+              ->brightness(-10)
+              ->contrast(10)
+              ->colorize(38, 27, 12)
+              ->brightness(-10)
+              ->contrast(10);
+    }
+
+    public function runBlur(Image $image, $blur)
+    {
+        $image->blur($blur);
+    }
+
+    public function runPixelate(Image $image, $pixels)
+    {
+        $image->pixelate($pixels);
     }
 }
