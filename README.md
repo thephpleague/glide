@@ -47,11 +47,11 @@ Glide is a wonderfully easy image manipulation library written in PHP. It's stra
     - Happens prior to any other resize operations.
     - Required format: `width,height,x,y`
     - Example: [kayaks.jpg?rect=100,100,915,155](https://glide.herokuapp.com/kayaks.jpg?rect=100,100,915,155)
-- **Orientation** `ori`
+- **Orientation** `or`
     - Rotates the image.
     - Accepts `auto`, `0`, `90`, `180` or `270`. Default is `auto`.
     - The `auto` option uses Exif data to automatically orient images correctly.
-    - Example: [kayaks.jpg?h=500&ori=90](https://glide.herokuapp.com/kayaks.jpg?h=500&ori=90)
+    - Example: [kayaks.jpg?h=500&or=90](https://glide.herokuapp.com/kayaks.jpg?h=500&or=90)
 
 ### Adjustments
 
