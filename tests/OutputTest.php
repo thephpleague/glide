@@ -3,6 +3,7 @@
 namespace Glide;
 
 use Mockery;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OutputTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,40 +38,32 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->output->getCache());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testOutput()
+    public function testGetResponse()
     {
-        ob_start();
-        $response = $this->output->output('image.jpg');
-        $content = ob_get_clean();
-
-        $this->assertEquals('content', $content);
-        $this->assertNull($response);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->output->getResponse('image.jpg'));
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSendHeaders()
-    {
-        $headers = $this->output->sendHeaders('image.jpg');
 
-        $this->assertEquals('image/jpeg', $headers['Content-Type']);
-        $this->assertEquals('0', $headers['Content-Length']);
-        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT', $headers['Expires' ]);
-        $this->assertEquals('public, max-age=31536000', $headers['Cache-Control']);
-        $this->assertEquals('public', $headers['Pragma']);
+    public function testSetHeaders()
+    {
+        $response = $this->output->setHeaders(new StreamedResponse(), 'image.jpg');
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
+        $this->assertEquals('image/jpeg', $response->headers->get('Content-Type'));
+        $this->assertEquals('0', $response->headers->get('Content-Length'));
+        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT', $response->headers->get('Expires'));
+        $this->assertEquals('max-age=31536000, public', $response->headers->get('Cache-Control'));
     }
 
-    public function testSendImage()
+    public function setContent()
     {
+        $response = $this->output->setHeaders(new StreamedResponse(), 'image.jpg');
+
         ob_start();
-        $response = $this->output->sendImage('image.jpg');
+        $response->send();
         $content = ob_get_clean();
 
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
         $this->assertEquals('content', $content);
-        $this->assertNull($response);
     }
 }

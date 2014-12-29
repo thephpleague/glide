@@ -70,7 +70,7 @@ class Server
         $request = $this->make($filename, $params);
 
         $output = new Output($this->cache);
-        $output->output($request->getHash());
+        $output->getResponse($request->getHash())->send();
 
         return $request;
     }

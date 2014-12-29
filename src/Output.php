@@ -2,18 +2,19 @@
 
 namespace Glide;
 
-use League\Flysystem\FilesystemInterface as Filesystem;
+use League\Flysystem\FilesystemInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Output
 {
     private $cache;
 
-    public function __construct(Filesystem $cache)
+    public function __construct(FilesystemInterface $cache)
     {
         $this->setCache($cache);
     }
 
-    public function setCache(Filesystem $cache)
+    public function setCache(FilesystemInterface $cache)
     {
         $this->cache = $cache;
     }
@@ -23,34 +24,37 @@ class Output
         return $this->cache;
     }
 
-    public function output($filename)
+    public function getResponse($filename)
     {
-        $this->sendHeaders($filename);
-        $this->sendImage($filename);
+        $response = new StreamedResponse();
+
+        $this->setHeaders($response, $filename);
+        $this->setContent($response, $filename);
+
+        return $response;
     }
 
-    public function sendHeaders($filename)
+    public function setHeaders(StreamedResponse $response, $filename)
     {
-        $headers = [
-            'Content-Type' => $this->cache->getMimetype($filename),
-            'Content-Length' => $this->cache->getSize($filename),
-            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT',
-            'Cache-Control' => 'public, max-age=31536000',
-            'Pragma' => 'public',
-        ];
+        $response->headers->set('Content-Type', $this->cache->getMimetype($filename));
+        $response->headers->set('Content-Length', $this->cache->getSize($filename));
+        $response->setPublic();
+        $response->setExpires(date_create('now')->modify('+1 years'));
+        $response->setMaxAge(31536000);
 
-        foreach ($headers as $name => $value) {
-            header($name . ': ' . $value);
-        }
-
-        return $headers;
+        return $response;
     }
 
-    public function sendImage($filename)
+    public function setContent(StreamedResponse $response, $filename)
     {
         $stream = $this->cache->readStream($filename);
-        rewind($stream);
-        fpassthru($stream);
-        fclose($stream);
+
+        $response->setCallback(function () use ($stream) {
+            rewind($stream);
+            fpassthru($stream);
+            fclose($stream);
+        });
+
+        return $response;
     }
 }
