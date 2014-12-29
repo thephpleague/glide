@@ -7,34 +7,48 @@ use League\Flysystem\FilesystemInterface as Filesystem;
 class Output
 {
     private $cache;
-    private $filename;
 
-    public function __construct(Filesystem $cache, $filename)
+    public function __construct(Filesystem $cache)
+    {
+        $this->setCache($cache);
+    }
+
+    public function setCache(Filesystem $cache)
     {
         $this->cache = $cache;
-        $this->filename = $filename;
     }
 
-    public function output()
+    public function getCache()
     {
-        $this->sendHeaders();
-        $this->sendImage();
+        return $this->cache;
     }
 
-    private function sendHeaders()
+    public function output($filename)
     {
-        header_remove();
-        header('Content-Type: ' . $this->cache->getMimetype($this->filename));
-        header('Content-Length: ' . $this->cache->getSize($this->filename));
-        header('Expires: ' . gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT');
-        header('Cache-Control: public, max-age=31536000');
-        header('Pragma: public');
-        flush();
+        $this->sendHeaders($filename);
+        $this->sendImage($filename);
     }
 
-    private function sendImage()
+    public function sendHeaders($filename)
     {
-        $stream = $this->cache->readStream($this->filename);
+        $headers = [
+            'Content-Type' => $this->cache->getMimetype($filename),
+            'Content-Length' => $this->cache->getSize($filename),
+            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT',
+            'Cache-Control' => 'public, max-age=31536000',
+            'Pragma' => 'public',
+        ];
+
+        foreach ($headers as $name => $value) {
+            header($name . ': ' . $value);
+        }
+
+        return $headers;
+    }
+
+    public function sendImage($filename)
+    {
+        $stream = $this->cache->readStream($filename);
         rewind($stream);
         fpassthru($stream);
         fclose($stream);

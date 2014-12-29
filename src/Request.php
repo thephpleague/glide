@@ -8,15 +8,20 @@ class Request
 {
     private $filename;
     private $params;
-    private $paramToken;
     private $signKey;
 
-    public function __construct($filename, Array $params, $signKey = null)
+    public function __construct($filename, $params = [], $signKey = null)
     {
         $this->setFilename($filename);
         $this->setSignKey($signKey);
         $this->setParams($params);
-        $this->validateToken();
+    }
+
+    public function __get($key)
+    {
+        if (isset($this->params[$key])) {
+            return $this->params[$key];
+        }
     }
 
     public function setFilename($filename)
@@ -34,12 +39,21 @@ class Request
         $this->signKey = $signKey;
     }
 
+    public function getSignKey()
+    {
+        return $this->signKey;
+    }
+
     public function setParams(Array $params)
     {
+        $token = null;
+
         if (isset($params['token'])) {
-            $this->paramToken = $params['token'];
+            $token = $params['token'];
             unset($params['token']);
         }
+
+        $this->validateToken($token);
 
         $this->params = $params;
     }
@@ -49,37 +63,25 @@ class Request
         return $this->params;
     }
 
-    public function validateToken()
+    private function validateToken($token)
     {
         if (is_null($this->signKey)) {
-            return true;
+            return;
         }
 
-        if (!isset($this->paramToken)) {
+        if (!isset($token)) {
             throw new InvalidTokenException('Signing token is missing.');
         }
 
-        if ($this->paramToken !== $this->getToken()) {
+        $matchToken = (new Token($this->filename, $this->params, $this->signKey))->generate();
+
+        if ($token !== $matchToken) {
             throw new InvalidTokenException('Invalid signing token.');
         }
-
-        return true;
-    }
-
-    public function getToken()
-    {
-        return (new Token($this->filename, $this->params, $this->signKey))->generate();
     }
 
     public function getHash()
     {
         return md5($this->filename . '?' . http_build_query($this->params));
-    }
-
-    public function __get($key)
-    {
-        if (isset($this->params[$key])) {
-            return $this->params[$key];
-        }
     }
 }

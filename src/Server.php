@@ -69,8 +69,8 @@ class Server
     {
         $request = $this->make($filename, $params);
 
-        $output = new Output($this->cache, $request->getHash());
-        $output->output();
+        $output = new Output($this->cache);
+        $output->output($request->getHash());
 
         return $request;
     }
@@ -85,7 +85,7 @@ class Server
 
         if (!$this->source->has($request->getFilename())) {
             throw new ImageNotFoundException(
-                'Could not find the file: ' . $request->getFilename()
+                'Could not find the image `' . $request->getFilename() . '`.'
             );
         }
 

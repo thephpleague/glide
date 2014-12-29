@@ -2,8 +2,6 @@
 
 namespace Glide;
 
-use Mockery;
-
 class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 {
     private $builder;
@@ -37,7 +35,7 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSignKey()
     {
-        $this->assertEquals(null, $this->builder->getBaseUrl());
+        $this->assertEquals(null, $this->builder->getSignKey());
     }
 
     public function testGetUrl()

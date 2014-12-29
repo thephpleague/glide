@@ -81,14 +81,23 @@ class ServerTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutput()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+        ob_start();
+
+        $file = tmpfile();
+        fwrite($file, 'content');
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) use ($file) {
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
-            $mock->shouldReceive('readStream')->andReturn(tmpfile());
+            $mock->shouldReceive('readStream')->andReturn($file);
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->output('image.jpg'));
+        $response = $this->server->output('image.jpg');
+        $content = ob_get_clean();
+
+        $this->assertInstanceOf('Glide\Request', $response);
+        $this->assertEquals('content', $content);
     }
 
     public function testGenerate()
