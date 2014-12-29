@@ -100,6 +100,18 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('content', $content);
     }
 
+    public function testResponse()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+            $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
+            $mock->shouldReceive('getSize')->andReturn(0);
+            $mock->shouldReceive('readStream')->andReturn(tmpfile());
+        }));
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->response('image.jpg'));
+    }
+
     public function testGenerate()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {

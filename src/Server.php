@@ -75,6 +75,14 @@ class Server
         return $request;
     }
 
+    public function response($filename, Array $params = [])
+    {
+        $request = $this->make($filename, $params);
+
+        $output = new Output($this->cache);
+        return $output->getResponse($request->getHash());
+    }
+
     public function make($filename, Array $params = [], $validateOnly = false)
     {
         $request = new Request($filename, $params, $this->signKey);
