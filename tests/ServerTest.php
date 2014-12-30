@@ -72,19 +72,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->server->getSignKey());
     }
 
-    public function testTest()
-    {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true);
-        }));
-
-        $this->assertInstanceOf('Glide\Request', $this->server->test('image.jpg'));
-    }
-
     /**
      * @runInSeparateProcess
      */
-    public function testOutput()
+    public function testOutputImage()
     {
         ob_start();
 
@@ -98,7 +89,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('readStream')->andReturn($file);
         }));
 
-        $response = $this->server->output('image.jpg');
+        $response = $this->server->outputImage('image.jpg');
         $content = ob_get_clean();
 
         $this->assertInstanceOf('Glide\Request', $response);
@@ -114,7 +105,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('readStream')->andReturn(tmpfile());
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->response('image.jpg'));
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->getImageResponse('image.jpg'));
     }
 
     public function testGenerate()
@@ -123,6 +114,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->make('image.jpg'));
+        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
     }
 }

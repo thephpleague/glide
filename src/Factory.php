@@ -34,9 +34,16 @@ class Factory
                     'driver' => $config['driver']
                 ]),
                 [
-                    new Manipulators\Adjustments(),
+                    new Manipulators\Orientation(),
+                    new Manipulators\Rectangle(),
                     new Manipulators\Size($config['max_image_size']),
-                    new Manipulators\Effects(),
+                    new Manipulators\Brightness(),
+                    new Manipulators\Contrast(),
+                    new Manipulators\Gamma(),
+                    new Manipulators\Sharpen(),
+                    new Manipulators\Filter(),
+                    new Manipulators\Blur(),
+                    new Manipulators\Pixelate(),
                     new Manipulators\Output(),
                 ]
             )

@@ -60,14 +60,9 @@ class Server
         return $this->signKey;
     }
 
-    public function test($filename, Array $params = [])
+    public function outputImage($filename, Array $params = [])
     {
-        return $this->make($filename, $params, true);
-    }
-
-    public function output($filename, Array $params = [])
-    {
-        $request = $this->make($filename, $params);
+        $request = $this->makeImage($filename, $params);
 
         $output = new Output($this->cache);
         $output->getResponse($request->getHash())->send();
@@ -75,15 +70,15 @@ class Server
         return $request;
     }
 
-    public function response($filename, Array $params = [])
+    public function getImageResponse($filename, Array $params = [])
     {
-        $request = $this->make($filename, $params);
+        $request = $this->makeImage($filename, $params);
 
         $output = new Output($this->cache);
         return $output->getResponse($request->getHash());
     }
 
-    public function make($filename, Array $params = [], $validateOnly = false)
+    public function makeImage($filename, Array $params = [])
     {
         $request = new Request($filename, $params, $this->signKey);
 
@@ -100,12 +95,6 @@ class Server
         $source = $this->source->read(
             $request->getFilename()
         );
-
-        $this->api->validate($request, $source);
-
-        if ($validateOnly) {
-            return $request;
-        }
 
         $this->cache->write(
             $request->getHash(),

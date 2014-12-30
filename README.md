@@ -36,9 +36,13 @@ Glide is a wonderfully easy image manipulation library written in PHP. It's stra
     - Example: [kayaks.jpg?h=500](https://glide.herokuapp.com/kayaks.jpg?h=500)
 - **Fit** `fit`
     - Sets how the image is fitted to its target dimensions.
-    - Accepts `clip`, `scale` or `crop`. Default is `clip`.
+    - Accepts: 
+        - `contain`: Default. Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio.
+        - `max`: Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio, and will also not increase the size of the image if it is smaller than the output size. 
+        - `stretch`: Stretches the image to fit the constraining dimensions exactly. The resulting image will fill the dimensions, and will not maintain the aspect ratio of the input image.
+        - `crop`: Resizes the image to fill the width and height boundaries and crops any excess image data. The resulting image will match the width and height constraints without distorting the image. See the `crop` parameter for controlling how the image is cropped.
     - Example: [kayaks.jpg?w=500&fit=crop](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop)
-- **Crop Position** `crop`
+- **Crop Mode** `crop`
     - Sets where the image is cropped when the `fit` parameter is set to `crop`.
     - Accepts `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`. Default is `center`.
     - Example: [kayaks.jpg?w=500&fit=crop&crop=left](https://glide.herokuapp.com/kayaks.jpg?w=500&fit=crop&crop=left)
@@ -65,7 +69,8 @@ Glide is a wonderfully easy image manipulation library written in PHP. It's stra
     - Example: [kayaks.jpg?w=1000&con=50](https://glide.herokuapp.com/kayaks.jpg?w=1000&con=50)
 - **Gamma** `gam`
     - Adjusts the image gamma.
-    - Example: [kayaks.jpg?w=1000&gam=2](https://glide.herokuapp.com/kayaks.jpg?w=1000&gam=2)
+    - Use values between `0.1` and `9.99`.
+    - Example: [kayaks.jpg?w=1000&gam=1.5](https://glide.herokuapp.com/kayaks.jpg?w=1000&gam=1.5)
 - **Sharpen** `sharp`
     - Sharpen the image.
     - Use values between `0` and `100`.
@@ -121,7 +126,7 @@ $glide = Glide\Factory::server([
 ]);
 
 // Output image based on the current URL
-$glide->output($_SERVER['SCRIPT_NAME'], $_GET);
+$glide->outputImage($_SERVER['SCRIPT_NAME'], $_GET);
 ```
 
 ## Configuration Options
