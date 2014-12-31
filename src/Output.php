@@ -7,23 +7,44 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Output
 {
+    /**
+     * The cache file system.
+     * @var FilesystemInterface
+     */
     private $cache;
 
+    /**
+     * Create Output instance.
+     * @param FilesystemInterface $cache The cache file system.
+     */
     public function __construct(FilesystemInterface $cache)
     {
         $this->setCache($cache);
     }
 
+    /**
+     * Set the cache file system.
+     * @param FilesystemInterface $cache The cache file system.
+     */
     public function setCache(FilesystemInterface $cache)
     {
         $this->cache = $cache;
     }
 
+    /**
+     * Get the cache file system.
+     * @return FilesystemInterface The cache file system.
+     */
     public function getCache()
     {
         return $this->cache;
     }
 
+    /**
+     * Get the streamed response.
+     * @param  string           $filename Unique file identifier.
+     * @return StreamedResponse The response object.
+     */
     public function getResponse($filename)
     {
         $response = new StreamedResponse();
@@ -34,6 +55,11 @@ class Output
         return $response;
     }
 
+    /**
+     * Set the streamed reponse headers.
+     * @param StreamedResponse $response The response object.
+     * @param string           $filename Unique file identifier.
+     */
     public function setHeaders(StreamedResponse $response, $filename)
     {
         $response->headers->set('Content-Type', $this->cache->getMimetype($filename));
@@ -45,6 +71,11 @@ class Output
         return $response;
     }
 
+    /**
+     * Set the stream response content.
+     * @param StreamedResponse $response The response object.
+     * @param string           $filename Unique file identifier.
+     */
     public function setContent(StreamedResponse $response, $filename)
     {
         $stream = $this->cache->readStream($filename);
