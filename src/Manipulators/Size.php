@@ -60,10 +60,6 @@ class Size implements Manipulator
             return false;
         }
 
-        if ($width <= 0) {
-            return false;
-        }
-
         return $width;
     }
 
@@ -74,10 +70,6 @@ class Size implements Manipulator
         }
 
         if (!ctype_digit($height)) {
-            return false;
-        }
-
-        if ($height <= 0) {
             return false;
         }
 
@@ -110,7 +102,7 @@ class Size implements Manipulator
         return $crop;
     }
 
-    public function runResize(Image $image, $fit, $width, $height, $crop)
+    public function runResize(Image $image, $fit, $width, $height, $crop = null)
     {
         if ($fit === 'contain') {
             $this->runContainResize($image, $width, $height);
