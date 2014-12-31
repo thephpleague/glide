@@ -6,37 +6,59 @@ use Glide\Exceptions\InvalidTokenException;
 
 class Request
 {
+    /**
+     * Unique file identifier.
+     * @var string
+     */
     private $filename;
+
+    /**
+     * Manipulation parameters.
+     * @var Array
+     */
     private $params;
+
+    /**
+     * Signing key used to secure URLs.
+     * @var string|null
+     */
     private $signKey;
 
-    public function __construct($filename, $params = [], $signKey = null)
+    /**
+     * Create Request instance.
+     * @param string      $filename Unique file identifier.
+     * @param Array       $params   Manipulation parameters.
+     * @param string|null $signKey  Signing key used to secure URLs.
+     */
+    public function __construct($filename, Array $params = [], $signKey = null)
     {
         $this->setFilename($filename);
         $this->setSignKey($signKey);
         $this->setParams($params);
     }
 
+    /**
+     * Set the filename.
+     * @param string $filename Unique file identifier.
+     */
     public function setFilename($filename)
     {
         $this->filename = ltrim($filename, '/');
     }
 
+    /**
+     * Get the filename.
+     * @return string Unique file identifier.
+     */
     public function getFilename()
     {
         return $this->filename;
     }
 
-    public function setSignKey($signKey)
-    {
-        $this->signKey = $signKey;
-    }
-
-    public function getSignKey()
-    {
-        return $this->signKey;
-    }
-
+    /**
+     * Set the params.
+     * @param Array $params Manipulation parameters.
+     */
     public function setParams(Array $params)
     {
         $token = null;
@@ -51,11 +73,19 @@ class Request
         $this->params = $params;
     }
 
+    /**
+     * Get the params.
+     * @return Array Manipulation parameters.
+     */
     public function getParams()
     {
         return $this->params;
     }
 
+    /**
+     * Get a specific param.
+     * @return string Manipulation parameter.
+     */
     public function getParam($key)
     {
         if (isset($this->params[$key])) {
@@ -63,6 +93,29 @@ class Request
         }
     }
 
+    /**
+     * Set the signing key.
+     * @param string|null $signKey Signing key used to secure URLs.
+     */
+    public function setSignKey($signKey)
+    {
+        $this->signKey = $signKey;
+    }
+
+    /**
+     * Get the signing key.
+     * @return string|null Signing key used to secure URLs.
+     */
+    public function getSignKey()
+    {
+        return $this->signKey;
+    }
+
+    /**
+     * Validate a token against the current request.
+     * @param  string $token Supplied secure token.
+     * @return null   Returns null if no errors.
+     */
     private function validateToken($token)
     {
         if (is_null($this->signKey)) {
@@ -80,8 +133,12 @@ class Request
         }
     }
 
+    /**
+     * Get the request hash.
+     * @return string Generated hash.
+     */
     public function getHash()
     {
-        return md5($this->filename . '?' . http_build_query($this->params));
+        return md5($this->filename.'?'.http_build_query($this->params));
     }
 }
