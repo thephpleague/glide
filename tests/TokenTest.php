@@ -8,7 +8,7 @@ class TokenTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->token = new Token('image.jpg');
+        $this->token = new Token('image.jpg', [], 'example');
     }
 
     public function testCreateInstance()
@@ -40,13 +40,13 @@ class TokenTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSignKey()
     {
-        $this->token->setSignKey('example');
-        $this->assertEquals('example', $this->token->getSignKey());
+        $this->token->setSignKey('test');
+        $this->assertEquals('test', $this->token->getSignKey());
     }
 
     public function testGetSignKey()
     {
-        $this->assertEquals(null, $this->token->getSignKey());
+        $this->assertEquals('example', $this->token->getSignKey());
     }
 
     public function testGenerate()

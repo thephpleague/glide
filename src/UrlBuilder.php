@@ -65,8 +65,8 @@ class UrlBuilder
 
     /**
      * Get the URL.
-     * @param  string $filename Image path and filename.
-     * @param  Array  $params   Image manipulation parameters.
+     * @param  string $filename Unique file identifier.
+     * @param  Array  $params   Manipulation parameters.
      * @return string Generated URL.
      */
     public function getUrl($filename, Array $params = [])
@@ -80,8 +80,8 @@ class UrlBuilder
 
     /**
      * Get a secure token.
-     * @param  string $filename Image path and filename.
-     * @param  Array  $params   Image manipulation parameters.
+     * @param  string $filename Unique file identifier.
+     * @param  Array  $params   Manipulation parameters.
      * @return string Generated secure token.
      */
     public function getToken($filename, Array $params = [])
