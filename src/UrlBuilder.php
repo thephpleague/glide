@@ -64,7 +64,7 @@ class UrlBuilder
     }
 
     /**
-     * Generate the URL.
+     * Get the URL.
      * @param  string $filename Image path and filename.
      * @param  Array  $params   Image manipulation parameters.
      * @return string Generated URL.
@@ -79,7 +79,7 @@ class UrlBuilder
     }
 
     /**
-     * Generate a secure token.
+     * Get a secure token.
      * @param  string $filename Image path and filename.
      * @param  Array  $params   Image manipulation parameters.
      * @return string Generated secure token.
