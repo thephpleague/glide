@@ -24,7 +24,7 @@ class Token
 
     /**
      * Create Token instance.
-     * @param strin  $filename Unique file identifier.
+     * @param string $filename Unique file identifier.
      * @param Array  $params   Manipulation parameters.
      * @param string $signKey  Signing key used to secure URLs.
      */
