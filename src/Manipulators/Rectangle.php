@@ -14,10 +14,10 @@ class Rectangle implements Manipulator
 
         if ($coordinates) {
             $image->crop(
-                (int) $coordinates['width'],
-                (int) $coordinates['height'],
-                (int) $coordinates['x'],
-                (int) $coordinates['y']
+                (int) $coordinates[0],
+                (int) $coordinates[1],
+                (int) $coordinates[2],
+                (int) $coordinates[3]
             );
         }
     }
@@ -26,35 +26,33 @@ class Rectangle implements Manipulator
     {
         $coordinates = explode(',', $rectangle);
 
+        if (!$this->validateCoordinates($image, $coordinates)) {
+            return false;
+        }
+
+        return $coordinates;
+    }
+
+    public function validateCoordinates(Image $image, $coordinates)
+    {
         if (count($coordinates) !== 4) {
             return false;
         }
 
-        $coordinates = [
-            'width' => $coordinates[0],
-            'height' => $coordinates[1],
-            'x' => $coordinates[2],
-            'y' => $coordinates[3],
-        ];
-
-        foreach ($coordinates as $name => $value) {
+        foreach ($coordinates as $key => $value) {
             if (!ctype_digit($value)) {
                 return false;
             }
 
-            if (in_array($name, ['width', 'height']) and $value <= 0) {
+            if (in_array($key, [0, 2]) and $value > $image->width()) {
                 return false;
             }
 
-            if (in_array($name, ['width', 'x']) and $value > $image->width()) {
-                return false;
-            }
-
-            if (in_array($name, ['height', 'y']) and $value > $image->height()) {
+            if (in_array($key, [1, 3]) and $value > $image->height()) {
                 return false;
             }
         }
 
-        return $coordinates;
+        return true;
     }
 }
