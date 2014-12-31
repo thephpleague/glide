@@ -4,45 +4,87 @@ namespace Glide;
 
 class UrlBuilder
 {
+    /**
+     * URL prefixed to generated URL.
+     * @var string
+     */
     private $baseUrl;
+
+    /**
+     * Signing key used to secure URLs.
+     * @var null|string
+     */
     private $signKey;
 
+    /**
+     * Create UrlBuilder instance.
+     * @param string      $baseUrl URL prefixed to generated URL.
+     * @param string|null $signKey Signing key used to secure URLs.
+     */
     public function __construct($baseUrl = '', $signKey = null)
     {
         $this->setBaseUrl($baseUrl);
         $this->setSignKey($signKey);
     }
 
+    /**
+     * Set the base URL.
+     * @param string $baseUrl URL prefixed to generated URL.
+     */
     public function setBaseUrl($baseUrl)
     {
         $this->baseUrl = rtrim($baseUrl, '/');
     }
 
+    /**
+     * Get the base URL.
+     * @return string URL prefixed to generated URL.
+     */
     public function getBaseUrl()
     {
         return $this->baseUrl;
     }
 
-    public function setSignKey($signKey)
+    /**
+     * Set the signing key.
+     * @param string|null $signKey Signing key used to secure URLs.
+     */
+    public function setSignKey($signKey = null)
     {
         $this->signKey = $signKey;
     }
 
+    /**
+     * Get the signing key.
+     * @return string|null Signing key used to secure URLs.
+     */
     public function getSignKey()
     {
         return $this->signKey;
     }
 
+    /**
+     * Generate the URL.
+     * @param  string $filename Image path and filename.
+     * @param  Array  $params   Image manipulation parameters.
+     * @return string Generated URL.
+     */
     public function getUrl($filename, Array $params = [])
     {
         if ($this->signKey) {
             $params = $params + ['token' => $this->getToken($filename, $params)];
         }
 
-        return $this->baseUrl . '/' . $filename . '?' . http_build_query($params);
+        return $this->baseUrl.'/'.$filename.'?'.http_build_query($params);
     }
 
-    public function getToken($filename, $params = [])
+    /**
+     * Generate a secure token.
+     * @param  string $filename Image path and filename.
+     * @param  Array  $params   Image manipulation parameters.
+     * @return string Generated secure token.
+     */
+    public function getToken($filename, Array $params = [])
     {
         return (new Token($filename, $params, $this->signKey))->generate();
     }
