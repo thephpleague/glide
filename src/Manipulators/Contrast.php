@@ -10,7 +10,7 @@ class Contrast implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $contrast = $this->getContrast($request->con);
+        $contrast = $this->getContrast($request->getParam('con'));
 
         if ($contrast) {
             $image->contrast($contrast);

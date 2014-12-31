@@ -10,7 +10,7 @@ class Orientation implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $orientation = $this->getOrientation($request->or);
+        $orientation = $this->getOrientation($request->getParam('or'));
 
         if ($orientation === 'auto') {
             $image->orientate();

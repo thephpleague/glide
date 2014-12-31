@@ -17,10 +17,10 @@ class Size implements Manipulator
 
     public function run(Request $request, Image $image)
     {
-        $width = $this->getWidth($request->w);
-        $height = $this->getHeight($request->h);
-        $fit = $this->getFit($request->fit);
-        $crop = $this->getCrop($request->crop);
+        $width = $this->getWidth($request->getParam('w'));
+        $height = $this->getHeight($request->getParam('h'));
+        $fit = $this->getFit($request->getParam('fit'));
+        $crop = $this->getCrop($request->getParam('crop'));
 
         if (!$width and !$height) {
             $width = $image->width();

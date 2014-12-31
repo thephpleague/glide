@@ -10,7 +10,7 @@ class Brightness implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $brightness = $this->getBrightness($request->bri);
+        $brightness = $this->getBrightness($request->getParam('bri'));
 
         if ($brightness) {
             $image->brightness($brightness);

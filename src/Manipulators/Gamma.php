@@ -10,7 +10,7 @@ class Gamma implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $gamma = $this->getGamma($request->gam);
+        $gamma = $this->getGamma($request->getParam('gam'));
 
         if ($gamma) {
             $image->gamma($gamma);

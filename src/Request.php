@@ -17,13 +17,6 @@ class Request
         $this->setParams($params);
     }
 
-    public function __get($key)
-    {
-        if (isset($this->params[$key])) {
-            return $this->params[$key];
-        }
-    }
-
     public function setFilename($filename)
     {
         $this->filename = ltrim($filename, '/');
@@ -61,6 +54,13 @@ class Request
     public function getParams()
     {
         return $this->params;
+    }
+
+    public function getParam($key)
+    {
+        if (isset($this->params[$key])) {
+            return $this->params[$key];
+        }
     }
 
     private function validateToken($token)

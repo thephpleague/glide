@@ -10,7 +10,7 @@ class Blur implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $blur = $this->getBlur($request->blur);
+        $blur = $this->getBlur($request->getParam('blur'));
 
         if ($blur) {
             $image->blur($blur);

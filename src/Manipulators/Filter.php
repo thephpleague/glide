@@ -10,11 +10,11 @@ class Filter implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        if ($request->filt === 'greyscale') {
+        if ($request->getParam('filt') === 'greyscale') {
             $this->runGreyscaleFilter($image);
         }
 
-        if ($request->filt === 'sepia') {
+        if ($request->getParam('filt') === 'sepia') {
             $this->runSepiaFilter($image);
         }
     }

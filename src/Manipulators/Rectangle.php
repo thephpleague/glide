@@ -10,7 +10,7 @@ class Rectangle implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $coordinates = $this->getCoordinates($image, $request->rect);
+        $coordinates = $this->getCoordinates($image, $request->getParam('rect'));
 
         if ($coordinates) {
             $image->crop(

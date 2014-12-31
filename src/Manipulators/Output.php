@@ -11,8 +11,8 @@ class Output implements Manipulator
     public function run(Request $request, Image $image)
     {
         $image->encode(
-            $this->getFormat($request->fm),
-            $this->getQuality($request->q)
+            $this->getFormat($request->getParam('fm')),
+            $this->getQuality($request->getParam('q'))
         );
     }
 

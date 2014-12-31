@@ -41,7 +41,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testSetParams()
     {
         $this->request->setParams(['w' => 100]);
-        $this->assertEquals(100, $this->request->w);
+        $this->assertEquals(100, $this->request->getParam('w'));
     }
 
     public function testSetParamsWithToken()
@@ -74,7 +74,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testGetParam()
     {
         $this->request->setParams(['w' => 100]);
-        $this->assertEquals(100, $this->request->w);
+        $this->assertEquals(100, $this->request->getParam('w'));
     }
 
     public function testGetHash()

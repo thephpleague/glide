@@ -10,7 +10,7 @@ class Pixelate implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $pixelate = $this->getPixelate($request->pixel);
+        $pixelate = $this->getPixelate($request->getParam('pixel'));
 
         if ($pixelate) {
             $image->pixelate($pixelate);

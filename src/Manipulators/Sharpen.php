@@ -10,7 +10,7 @@ class Sharpen implements Manipulator
 {
     public function run(Request $request, Image $image)
     {
-        $sharpen = $this->getSharpen($request->sharp);
+        $sharpen = $this->getSharpen($request->getParam('sharp'));
 
         if ($sharpen) {
             $image->sharpen($sharpen);
