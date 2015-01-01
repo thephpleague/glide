@@ -84,6 +84,7 @@ class Request
 
     /**
      * Get a specific param.
+     * @param  string $key Parameter name.
      * @return string Manipulation parameter.
      */
     public function getParam($key)
@@ -113,8 +114,7 @@ class Request
 
     /**
      * Validate a token against the current request.
-     * @param  string $token Supplied secure token.
-     * @return null   Returns null if no errors.
+     * @param string $token Supplied secure token.
      */
     private function validateToken($token)
     {

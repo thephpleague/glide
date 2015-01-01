@@ -10,9 +10,8 @@ class Output implements Manipulator
 {
     /**
      * Perform output image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return null
+     * @param Request $request The request object.
+     * @param Image   $image   The source image.
      */
     public function run(Request $request, Image $image)
     {

@@ -84,7 +84,7 @@ class Server
 
     /**
      * Set the image manipulation API.
-     * @param APIInterface $cache The image manipulation API.
+     * @param APIInterface $api The image manipulation API.
      */
     public function setAPI(APIInterface $api)
     {

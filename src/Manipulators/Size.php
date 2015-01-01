@@ -17,9 +17,8 @@ class Size implements Manipulator
 
     /**
      * Perform size image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return null
+     * @param Request $request The request object.
+     * @param Image   $image   The source image.
      */
     public function run(Request $request, Image $image)
     {
@@ -130,12 +129,11 @@ class Size implements Manipulator
 
     /**
      * Perform resize image manipulation.
-     * @param  Image       $image  The source image.
-     * @param  string      $fit    The fit.
-     * @param  string      $width  The width.
-     * @param  string      $height The height.
-     * @param  string|null $crop   The crop.
-     * @return null
+     * @param Image       $image  The source image.
+     * @param string      $fit    The fit.
+     * @param string      $width  The width.
+     * @param string      $height The height.
+     * @param string|null $crop   The crop.
      */
     public function runResize(Image $image, $fit, $width, $height, $crop = null)
     {
@@ -158,10 +156,9 @@ class Size implements Manipulator
 
     /**
      * Perform contain resize image manipulation.
-     * @param  Image  $image  The source image.
-     * @param  string $width  The width.
-     * @param  string $height The height.
-     * @return null
+     * @param Image  $image  The source image.
+     * @param string $width  The width.
+     * @param string $height The height.
      */
     public function runContainResize(Image $image, $width, $height)
     {
@@ -172,10 +169,9 @@ class Size implements Manipulator
 
     /**
      * Perform max resize image manipulation.
-     * @param  Image  $image  The source image.
-     * @param  string $width  The width.
-     * @param  string $height The height.
-     * @return null
+     * @param Image  $image  The source image.
+     * @param string $width  The width.
+     * @param string $height The height.
      */
     public function runMaxResize(Image $image, $width, $height)
     {
@@ -187,10 +183,9 @@ class Size implements Manipulator
 
     /**
      * Perform stretch resize image manipulation.
-     * @param  Image  $image  The source image.
-     * @param  string $width  The width.
-     * @param  string $height The height.
-     * @return null
+     * @param Image  $image  The source image.
+     * @param string $width  The width.
+     * @param string $height The height.
      */
     public function runStretchResize(Image $image, $width, $height)
     {
@@ -199,11 +194,10 @@ class Size implements Manipulator
 
     /**
      * Perform crop resize image manipulation.
-     * @param  Image  $image  The source image.
-     * @param  string $width  The width.
-     * @param  string $height The height.
-     * @param  string $crop   The crop.
-     * @return null
+     * @param Image  $image  The source image.
+     * @param string $width  The width.
+     * @param string $height The height.
+     * @param string $crop   The crop.
      */
     public function runCropResize(Image $image, $width, $height, $crop)
     {
