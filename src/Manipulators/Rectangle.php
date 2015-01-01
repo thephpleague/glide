@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Rectangle implements Manipulator
 {
+    /**
+     * Perform rectangle image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $coordinates = $this->getCoordinates($image, $request->getParam('rect'));
@@ -22,6 +28,12 @@ class Rectangle implements Manipulator
         }
     }
 
+    /**
+     * Resolve coordinates.
+     * @param  Image  $source    The source image.
+     * @param  string $rectangle The rectangle.
+     * @return Array  The resolved coordinates.
+     */
     public function getCoordinates(Image $image, $rectangle)
     {
         $coordinates = explode(',', $rectangle);
@@ -33,7 +45,13 @@ class Rectangle implements Manipulator
         return $coordinates;
     }
 
-    public function validateCoordinates(Image $image, $coordinates)
+    /**
+     * Validate coordinates.
+     * @param  Image $image       The source image.
+     * @param  Array $coordinates The coordinates.
+     * @return bool  Whether or not the coordinates are valid.
+     */
+    public function validateCoordinates(Image $image, Array $coordinates)
     {
         if (count($coordinates) !== 4) {
             return false;

@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Output implements Manipulator
 {
+    /**
+     * Perform output image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $image->encode(
@@ -16,6 +22,11 @@ class Output implements Manipulator
         );
     }
 
+    /**
+     * Resolve format.
+     * @param  string $format The format.
+     * @return string The resolved format.
+     */
     public function getFormat($format)
     {
         $default = 'jpg';
@@ -31,6 +42,11 @@ class Output implements Manipulator
         return $format;
     }
 
+    /**
+     * Resolve quality.
+     * @param  string $quality The quality.
+     * @return string The resolved quality.
+     */
     public function getQuality($quality)
     {
         $default = 90;

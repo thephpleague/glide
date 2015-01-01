@@ -55,6 +55,6 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '1', '1', '101']));
         $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['']));
         $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['a']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, null));
+        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, []));
     }
 }

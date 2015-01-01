@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Contrast implements Manipulator
 {
+    /**
+     * Perform contrast image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $contrast = $this->getContrast($request->getParam('con'));
@@ -17,6 +23,11 @@ class Contrast implements Manipulator
         }
     }
 
+    /**
+     * Resolve contrast amount.
+     * @param  string $contrast The contrast amount.
+     * @return string The resolved contrast amount.
+     */
     public function getContrast($contrast)
     {
         if (is_null($contrast)) {

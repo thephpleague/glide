@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Brightness implements Manipulator
 {
+    /**
+     * Perform brightness image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $brightness = $this->getBrightness($request->getParam('bri'));
@@ -17,6 +23,11 @@ class Brightness implements Manipulator
         }
     }
 
+    /**
+     * Resolve brightness amount.
+     * @param  string $brightness The brightness amount.
+     * @return string The resolved brightness amount.
+     */
     public function getBrightness($brightness)
     {
         if (is_null($brightness)) {

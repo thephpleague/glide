@@ -15,6 +15,12 @@ class Size implements Manipulator
         $this->maxImageSize = $maxImageSize;
     }
 
+    /**
+     * Perform size image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $width = $this->getWidth($request->getParam('w'));
@@ -50,6 +56,11 @@ class Size implements Manipulator
         }
     }
 
+    /**
+     * Resolve width.
+     * @param  string $width The width.
+     * @return string The resolved width.
+     */
     public function getWidth($width)
     {
         if (is_null($width)) {
@@ -63,6 +74,11 @@ class Size implements Manipulator
         return $width;
     }
 
+    /**
+     * Resolve height.
+     * @param  string $height The height.
+     * @return string The resolved height.
+     */
     public function getHeight($height)
     {
         if (is_null($height)) {
@@ -76,6 +92,11 @@ class Size implements Manipulator
         return $height;
     }
 
+    /**
+     * Resolve fit.
+     * @param  string $fit The fit.
+     * @return string The resolved fit.
+     */
     public function getFit($fit)
     {
         if (is_null($fit)) {
@@ -89,6 +110,11 @@ class Size implements Manipulator
         return $fit;
     }
 
+    /**
+     * Resolve crop.
+     * @param  string $crop The crop.
+     * @return string The resolved crop.
+     */
     public function getCrop($crop)
     {
         if (is_null($crop)) {
@@ -102,6 +128,15 @@ class Size implements Manipulator
         return $crop;
     }
 
+    /**
+     * Perform resize image manipulation.
+     * @param  Image       $image  The source image.
+     * @param  string      $fit    The fit.
+     * @param  string      $width  The width.
+     * @param  string      $height The height.
+     * @param  string|null $crop   The crop.
+     * @return null
+     */
     public function runResize(Image $image, $fit, $width, $height, $crop = null)
     {
         if ($fit === 'contain') {
@@ -121,6 +156,13 @@ class Size implements Manipulator
         }
     }
 
+    /**
+     * Perform contain resize image manipulation.
+     * @param  Image  $image  The source image.
+     * @param  string $width  The width.
+     * @param  string $height The height.
+     * @return null
+     */
     public function runContainResize(Image $image, $width, $height)
     {
         $image->resize($width, $height, function ($constraint) {
@@ -128,6 +170,13 @@ class Size implements Manipulator
         });
     }
 
+    /**
+     * Perform max resize image manipulation.
+     * @param  Image  $image  The source image.
+     * @param  string $width  The width.
+     * @param  string $height The height.
+     * @return null
+     */
     public function runMaxResize(Image $image, $width, $height)
     {
         $image->resize($width, $height, function ($constraint) {
@@ -136,11 +185,26 @@ class Size implements Manipulator
         });
     }
 
+    /**
+     * Perform stretch resize image manipulation.
+     * @param  Image  $image  The source image.
+     * @param  string $width  The width.
+     * @param  string $height The height.
+     * @return null
+     */
     public function runStretchResize(Image $image, $width, $height)
     {
         $image->resize($width, $height);
     }
 
+    /**
+     * Perform crop resize image manipulation.
+     * @param  Image  $image  The source image.
+     * @param  string $width  The width.
+     * @param  string $height The height.
+     * @param  string $crop   The crop.
+     * @return null
+     */
     public function runCropResize(Image $image, $width, $height, $crop)
     {
         $image->fit(

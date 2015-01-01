@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Orientation implements Manipulator
 {
+    /**
+     * Perform orientation image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $orientation = $this->getOrientation($request->getParam('or'));
@@ -21,6 +27,11 @@ class Orientation implements Manipulator
         }
     }
 
+    /**
+     * Resolve orientation.
+     * @param  string $orientation The orientation.
+     * @return string The resolved orientation.
+     */
     public function getOrientation($orientation)
     {
         if (is_null($orientation)) {

@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Pixelate implements Manipulator
 {
+    /**
+     * Perform pixelate image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $pixelate = $this->getPixelate($request->getParam('pixel'));
@@ -17,6 +23,11 @@ class Pixelate implements Manipulator
         }
     }
 
+    /**
+     * Resolve pixelate amount.
+     * @param  string $pixelate The pixelate amount.
+     * @return string The resolved pixelate amount.
+     */
     public function getPixelate($pixelate)
     {
         if (is_null($pixelate)) {

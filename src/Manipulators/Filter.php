@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Filter implements Manipulator
 {
+    /**
+     * Perform filter image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         if ($request->getParam('filt') === 'greyscale') {
@@ -19,11 +25,21 @@ class Filter implements Manipulator
         }
     }
 
+    /**
+     * Perform greyscale manipulation.
+     * @param  Image $source The source image.
+     * @return null
+     */
     public function runGreyscaleFilter(Image $image)
     {
         $image->greyscale();
     }
 
+    /**
+     * Perform sepia manipulation.
+     * @param  Image $source The source image.
+     * @return null
+     */
     public function runSepiaFilter(Image $image)
     {
         $image->greyscale();

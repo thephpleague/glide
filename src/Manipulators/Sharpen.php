@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Sharpen implements Manipulator
 {
+    /**
+     * Perform sharpen image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $sharpen = $this->getSharpen($request->getParam('sharp'));
@@ -17,6 +23,11 @@ class Sharpen implements Manipulator
         }
     }
 
+    /**
+     * Resolve sharpen amount.
+     * @param  string $sharpen The sharpen amount.
+     * @return string The resolved sharpen amount.
+     */
     public function getSharpen($sharpen)
     {
         if (is_null($sharpen)) {

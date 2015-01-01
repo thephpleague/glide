@@ -8,6 +8,12 @@ use Intervention\Image\Image;
 
 class Blur implements Manipulator
 {
+    /**
+     * Perform blur image manipulation.
+     * @param  Request $request The request object.
+     * @param  Image   $source  The source image.
+     * @return null
+     */
     public function run(Request $request, Image $image)
     {
         $blur = $this->getBlur($request->getParam('blur'));
@@ -17,6 +23,11 @@ class Blur implements Manipulator
         }
     }
 
+    /**
+     * Resolve blur amount.
+     * @param  string $blur The blur amount.
+     * @return string The resolved blur amount.
+     */
     public function getBlur($blur)
     {
         if (is_null($blur)) {
