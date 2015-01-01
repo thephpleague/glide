@@ -11,7 +11,7 @@ class Blur implements Manipulator
     /**
      * Perform blur image manipulation.
      * @param  Request $request The request object.
-     * @param  Image   $source  The source image.
+     * @param  Image   $image   The source image.
      * @return null
      */
     public function run(Request $request, Image $image)

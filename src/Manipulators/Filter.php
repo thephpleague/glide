@@ -11,7 +11,7 @@ class Filter implements Manipulator
     /**
      * Perform filter image manipulation.
      * @param  Request $request The request object.
-     * @param  Image   $source  The source image.
+     * @param  Image   $image   The source image.
      * @return null
      */
     public function run(Request $request, Image $image)
@@ -27,7 +27,7 @@ class Filter implements Manipulator
 
     /**
      * Perform greyscale manipulation.
-     * @param  Image $source The source image.
+     * @param  Image $image The source image.
      * @return null
      */
     public function runGreyscaleFilter(Image $image)
@@ -37,7 +37,7 @@ class Filter implements Manipulator
 
     /**
      * Perform sepia manipulation.
-     * @param  Image $source The source image.
+     * @param  Image $image The source image.
      * @return null
      */
     public function runSepiaFilter(Image $image)
