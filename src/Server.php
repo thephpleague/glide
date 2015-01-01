@@ -140,7 +140,7 @@ class Server
      * @param  Array            $params   Manipulation parameters.
      * @return StreamedResponse The response object.
      */
-    public function getImageResponse($filename, Array $params)
+    public function getImageResponse($filename, Array $params = [])
     {
         $request = $this->makeImage($filename, $params);
 
