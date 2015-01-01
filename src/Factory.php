@@ -8,6 +8,11 @@ use League\Flysystem\Filesystem;
 
 class Factory
 {
+    /**
+     * Create server instance.
+     * @param  Array  $config Configuration parameters.
+     * @return Server The configured server.
+     */
     public static function server(Array $config)
     {
         if (is_string($config['source'])) {
@@ -31,7 +36,7 @@ class Factory
             $config['cache'],
             new API(
                 new ImageManager([
-                    'driver' => $config['driver']
+                    'driver' => $config['driver'],
                 ]),
                 [
                     new Manipulators\Orientation(),
