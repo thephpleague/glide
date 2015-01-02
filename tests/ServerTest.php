@@ -96,7 +96,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('content', $content);
     }
 
-    public function testResponse()
+    public function testGetImageResponse()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
@@ -108,10 +108,66 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->getImageResponse('image.jpg'));
     }
 
-    public function testGenerate()
+    public function testMakeImageWithValidSignKey()
+    {
+        $this->server->setSignKey(new SignKey('example'));
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+        }));
+
+        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
+    }
+
+    public function testMakeImageWithInvalidSignKey()
+    {
+        $this->setExpectedException('Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
+
+        $this->server->setSignKey(new SignKey('example'));
+
+        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
+    }
+
+    public function testMakeImageFromCache()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
+        }));
+
+        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
+    }
+
+    public function testMakeImageFromSourceThatDoesNotExist()
+    {
+        $this->setExpectedException(
+            'Glide\Exceptions\ImageNotFoundException',
+            'Could not find the image `image.jpg`.'
+        );
+
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+        }));
+
+        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
+    }
+
+    public function testMakeImageFromSource()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->with('75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+        }));
+
+        $this->server->setApi(Mockery::mock('Glide\Interfaces\API', function ($mock) {
+            $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
         $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
