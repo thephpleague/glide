@@ -34,7 +34,7 @@ class Output implements Manipulator
             return $default;
         }
 
-        if (!in_array($format, ['jpg', 'png', 'gif'])) {
+        if (!in_array($format, ['jpg', 'png', 'gif'], true)) {
             return $default;
         }
 

@@ -4,7 +4,7 @@ namespace Glide\Interfaces;
 
 use Glide\Request;
 
-interface API
+interface Api
 {
     /**
      * Perform image manipulations.

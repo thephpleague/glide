@@ -2,10 +2,10 @@
 
 namespace Glide;
 
-use Glide\Interfaces\API as APIInterface;
+use Glide\Interfaces\Api as ApiInterface;
 use Intervention\Image\ImageManager;
 
-class API implements APIInterface
+class Api implements ApiInterface
 {
     /**
      * Intervention image manager.

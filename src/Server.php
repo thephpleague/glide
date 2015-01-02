@@ -3,7 +3,7 @@
 namespace Glide;
 
 use Glide\Exceptions\ImageNotFoundException;
-use Glide\Interfaces\API as APIInterface;
+use Glide\Interfaces\Api as ApiInterface;
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,7 +23,7 @@ class Server
 
     /**
      * The image manipulation API.
-     * @var APIInterface
+     * @var ApiInterface
      */
     private $api;
 
@@ -37,10 +37,10 @@ class Server
      * Create Server instance.
      * @param FilesystemInterface $source  The source file system.
      * @param FilesystemInterface $cache   The cache file system.
-     * @param APIInterface        $api     The image manipulation API.
+     * @param ApiInterface        $api     The image manipulation API.
      * @param SignKey             $signKey Secret key used to secure URLs.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, APIInterface $api, SignKey $signKey = null)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, SignKey $signKey = null)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -86,16 +86,16 @@ class Server
 
     /**
      * Set the image manipulation API.
-     * @param APIInterface $api The image manipulation API.
+     * @param ApiInterface $api The image manipulation API.
      */
-    public function setAPI(APIInterface $api)
+    public function setAPI(ApiInterface $api)
     {
         $this->api = $api;
     }
 
     /**
      * Get the image manipulation API.
-     * @return APIInterface The image manipulation API.
+     * @return ApiInterface The image manipulation API.
      */
     public function getAPI()
     {
@@ -106,7 +106,7 @@ class Server
      * Set the sign key.
      * @param SignKey $signKey Secret key used to secure URLs.
      */
-    public function setSignKey($signKey)
+    public function setSignKey(SignKey $signKey = null)
     {
         $this->signKey = $signKey;
     }

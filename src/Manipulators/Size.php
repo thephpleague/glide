@@ -102,7 +102,7 @@ class Size implements Manipulator
             return 'contain';
         }
 
-        if (!in_array($fit, ['contain', 'max', 'stretch', 'crop'])) {
+        if (!in_array($fit, ['contain', 'max', 'stretch', 'crop'], true)) {
             return 'contain';
         }
 
@@ -120,7 +120,7 @@ class Size implements Manipulator
             return 'center';
         }
 
-        if (!in_array($crop, ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'])) {
+        if (!in_array($crop, ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'], true)) {
             return 'center';
         }
 

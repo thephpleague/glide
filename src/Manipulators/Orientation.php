@@ -21,7 +21,7 @@ class Orientation implements Manipulator
             $image->orientate();
         }
 
-        if (in_array($orientation, ['90', '180', '270'])) {
+        if (in_array($orientation, ['90', '180', '270'], true)) {
             $image->rotate($orientation);
         }
     }
@@ -37,7 +37,7 @@ class Orientation implements Manipulator
             return 'auto';
         }
 
-        if (!in_array($orientation, ['auto', '0', '90', '180', '270'])) {
+        if (!in_array($orientation, ['auto', '0', '90', '180', '270'], true)) {
             return 'auto';
         }
 

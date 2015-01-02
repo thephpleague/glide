@@ -61,11 +61,11 @@ class Rectangle implements Manipulator
                 return false;
             }
 
-            if (in_array($key, [0, 2]) and $value > $image->width()) {
+            if (in_array($key, [0, 2], true) and $value > $image->width()) {
                 return false;
             }
 
-            if (in_array($key, [1, 3]) and $value > $image->height()) {
+            if (in_array($key, [1, 3], true) and $value > $image->height()) {
                 return false;
             }
         }
