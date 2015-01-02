@@ -28,22 +28,24 @@ class Server
     private $api;
 
     /**
-     * Signing key used to secure URLs.
-     * @var string|null
+     * Secret key used to secure URLs.
+     * @var SignKey
      */
     private $signKey;
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface $source The source file system.
-     * @param FilesystemInterface $cache  The cache file system.
-     * @param APIInterface        $api    The image manipulation API.
+     * @param FilesystemInterface $source  The source file system.
+     * @param FilesystemInterface $cache   The cache file system.
+     * @param APIInterface        $api     The image manipulation API.
+     * @param SignKey             $signKey Secret key used to secure URLs.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, APIInterface $api)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, APIInterface $api, SignKey $signKey = null)
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setAPI($api);
+        $this->setSignKey($signKey);
     }
 
     /**
@@ -101,8 +103,8 @@ class Server
     }
 
     /**
-     * Set the signing key.
-     * @param string $signKey Signing key used to secure URLs.
+     * Set the sign key.
+     * @param SignKey $signKey Secret key used to secure URLs.
      */
     public function setSignKey($signKey)
     {
@@ -110,8 +112,8 @@ class Server
     }
 
     /**
-     * Get the signing key.
-     * @return string Signing key used to secure URLs.
+     * Get the sign key.
+     * @return SignKey Secret key used to secure URLs.
      */
     public function getSignKey()
     {
@@ -157,7 +159,11 @@ class Server
      */
     public function makeImage($filename, Array $params = [])
     {
-        $request = new Request($filename, $params, $this->signKey);
+        $request = new Request($filename, $params);
+
+        if ($this->signKey) {
+            $this->signKey->validateRequest($request);
+        }
 
         if ($this->cache->has($request->getHash())) {
             return $request;

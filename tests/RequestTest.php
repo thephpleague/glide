@@ -27,43 +27,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('image.jpg', $this->request->getFilename());
     }
 
-    public function testSetSignKey()
-    {
-        $this->request->setSignKey('example');
-        $this->assertEquals('example', $this->request->getSignKey());
-    }
-
-    public function testGetSignKey()
-    {
-        $this->assertEquals(null, $this->request->getSignKey());
-    }
-
     public function testSetParams()
     {
         $this->request->setParams(['w' => 100]);
         $this->assertEquals(100, $this->request->getParam('w'));
-    }
-
-    public function testSetParamsWithToken()
-    {
-        $this->request->setParams(['w' => 100, 'token' => '']);
-        $this->assertEquals(['w' => 100], $this->request->getParams());
-    }
-
-    public function testSetParamsWithNoToken()
-    {
-        $this->setExpectedException('Glide\Exceptions\InvalidTokenException');
-
-        $this->request->setSignKey('example');
-        $this->request->setParams(['w' => 100]);
-    }
-
-    public function testSetParamsWithInvalidToken()
-    {
-        $this->setExpectedException('Glide\Exceptions\InvalidTokenException');
-
-        $this->request->setSignKey('example');
-        $this->request->setParams(['w' => 100, 'token' => 'invalid']);
     }
 
     public function testGetParams()
@@ -79,6 +46,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetHash()
     {
+        $this->assertEquals('75094881e9fd2b93063d6a5cb083091c', $this->request->getHash());
+    }
+
+    public function testGetHashWithToken()
+    {
+        $this->request->setParams(['token' => 'example']);
+
         $this->assertEquals('75094881e9fd2b93063d6a5cb083091c', $this->request->getHash());
     }
 }

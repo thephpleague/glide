@@ -55,7 +55,9 @@ class Factory
         );
 
         if (isset($config['sign_key'])) {
-            $server->setSignKey($config['sign_key']);
+            $server->setSignKey(
+                new SignKey($config['sign_key'])
+            );
         }
 
         return $server;

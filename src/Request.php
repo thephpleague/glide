@@ -2,8 +2,6 @@
 
 namespace Glide;
 
-use Glide\Exceptions\InvalidTokenException;
-
 class Request
 {
     /**
@@ -19,21 +17,13 @@ class Request
     private $params;
 
     /**
-     * Signing key used to secure URLs.
-     * @var string|null
-     */
-    private $signKey;
-
-    /**
      * Create Request instance.
-     * @param string      $filename Unique file identifier.
-     * @param Array       $params   Manipulation parameters.
-     * @param string|null $signKey  Signing key used to secure URLs.
+     * @param string $filename Unique file identifier.
+     * @param Array  $params   Manipulation parameters.
      */
-    public function __construct($filename, Array $params = [], $signKey = null)
+    public function __construct($filename, Array $params = [])
     {
         $this->setFilename($filename);
-        $this->setSignKey($signKey);
         $this->setParams($params);
     }
 
@@ -61,14 +51,7 @@ class Request
      */
     public function setParams(Array $params)
     {
-        $token = null;
-
-        if (isset($params['token'])) {
-            $token = $params['token'];
-            unset($params['token']);
-        }
-
-        $this->validateToken($token);
+        ksort($params);
 
         $this->params = $params;
     }
@@ -95,50 +78,15 @@ class Request
     }
 
     /**
-     * Set the signing key.
-     * @param string|null $signKey Signing key used to secure URLs.
-     */
-    public function setSignKey($signKey)
-    {
-        $this->signKey = $signKey;
-    }
-
-    /**
-     * Get the signing key.
-     * @return string|null Signing key used to secure URLs.
-     */
-    public function getSignKey()
-    {
-        return $this->signKey;
-    }
-
-    /**
-     * Validate a token against the current request.
-     * @param string $token Supplied secure token.
-     */
-    private function validateToken($token)
-    {
-        if (is_null($this->signKey)) {
-            return;
-        }
-
-        if (!isset($token)) {
-            throw new InvalidTokenException('Signing token is missing.');
-        }
-
-        $matchToken = (new Token($this->filename, $this->params, $this->signKey))->generate();
-
-        if ($token !== $matchToken) {
-            throw new InvalidTokenException('Invalid signing token.');
-        }
-    }
-
-    /**
      * Get the request hash.
      * @return string Generated hash.
      */
     public function getHash()
     {
-        return md5($this->filename.'?'.http_build_query($this->params));
+        $params = $this->params;
+
+        unset($params['token']);
+
+        return md5($this->filename.'?'.http_build_query($params));
     }
 }
