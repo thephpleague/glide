@@ -3,7 +3,9 @@
 namespace Glide;
 
 use Glide\Interfaces\Api as ApiInterface;
+use Glide\Interfaces\Manipulator;
 use Intervention\Image\ImageManager;
+use InvalidArgumentException;
 
 class Api implements ApiInterface
 {
@@ -26,8 +28,50 @@ class Api implements ApiInterface
      */
     public function __construct(ImageManager $imageManager, Array $manipulators)
     {
+        $this->setImageManager($imageManager);
+        $this->setManipulators($manipulators);
+    }
+
+    /**
+     * Set the image manager.
+     * @param ImageManager $imageManager Intervention image manager.
+     */
+    public function setImageManager(ImageManager $imageManager)
+    {
         $this->imageManager = $imageManager;
+    }
+
+    /**
+     * Get the image manager.
+     * @return ImageManager Intervention image manager.
+     */
+    public function getImageManager()
+    {
+        return $this->imageManager;
+    }
+
+    /**
+     * Set the manipulators.
+     * @param Array $manipulators Collection of manipulators.
+     */
+    public function setManipulators(Array $manipulators)
+    {
+        foreach ($manipulators as $manipulator) {
+            if (!($manipulator instanceof Manipulator)) {
+                throw new InvalidArgumentException('Not a valid manipulator.');
+            }
+        }
+
         $this->manipulators = $manipulators;
+    }
+
+    /**
+     * Get the manipulators.
+     * @return Array Collection of manipulators.
+     */
+    public function getManipulators()
+    {
+        return $this->manipulators;
     }
 
     /**

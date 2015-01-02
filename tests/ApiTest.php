@@ -6,6 +6,13 @@ use Mockery;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
+    private $output;
+
+    public function setUp()
+    {
+        $this->api = new Api(Mockery::mock('Intervention\Image\ImageManager'), []);
+    }
+
     public function tearDown()
     {
         Mockery::close();
@@ -13,7 +20,37 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Api', new Api(Mockery::mock('Intervention\Image\ImageManager'), []));
+        $this->assertInstanceOf('Glide\Api', $this->api);
+    }
+
+    public function testSetImageManager()
+    {
+        $this->api->setImageManager(Mockery::mock('Intervention\Image\ImageManager'));
+        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+    }
+
+    public function testGetImageManager()
+    {
+        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+    }
+
+    public function testSetManipulators()
+    {
+        $this->api->setManipulators([Mockery::mock('Glide\Interfaces\Manipulator')]);
+        $manipulators = $this->api->getManipulators();
+        $this->assertInstanceOf('Glide\Interfaces\Manipulator', $manipulators[0]);
+    }
+
+    public function testSetInvalidManipulator()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Not a valid manipulator.');
+
+        $this->api->setManipulators([new \StdClass()]);
+    }
+
+    public function testGetManipulators()
+    {
+        $this->assertEquals([], $this->api->getManipulators());
     }
 
     public function testRun()
