@@ -97,7 +97,7 @@ class Server
 
     /**
      * Get the image manipulation API.
-     * @return ApiInterface The image manipulation API.
+     * @return Api The image manipulation API.
      */
     public function getApi()
     {
