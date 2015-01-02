@@ -44,7 +44,7 @@ class Server
     {
         $this->setSource($source);
         $this->setCache($cache);
-        $this->setAPI($api);
+        $this->setApi($api);
         $this->setSignKey($signKey);
     }
 
@@ -88,7 +88,7 @@ class Server
      * Set the image manipulation API.
      * @param ApiInterface $api The image manipulation API.
      */
-    public function setAPI(ApiInterface $api)
+    public function setApi(ApiInterface $api)
     {
         $this->api = $api;
     }
@@ -97,7 +97,7 @@ class Server
      * Get the image manipulation API.
      * @return ApiInterface The image manipulation API.
      */
-    public function getAPI()
+    public function getApi()
     {
         return $this->api;
     }

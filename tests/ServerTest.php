@@ -52,13 +52,13 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testSetAPI()
     {
         $api = Mockery::mock('Glide\Interfaces\API');
-        $this->server->setAPI($api);
-        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getAPI());
+        $this->server->setApi($api);
+        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getApi());
     }
 
     public function testGetAPI()
     {
-        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getAPI());
+        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getApi());
     }
 
     public function testSetSignKey()
