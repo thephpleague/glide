@@ -64,7 +64,7 @@ class Size implements Manipulator
             return false;
         }
 
-        return (float) $width;
+        return (double) $width;
     }
 
     /**
@@ -82,7 +82,7 @@ class Size implements Manipulator
             return false;
         }
 
-        return (float) $height;
+        return (double) $height;
     }
 
     /**
@@ -123,10 +123,10 @@ class Size implements Manipulator
 
     /**
      * Resolve missing image dimensions.
-     * @param  Image $image  The source image.
-     * @param  float $width  The image width.
-     * @param  float $height The image height.
-     * @return array The resolved width and height.
+     * @param  Image        $image  The source image.
+     * @param  double|false $width  The image width.
+     * @param  double|false $height The image height.
+     * @return double[]     The resolved width and height.
      */
     public function resolveMissingDimensions(Image $image, $width, $height)
     {
@@ -144,16 +144,16 @@ class Size implements Manipulator
         }
 
         return [
-            (float) $width,
-            (float) $height,
+            (double) $width,
+            (double) $height,
         ];
     }
 
     /**
      * Limit image size to maximum allowed image size.
-     * @param  float $width  The image width.
-     * @param  float $height The image height.
-     * @return array The limited width and height.
+     * @param  double   $width  The image width.
+     * @param  double   $height The image height.
+     * @return double[] The limited width and height.
      */
     public function limitImageSize($width, $height)
     {
@@ -167,8 +167,8 @@ class Size implements Manipulator
         }
 
         return [
-            (float) $width,
-            (float) $height,
+            (double) $width,
+            (double) $height,
         ];
     }
 
