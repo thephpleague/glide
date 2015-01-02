@@ -40,27 +40,8 @@ class Size implements Manipulator
         $fit = $this->getFit($request->getParam('fit'));
         $crop = $this->getCrop($request->getParam('crop'));
 
-        if (!$width and !$height) {
-            $width = $image->width();
-            $height = $image->height();
-        }
-
-        if (!$width) {
-            $width = $height * ($image->width() / $image->height());
-        }
-
-        if (!$height) {
-            $height = $width / ($image->width() / $image->height());
-        }
-
-        if ($this->maxImageSize) {
-            $imageSize = $width * $height;
-
-            if ($imageSize > $this->maxImageSize) {
-                $width = $width / sqrt($imageSize / $this->maxImageSize);
-                $height = $height / sqrt($imageSize / $this->maxImageSize);
-            }
-        }
+        list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
+        list($width, $height) = $this->limitImageSize($width, $height);
 
         if (round($width) !== round($image->width()) and
             round($height) !== round($image->height())) {
@@ -83,7 +64,7 @@ class Size implements Manipulator
             return false;
         }
 
-        return $width;
+        return (float) $width;
     }
 
     /**
@@ -101,7 +82,7 @@ class Size implements Manipulator
             return false;
         }
 
-        return $height;
+        return (float) $height;
     }
 
     /**
@@ -138,6 +119,57 @@ class Size implements Manipulator
         }
 
         return $crop;
+    }
+
+    /**
+     * Resolve missing image dimensions.
+     * @param  Image $image  The source image.
+     * @param  float $width  The image width.
+     * @param  float $height The image height.
+     * @return array The resolved width and height.
+     */
+    public function resolveMissingDimensions(Image $image, $width, $height)
+    {
+        if (!$width and !$height) {
+            $width = $image->width();
+            $height = $image->height();
+        }
+
+        if (!$width) {
+            $width = $height * ($image->width() / $image->height());
+        }
+
+        if (!$height) {
+            $height = $width / ($image->width() / $image->height());
+        }
+
+        return [
+            (float) $width,
+            (float) $height,
+        ];
+    }
+
+    /**
+     * Limit image size to maximum allowed image size.
+     * @param  float $width  The image width.
+     * @param  float $height The image height.
+     * @return array The limited width and height.
+     */
+    public function limitImageSize($width, $height)
+    {
+        if ($this->maxImageSize) {
+            $imageSize = $width * $height;
+
+            if ($imageSize > $this->maxImageSize) {
+                $width = $width / sqrt($imageSize / $this->maxImageSize);
+                $height = $height / sqrt($imageSize / $this->maxImageSize);
+            }
+        }
+
+        return [
+            (float) $width,
+            (float) $height,
+        ];
     }
 
     /**
