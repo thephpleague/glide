@@ -10,9 +10,22 @@ class Size implements Manipulator
 {
     private $maxImageSize;
 
+    /**
+     * Create Size instance.
+     * @param int|null $maxImageSize Maximum image size in pixels.
+     */
     public function __construct($maxImageSize = null)
     {
         $this->maxImageSize = $maxImageSize;
+    }
+
+    /**
+     * Get the maximum image size.
+     * @return int|null Maximum image size in pixels.
+     */
+    public function getMaxImageSize()
+    {
+        return $this->maxImageSize;
     }
 
     /**
