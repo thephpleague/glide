@@ -63,8 +63,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSignKey()
     {
-        $this->server->setSignKey('test-key');
-        $this->assertEquals('test-key', $this->server->getSignKey());
+        $this->server->setSignKey(new SignKey('example'));
+        $this->assertInstanceOf('Glide\SignKey', $this->server->getSignKey());
     }
 
     public function testGetSignKey()
