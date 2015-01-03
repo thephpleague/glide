@@ -120,6 +120,7 @@ use Aws\S3\S3Client;
 use League\Flysystem\Adapter\AwsS3 as S3Adapter;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\Filesystem;
+use League\Glide\Factory as GlideFactory;
 
 // Connect to S3 account
 $s3Client = S3Client::factory([
@@ -128,7 +129,7 @@ $s3Client = S3Client::factory([
 ]);
 
 // Setup Glide server
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'source' => new Filesystem(new S3Adapter($s3Client, 'bucket-name')),
     'cache' => new Filesystem(new LocalAdapter('cache-folder')),
 ]);
@@ -146,17 +147,18 @@ Glide makes it possible to access images stored in a variety of file systems. It
 To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. Alternatively, if you are only using the local disk, you can simply pass a path as a string.
 
 ```php
-use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+use League\Glide\Factory as GlideFactory;
 
 // Setup Glide server
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'source' => new Filesystem(new Local('source-folder')),
     'cache' => new Filesystem(new Local('cache-folder')),
 ]);
 
 // Pass strings when using local disk only
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'source' => 'source-folder',
     'cache' => 'cache-folder',
 ]);
@@ -167,8 +169,10 @@ $glide = Glide\Factory::server([
 By default Glide uses the [GD](http://php.net/manual/en/book.image.php) library. However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
 
 ```php
+use League\Glide\Factory as GlideFactory;
+
 // Set driver in Glide configuration
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'driver' => 'imagick',
 ]);
 ```
@@ -178,8 +182,10 @@ $glide = Glide\Factory::server([
 If you want additional security on your images, you can add a secure signature so that no one can alter the image parameters. Start by setting a signing key in your Glide server:
 
 ```php
+use League\Glide\Factory as GlideFactory;
+
 // Add signing key in Glide configuration
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'sign_key' => 'your-sign-key',
 ]);
 ```
@@ -187,14 +193,16 @@ $glide = Glide\Factory::server([
 Next, generate a secure token whenever you request an image from your server. For example, instead of requesting `image.jpg?w=1000`, you would instead request `image.jpg?w=1000&token=6db10b02a4132a8714b6485d1138fc87`. Glide comes with a URL builder to make this process easy.
 
 ```php
+use League\Glide\UrlBuilder;
+
 // Create an instance of the URL builder
-$urlBuilder = new Glide\UrlBuilder('http://your-website.com', 'your-sign-key');
+$urlBuilder = new UrlBuilder('http://your-website.com', 'your-sign-key');
 
 // Generate a url
 $url = $urlBuilder->getUrl('image.jpg', ['w' => 1000]);
 
 // Use the url in your app
-echo '<img src="' . $url . '">';
+echo '<img src="'.$url.'">';
 
 // Prints out
 // <img src="http://your-website.com/image.jpg?w=1000&token=af3dc18fc6bfb2afb521e587c348b904">
@@ -205,8 +213,10 @@ echo '<img src="' . $url . '">';
 If you're not securing images with a signing key, you can choose to limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
 
 ```php
+use League\Glide\Factory as GlideFactory;
+
 // Set max image size in Glide configuration
-$glide = Glide\Factory::server([
+$glide = GlideFactory::server([
     'max_image_size' => 2000*2000,
 ]);
 ```
