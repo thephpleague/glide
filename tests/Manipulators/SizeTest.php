@@ -28,6 +28,17 @@ class SizeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Glide\Manipulators\Size', $this->manipulator);
     }
 
+    public function testSetMaxImageSize()
+    {
+        $this->manipulator->setMaxImageSize(500*500);
+        $this->assertEquals(500*500, $this->manipulator->getMaxImageSize());
+    }
+
+    public function testGetMaxImageSize()
+    {
+        $this->assertNull($this->manipulator->getMaxImageSize());
+    }
+
     public function testRun()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
@@ -79,6 +90,26 @@ class SizeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bottom-right', $this->manipulator->getCrop('bottom-right'));
         $this->assertEquals('center', $this->manipulator->getCrop(null));
         $this->assertEquals('center', $this->manipulator->getCrop('invalid'));
+    }
+
+    public function testResolveMissingDimensions()
+    {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(400);
+            $mock->shouldReceive('height')->andReturn(200);
+        });
+
+        $this->assertEquals([400, 200], $this->manipulator->resolveMissingDimensions($image, false, false));
+        $this->assertEquals([100, 50], $this->manipulator->resolveMissingDimensions($image, 100, false));
+        $this->assertEquals([200, 100], $this->manipulator->resolveMissingDimensions($image, false, 100));
+    }
+
+    public function testLimitImageSize()
+    {
+        $this->assertEquals([1000, 1000], $this->manipulator->limitImageSize(1000, 1000));
+        $this->manipulator->setMaxImageSize(500*500);
+        $this->assertEquals([500, 500], $this->manipulator->limitImageSize(500, 500));
+        $this->assertEquals([500, 500], $this->manipulator->limitImageSize(1000, 1000));
     }
 
     public function testRunResize()

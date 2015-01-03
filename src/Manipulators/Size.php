@@ -20,6 +20,15 @@ class Size implements Manipulator
     }
 
     /**
+     * Set the maximum image size.
+     * @param int|null Maximum image size in pixels.
+     */
+    public function setMaxImageSize($maxImageSize)
+    {
+        $this->maxImageSize = $maxImageSize;
+    }
+
+    /**
      * Get the maximum image size.
      * @return int|null Maximum image size in pixels.
      */
