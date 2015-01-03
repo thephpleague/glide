@@ -1,8 +1,8 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace League\Glide\Manipulators;
 
-use Glide\Request;
+use League\Glide\Request;
 use Mockery;
 
 class GammaTest extends \PHPUnit_Framework_TestCase
@@ -21,7 +21,7 @@ class GammaTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Manipulators\Gamma', $this->manipulator);
+        $this->assertInstanceOf('League\Glide\Manipulators\Gamma', $this->manipulator);
     }
 
     public function testRun()

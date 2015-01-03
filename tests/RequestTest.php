@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Request', $this->request);
+        $this->assertInstanceOf('League\Glide\Request', $this->request);
     }
 
     public function testSetFilename()

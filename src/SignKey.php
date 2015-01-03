@@ -1,8 +1,8 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
-use Glide\Exceptions\InvalidTokenException;
+use League\Glide\Exceptions\InvalidTokenException;
 
 class SignKey
 {

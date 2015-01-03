@@ -1,14 +1,15 @@
 <?php
 
-namespace Glide\Factories;
+namespace League\Glide\Factories;
 
+use League\Glide\Manipulators\Size as SizeManipulator;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateServer()
     {
-        $this->assertInstanceOf('Glide\Factories\Server', new Server([]));
+        $this->assertInstanceOf('League\Glide\Factories\Server', new Server([]));
     }
 
     public function testMake()
@@ -18,7 +19,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
         ]);
 
-        $this->assertInstanceOf('Glide\Server', $server->make());
+        $this->assertInstanceOf('League\Glide\Server', $server->make());
     }
 
     public function testGetSource()
@@ -43,7 +44,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $server = new Server([]);
 
-        $this->assertInstanceOf('Glide\Api', $server->getApi());
+        $this->assertInstanceOf('League\Glide\Api', $server->getApi());
     }
 
     public function testGetImageManager()
@@ -61,7 +62,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'sign_key' => 'example',
         ]);
 
-        $this->assertInstanceOf('Glide\SignKey', $server->getSignKey());
+        $this->assertInstanceOf('League\Glide\SignKey', $server->getSignKey());
     }
 
     public function testGetManipulators()
@@ -80,12 +81,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $sizeManipulator = null;
 
         foreach ($server->getManipulators() as $manipulator) {
-            if ($manipulator instanceof \Glide\Manipulators\Size) {
+            if ($manipulator instanceof SizeManipulator) {
                 $sizeManipulator = $manipulator;
             }
         }
 
-        $this->assertInstanceOf('Glide\Manipulators\Size', $sizeManipulator);
+        $this->assertInstanceOf('League\Glide\Manipulators\Size', $sizeManipulator);
         $this->assertEquals(2000*2000, $sizeManipulator->getMaxImageSize());
     }
 }

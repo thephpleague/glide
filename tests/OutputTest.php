@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 use Mockery;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -29,7 +29,7 @@ class OutputTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Output', $this->output);
+        $this->assertInstanceOf('League\Glide\Output', $this->output);
     }
 
     public function testSetCache()
@@ -48,7 +48,6 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->output->getResponse('image.jpg'));
     }
 
-
     public function testSetHeaders()
     {
         $response = $this->output->setHeaders(new StreamedResponse(), 'image.jpg');
@@ -56,7 +55,7 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
         $this->assertEquals('image/jpeg', $response->headers->get('Content-Type'));
         $this->assertEquals('0', $response->headers->get('Content-Length'));
-        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')) . ' GMT', $response->headers->get('Expires'));
+        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')).' GMT', $response->headers->get('Expires'));
         $this->assertEquals('max-age=31536000, public', $response->headers->get('Cache-Control'));
     }
 

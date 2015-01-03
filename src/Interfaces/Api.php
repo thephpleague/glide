@@ -1,8 +1,8 @@
 <?php
 
-namespace Glide\Interfaces;
+namespace League\Glide\Interfaces;
 
-use Glide\Request;
+use League\Glide\Request;
 
 interface Api
 {

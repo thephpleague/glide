@@ -1,7 +1,8 @@
 {
-    "name": "reinink/glide",
-    "description": "Adjust, resize and add effects to images using a simple URL based API.",
+    "name": "league/glide",
+    "description": "Wonderfully easy on-demand image manipulation library with an HTTP based API.",
     "keywords": [
+        "league",
         "image",
         "processing",
         "manipulation",
@@ -10,7 +11,7 @@
         "imagemagick",
         "imagick"
     ],
-    "homepage": "https://github.com/reinink/glide",
+    "homepage": "https://github.com/thephpleague/glide",
     "license": "MIT",
     "authors" : [
         {
@@ -31,7 +32,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Glide\\": "src/"
+            "League\\Glide\\": "src/"
         }
     }
 }

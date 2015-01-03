@@ -1,10 +1,10 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
-use Glide\Exceptions\ImageNotFoundException;
-use Glide\Interfaces\Api as ApiInterface;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Exceptions\ImageNotFoundException;
+use League\Glide\Interfaces\Api as ApiInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Server

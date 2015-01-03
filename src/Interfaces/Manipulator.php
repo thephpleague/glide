@@ -1,9 +1,9 @@
 <?php
 
-namespace Glide\Interfaces;
+namespace League\Glide\Interfaces;
 
-use Glide\Request;
 use Intervention\Image\Image;
+use League\Glide\Request;
 
 interface Manipulator
 {

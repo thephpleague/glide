@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 class SignKeyTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\SignKey', $this->signKey);
+        $this->assertInstanceOf('League\Glide\SignKey', $this->signKey);
     }
 
     public function testGetToken()
@@ -33,7 +33,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateRequestWithMissingToken()
     {
-        $this->setExpectedException('Glide\Exceptions\InvalidTokenException', 'Sign token missing.');
+        $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token missing.');
 
         $this->signKey->validateRequest(
             new Request('image.jpg', ['w' => '100'])
@@ -42,7 +42,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateRequestWithInvalidToken()
     {
-        $this->setExpectedException('Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
+        $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
 
         $this->signKey->validateRequest(
             new Request('image.jpg', ['w' => '100', 'token' => 'invalid'])

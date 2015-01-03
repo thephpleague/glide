@@ -1,10 +1,10 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace League\Glide\Manipulators;
 
-use Glide\Interfaces\Manipulator;
-use Glide\Request;
 use Intervention\Image\Image;
+use League\Glide\Interfaces\Manipulator;
+use League\Glide\Request;
 
 class Gamma implements Manipulator
 {

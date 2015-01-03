@@ -1,8 +1,8 @@
 <?php
 
-namespace Glide\Manipulators;
+namespace League\Glide\Manipulators;
 
-use Glide\Request;
+use League\Glide\Request;
 use Mockery;
 
 class BrightnessTest extends \PHPUnit_Framework_TestCase
@@ -21,7 +21,7 @@ class BrightnessTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Manipulators\Brightness', $this->manipulator);
+        $this->assertInstanceOf('League\Glide\Manipulators\Brightness', $this->manipulator);
     }
 
     public function testRun()

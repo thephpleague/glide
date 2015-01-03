@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 use Mockery;
 
@@ -13,6 +13,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
         ]);
 
-        $this->assertInstanceOf('Glide\Server', $server);
+        $this->assertInstanceOf('League\Glide\Server', $server);
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
-use Glide\Interfaces\Api as ApiInterface;
-use Glide\Interfaces\Manipulator;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
+use League\Glide\Interfaces\Api as ApiInterface;
+use League\Glide\Interfaces\Manipulator;
 
 class Api implements ApiInterface
 {

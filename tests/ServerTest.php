@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 use Mockery;
 
@@ -13,7 +13,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server = new Server(
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Flysystem\FilesystemInterface'),
-            Mockery::mock('Glide\Interfaces\API')
+            Mockery::mock('League\Glide\Interfaces\API')
         );
     }
 
@@ -24,7 +24,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Server', $this->server);
+        $this->assertInstanceOf('League\Glide\Server', $this->server);
     }
 
     public function testSetSource()
@@ -51,20 +51,20 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAPI()
     {
-        $api = Mockery::mock('Glide\Interfaces\API');
+        $api = Mockery::mock('League\Glide\Interfaces\API');
         $this->server->setApi($api);
-        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getApi());
+        $this->assertInstanceOf('League\Glide\Interfaces\API', $this->server->getApi());
     }
 
     public function testGetAPI()
     {
-        $this->assertInstanceOf('Glide\Interfaces\API', $this->server->getApi());
+        $this->assertInstanceOf('League\Glide\Interfaces\API', $this->server->getApi());
     }
 
     public function testSetSignKey()
     {
         $this->server->setSignKey(new SignKey('example'));
-        $this->assertInstanceOf('Glide\SignKey', $this->server->getSignKey());
+        $this->assertInstanceOf('League\Glide\SignKey', $this->server->getSignKey());
     }
 
     public function testGetSignKey()
@@ -92,7 +92,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $response = $this->server->outputImage('image.jpg');
         $content = ob_get_clean();
 
-        $this->assertInstanceOf('Glide\Request', $response);
+        $this->assertInstanceOf('League\Glide\Request', $response);
         $this->assertEquals('content', $content);
     }
 
@@ -115,16 +115,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
+        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
     }
 
     public function testMakeImageWithInvalidSignKey()
     {
-        $this->setExpectedException('Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
+        $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
 
         $this->server->setSignKey(new SignKey('example'));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
+        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
     }
 
     public function testMakeImageFromCache()
@@ -133,13 +133,13 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
     }
 
     public function testMakeImageFromSourceThatDoesNotExist()
     {
         $this->setExpectedException(
-            'Glide\Exceptions\ImageNotFoundException',
+            'League\Glide\Exceptions\ImageNotFoundException',
             'Could not find the image `image.jpg`.'
         );
 
@@ -151,7 +151,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
     }
 
     public function testMakeImageFromSource()
@@ -166,10 +166,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('write')->with('75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
-        $this->server->setApi(Mockery::mock('Glide\Interfaces\API', function ($mock) {
+        $this->server->setApi(Mockery::mock('League\Glide\Interfaces\API', function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertInstanceOf('Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
     }
 }

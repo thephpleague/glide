@@ -1,8 +1,8 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
-use Glide\Factories\Server as ServerFactory;
+use League\Glide\Factories\Server as ServerFactory;
 
 class Factory
 {

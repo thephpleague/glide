@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 use League\Flysystem\FilesystemInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;

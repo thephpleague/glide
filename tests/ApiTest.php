@@ -1,6 +1,6 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 use Mockery;
 
@@ -20,7 +20,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\Api', $this->api);
+        $this->assertInstanceOf('League\Glide\Api', $this->api);
     }
 
     public function testSetImageManager()
@@ -36,9 +36,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
     public function testSetManipulators()
     {
-        $this->api->setManipulators([Mockery::mock('Glide\Interfaces\Manipulator')]);
+        $this->api->setManipulators([Mockery::mock('League\Glide\Interfaces\Manipulator')]);
         $manipulators = $this->api->getManipulators();
-        $this->assertInstanceOf('Glide\Interfaces\Manipulator', $manipulators[0]);
+        $this->assertInstanceOf('League\Glide\Interfaces\Manipulator', $manipulators[0]);
     }
 
     public function testSetInvalidManipulator()
@@ -63,13 +63,13 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('make')->andReturn($image);
         });
 
-        $manipulator = Mockery::mock('Glide\Interfaces\Manipulator', function ($mock) {
+        $manipulator = Mockery::mock('League\Glide\Interfaces\Manipulator', function ($mock) {
             $mock->shouldReceive('run')->andReturn(null);
         });
 
         $api = new Api($manager, [$manipulator]);
 
-        $request = Mockery::mock('Glide\Request');
+        $request = Mockery::mock('League\Glide\Request');
 
         $this->assertEquals('encoded', $api->run($request, 'source'));
     }

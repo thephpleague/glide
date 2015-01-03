@@ -1,26 +1,26 @@
 <?php
 
-namespace Glide\Factories;
+namespace League\Glide\Factories;
 
-use Glide\Api;
-use Glide\Manipulators\Blur;
-use Glide\Manipulators\Brightness;
-use Glide\Manipulators\Contrast;
-use Glide\Manipulators\Filter;
-use Glide\Manipulators\Gamma;
-use Glide\Manipulators\Orientation;
-use Glide\Manipulators\Output;
-use Glide\Manipulators\Pixelate;
-use Glide\Manipulators\Rectangle;
-use Glide\Manipulators\Sharpen;
-use Glide\Manipulators\Size;
-use Glide\Server as GlideServer;
-use Glide\SignKey;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Api;
+use League\Glide\Manipulators\Blur;
+use League\Glide\Manipulators\Brightness;
+use League\Glide\Manipulators\Contrast;
+use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Gamma;
+use League\Glide\Manipulators\Orientation;
+use League\Glide\Manipulators\Output;
+use League\Glide\Manipulators\Pixelate;
+use League\Glide\Manipulators\Rectangle;
+use League\Glide\Manipulators\Sharpen;
+use League\Glide\Manipulators\Size;
+use League\Glide\Server as GlideServer;
+use League\Glide\SignKey;
 
 class Server
 {

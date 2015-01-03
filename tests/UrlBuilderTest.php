@@ -1,12 +1,12 @@
 <?php
 
-namespace Glide;
+namespace League\Glide;
 
 class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('Glide\UrlBuilder', new UrlBuilder());
+        $this->assertInstanceOf('League\Glide\UrlBuilder', new UrlBuilder());
     }
 
     public function testGetUrl()
