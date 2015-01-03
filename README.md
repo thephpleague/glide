@@ -229,4 +229,4 @@ Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](
 
 ## License
 
-The MIT License (MIT). Please see [LICENSE](https://github.com/thephpleague/glide/blob/master/LICENSE.md) for more information.
+The MIT License (MIT). Please see [LICENSE](https://github.com/thephpleague/glide/blob/master/LICENSE) for more information.
