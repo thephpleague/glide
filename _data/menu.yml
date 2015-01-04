@@ -1,0 +1,15 @@
+Getting Started:
+    Introduction: '/'
+    Simple Example: '/simple-example/'
+    Installation: '/installation/'
+    Changelog: '/changelog/'
+Configuration:
+    Source & Cache: '/config/source-and-cache/'
+    Image Driver: '/config/image-driver/'
+    Secure Images: '/config/secure-images/'
+    Max Image Size: '/config/max-image-size/'
+Image API:
+    Size: '/api/size/'
+    Adjustments: '/api/adjustments/'
+    Effects: '/api/effects/'
+    Output: '/api/output/'
