@@ -4,6 +4,7 @@ Getting Started:
     Installation: '/installation/'
     Changelog: '/changelog/'
 Configuration:
+    The Server: '/config/the-server/'
     Source & Cache: '/config/source-and-cache/'
     Image Driver: '/config/image-driver/'
     Secure Images: '/config/secure-images/'
