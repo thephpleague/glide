@@ -4,18 +4,18 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Contrast implements Manipulator
 {
     /**
      * Perform contrast image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        $contrast = $this->getContrast($request->getParam('con'));
+        $contrast = $this->getContrast($request->get('con'));
 
         if ($contrast) {
             $image->contrast($contrast);

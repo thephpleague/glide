@@ -69,7 +69,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $api = new Api($manager, [$manipulator]);
 
-        $request = Mockery::mock('League\Glide\ImageRequest');
+        $request = Mockery::mock('Symfony\Component\HttpFoundation\Request');
 
         $this->assertEquals('encoded', $api->run($request, 'source'));
     }

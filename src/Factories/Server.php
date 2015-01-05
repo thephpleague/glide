@@ -24,13 +24,17 @@ use League\Glide\SignKey;
 
 class Server
 {
-    private $config;
+    /**
+     * Configuration parameters.
+     * @var array
+     */
+    protected $config;
 
     /**
      * Create server factory instance.
-     * @param Array $config Configuration parameters.
+     * @param array $config Configuration parameters.
      */
-    public function __construct(Array $config)
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
@@ -39,7 +43,7 @@ class Server
      * Create server instance.
      * @return GlideServer The configured Glide server.
      */
-    public function make()
+    public function getServer()
     {
         return new GlideServer(
             $this->getSource(),
@@ -164,5 +168,15 @@ class Server
             new Pixelate(),
             new Output(),
         ];
+    }
+
+    /**
+     * Create server instance.
+     * @param  array  $config Configuration parameters.
+     * @return Server The configured server.
+     */
+    public static function create(array $config = [])
+    {
+        return (new self($config))->getServer();
     }
 }

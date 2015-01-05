@@ -11,7 +11,7 @@ class ImageServer implements HttpKernelInterface
     /**
      * @var Server
      */
-    private $server;
+    protected $server;
 
     /**
      * New Image Server Middleware

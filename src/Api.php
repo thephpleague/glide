@@ -6,6 +6,7 @@ use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Glide\Interfaces\Api as ApiInterface;
 use League\Glide\Interfaces\Manipulator;
+use Symfony\Component\HttpFoundation\Request;
 
 class Api implements ApiInterface
 {
@@ -13,20 +14,20 @@ class Api implements ApiInterface
      * Intervention image manager.
      * @var ImageManager
      */
-    private $imageManager;
+    protected $imageManager;
 
     /**
      * Collection of manipulators.
-     * @var Array
+     * @var array
      */
-    private $manipulators;
+    protected $manipulators;
 
     /**
      * Create API instance.
      * @param ImageManager $imageManager Intervention image manager.
-     * @param Array        $manipulators Collection of manipulators.
+     * @param array        $manipulators Collection of manipulators.
      */
-    public function __construct(ImageManager $imageManager, Array $manipulators)
+    public function __construct(ImageManager $imageManager, array $manipulators)
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
@@ -52,9 +53,9 @@ class Api implements ApiInterface
 
     /**
      * Set the manipulators.
-     * @param Array $manipulators Collection of manipulators.
+     * @param array $manipulators Collection of manipulators.
      */
-    public function setManipulators(Array $manipulators)
+    public function setManipulators(array $manipulators)
     {
         foreach ($manipulators as $manipulator) {
             if (!($manipulator instanceof Manipulator)) {
@@ -67,7 +68,7 @@ class Api implements ApiInterface
 
     /**
      * Get the manipulators.
-     * @return Array Collection of manipulators.
+     * @return array Collection of manipulators.
      */
     public function getManipulators()
     {
@@ -76,11 +77,11 @@ class Api implements ApiInterface
 
     /**
      * Perform image manipulations.
-     * @param  ImageRequest $request The request object.
+     * @param  Request $request The request object.
      * @param  string  $source  Source image binary data.
      * @return string  Manipulated image binary data.
      */
-    public function run(ImageRequest $request, $source)
+    public function run(Request $request, $source)
     {
         $image = $this->imageManager->make($source);
 

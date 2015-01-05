@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\ImageRequest;
+use League\Glide\Factories\Request;
 use Mockery;
 
 class PixelateTest extends \PHPUnit_Framework_TestCase
@@ -30,7 +30,7 @@ class PixelateTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('pixelate')->with('10')->once();
         });
 
-        $this->manipulator->run(new ImageRequest('image.jpg', ['pixel' => '10']), $image);
+        $this->manipulator->run(Request::create('image.jpg', ['pixel' => '10']), $image);
     }
 
     public function testGetPixelate()

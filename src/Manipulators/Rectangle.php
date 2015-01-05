@@ -3,19 +3,19 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Glide\ImageRequest;
 use League\Glide\Interfaces\Manipulator;
+use Symfony\Component\HttpFoundation\Request;
 
 class Rectangle implements Manipulator
 {
     /**
      * Perform rectangle image manipulation.
-     * @param ImageRequest $request The request object.
-     * @param Image        $image   The source image.
+     * @param Request $request The request object.
+     * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        $coordinates = $this->getCoordinates($image, $request->getParam('rect'));
+        $coordinates = $this->getCoordinates($image, $request->get('rect'));
 
         if ($coordinates) {
             $coordinates = $this->limitCoordinatesToImageBoundaries($image, $coordinates);
@@ -63,7 +63,7 @@ class Rectangle implements Manipulator
      * @param  int[] $coordinates The coordinates.
      * @return int[] The limited coordinates.
      */
-    public function limitCoordinatesToImageBoundaries(Image $image, Array $coordinates)
+    public function limitCoordinatesToImageBoundaries(Image $image, array $coordinates)
     {
         if ($coordinates[0] > ($image->width() - $coordinates[2])) {
             $coordinates[0] = $image->width() - $coordinates[2];

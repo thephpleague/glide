@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\ImageRequest;
+use League\Glide\Factories\Request;
 use Mockery;
 
 class ContrastTest extends \PHPUnit_Framework_TestCase
@@ -30,7 +30,7 @@ class ContrastTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('contrast')->with('50')->once();
         });
 
-        $this->manipulator->run(new ImageRequest('image.jpg', ['con' => '50']), $image);
+        $this->manipulator->run(Request::create('image.jpg', ['con' => '50']), $image);
     }
 
     public function testGetPixelate()

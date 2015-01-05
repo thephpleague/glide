@@ -2,6 +2,8 @@
 
 namespace League\Glide;
 
+use League\Glide\Factories\Request;
+
 class SignKeyTest extends \PHPUnit_Framework_TestCase
 {
     private $signKey;
@@ -27,7 +29,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
     public function testValidateValidRequest()
     {
         $this->signKey->validateRequest(
-            new ImageRequest('image.jpg', ['w' => '100', 'token' => '9978a40f1fc75fa64ac92ea9baf16ff3'])
+            Request::create('image.jpg', ['w' => '100', 'token' => '9978a40f1fc75fa64ac92ea9baf16ff3'])
         );
     }
 
@@ -36,7 +38,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token missing.');
 
         $this->signKey->validateRequest(
-            new ImageRequest('image.jpg', ['w' => '100'])
+            Request::create('image.jpg', ['w' => '100'])
         );
     }
 
@@ -45,7 +47,7 @@ class SignKeyTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
 
         $this->signKey->validateRequest(
-            new ImageRequest('image.jpg', ['w' => '100', 'token' => 'invalid'])
+            Request::create('image.jpg', ['w' => '100', 'token' => 'invalid'])
         );
     }
 }

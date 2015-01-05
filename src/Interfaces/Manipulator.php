@@ -3,14 +3,14 @@
 namespace League\Glide\Interfaces;
 
 use Intervention\Image\Image;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 interface Manipulator
 {
     /**
      * Perform image manipulations.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image);
+    public function run(Request $request, Image $image);
 }

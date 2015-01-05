@@ -4,20 +4,20 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Output implements Manipulator
 {
     /**
      * Perform output image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
         $image->encode(
-            $this->getFormat($request->getParam('fm')),
-            $this->getQuality($request->getParam('q'))
+            $this->getFormat($request->get('fm')),
+            $this->getQuality($request->get('q'))
         );
     }
 

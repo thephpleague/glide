@@ -12,14 +12,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Glide\Factories\Server', new Server([]));
     }
 
-    public function testMake()
+    public function testGetServer()
     {
         $server = new Server([
             'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
         ]);
 
-        $this->assertInstanceOf('League\Glide\Server', $server->make());
+        $this->assertInstanceOf('League\Glide\Server', $server->getServer());
     }
 
     public function testGetSource()
@@ -88,5 +88,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('League\Glide\Manipulators\Size', $sizeManipulator);
         $this->assertEquals(2000*2000, $sizeManipulator->getMaxImageSize());
+    }
+
+    public function testCreate()
+    {
+        $server = Server::create([
+            'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+        ]);
+        $this->assertInstanceOf('League\Glide\Server', $server);
     }
 }

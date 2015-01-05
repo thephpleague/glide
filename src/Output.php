@@ -11,7 +11,7 @@ class Output
      * The cache file system.
      * @var FilesystemInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * Create Output instance.

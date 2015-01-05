@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\ImageRequest;
+use League\Glide\Factories\Request;
 use Mockery;
 
 class OrientationTest extends \PHPUnit_Framework_TestCase
@@ -31,8 +31,8 @@ class OrientationTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('rotate')->with('90')->once();
         });
 
-        $this->manipulator->run(new ImageRequest('image.jpg', ['or' => 'auto']), $image);
-        $this->manipulator->run(new ImageRequest('image.jpg', ['or' => '90']), $image);
+        $this->manipulator->run(Request::create('image.jpg', ['or' => 'auto']), $image);
+        $this->manipulator->run(Request::create('image.jpg', ['or' => '90']), $image);
     }
 
     public function testGetOrientation()

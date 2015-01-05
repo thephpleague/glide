@@ -8,13 +8,13 @@ class UrlBuilder
      * URL prefixed to generated URL.
      * @var string
      */
-    private $baseUrl;
+    protected $baseUrl;
 
     /**
      * Secret key used to secure URLs.
      * @var SignKey
      */
-    private $signKey;
+    protected $signKey;
 
     /**
      * Create UrlBuilder instance.
@@ -33,15 +33,15 @@ class UrlBuilder
     /**
      * Get the URL.
      * @param  string $filename Unique file identifier.
-     * @param  Array  $params   Manipulation parameters.
+     * @param  array  $params   Manipulation parameters.
      * @return string The generated URL.
      */
-    public function getUrl($filename, Array $params = [])
+    public function getUrl($filename, array $params = [])
     {
         if ($this->signKey) {
             $params = $params + ['token' => $this->signKey->getToken($filename, $params)];
         }
 
-        return $this->baseUrl.'/'.$filename.'?'.http_build_query($params);
+        return $this->baseUrl.'/'.ltrim($filename, '/').'?'.http_build_query($params);
     }
 }

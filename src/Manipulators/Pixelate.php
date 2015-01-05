@@ -4,18 +4,18 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Pixelate implements Manipulator
 {
     /**
      * Perform pixelate image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        $pixelate = $this->getPixelate($request->getParam('pixel'));
+        $pixelate = $this->getPixelate($request->get('pixel'));
 
         if ($pixelate) {
             $image->pixelate($pixelate);

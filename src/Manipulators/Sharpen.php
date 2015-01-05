@@ -4,18 +4,18 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Sharpen implements Manipulator
 {
     /**
      * Perform sharpen image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        $sharpen = $this->getSharpen($request->getParam('sharp'));
+        $sharpen = $this->getSharpen($request->get('sharp'));
 
         if ($sharpen) {
             $image->sharpen($sharpen);

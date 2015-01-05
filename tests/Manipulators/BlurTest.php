@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\ImageRequest;
+use League\Glide\Factories\Request;
 use Mockery;
 
 class BlurTest extends \PHPUnit_Framework_TestCase
@@ -30,7 +30,7 @@ class BlurTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('blur')->with('10')->once();
         });
 
-        $this->manipulator->run(new ImageRequest('image.jpg', ['blur' => '10']), $image);
+        $this->manipulator->run(Request::create('image.jpg', ['blur' => '10']), $image);
     }
 
     public function testGetBlur()

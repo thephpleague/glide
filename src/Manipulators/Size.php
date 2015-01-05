@@ -4,11 +4,15 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Size implements Manipulator
 {
-    private $maxImageSize;
+    /**
+     * Maximum image size in pixels.
+     * @var int|null
+     */
+    protected $maxImageSize;
 
     /**
      * Create Size instance.
@@ -39,15 +43,15 @@ class Size implements Manipulator
 
     /**
      * Perform size image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        $width = $this->getWidth($request->getParam('w'));
-        $height = $this->getHeight($request->getParam('h'));
-        $fit = $this->getFit($request->getParam('fit'));
-        $crop = $this->getCrop($request->getParam('crop'));
+        $width = $this->getWidth($request->get('w'));
+        $height = $this->getHeight($request->get('h'));
+        $fit = $this->getFit($request->get('fit'));
+        $crop = $this->getCrop($request->get('crop'));
 
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
         list($width, $height) = $this->limitImageSize($width, $height);

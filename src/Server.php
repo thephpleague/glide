@@ -2,9 +2,12 @@
 
 namespace League\Glide;
 
+use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Exceptions\ImageNotFoundException;
+use League\Glide\Factories\Request as RequestFactory;
 use League\Glide\Interfaces\Api as ApiInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Server
@@ -13,25 +16,25 @@ class Server
      * The source file system.
      * @var FilesystemInterface
      */
-    private $source;
+    protected $source;
 
     /**
      * The cache file system.
      * @var FilesystemInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * The image manipulation API.
      * @var ApiInterface
      */
-    private $api;
+    protected $api;
 
     /**
      * Secret key used to secure URLs.
      * @var SignKey
      */
-    private $signKey;
+    protected $signKey;
 
     /**
      * Create Server instance.
@@ -121,66 +124,89 @@ class Server
     }
 
     /**
-     * Generate and output manipulated image.
-     * @param  string  $filename Unique file identifier.
-     * @param  Array   $params   Manipulation parameters.
-     * @return ImageRequest The request object.
+     * Get a cache filename.
+     * @param  Request $request The request object.
+     * @return string  The cache filename.
      */
-    public function outputImage($filename, Array $params = [])
+    public function getCacheFilename(Request $request)
     {
-        $request = $this->makeImage($filename, $params);
+        $params = $request->query->all();
+
+        unset($params['token']);
+
+        return md5($request->getPathInfo().'?'.http_build_query($params));
+    }
+
+    /**
+     * Generate and output manipulated image.
+     * @param  mixed
+     * @return Request The request object.
+     */
+    public function outputImage()
+    {
+        $request = call_user_func_array([$this, 'makeImage'], func_get_args());
 
         $output = new Output($this->cache);
-        $output->getResponse($request->getHash())->send();
+        $output->getResponse($this->getCacheFilename($request))->send();
 
         return $request;
     }
 
     /**
      * Generate and return response object of manipulated image.
-     * @param  string           $filename Unique file identifier.
-     * @param  Array            $params   Manipulation parameters.
+     * @param  mixed
      * @return StreamedResponse The response object.
      */
-    public function getImageResponse($filename, Array $params = [])
+    public function getImageResponse()
     {
-        $request = $this->makeImage($filename, $params);
+        $request = call_user_func_array([$this, 'makeImage'], func_get_args());
 
         $output = new Output($this->cache);
 
-        return $output->getResponse($request->getHash());
+        return $output->getResponse($this->getCacheFilename($request));
     }
 
     /**
      * Generate manipulated image.
-     * @param  string  $filename Unique file identifier.
-     * @param  Array   $params   Manipulation parameters.
-     * @return ImageRequest The request object.
+     * @param  mixed
+     * @return Request The request object.
      */
-    public function makeImage($filename, Array $params = [])
+    public function makeImage()
     {
-        $request = new ImageRequest($filename, $params);
+        $args = func_get_args();
+
+        if (isset($args[0]) and is_string($args[0])) {
+            $request = RequestFactory::create($args[0], isset($args[1]) ? $args[1] : []);
+        }
+
+        if (isset($args[0]) and  $args[0] instanceof Request) {
+            $request = $args[0];
+        }
+
+        if (!isset($request)) {
+            throw new InvalidArgumentException('Not a valid filename or Request object.');
+        }
 
         if ($this->signKey) {
             $this->signKey->validateRequest($request);
         }
 
-        if ($this->cache->has($request->getHash())) {
+        if ($this->cache->has($this->getCacheFilename($request))) {
             return $request;
         }
 
-        if (!$this->source->has($request->getFilename())) {
+        if (!$this->source->has($request->getPathInfo())) {
             throw new ImageNotFoundException(
-                'Could not find the image `'.$request->getFilename().'`.'
+                'Could not find the image `'.$request->getPathInfo().'`.'
             );
         }
 
         $source = $this->source->read(
-            $request->getFilename()
+            $request->getPathInfo()
         );
 
         $this->cache->write(
-            $request->getHash(),
+            $this->getCacheFilename($request),
             $this->api->run($request, $source)
         );
 

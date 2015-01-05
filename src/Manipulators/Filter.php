@@ -4,22 +4,22 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\ImageRequest;
+use Symfony\Component\HttpFoundation\Request;
 
 class Filter implements Manipulator
 {
     /**
      * Perform filter image manipulation.
-     * @param ImageRequest $request The request object.
+     * @param Request $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(ImageRequest $request, Image $image)
+    public function run(Request $request, Image $image)
     {
-        if ($request->getParam('filt') === 'greyscale') {
+        if ($request->get('filt') === 'greyscale') {
             $this->runGreyscaleFilter($image);
         }
 
-        if ($request->getParam('filt') === 'sepia') {
+        if ($request->get('filt') === 'sepia') {
             $this->runSepiaFilter($image);
         }
     }

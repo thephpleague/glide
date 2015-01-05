@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\ImageRequest;
+use League\Glide\Factories\Request;
 use Mockery;
 
 class OutputTest extends \PHPUnit_Framework_TestCase
@@ -31,7 +31,7 @@ class OutputTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->manipulator->run(
-            new ImageRequest('image.jpg', [
+            Request::create('image.jpg', [
                 'fm' => 'jpg',
                 'q' => '100',
             ]),
