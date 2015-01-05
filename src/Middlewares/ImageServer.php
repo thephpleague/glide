@@ -14,11 +14,18 @@ class ImageServer implements HttpKernelInterface
     protected $server;
 
     /**
-     * New Image Server Middleware
-     * @param Server $server Configured instance of League\Glide\Server
+     * @var \Symfony\Component\HttpKernel\HttpKernelInterface
      */
-    public function __construct(Server $server)
+    protected $app;
+
+    /**
+     * New Image Server Middleware
+     * @param \Symfony\Component\HttpKernel\HttpKernelInterface $app
+     * @param Server                                            $server Configured instance of League\Glide\Server
+     */
+    public function __construct(HttpKernelInterface $app, Server $server)
     {
+        $this->app = $app;
         $this->server = $server;
     }
 
