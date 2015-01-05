@@ -3,14 +3,14 @@
 namespace League\Glide\Interfaces;
 
 use Intervention\Image\Image;
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 
 interface Manipulator
 {
     /**
      * Perform image manipulations.
-     * @param Request $request The request object.
+     * @param ImageRequest $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(Request $request, Image $image);
+    public function run(ImageRequest $request, Image $image);
 }

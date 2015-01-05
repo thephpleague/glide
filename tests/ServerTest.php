@@ -92,7 +92,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $response = $this->server->outputImage('image.jpg');
         $content = ob_get_clean();
 
-        $this->assertInstanceOf('League\Glide\Request', $response);
+        $this->assertInstanceOf('League\Glide\ImageRequest', $response);
         $this->assertEquals('content', $content);
     }
 
@@ -115,7 +115,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
     }
 
     public function testMakeImageWithInvalidSignKey()
@@ -124,7 +124,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
         $this->server->setSignKey(new SignKey('example'));
 
-        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
     }
 
     public function testMakeImageFromCache()
@@ -133,7 +133,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->server->makeImage('image.jpg'));
     }
 
     public function testMakeImageFromSourceThatDoesNotExist()
@@ -151,7 +151,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->server->makeImage('image.jpg'));
     }
 
     public function testMakeImageFromSource()
@@ -170,6 +170,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertInstanceOf('League\Glide\Request', $this->server->makeImage('image.jpg'));
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->server->makeImage('image.jpg'));
     }
 }

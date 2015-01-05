@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 use Mockery;
 
 class RectangleTest extends \PHPUnit_Framework_TestCase
@@ -32,7 +32,7 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
     {
         $this->image->shouldReceive('crop')->with(100, 100, 100, 100)->once();
 
-        $this->manipulator->run(new Request('image.jpg', ['rect' => '100,100,100,100']), $this->image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['rect' => '100,100,100,100']), $this->image);
     }
 
     public function testGetCoordinates()

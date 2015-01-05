@@ -40,9 +40,9 @@ class SignKey
 
     /**
      * Validate a request against this sign key.
-     * @param Request $request The request object.
+     * @param ImageRequest $request The request object.
      */
-    public function validateRequest(Request $request)
+    public function validateRequest(ImageRequest $request)
     {
         if (is_null($request->getParam('token'))) {
             throw new InvalidTokenException('Sign token missing.');

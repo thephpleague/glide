@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 use Mockery;
 
 class GammaTest extends \PHPUnit_Framework_TestCase
@@ -30,7 +30,7 @@ class GammaTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('gamma')->with('1.5')->once();
         });
 
-        $this->manipulator->run(new Request('image.jpg', ['gam' => '1.5']), $image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['gam' => '1.5']), $image);
     }
 
     public function testGetPixelate()

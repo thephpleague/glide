@@ -76,11 +76,11 @@ class Api implements ApiInterface
 
     /**
      * Perform image manipulations.
-     * @param  Request $request The request object.
+     * @param  ImageRequest $request The request object.
      * @param  string  $source  Source image binary data.
      * @return string  Manipulated image binary data.
      */
-    public function run(Request $request, $source)
+    public function run(ImageRequest $request, $source)
     {
         $image = $this->imageManager->make($source);
 

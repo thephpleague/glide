@@ -4,16 +4,16 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 
 class Output implements Manipulator
 {
     /**
      * Perform output image manipulation.
-     * @param Request $request The request object.
+     * @param ImageRequest $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(Request $request, Image $image)
+    public function run(ImageRequest $request, Image $image)
     {
         $image->encode(
             $this->getFormat($request->getParam('fm')),
