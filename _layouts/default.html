@@ -27,6 +27,10 @@
     {% endif %}
     <link rel="stylesheet" href="http://theme.thephpleague.com/css/all.css">
     <style>
+        header .logo .icon {
+            position: relative;
+            top: 0;
+        }
         img[src*="herokuapp"] {
             display: block;
             max-width: 100%;
@@ -63,7 +67,7 @@
     <a class="logo" href="/">
         {% if site.data.images.logo %}
             <span class="icon">
-                <img src="{{ site.data.images.logo }}" width="50" height="40" alt="{{ site.data.project.title }} - {{ site.data.project.tagline }}">
+                <img src="{{ site.data.images.logo }}" alt="{{ site.data.project.title }} - {{ site.data.project.tagline }}">
             </span>
         {% endif %}
         <span class="name">{{ site.data.project.title }}</span>
