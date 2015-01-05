@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 use Mockery;
 
 class FilterTest extends \PHPUnit_Framework_TestCase
@@ -33,8 +33,8 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                  ->shouldReceive('colorize')->with(38, 27, 12)->once()->andReturn($mock);
         });
 
-        $this->manipulator->run(new Request('image.jpg', ['filt' => 'greyscale']), $image);
-        $this->manipulator->run(new Request('image.jpg', ['filt' => 'sepia']), $image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['filt' => 'greyscale']), $image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['filt' => 'sepia']), $image);
     }
 
     public function testRunGreyscaleFilter()

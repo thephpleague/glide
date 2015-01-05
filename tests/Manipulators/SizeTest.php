@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 use Mockery;
 
 class SizeTest extends \PHPUnit_Framework_TestCase
@@ -47,7 +47,7 @@ class SizeTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('resize')->with('100', '100', $this->callback)->once();
         });
 
-        $this->manipulator->run(new Request('image.jpg', ['w' => '100']), $image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['w' => '100']), $image);
     }
 
     public function testGetWidth()

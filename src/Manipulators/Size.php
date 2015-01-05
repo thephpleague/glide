@@ -4,7 +4,7 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Glide\Interfaces\Manipulator;
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 
 class Size implements Manipulator
 {
@@ -39,10 +39,10 @@ class Size implements Manipulator
 
     /**
      * Perform size image manipulation.
-     * @param Request $request The request object.
+     * @param ImageRequest $request The request object.
      * @param Image   $image   The source image.
      */
-    public function run(Request $request, Image $image)
+    public function run(ImageRequest $request, Image $image)
     {
         $width = $this->getWidth($request->getParam('w'));
         $height = $this->getHeight($request->getParam('h'));
