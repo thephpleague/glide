@@ -124,7 +124,7 @@ class Server
      * Generate and output manipulated image.
      * @param  string  $filename Unique file identifier.
      * @param  Array   $params   Manipulation parameters.
-     * @return Request The request object.
+     * @return ImageRequest The request object.
      */
     public function outputImage($filename, Array $params = [])
     {
@@ -155,11 +155,11 @@ class Server
      * Generate manipulated image.
      * @param  string  $filename Unique file identifier.
      * @param  Array   $params   Manipulation parameters.
-     * @return Request The request object.
+     * @return ImageRequest The request object.
      */
     public function makeImage($filename, Array $params = [])
     {
-        $request = new Request($filename, $params);
+        $request = new ImageRequest($filename, $params);
 
         if ($this->signKey) {
             $this->signKey->validateRequest($request);

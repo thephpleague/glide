@@ -2,7 +2,7 @@
 
 namespace League\Glide;
 
-class Request
+class ImageRequest
 {
     /**
      * Unique file identifier.
@@ -17,7 +17,7 @@ class Request
     private $params;
 
     /**
-     * Create Request instance.
+     * Create ImageRequest instance.
      * @param string $filename Unique file identifier.
      * @param Array  $params   Manipulation parameters.
      */

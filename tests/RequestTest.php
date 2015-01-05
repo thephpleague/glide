@@ -8,12 +8,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->request = new Request('image.jpg');
+        $this->request = new ImageRequest('image.jpg');
     }
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('League\Glide\Request', $this->request);
+        $this->assertInstanceOf('League\Glide\ImageRequest', $this->request);
     }
 
     public function testSetFilename()

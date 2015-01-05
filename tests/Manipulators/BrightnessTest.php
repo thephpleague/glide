@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Request;
+use League\Glide\ImageRequest;
 use Mockery;
 
 class BrightnessTest extends \PHPUnit_Framework_TestCase
@@ -30,7 +30,7 @@ class BrightnessTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('brightness')->with('50')->once();
         });
 
-        $this->manipulator->run(new Request('image.jpg', ['bri' => '50']), $image);
+        $this->manipulator->run(new ImageRequest('image.jpg', ['bri' => '50']), $image);
     }
 
     public function testGetPixelate()
