@@ -16,7 +16,7 @@ class ImageServer implements HttpKernelInterface
 
     /**
      * New Image Server Middleware
-     * @param Server $server
+     * @param Server $server Configured instance of League\Glide\Server
      */
     public function __construct(Server $server)
     {
@@ -28,7 +28,7 @@ class ImageServer implements HttpKernelInterface
      */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
-        $imageRequest = $this->server->makeImage( $request->getPathInfo(), $request->query->all());
+        $imageRequest = $this->server->makeImage($request->getPathInfo(), $request->query->all());
 
         $output = new Output($this->server->getCache());
         $response = $output->getResponse($imageRequest->getHash());
