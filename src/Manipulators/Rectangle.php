@@ -18,11 +18,13 @@ class Rectangle implements Manipulator
         $coordinates = $this->getCoordinates($image, $request->getParam('rect'));
 
         if ($coordinates) {
+            $coordinates = $this->limitCoordinatesToImageBoundaries($image, $coordinates);
+
             $image->crop(
-                (int) $coordinates[0],
-                (int) $coordinates[1],
-                (int) $coordinates[2],
-                (int) $coordinates[3]
+                $coordinates[0],
+                $coordinates[1],
+                $coordinates[2],
+                $coordinates[3]
             );
         }
     }
@@ -31,45 +33,48 @@ class Rectangle implements Manipulator
      * Resolve coordinates.
      * @param  Image  $image     The source image.
      * @param  string $rectangle The rectangle.
-     * @return Array  The resolved coordinates.
+     * @return int[]  The resolved coordinates.
      */
     public function getCoordinates(Image $image, $rectangle)
     {
         $coordinates = explode(',', $rectangle);
 
-        if (!$this->validateCoordinates($image, $coordinates)) {
+        if (count($coordinates) !== 4 or
+            !ctype_digit($coordinates[0]) or
+            !ctype_digit($coordinates[1]) or
+            !ctype_digit($coordinates[2]) or
+            !ctype_digit($coordinates[3]) or
+            $coordinates[0] > $image->width() or
+            $coordinates[2] >= $image->width() or
+            $coordinates[1] > $image->height() or
+            $coordinates[3] >= $image->height()) {
             return false;
         }
 
-        return $coordinates;
+        return [
+            (int) $coordinates[0],
+            (int) $coordinates[1],
+            (int) $coordinates[2],
+            (int) $coordinates[3]
+        ];
     }
 
     /**
-     * Validate coordinates.
+     * Limit coordinates to image boundaries.
      * @param  Image $image       The source image.
-     * @param  Array $coordinates The coordinates.
-     * @return bool  Whether or not the coordinates are valid.
+     * @param  int[] $coordinates The coordinates.
+     * @return int[] The limited coordinates.
      */
-    public function validateCoordinates(Image $image, Array $coordinates)
+    public function limitCoordinatesToImageBoundaries(Image $image, Array $coordinates)
     {
-        if (count($coordinates) !== 4) {
-            return false;
+        if ($coordinates[0] > ($image->width() - $coordinates[2])) {
+            $coordinates[0] = $image->width() - $coordinates[2];
         }
 
-        foreach ($coordinates as $key => $value) {
-            if (!ctype_digit($value)) {
-                return false;
-            }
-
-            if (in_array($key, [0, 2], true) and $value > $image->width()) {
-                return false;
-            }
-
-            if (in_array($key, [1, 3], true) and $value > $image->height()) {
-                return false;
-            }
+        if ($coordinates[1] > ($image->height() - $coordinates[3])) {
+            $coordinates[1] = $image->height() - $coordinates[3];
         }
 
-        return true;
+        return $coordinates;
     }
 }

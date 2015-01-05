@@ -30,31 +30,31 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
 
     public function testRun()
     {
-        $this->image->shouldReceive('crop')->with(100, 100, 100, 100)->once();
+        $this->image->shouldReceive('crop')->with(100, 100, 0, 0)->once();
 
-        $this->manipulator->run(new Request('image.jpg', ['rect' => '100,100,100,100']), $this->image);
+        $this->manipulator->run(new Request('image.jpg', ['rect' => '100,100,0,0']), $this->image);
     }
 
     public function testGetCoordinates()
     {
-        $this->assertEquals(['100', '100', '100', '100'], $this->manipulator->getCoordinates($this->image, '100,100,100,100'));
+        $this->assertEquals([100, 100, 0, 0], $this->manipulator->getCoordinates($this->image, '100,100,0,0'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, null));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,1,'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,,1,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, ',1,1,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '-1,1,1,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '101,1,1,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,101,1,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,101,1'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,1,101'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, 'a'));
+        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, ''));
     }
 
     public function testValidateCoordinates()
     {
-        $this->assertEquals(true, $this->manipulator->validateCoordinates($this->image, ['100', '100', '100', '100']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '1', '1', '']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '1', '', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '', '1', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['', '1', '1', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['-1', '1', '1', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['101', '1', '1', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '101', '1', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '1', '101', '1']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['1', '1', '1', '101']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, ['a']));
-        $this->assertEquals(false, $this->manipulator->validateCoordinates($this->image, []));
+        $this->assertEquals([100, 100, 0, 0], $this->manipulator->limitCoordinatesToImageBoundaries($this->image, [100, 100, 0, 0]));
+        $this->assertEquals([90, 90, 10, 10], $this->manipulator->limitCoordinatesToImageBoundaries($this->image, [100, 100, 10, 10]));
     }
 }
