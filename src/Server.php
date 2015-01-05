@@ -138,6 +138,31 @@ class Server
     }
 
     /**
+     * Resolve request object.
+     * @param  array   $args Array of supplied arguments.
+     * @return Request The request object.
+     */
+    public function resolveRequestObject($args)
+    {
+        if (isset($args[0]) and $args[0] instanceof Request) {
+            return $args[0];
+        }
+
+        if (isset($args[0]) and is_string($args[0])) {
+            $filename = $args[0];
+            $params = [];
+
+            if (isset($args[1]) and is_array($args[1])) {
+                $params = $args[1];
+            }
+
+            return RequestFactory::create($filename, $params);
+        }
+
+        throw new InvalidArgumentException('Not a valid filename or Request object.');
+    }
+
+    /**
      * Generate and output manipulated image.
      * @param  mixed
      * @return Request The request object.
@@ -173,19 +198,7 @@ class Server
      */
     public function makeImage()
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) and is_string($args[0])) {
-            $request = RequestFactory::create($args[0], isset($args[1]) ? $args[1] : []);
-        }
-
-        if (isset($args[0]) and  $args[0] instanceof Request) {
-            $request = $args[0];
-        }
-
-        if (!isset($request)) {
-            throw new InvalidArgumentException('Not a valid filename or Request object.');
-        }
+        $request = $this->resolveRequestObject(func_get_args());
 
         if ($this->signKey) {
             $this->signKey->validateRequest($request);

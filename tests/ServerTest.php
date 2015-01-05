@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use League\Glide\Factories\Request;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
@@ -70,6 +71,50 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSignKey()
     {
         $this->assertNull($this->server->getSignKey());
+    }
+
+    public function testGetCacheFilename()
+    {
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCacheFilename(
+                Request::create('image.jpg', ['w' => '100', 'token' => 'whatever'])
+            )
+        );
+
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCacheFilename(
+                Request::create('image.jpg', ['w' => '100'])
+            )
+        );
+    }
+
+    public function testResolveRequestObject()
+    {
+        $this->assertInstanceOf(
+            'Symfony\Component\HttpFoundation\Request',
+            $this->server->resolveRequestObject(
+                [Request::create('image.jpg', ['w' => '100'])]
+            )
+        );
+
+        $this->assertInstanceOf(
+            'Symfony\Component\HttpFoundation\Request',
+            $this->server->resolveRequestObject(
+                ['image.jpg', ['w' => '100']]
+            )
+        );
+    }
+
+    public function testResolveRequestObjectWithInvalidArgs()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Not a valid filename or Request object.');
+
+        $this->assertInstanceOf(
+            'Symfony\Component\HttpFoundation\Request',
+            $this->server->resolveRequestObject([])
+        );
     }
 
     /**

@@ -9,19 +9,21 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class ImageServer implements HttpKernelInterface
 {
     /**
+     * Configured instance of server.
      * @var Server
      */
     protected $server;
 
     /**
-     * @var \Symfony\Component\HttpKernel\HttpKernelInterface
+     * Instance of app.
+     * @var HttpKernelInterface
      */
     protected $app;
 
     /**
-     * New Image Server Middleware
-     * @param \Symfony\Component\HttpKernel\HttpKernelInterface $app
-     * @param Server                                            $server Configured instance of League\Glide\Server
+     * Create ImageServer instance.
+     * @param HttpKernelInterface $app
+     * @param Server              $server Configured instance of server.
      */
     public function __construct(HttpKernelInterface $app, Server $server)
     {

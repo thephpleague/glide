@@ -172,8 +172,8 @@ class Server
 
     /**
      * Create server instance.
-     * @param  array  $config Configuration parameters.
-     * @return Server The configured server.
+     * @param  array       $config Configuration parameters.
+     * @return GlideServer The configured server.
      */
     public static function create(array $config = [])
     {

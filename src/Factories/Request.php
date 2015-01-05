@@ -46,9 +46,9 @@ class Request
 
     /**
      * Create request instance.
-     * @param  string  $filename Unique file identifier.
-     * @param  array   $params   Manipulation parameters.
-     * @return Request The configured server.
+     * @param  string       $filename Unique file identifier.
+     * @param  array        $params   Manipulation parameters.
+     * @return ImageRequest The request object.
      */
     public static function create($filename, array $params = [])
     {
