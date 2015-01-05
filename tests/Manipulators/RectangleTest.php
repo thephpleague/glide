@@ -38,14 +38,14 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
     public function testGetCoordinates()
     {
         $this->assertEquals([100, 100, 0, 0], $this->manipulator->getCoordinates($this->image, '100,100,0,0'));
+        $this->assertEquals([101, 1, 1, 1], $this->manipulator->getCoordinates($this->image, '101,1,1,1'));
+        $this->assertEquals([1, 101, 1, 1], $this->manipulator->getCoordinates($this->image, '1,101,1,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, null));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,1,'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,,1,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, ',1,1,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '-1,1,1,1'));
-        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '101,1,1,1'));
-        $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,101,1,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,101,1'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, '1,1,1,101'));
         $this->assertEquals(false, $this->manipulator->getCoordinates($this->image, 'a'));

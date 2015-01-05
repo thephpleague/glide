@@ -3,15 +3,15 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Glide\Interfaces\Manipulator;
 use League\Glide\ImageRequest;
+use League\Glide\Interfaces\Manipulator;
 
 class Rectangle implements Manipulator
 {
     /**
      * Perform rectangle image manipulation.
      * @param ImageRequest $request The request object.
-     * @param Image   $image   The source image.
+     * @param Image        $image   The source image.
      */
     public function run(ImageRequest $request, Image $image)
     {
@@ -44,9 +44,7 @@ class Rectangle implements Manipulator
             !ctype_digit($coordinates[1]) or
             !ctype_digit($coordinates[2]) or
             !ctype_digit($coordinates[3]) or
-            $coordinates[0] > $image->width() or
             $coordinates[2] >= $image->width() or
-            $coordinates[1] > $image->height() or
             $coordinates[3] >= $image->height()) {
             return false;
         }
