@@ -2,7 +2,6 @@
 
 namespace League\Glide\Middlewares;
 
-use League\Glide\Output;
 use League\Glide\Server;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -28,11 +27,6 @@ class ImageServer implements HttpKernelInterface
      */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
-        $imageRequest = $this->server->makeImage($request->getPathInfo(), $request->query->all());
-
-        $output = new Output($this->server->getCache());
-        $response = $output->getResponse($imageRequest->getHash());
-
-        return $response;
+        return $this->server->getImageResponse($request->getPathInfo(), $request->query->all());
     }
 }
