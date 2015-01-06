@@ -41,7 +41,8 @@ class SignKey
 
     /**
      * Validate a request against this sign key.
-     * @param Request $request The request object.
+     * @param  Request               $request The request object.
+     * @throws InvalidTokenException
      */
     public function validateRequest(Request $request)
     {

@@ -145,7 +145,7 @@ class Server
 
     /**
      * Get the default manipulators.
-     * @return SignKey Collection of manipulators.
+     * @return array Collection of manipulators.
      */
     public function getManipulators()
     {

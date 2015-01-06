@@ -193,8 +193,9 @@ class Server
 
     /**
      * Generate manipulated image.
-     * @param  mixed
-     * @return Request The request object.
+     * @return Request                          The request object.
+     * @throws Exceptions\InvalidTokenException
+     * @throws ImageNotFoundException
      */
     public function makeImage()
     {

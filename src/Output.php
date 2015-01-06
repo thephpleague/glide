@@ -56,9 +56,10 @@ class Output
     }
 
     /**
-     * Set the streamed reponse headers.
-     * @param StreamedResponse $response The response object.
-     * @param string           $filename Unique file identifier.
+     * Set the streamed response headers.
+     * @param  StreamedResponse $response The response object.
+     * @param  string           $filename Unique file identifier.
+     * @return StreamedResponse
      */
     public function setHeaders(StreamedResponse $response, $filename)
     {
@@ -73,8 +74,9 @@ class Output
 
     /**
      * Set the stream response content.
-     * @param StreamedResponse $response The response object.
-     * @param string           $filename Unique file identifier.
+     * @param  StreamedResponse $response The response object.
+     * @param  string           $filename Unique file identifier.
+     * @return StreamedResponse
      */
     public function setContent(StreamedResponse $response, $filename)
     {
