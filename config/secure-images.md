@@ -6,7 +6,9 @@ title: Secure Images
 
 # Secure Images
 
-If you want additional security on your images, you can add a secure signature so that no one can alter the image parameters. This is highly recommended for production environments.
+Add additional security to your Glide image server with a signing key. This requires the passing of a token with each request and prevents any altering of the URL parameters.
+
+<p class="message-notice">It is highly recommended that you use secure URLs in production environments.</p>
 
 ## Configuration
 
