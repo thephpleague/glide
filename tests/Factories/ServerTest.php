@@ -31,6 +31,23 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
     }
 
+    public function testGetSourceWithLocalPath()
+    {
+        $server = new Server([
+            'source' => sys_get_temp_dir(),
+        ]);
+
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
+    }
+
+    public function testGetSourceWithInvalidParam()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Invalid `source` parameter.');
+
+        $server = new Server([]);
+        $server->getSource();
+    }
+
     public function testGetCache()
     {
         $server = new Server([
@@ -38,6 +55,23 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
+    }
+
+    public function testGetCacheWithLocalPath()
+    {
+        $server = new Server([
+            'cache' => sys_get_temp_dir(),
+        ]);
+
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
+    }
+
+    public function testGetCacheWithInvalidParam()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Invalid `cache` parameter.');
+
+        $server = new Server([]);
+        $server->getCache();
     }
 
     public function testGetApi()
