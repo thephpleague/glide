@@ -28,12 +28,6 @@ $glide = Server::create([
     'cache' => new Filesystem(new LocalAdapter('cache-folder')),
 ]);
 
-// Create request object using HttpFoundation
-$request = Request::createFromGlobals();
-
 // Output image based on the current URL
-$glide->outputImage(
-    $request->getPathInfo(),
-    $request->query->all()
-);
+$glide->outputImage(Request::createFromGlobals());
 ~~~ 
