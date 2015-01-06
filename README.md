@@ -5,6 +5,7 @@
 [![Latest Version](https://img.shields.io/github/release/thephpleague/glide.svg?style=flat-square)](https://github.com/thephpleague/glide/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/thephpleague/glide/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/glide)
+[![HHVM Status](https://img.shields.io/hhvm/league/glide.svg?style=flat-square)](http://hhvm.h4cc.de/package/league/glide)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/glide/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/glide)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/glide.svg?style=flat-square)](https://packagist.org/packages/league/glide)
