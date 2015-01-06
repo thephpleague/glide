@@ -13,16 +13,16 @@ To set your source and cache locations, simply pass an instance of `League\Flysy
 ~~~ php
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use League\Glide\Factory as GlideFactory;
+use League\Glide\Factories\Server;
 
 // Setup Glide server
-$glide = GlideFactory::server([
+$glide = Server::create([
     'source' => new Filesystem(new Local('source-folder')),
     'cache' => new Filesystem(new Local('cache-folder')),
 ]);
 
 // Pass strings when using local disk only
-$glide = GlideFactory::server([
+$glide = Server::create([
     'source' => 'source-folder',
     'cache' => 'cache-folder',
 ]);

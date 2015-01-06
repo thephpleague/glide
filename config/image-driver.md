@@ -9,10 +9,10 @@ title: Image Driver
 By default Glide uses the [GD](http://php.net/manual/en/book.image.php) library. However you can also use Glide with [Imagemagick](http://www.imagemagick.org/) if the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension is installed.
 
 ~~~ php
-use League\Glide\Factory as GlideFactory;
+use League\Glide\Factories\Server;
 
 // Set driver in Glide configuration
-$glide = GlideFactory::server([
+$glide = Server::create([
     'driver' => 'imagick',
 ]);
 ~~~

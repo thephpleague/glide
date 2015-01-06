@@ -13,7 +13,7 @@ use Aws\S3\S3Client;
 use League\Flysystem\Adapter\AwsS3 as S3Adapter;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\Filesystem;
-use League\Glide\Factory as GlideFactory;
+use League\Glide\Factories\Server;
 use Symfony\Component\HttpFoundation\Request;
 
 // Connect to S3 account
@@ -23,7 +23,7 @@ $s3Client = S3Client::factory([
 ]);
 
 // Setup Glide server
-$glide = GlideFactory::server([
+$glide = Server::create([
     'source' => new Filesystem(new S3Adapter($s3Client, 'bucket-name')),
     'cache' => new Filesystem(new LocalAdapter('cache-folder')),
 ]);

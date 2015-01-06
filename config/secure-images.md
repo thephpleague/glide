@@ -13,10 +13,10 @@ If you want additional security on your images, you can add a secure signature s
 Start by setting a signing key in the Glide server configuration:
 
 ~~~ php
-use League\Glide\Factory as GlideFactory;
+use League\Glide\Factories\Server;
 
 // Add signing key in Glide configuration
-$glide = GlideFactory::server([
+$glide = Server::create([
     'sign_key' => 'your-sign-key',
 ]);
 ~~~

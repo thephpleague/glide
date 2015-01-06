@@ -13,7 +13,7 @@ All the Glide configuration is managed through a central object call the `Server
 The easiest way to configure the `Server` is using the supplied factory.
 
 ~~~ php
-$glide = League\Glide\Factory::server([
+$glide = League\Glide\Factories\Server::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
 ]);
