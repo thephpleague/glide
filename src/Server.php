@@ -138,6 +138,26 @@ class Server
     }
 
     /**
+     * Check if the cache file exists
+     * @param  Request $request
+     * @return bool
+     */
+    public function cacheFileExists(Request $request)
+    {
+        return $this->cache->has($this->getCacheFilename($request));
+    }
+
+    /**
+     * Check if the source file exists
+     * @param  Request $request
+     * @return bool
+     */
+    public function sourceFileExists(Request $request)
+    {
+        return $this->source->has($request->getPathInfo());
+    }
+
+    /**
      * Resolve request object.
      * @param  array   $args Array of supplied arguments.
      * @return Request The request object.
@@ -205,11 +225,11 @@ class Server
             $this->signKey->validateRequest($request);
         }
 
-        if ($this->cache->has($this->getCacheFilename($request))) {
+        if ($this->cacheFileExists($request) === true) {
             return $request;
         }
 
-        if (!$this->source->has($request->getPathInfo())) {
+        if ($this->sourceFileExists($request) === false) {
             throw new ImageNotFoundException(
                 'Could not find the image `'.$request->getPathInfo().'`.'
             );
