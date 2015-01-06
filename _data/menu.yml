@@ -9,6 +9,7 @@ Configuration:
     Image Driver: '/config/image-driver/'
     Secure Images: '/config/secure-images/'
     Max Image Size: '/config/max-image-size/'
+    Basic Usage: '/config/basic-usage/'
 Image API:
     Size: '/api/size/'
     Adjustments: '/api/adjustments/'
