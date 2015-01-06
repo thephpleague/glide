@@ -5,6 +5,7 @@ namespace League\Glide;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Exceptions\ImageNotFoundException;
+use League\Glide\Exceptions\InvalidTokenException;
 use League\Glide\Factories\Request as RequestFactory;
 use League\Glide\Interfaces\Api as ApiInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -124,40 +125,6 @@ class Server
     }
 
     /**
-     * Get a cache filename.
-     * @param  Request $request The request object.
-     * @return string  The cache filename.
-     */
-    public function getCacheFilename(Request $request)
-    {
-        $params = $request->query->all();
-
-        unset($params['token']);
-
-        return md5($request->getPathInfo().'?'.http_build_query($params));
-    }
-
-    /**
-     * Check if the cache file exists
-     * @param  Request $request
-     * @return bool
-     */
-    public function cacheFileExists(Request $request)
-    {
-        return $this->cache->has($this->getCacheFilename($request));
-    }
-
-    /**
-     * Check if the source file exists
-     * @param  Request $request
-     * @return bool
-     */
-    public function sourceFileExists(Request $request)
-    {
-        return $this->source->has($request->getPathInfo());
-    }
-
-    /**
      * Resolve request object.
      * @param  array   $args Array of supplied arguments.
      * @return Request The request object.
@@ -183,13 +150,55 @@ class Server
     }
 
     /**
+     * Check if a source file exists.
+     * @param  mixed
+     * @return bool
+     */
+    public function sourceFileExists()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        return $this->source->has($request->getPathInfo());
+    }
+
+    /**
+     * Check if a cache file exists.
+     * @param  mixed
+     * @return bool
+     */
+    public function cacheFileExists()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        return $this->cache->has($this->getCacheFilename($request));
+    }
+
+    /**
+     * Get a cache filename.
+     * @param  mixed
+     * @return string The cache filename.
+     */
+    public function getCacheFilename()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $params = $request->query->all();
+
+        unset($params['token']);
+
+        return md5($request->getPathInfo().'?'.http_build_query($params));
+    }
+
+    /**
      * Generate and output manipulated image.
      * @param  mixed
      * @return Request The request object.
      */
     public function outputImage()
     {
-        $request = call_user_func_array([$this, 'makeImage'], func_get_args());
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $this->makeImage($request);
 
         $output = new Output($this->cache);
         $output->getResponse($this->getCacheFilename($request))->send();
@@ -204,7 +213,9 @@ class Server
      */
     public function getImageResponse()
     {
-        $request = call_user_func_array([$this, 'makeImage'], func_get_args());
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $this->makeImage($request);
 
         $output = new Output($this->cache);
 
@@ -213,8 +224,8 @@ class Server
 
     /**
      * Generate manipulated image.
-     * @return Request                          The request object.
-     * @throws Exceptions\InvalidTokenException
+     * @return Request                The request object.
+     * @throws InvalidTokenException
      * @throws ImageNotFoundException
      */
     public function makeImage()

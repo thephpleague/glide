@@ -73,23 +73,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->server->getSignKey());
     }
 
-    public function testGetCacheFilename()
-    {
-        $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
-            $this->server->getCacheFilename(
-                Request::create('image.jpg', ['w' => '100', 'token' => 'whatever'])
-            )
-        );
-
-        $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
-            $this->server->getCacheFilename(
-                Request::create('image.jpg', ['w' => '100'])
-            )
-        );
-    }
-
     public function testResolveRequestObject()
     {
         $this->assertInstanceOf(
@@ -114,6 +97,39 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'Symfony\Component\HttpFoundation\Request',
             $this->server->resolveRequestObject([])
+        );
+    }
+
+    public function testSourceFileExists()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->with('image.jpg')->andReturn(true)->once();
+        }));
+
+        $this->assertTrue($this->server->sourceFileExists('image.jpg'));
+    }
+
+    public function testCacheFileExists()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->with('75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
+        }));
+
+        $this->assertTrue($this->server->cacheFileExists('image.jpg'));
+    }
+
+    public function testGetCacheFilename()
+    {
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCacheFilename(
+                Request::create('image.jpg', ['w' => '100', 'token' => 'whatever'])
+            )
+        );
+
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCacheFilename('image.jpg', ['w' => '100'])
         );
     }
 
