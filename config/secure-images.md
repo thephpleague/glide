@@ -29,7 +29,7 @@ Next, generate a secure token whenever you request an image from your server. Fo
 use League\Glide\UrlBuilder;
 
 // Create an instance of the URL builder
-$urlBuilder = new UrlBuilder('http://your-website.com', 'your-sign-key');
+$urlBuilder = new UrlBuilder('http://example.com', 'your-sign-key');
 
 // Generate a url
 $url = $urlBuilder->getUrl('image.jpg', ['w' => 1000]);
@@ -38,5 +38,5 @@ $url = $urlBuilder->getUrl('image.jpg', ['w' => 1000]);
 echo '<img src="'.$url.'">';
 
 // Prints out
-// <img src="http://your-website.com/image.jpg?w=1000&token=af3dc18fc6bfb2afb521e587c348b904">
+// <img src="http://example.com/image.jpg?w=1000&token=af3dc18fc6bfb2afb521e587c348b904">
 ~~~
