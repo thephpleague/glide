@@ -5,7 +5,6 @@ namespace League\Glide;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Exceptions\ImageNotFoundException;
-use League\Glide\Exceptions\InvalidTokenException;
 use League\Glide\Factories\Request as RequestFactory;
 use League\Glide\Interfaces\Api as ApiInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,24 +31,24 @@ class Server
     protected $api;
 
     /**
-     * Secret key used to secure URLs.
-     * @var SignKey
+     * The base URL to exclude.
+     * @var string
      */
-    protected $signKey;
+    protected $baseUrl;
 
     /**
      * Create Server instance.
      * @param FilesystemInterface $source  The source file system.
      * @param FilesystemInterface $cache   The cache file system.
      * @param ApiInterface        $api     The image manipulation API.
-     * @param SignKey             $signKey Secret key used to secure URLs.
+     * @param string              $baseUrl The base URL.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, SignKey $signKey = null)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, $baseUrl = '')
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
-        $this->setSignKey($signKey);
+        $this->setBaseUrl($baseUrl);
     }
 
     /**
@@ -107,21 +106,21 @@ class Server
     }
 
     /**
-     * Set the sign key.
-     * @param SignKey $signKey Secret key used to secure URLs.
+     * Set the base URL.
+     * @param string $baseUrl The base URL.
      */
-    public function setSignKey(SignKey $signKey = null)
+    public function setBaseUrl($baseUrl)
     {
-        $this->signKey = $signKey;
+        $this->baseUrl = $baseUrl;
     }
 
     /**
-     * Get the sign key.
-     * @return SignKey Secret key used to secure URLs.
+     * Get the base URL.
+     * @return string The base URL.
      */
-    public function getSignKey()
+    public function getBaseUrl()
     {
-        return $this->signKey;
+        return $this->baseUrl;
     }
 
     /**
@@ -150,6 +149,37 @@ class Server
     }
 
     /**
+     * Get the source filename.
+     * @param  mixed
+     * @return string The source filename.
+     */
+    public function getSourceFilename()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $baseUrl = trim($this->baseUrl, '/');
+        $path = trim($request->getPathInfo(), '/');
+
+        if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
+            $path = trim(substr($path, strlen($baseUrl)), '/');
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get the cache filename.
+     * @param  mixed
+     * @return string The cache filename.
+     */
+    public function getCacheFilename()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        return md5($this->getSourceFilename($request).'?'.http_build_query($request->query->all()));
+    }
+
+    /**
      * Check if a source file exists.
      * @param  mixed
      * @return bool
@@ -158,7 +188,7 @@ class Server
     {
         $request = $this->resolveRequestObject(func_get_args());
 
-        return $this->source->has($request->getPathInfo());
+        return $this->source->has($this->getSourceFilename($request));
     }
 
     /**
@@ -171,22 +201,6 @@ class Server
         $request = $this->resolveRequestObject(func_get_args());
 
         return $this->cache->has($this->getCacheFilename($request));
-    }
-
-    /**
-     * Get a cache filename.
-     * @param  mixed
-     * @return string The cache filename.
-     */
-    public function getCacheFilename()
-    {
-        $request = $this->resolveRequestObject(func_get_args());
-
-        $params = $request->query->all();
-
-        unset($params['token']);
-
-        return md5($request->getPathInfo().'?'.http_build_query($params));
     }
 
     /**
@@ -225,16 +239,11 @@ class Server
     /**
      * Generate manipulated image.
      * @return Request                The request object.
-     * @throws InvalidTokenException
      * @throws ImageNotFoundException
      */
     public function makeImage()
     {
         $request = $this->resolveRequestObject(func_get_args());
-
-        if ($this->signKey) {
-            $this->signKey->validateRequest($request);
-        }
 
         if ($this->cacheFileExists($request) === true) {
             return $request;
@@ -242,12 +251,12 @@ class Server
 
         if ($this->sourceFileExists($request) === false) {
             throw new ImageNotFoundException(
-                'Could not find the image `'.$request->getPathInfo().'`.'
+                'Could not find the image `'.$this->getSourceFilename($request).'`.'
             );
         }
 
         $source = $this->source->read(
-            $request->getPathInfo()
+            $this->getSourceFilename($request)
         );
 
         $this->cache->write(

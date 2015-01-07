@@ -62,15 +62,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Glide\Interfaces\API', $this->server->getApi());
     }
 
-    public function testSetSignKey()
+    public function testSetBaseUrl()
     {
-        $this->server->setSignKey(new SignKey('example'));
-        $this->assertInstanceOf('League\Glide\SignKey', $this->server->getSignKey());
+        $this->server->setBaseUrl('img/');
+        $this->assertEquals('img/', $this->server->getBaseUrl());
     }
 
-    public function testGetSignKey()
+    public function testGetBaseUrl()
     {
-        $this->assertNull($this->server->getSignKey());
+        $this->assertEquals('', $this->server->getBaseUrl());
     }
 
     public function testResolveRequestObject()
@@ -100,6 +100,26 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetSourceFilename()
+    {
+        $this->assertEquals('image.jpg', $this->server->getSourceFilename('image.jpg'));
+        $this->assertEquals('image.jpg', $this->server->getSourceFilename(Request::create('image.jpg')));
+    }
+
+    public function testGetSourceFilenameWithBaseUrl()
+    {
+        $this->server->setBaseUrl('img/');
+        $this->assertEquals('image.jpg', $this->server->getSourceFilename('img/image.jpg'));
+    }
+
+    public function testGetCacheFilename()
+    {
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCacheFilename('image.jpg', ['w' => '100'])
+        );
+    }
+
     public function testSourceFileExists()
     {
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
@@ -116,21 +136,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         }));
 
         $this->assertTrue($this->server->cacheFileExists('image.jpg'));
-    }
-
-    public function testGetCacheFilename()
-    {
-        $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
-            $this->server->getCacheFilename(
-                Request::create('image.jpg', ['w' => '100', 'token' => 'whatever'])
-            )
-        );
-
-        $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
-            $this->server->getCacheFilename('image.jpg', ['w' => '100'])
-        );
     }
 
     /**
@@ -167,25 +172,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         }));
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->getImageResponse('image.jpg'));
-    }
-
-    public function testMakeImageWithValidSignKey()
-    {
-        $this->server->setSignKey(new SignKey('example'));
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true);
-        }));
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg', ['token' => '0e7aaeb5552fc6135b47fba6377d2a2e']));
-    }
-
-    public function testMakeImageWithInvalidSignKey()
-    {
-        $this->setExpectedException('League\Glide\Exceptions\InvalidTokenException', 'Sign token invalid.');
-
-        $this->server->setSignKey(new SignKey('example'));
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg', ['token' => 'invalid']));
     }
 
     public function testMakeImageFromCache()

@@ -36,6 +36,6 @@ class ImageServer implements HttpKernelInterface
      */
     public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
     {
-        return $this->server->getImageResponse($request->getPathInfo(), $request->query->all());
+        return $this->server->getImageResponse($request);
     }
 }

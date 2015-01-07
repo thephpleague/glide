@@ -90,15 +90,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('imagick', $server->getImageManager()->config['driver']);
     }
 
-    public function testGetSignKey()
-    {
-        $server = new Server([
-            'sign_key' => 'example',
-        ]);
-
-        $this->assertInstanceOf('League\Glide\SignKey', $server->getSignKey());
-    }
-
     public function testGetManipulators()
     {
         $server = new Server([]);

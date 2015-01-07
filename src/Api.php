@@ -5,7 +5,7 @@ namespace League\Glide;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Glide\Interfaces\Api as ApiInterface;
-use League\Glide\Interfaces\Manipulator;
+use League\Glide\Interfaces\Manipulator as ManipulatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Api implements ApiInterface
@@ -58,7 +58,7 @@ class Api implements ApiInterface
     public function setManipulators(array $manipulators)
     {
         foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof Manipulator)) {
+            if (!($manipulator instanceof ManipulatorInterface)) {
                 throw new InvalidArgumentException('Not a valid manipulator.');
             }
         }

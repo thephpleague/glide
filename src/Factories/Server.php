@@ -20,7 +20,6 @@ use League\Glide\Manipulators\Rectangle;
 use League\Glide\Manipulators\Sharpen;
 use League\Glide\Manipulators\Size;
 use League\Glide\Server as GlideServer;
-use League\Glide\SignKey;
 
 class Server
 {
@@ -49,7 +48,7 @@ class Server
             $this->getSource(),
             $this->getCache(),
             $this->getApi(),
-            $this->getSignKey()
+            $this->getBaseUrl()
         );
     }
 
@@ -129,21 +128,6 @@ class Server
     }
 
     /**
-     * Get the sign key.
-     * @return SignKey Secret key used to secure URLs.
-     */
-    public function getSignKey()
-    {
-        $signKey = null;
-
-        if (isset($this->config['sign_key'])) {
-            $signKey = new SignKey($this->config['sign_key']);
-        }
-
-        return $signKey;
-    }
-
-    /**
      * Get the default manipulators.
      * @return array Collection of manipulators.
      */
@@ -168,6 +152,21 @@ class Server
             new Pixelate(),
             new Output(),
         ];
+    }
+
+    /**
+     * Get the base URL.
+     * @return string The base URL.
+     */
+    public function getBaseUrl()
+    {
+        $baseUrl = '';
+
+        if (isset($this->config['base_url'])) {
+            $baseUrl = $this->config['base_url'];
+        }
+
+        return $baseUrl;
     }
 
     /**

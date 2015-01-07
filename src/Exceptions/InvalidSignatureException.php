@@ -4,6 +4,6 @@ namespace League\Glide\Exceptions;
 
 use Exception;
 
-class InvalidTokenException extends Exception
+class InvalidSignatureException extends Exception
 {
 }

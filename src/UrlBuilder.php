@@ -2,46 +2,70 @@
 
 namespace League\Glide;
 
+use League\Glide\Interfaces\HttpSignature as HttpSignatureInterace;
+
 class UrlBuilder
 {
     /**
-     * URL prefixed to generated URL.
+     * Base URL prefixed to generated URL.
      * @var string
      */
     protected $baseUrl;
 
     /**
-     * Secret key used to secure URLs.
-     * @var SignKey
+     * HTTP signature used to sign URLs.
+     * @var HttpSignatureInterace
      */
-    protected $signKey;
+    protected $httpSignature;
 
     /**
      * Create UrlBuilder instance.
-     * @param string      $baseUrl URL prefixed to generated URL.
-     * @param string|null $signKey Secret key used to secure URLs.
+     * @param string                     $baseUrl       Base URL prefixed to generated URL.
+     * @param HttpSignatureInterace|null $httpSignature HTTP signature used to sign URLs.
      */
-    public function __construct($baseUrl = '', $signKey = null)
+    public function __construct($baseUrl = '', HttpSignatureInterace $httpSignature = null)
     {
-        $this->baseUrl = rtrim($baseUrl, '/');
-
-        if (!is_null($signKey)) {
-            $this->signKey = new SignKey($signKey);
-        }
+        $this->baseUrl = $baseUrl;
+        $this->httpSignature = $httpSignature;
     }
 
     /**
      * Get the URL.
-     * @param  string $filename Unique file identifier.
-     * @param  array  $params   Manipulation parameters.
-     * @return string The generated URL.
+     * @param  string $path   The resource path.
+     * @param  array  $params The manipulation parameters.
+     * @return string The URL.
      */
-    public function getUrl($filename, array $params = [])
+    public function getUrl($path, array $params = [])
     {
-        if ($this->signKey) {
-            $params = $params + ['token' => $this->signKey->getToken($filename, $params)];
+        $parts = parse_url(trim($this->baseUrl, '/').'/'.trim($path, '/'));
+
+        $parts['path'] = '/'.trim($parts['path'], '/');
+
+        if ($this->httpSignature) {
+            $params = $this->httpSignature->addSignature($parts['path'], $params);
         }
 
-        return $this->baseUrl.'/'.ltrim($filename, '/').'?'.http_build_query($params);
+        return $this->buildUrl($parts, $params);
+    }
+
+    /**
+     * Build the URL.
+     * @param  array  $parts  The URL parts.
+     * @param  array  $params The manipulation parameters.
+     * @return string The built URL.
+     */
+    private function buildUrl($parts, $params)
+    {
+        $url = '';
+
+        if (isset($parts['scheme']) and isset($parts['host'])) {
+            $url .= $parts['scheme'].'://'.$parts['host'];
+
+            if (isset($parts['port'])) {
+                $url .= ':'.$parts['port'];
+            }
+        }
+
+        return $url.$parts['path'].'?'.http_build_query($params);
     }
 }
