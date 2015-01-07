@@ -35,7 +35,7 @@ Full documentation can be found at [glide.thephpleague.com](http://glide.thephpl
 
 Glide is available via Composer:
 
-```json
+```bash
 $ composer require league/glide
 ```
 
