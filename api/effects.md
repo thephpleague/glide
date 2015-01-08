@@ -16,6 +16,8 @@ Adds a blur effect to the image. Use values between `0` and `100`.
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=500&blur=5)](https://glide.herokuapp.com/kayaks.jpg?w=500&blur=5)
 
+<p class="message-notice">Performance intensive on larger amounts of blur with GD driver. Use with care.</p>
+
 ## Pixelate `pixel`
 
 Applies a pixelation effect to the image. Use values between `0` and `1000`.

@@ -6,28 +6,37 @@ title: Simple Example
 
 # Simple Example
 
-The following example illustrates how easy Glide is to configure. This particular example uses Amazon S3 as the image source (where the original images are saved) and the local disk as the image cache (where the manipulated images are saved).
+Let's say your creating a user profile page which displays a user's name and their profile photo. The user has already uploaded an image, but it hasn't been resized yet, all you have is the original file saved somewhere. The following example illustrates how easy Glide makes cropping and resizing the profile image, without having to do any image processing ahead of time.
 
+## In your templates
+
+In your templates you'll define how the image will be manipulated. Using Glide's HTTP based API, simply set the image manipulations in the image `src` attribute.
+
+<div class="filename">profile.php</div>
 ~~~ php
-use Aws\S3\S3Client;
-use League\Flysystem\Adapter\AwsS3 as S3Adapter;
-use League\Flysystem\Adapter\Local as LocalAdapter;
-use League\Flysystem\Filesystem;
+<h1><?=$user->name?></h1>
+
+<!-- Display profile image cropped to 300x400 -->
+<img src="/img/users/<?=$user->id?>.jpg?w=300&h=400&fit=crop">
+~~~
+
+## In your routes
+
+Next, within your routes, setup a Glide server. Tell it where the source images can be found, and also where the manipulated images it generates (the cache) should be saved. Finally pass the server the request, and it will handle all the image manipulations and will output the image.
+
+<div class="filename">routes.php</div>
+~~~ php
 use League\Glide\Factories\Server;
 use Symfony\Component\HttpFoundation\Request;
 
-// Connect to S3 account
-$s3Client = S3Client::factory([
-    'key' => 'your-key',
-    'secret' => 'your-secret',
-]);
-
 // Setup Glide server
 $glide = Server::create([
-    'source' => new Filesystem(new S3Adapter($s3Client, 'bucket-name')),
-    'cache' => new Filesystem(new LocalAdapter('cache-folder')),
+    'source' => 'path/to/source/folder',
+    'cache' => 'path/to/cache/folder',
+    'base_url' => '/img/',
 ]);
 
 // Output image based on the current URL
 $glide->outputImage(Request::createFromGlobals());
-~~~ 
+~~~
+

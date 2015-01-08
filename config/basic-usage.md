@@ -11,31 +11,34 @@ Once your [Glide server](/config/the-server/) is configured, there are a number 
 ## Available methods
 
 ~~~ php
+// Get the source filename
+$server->getSourceFilename();
+
+// Get the cache filename
+$server->getCacheFilename();
+
 // Check if a source file exists
-$server->sourceFileExists($request);
+$server->sourceFileExists();
 
 // Check if a cache file exists
-$server->cacheFileExists($request);
-
-// Get a cache filename
-$server->getCacheFilename($request);
+$server->cacheFileExists();
 
 // Generate and output manipulated image
-$server->outputImage($request);
+$server->outputImage();
 
 // Generate and return response object of manipulated image
-$server->getImageResponse($request);
+$server->getImageResponse();
 
 // Generate manipulated image
-$server->makeImage($request);
+$server->makeImage();
 ~~~
 
 ## Accepted method parameters
 
-All of the above methods will accept an instance of the `Symfony\Component\HttpFoundation\Request` class. However, sometimes it is desirable to manually pass the image filename and manipulation parameters. Glide makes this easy by also allowing you to pass a `$filename` and `$params` combination to the above methods. Consider the following example:
+All of the above methods will accept an instance of the `Symfony\Component\HttpFoundation\Request` class. However, sometimes it's desirable to manually pass the image filename and manipulation parameters. Glide makes this easy by also allowing you to pass a `$filename` and `$params` combination to the above methods. Consider the following example:
 
 ~~~ php
-Route::get('img/users/{id}/small', function($id)
+Route::get('img/users/{id}/small', function($id) use ($server)
 {
     $server->outputImage(
         '/storage/users/' . $id . '.jpg',

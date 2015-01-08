@@ -6,6 +6,7 @@ Getting Started:
 Configuration:
     The Server: '/config/the-server/'
     Source & Cache: '/config/source-and-cache/'
+    Base URL: '/config/base-url/'
     Image Driver: '/config/image-driver/'
     Secure Images: '/config/secure-images/'
     Max Image Size: '/config/max-image-size/'
