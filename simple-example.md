@@ -27,16 +27,22 @@ Next, within your routes, setup a Glide server. Configure where the source image
 <div class="filename">routes.php</div>
 ~~~ php
 use League\Glide\Factories\Server;
-use Symfony\Component\HttpFoundation\Request;
 
 // Setup Glide server
 $glide = Server::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
-    'base_url' => '/img/',
 ]);
 
-// Output image based on the current URL
-$glide->outputImage(Request::createFromGlobals());
+// You could manually output the image, just
+// pass a path as well as the manipulation options
+$glide->outputImage('users/1.jpg', ['w' => 300, 'h' => 400]);
+
+// Or better yet, output the image based on the current URL
+$glide->outputImage($path, $_GET);
+
+// Or if your using an HttpFoundation compatible framework,
+// simply pass an instance of the Request object
+$glide->outputImage($request);
 ~~~
 
