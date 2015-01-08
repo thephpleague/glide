@@ -1,10 +1,10 @@
 ---
 layout: default
 permalink: config/basic-usage/
-title: Basic Usage
+title: Basic usage
 ---
 
-# Basic Usage
+# Basic usage
 
 Once your [Glide server](/config/the-server/) is configured, there are a number of methods available to interact with it. For basic setups you'll likely only need the `outputImage()` method. However, if you plan to use Glide with a queuing server or in other more complex configurations, these methods will be useful.
 

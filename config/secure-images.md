@@ -1,10 +1,10 @@
 ---
 layout: default
 permalink: config/secure-images/
-title: Secure Images
+title: Secure images
 ---
 
-# Secure Images
+# Secure images
 
 Add additional security to your Glide image server with an HTTP signature. By signing each request with a private key, no alterations can be made to the URL parameters.
 

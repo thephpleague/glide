@@ -1,28 +1,28 @@
 ---
 layout: default
 permalink: simple-example/
-title: Simple Example
+title: Simple example
 ---
 
-# Simple Example
+# Simple example
 
-Let's say your creating a user profile page which displays a user's name and their profile photo. The user has already uploaded an image, but it hasn't been resized yet, all you have is the original file saved somewhere. The following example illustrates how easy Glide makes cropping and resizing the profile image, without having to do any image processing ahead of time.
+Let's say you're creating a user profile page that displays a user's name and their profile photo. The user has already uploaded an image, but it hasn't been resized yet, all you have is the original file saved somewhere. The following example illustrates how easy Glide makes cropping and resizing the profile image, without having to do any image processing ahead of time.
 
 ## In your templates
 
-In your templates you'll define how the image will be manipulated. Using Glide's HTTP based API, simply set the image manipulations in the image `src` attribute.
+In your templates simply define how the image will be manipulated. Following Glide's HTTP based API, set the image manipulations in the profile image's `src` attribute.
 
 <div class="filename">profile.php</div>
 ~~~ php
 <h1><?=$user->name?></h1>
 
-<!-- Display profile image cropped to 300x400 -->
+<!-- display profile image cropped to 300x400 -->
 <img src="/img/users/<?=$user->id?>.jpg?w=300&h=400&fit=crop">
 ~~~
 
 ## In your routes
 
-Next, within your routes, setup a Glide server. Tell it where the source images can be found, and also where the manipulated images it generates (the cache) should be saved. Finally pass the server the request, and it will handle all the image manipulations and will output the image.
+Next, within your routes, setup a Glide server. Configure where the source images can be found as well as where the manipulated images should be saved (the cache). Finally pass the server the request. It will handle all the image manipulations and will output the image.
 
 <div class="filename">routes.php</div>
 ~~~ php

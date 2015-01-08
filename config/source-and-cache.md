@@ -1,10 +1,10 @@
 ---
 layout: default
 permalink: config/source-and-cache/
-title: Source & Cache
+title: Source & cache
 ---
 
-# Source & Cache
+# Source & cache
 
 Glide makes it possible to access images stored in a variety of file systems. It does this using the [Flysystem](http://flysystem.thephpleague.com/) file system abstraction library. For example, you may choose to store your source images on [Amazon S3](http://aws.amazon.com/s3/), but keep your rendered images (the cache) on the local disk.
 

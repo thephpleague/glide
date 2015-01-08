@@ -1,10 +1,10 @@
 ---
 layout: default
 permalink: config/the-server/
-title: The Server
+title: The server
 ---
 
-# The Server
+# The server
 
 All the Glide configuration is managed through a central object call the `Server`. This includes the image [source location](/config/source-and-cache/) (where the original images are saved), the image [cache location](/config/source-and-cache/) (where the manipulated images are saved), the image manipulation API and the [sign key](/config/secure-images/) (used to secure URLs).
 
