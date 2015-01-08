@@ -24,7 +24,7 @@ class HttpSignature implements HttpSignatureInterace
     }
 
     /**
-     * Add an HTTP signature to param array.
+     * Add an HTTP signature to manipulation parameters.
      * @param  string $path   The resource path.
      * @param  array  $params The manipulation parameters.
      * @return array  The updated manipulation parameters.

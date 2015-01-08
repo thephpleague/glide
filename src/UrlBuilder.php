@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use InvalidArgumentException;
 use League\Glide\Interfaces\HttpSignature as HttpSignatureInterace;
 
 class UrlBuilder
@@ -39,6 +40,10 @@ class UrlBuilder
     {
         $parts = parse_url(trim($this->baseUrl, '/').'/'.trim($path, '/'));
 
+        if ($parts === false) {
+            throw new InvalidArgumentException('Not a valid path.');
+        }
+
         $parts['path'] = '/'.trim($parts['path'], '/');
 
         if ($this->httpSignature) {
@@ -66,6 +71,12 @@ class UrlBuilder
             }
         }
 
-        return $url.$parts['path'].'?'.http_build_query($params);
+        $url .= $parts['path'];
+
+        if (count($params)) {
+            $url .= '?'.http_build_query($params);
+        }
+
+        return $url;
     }
 }

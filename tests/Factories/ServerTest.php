@@ -115,6 +115,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2000*2000, $sizeManipulator->getMaxImageSize());
     }
 
+    public function testGetBaseUrl()
+    {
+        $server = new Server([
+            'base_url' => 'img/',
+        ]);
+
+        $this->assertEquals('img/', $server->getBaseUrl());
+    }
+
     public function testCreate()
     {
         $server = Server::create([

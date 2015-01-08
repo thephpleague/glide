@@ -19,6 +19,26 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetUrlWithNoDomain()
+    {
+        $urlBuilder = new UrlBuilder();
+
+        $this->assertEquals(
+            '/image.jpg?w=100',
+            $urlBuilder->getUrl('image.jpg', ['w' => '100'])
+        );
+    }
+
+    public function testGetUrlWithDomainAndPort()
+    {
+        $urlBuilder = new UrlBuilder('http://localhost:8000');
+
+        $this->assertEquals(
+            'http://localhost:8000/image.jpg?w=100',
+            $urlBuilder->getUrl('image.jpg', ['w' => '100'])
+        );
+    }
+
     public function testGetUrlWithToken()
     {
         $urlBuilder = new UrlBuilder('http://example.com', new HttpSignature('example'));
