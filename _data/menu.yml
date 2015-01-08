@@ -1,16 +1,16 @@
 Getting Started:
     Introduction: '/'
-    Simple example: '/simple-example/'
-    Installation: '/installation/'
     Changelog: '/changelog/'
+    Installation: '/installation/'
+    Simple example: '/simple-example/'
 Configuration:
     The server: '/config/the-server/'
+    Basic usage: '/config/basic-usage/'
     Source & cache: '/config/source-and-cache/'
     Base URL: '/config/base-url/'
     Image driver: '/config/image-driver/'
     Secure images: '/config/secure-images/'
     Max image size: '/config/max-image-size/'
-    Basic usage: '/config/basic-usage/'
 Image API:
     Size: '/api/size/'
     Adjustments: '/api/adjustments/'

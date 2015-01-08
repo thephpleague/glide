@@ -38,10 +38,9 @@ $server->makeImage();
 All of the above methods will accept an instance of the `Symfony\Component\HttpFoundation\Request` class. However, sometimes it's desirable to manually pass the image filename and manipulation parameters. Glide makes this easy by also allowing you to pass a `$filename` and `$params` combination to the above methods. Consider the following example:
 
 ~~~ php
-Route::get('img/users/{id}/small', function($id) use ($server)
-{
+Route::get('img/users/{id}/small', function($id) use ($server) {
     $server->outputImage(
-        '/storage/users/' . $id . '.jpg',
+        '/users/' . $id . '.jpg',
         [
             'w' => 300,
             'h' => 400,
