@@ -23,7 +23,7 @@
     "require": {
         "php": ">=5.4",
         "intervention/image": "~2.0",
-        "league/flysystem": "~0.5",
+        "league/flysystem": "~1.0",
         "symfony/http-foundation": "~2.3",
         "symfony/http-kernel": "~2.3"
     },
@@ -40,5 +40,6 @@
         "branch-alias": {
             "dev-master": "0.2-dev"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
