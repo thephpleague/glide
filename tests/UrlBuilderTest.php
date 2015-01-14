@@ -48,4 +48,12 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
             $urlBuilder->getUrl('image.jpg', ['w' => '100'])
         );
     }
+
+    public function testGetInvalidUrl()
+    {
+        $this->setExpectedException('\InvalidArgumentException', 'Not a valid path.');
+
+        $urlBuilder = new UrlBuilder(':80');
+        $urlBuilder->getUrl('image.jpg');
+    }
 }
