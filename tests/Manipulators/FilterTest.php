@@ -42,6 +42,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             'Intervention\Image\Image',
             $this->manipulator->run(Request::create('image.jpg', ['filt' => 'sepia']), $image)
         );
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg'), $image)
+        );
     }
 
     public function testRunGreyscaleFilter()

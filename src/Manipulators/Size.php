@@ -214,6 +214,8 @@ class Size implements Manipulator
         if ($fit === 'crop') {
             return $this->runCropResize($image, $width, $height, $crop);
         }
+
+        return $image;
     }
 
     /**
