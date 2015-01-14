@@ -112,6 +112,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('image.jpg', $this->server->getSourceFilename('img/image.jpg'));
     }
 
+    public function testGetSourceFilenameWithMissingPath()
+    {
+        $this->setExpectedException(
+            'League\Glide\Exceptions\ImageNotFoundException',
+            'Image filename missing.'
+        );
+
+        $this->server->getSourceFilename('');
+    }
+
     public function testGetCacheFilename()
     {
         $this->assertEquals(

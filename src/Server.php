@@ -151,7 +151,8 @@ class Server
     /**
      * Get the source filename.
      * @param  mixed
-     * @return string The source filename.
+     * @return string                 The source filename.
+     * @throws ImageNotFoundException
      */
     public function getSourceFilename()
     {
@@ -162,6 +163,10 @@ class Server
 
         if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
             $path = trim(substr($path, strlen($baseUrl)), '/');
+        }
+
+        if ($path === '') {
+            throw new ImageNotFoundException('Image filename missing.');
         }
 
         return $path;
