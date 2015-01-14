@@ -34,19 +34,16 @@ class Output implements Manipulator
             'image/gif' => 'gif',
         ];
 
-        if (is_null($format)) {
-            $mime = $image->mime();
-
-            if (isset($allowed[$mime])) {
-                return $allowed[$mime];
-            }
+        if (in_array($format, $allowed, true)) {
+            return $format;
         }
 
-        if (!in_array($format, $allowed, true)) {
-            return 'jpg';
+        $mime = $image->mime();
+        if (isset($allowed[$mime])) {
+            return $allowed[$mime];
         }
 
-        return $format;
+        return 'jpg';
     }
 
     /**

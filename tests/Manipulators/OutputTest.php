@@ -46,15 +46,16 @@ class OutputTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('mime')->andReturn('image/png')->once();
             $mock->shouldReceive('mime')->andReturn('image/gif')->once();
             $mock->shouldReceive('mime')->andReturn('image/bmp')->once();
+            $mock->shouldReceive('mime')->andReturn('image/jpeg')->twice();
         });
 
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, 'jpg'));
+        $this->assertEquals('png', $this->manipulator->getFormat($image, 'png'));
+        $this->assertEquals('gif', $this->manipulator->getFormat($image, 'gif'));
         $this->assertEquals('jpg', $this->manipulator->getFormat($image, null));
         $this->assertEquals('png', $this->manipulator->getFormat($image, null));
         $this->assertEquals('gif', $this->manipulator->getFormat($image, null));
         $this->assertEquals('jpg', $this->manipulator->getFormat($image, null));
-        $this->assertEquals('jpg', $this->manipulator->getFormat($image, 'jpg'));
-        $this->assertEquals('png', $this->manipulator->getFormat($image, 'png'));
-        $this->assertEquals('gif', $this->manipulator->getFormat($image, 'gif'));
         $this->assertEquals('jpg', $this->manipulator->getFormat($image, ''));
         $this->assertEquals('jpg', $this->manipulator->getFormat($image, 'invalid'));
     }
