@@ -10,32 +10,37 @@ class Filter implements Manipulator
 {
     /**
      * Perform filter image manipulation.
-     * @param Request $request The request object.
-     * @param Image   $image   The source image.
+     * @param  Request $request The request object.
+     * @param  Image   $image   The source image.
+     * @return Image   The manipulated image.
      */
     public function run(Request $request, Image $image)
     {
         if ($request->get('filt') === 'greyscale') {
-            $this->runGreyscaleFilter($image);
+            return $this->runGreyscaleFilter($image);
         }
 
         if ($request->get('filt') === 'sepia') {
-            $this->runSepiaFilter($image);
+            return $this->runSepiaFilter($image);
         }
+
+        return $image;
     }
 
     /**
      * Perform greyscale manipulation.
-     * @param Image $image The source image.
+     * @param  Image $image The source image.
+     * @return Image The manipulated image.
      */
     public function runGreyscaleFilter(Image $image)
     {
-        $image->greyscale();
+        return $image->greyscale();
     }
 
     /**
      * Perform sepia manipulation.
-     * @param Image $image The source image.
+     * @param  Image $image The source image.
+     * @return Image The manipulated image.
      */
     public function runSepiaFilter(Image $image)
     {
@@ -45,5 +50,7 @@ class Filter implements Manipulator
         $image->colorize(38, 27, 12);
         $image->brightness(-10);
         $image->contrast(10);
+
+        return $image;
     }
 }

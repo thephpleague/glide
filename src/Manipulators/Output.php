@@ -10,12 +10,13 @@ class Output implements Manipulator
 {
     /**
      * Perform output image manipulation.
-     * @param Request $request The request object.
-     * @param Image   $image   The source image.
+     * @param  Request $request The request object.
+     * @param  Image   $image   The source image.
+     * @return Image   The manipulated image.
      */
     public function run(Request $request, Image $image)
     {
-        $image->encode(
+        return $image->encode(
             $this->getFormat($image, $request->get('fm')),
             $this->getQuality($request->get('q'))
         );

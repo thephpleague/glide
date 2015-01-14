@@ -10,19 +10,20 @@ class Orientation implements Manipulator
 {
     /**
      * Perform orientation image manipulation.
-     * @param Request $request The request object.
-     * @param Image   $image   The source image.
+     * @param  Request $request The request object.
+     * @param  Image   $image   The source image.
+     * @return Image   The manipulated image.
      */
     public function run(Request $request, Image $image)
     {
         $orientation = $this->getOrientation($request->get('or'));
 
         if ($orientation === 'auto') {
-            $image->orientate();
+            return $image->orientate();
         }
 
         if (in_array($orientation, ['90', '180', '270'], true)) {
-            $image->rotate($orientation);
+            return $image->rotate($orientation);
         }
     }
 

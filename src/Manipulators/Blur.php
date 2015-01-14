@@ -10,8 +10,9 @@ class Blur implements Manipulator
 {
     /**
      * Perform blur image manipulation.
-     * @param Request $request The request object.
-     * @param Image   $image   The source image.
+     * @param  Request $request The request object.
+     * @param  Image   $image   The source image.
+     * @return Image   The manipulated image.
      */
     public function run(Request $request, Image $image)
     {
@@ -20,6 +21,8 @@ class Blur implements Manipulator
         if ($blur) {
             $image->blur($blur);
         }
+
+        return $image;
     }
 
     /**

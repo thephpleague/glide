@@ -27,12 +27,19 @@ class OrientationTest extends \PHPUnit_Framework_TestCase
     public function testRun()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('orientate')->once();
-            $mock->shouldReceive('rotate')->with('90')->once();
+            $mock->shouldReceive('orientate')->andReturn($mock)->once();
+            $mock->shouldReceive('rotate')->andReturn($mock)->with('90')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['or' => 'auto']), $image);
-        $this->manipulator->run(Request::create('image.jpg', ['or' => '90']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['or' => 'auto']), $image)
+        );
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['or' => '90']), $image)
+        );
     }
 
     public function testGetOrientation()

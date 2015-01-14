@@ -30,7 +30,10 @@ class BrightnessTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('brightness')->with('50')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['bri' => '50']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['bri' => '50']), $image)
+        );
     }
 
     public function testGetPixelate()

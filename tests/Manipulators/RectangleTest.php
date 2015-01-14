@@ -32,7 +32,10 @@ class RectangleTest extends \PHPUnit_Framework_TestCase
     {
         $this->image->shouldReceive('crop')->with(100, 100, 0, 0)->once();
 
-        $this->manipulator->run(Request::create('image.jpg', ['rect' => '100,100,0,0']), $this->image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['rect' => '100,100,0,0']), $this->image)
+        );
     }
 
     public function testGetCoordinates()

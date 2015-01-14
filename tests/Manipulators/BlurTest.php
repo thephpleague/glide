@@ -30,7 +30,10 @@ class BlurTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('blur')->with('10')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['blur' => '10']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['blur' => '10']), $image)
+        );
     }
 
     public function testGetBlur()

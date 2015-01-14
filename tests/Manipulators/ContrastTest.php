@@ -30,7 +30,10 @@ class ContrastTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('contrast')->with('50')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['con' => '50']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['con' => '50']), $image)
+        );
     }
 
     public function testGetPixelate()

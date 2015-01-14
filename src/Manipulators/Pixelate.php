@@ -10,8 +10,9 @@ class Pixelate implements Manipulator
 {
     /**
      * Perform pixelate image manipulation.
-     * @param Request $request The request object.
-     * @param Image   $image   The source image.
+     * @param  Request $request The request object.
+     * @param  Image   $image   The source image.
+     * @return Image   The manipulated image.
      */
     public function run(Request $request, Image $image)
     {
@@ -20,6 +21,8 @@ class Pixelate implements Manipulator
         if ($pixelate) {
             $image->pixelate($pixelate);
         }
+
+        return $image;
     }
 
     /**

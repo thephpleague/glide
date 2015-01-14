@@ -33,17 +33,27 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                  ->shouldReceive('colorize')->with(38, 27, 12)->once()->andReturn($mock);
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['filt' => 'greyscale']), $image);
-        $this->manipulator->run(Request::create('image.jpg', ['filt' => 'sepia']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['filt' => 'greyscale']), $image)
+        );
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['filt' => 'sepia']), $image)
+        );
     }
 
     public function testRunGreyscaleFilter()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('greyscale')->once();
+            $mock->shouldReceive('greyscale')->andReturn($mock)->once();
         });
 
-        $this->manipulator->runGreyscaleFilter($image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->runGreyscaleFilter($image)
+        );
     }
 
     public function testRunSepiaFilter()
@@ -55,6 +65,9 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                  ->shouldReceive('colorize')->with(38, 27, 12)->once()->andReturn($mock);
         });
 
-        $this->manipulator->runSepiaFilter($image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->runSepiaFilter($image)
+        );
     }
 }

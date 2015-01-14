@@ -63,8 +63,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('make')->andReturn($image);
         });
 
-        $manipulator = Mockery::mock('League\Glide\Interfaces\Manipulator', function ($mock) {
-            $mock->shouldReceive('run')->andReturn(null);
+        $manipulator = Mockery::mock('League\Glide\Interfaces\Manipulator', function ($mock) use ($image) {
+            $mock->shouldReceive('run')->andReturn($image);
         });
 
         $api = new Api($manager, [$manipulator]);

@@ -27,15 +27,18 @@ class OutputTest extends \PHPUnit_Framework_TestCase
     public function testRun()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('encode')->with('jpg', '100')->once();
+            $mock->shouldReceive('encode')->with('jpg', '100')->andReturn($mock)->once();
         });
 
-        $this->manipulator->run(
-            Request::create('image.jpg', [
-                'fm' => 'jpg',
-                'q' => '100',
-            ]),
-            $image
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(
+                Request::create('image.jpg', [
+                    'fm' => 'jpg',
+                    'q' => '100',
+                ]),
+                $image
+            )
         );
     }
 

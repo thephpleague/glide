@@ -30,7 +30,10 @@ class PixelateTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('pixelate')->with('10')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['pixel' => '10']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['pixel' => '10']), $image)
+        );
     }
 
     public function testGetPixelate()

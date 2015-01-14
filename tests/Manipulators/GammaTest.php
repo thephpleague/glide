@@ -30,7 +30,10 @@ class GammaTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('gamma')->with('1.5')->once();
         });
 
-        $this->manipulator->run(Request::create('image.jpg', ['gam' => '1.5']), $image);
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Request::create('image.jpg', ['gam' => '1.5']), $image)
+        );
     }
 
     public function testGetPixelate()
