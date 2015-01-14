@@ -41,12 +41,22 @@ class OutputTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFormat()
     {
-        $this->assertEquals('jpg', $this->manipulator->getFormat(null));
-        $this->assertEquals('jpg', $this->manipulator->getFormat('jpg'));
-        $this->assertEquals('png', $this->manipulator->getFormat('png'));
-        $this->assertEquals('gif', $this->manipulator->getFormat('gif'));
-        $this->assertEquals('jpg', $this->manipulator->getFormat(''));
-        $this->assertEquals('jpg', $this->manipulator->getFormat('invalid'));
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('mime')->andReturn('image/jpeg')->once();
+            $mock->shouldReceive('mime')->andReturn('image/png')->once();
+            $mock->shouldReceive('mime')->andReturn('image/gif')->once();
+            $mock->shouldReceive('mime')->andReturn('image/bmp')->once();
+        });
+
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, null));
+        $this->assertEquals('png', $this->manipulator->getFormat($image, null));
+        $this->assertEquals('gif', $this->manipulator->getFormat($image, null));
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, null));
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, 'jpg'));
+        $this->assertEquals('png', $this->manipulator->getFormat($image, 'png'));
+        $this->assertEquals('gif', $this->manipulator->getFormat($image, 'gif'));
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, ''));
+        $this->assertEquals('jpg', $this->manipulator->getFormat($image, 'invalid'));
     }
 
     public function testGetQuality()

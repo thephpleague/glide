@@ -16,7 +16,7 @@ class Output implements Manipulator
     public function run(Request $request, Image $image)
     {
         $image->encode(
-            $this->getFormat($request->get('fm')),
+            $this->getFormat($image, $request->get('fm')),
             $this->getQuality($request->get('q'))
         );
     }
@@ -26,16 +26,24 @@ class Output implements Manipulator
      * @param  string $format The format.
      * @return string The resolved format.
      */
-    public function getFormat($format)
+    public function getFormat(Image $image, $format)
     {
-        $default = 'jpg';
+        $allowed = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+        ];
 
         if (is_null($format)) {
-            return $default;
+            $mime = $image->mime();
+
+            if (isset($allowed[$mime])) {
+                return $allowed[$mime];
+            }
         }
 
-        if (!in_array($format, ['jpg', 'png', 'gif'], true)) {
-            return $default;
+        if (!in_array($format, $allowed, true)) {
+            return 'jpg';
         }
 
         return $format;
