@@ -19,10 +19,22 @@ class Server
     protected $source;
 
     /**
+     * The source path prefix.
+     * @var string
+     */
+    protected $sourcePathPrefix;
+
+    /**
      * The cache file system.
      * @var FilesystemInterface
      */
     protected $cache;
+
+    /**
+     * The cache path prefix.
+     * @var string
+     */
+    protected $cachePathPrefix;
 
     /**
      * The image manipulation API.
@@ -43,12 +55,11 @@ class Server
      * @param ApiInterface        $api     The image manipulation API.
      * @param string              $baseUrl The base URL.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, $baseUrl = '')
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
-        $this->setBaseUrl($baseUrl);
     }
 
     /**
@@ -70,6 +81,63 @@ class Server
     }
 
     /**
+     * Set the source path prefix.
+     * @param string $sourcePathPrefix The source path prefix.
+     */
+    public function setSourcePathPrefix($sourcePathPrefix)
+    {
+        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+    }
+
+    /**
+     * Get the source path prefix.
+     * @return string The source path prefix.
+     */
+    public function getSourcePathPrefix()
+    {
+        return $this->sourcePathPrefix;
+    }
+
+    /**
+     * Get the source path.
+     * @param  mixed
+     * @return string                 The source path.
+     * @throws ImageNotFoundException
+     */
+    public function getSourcePath()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $path = trim($request->getPathInfo(), '/');
+
+        if (substr($path, 0, strlen($this->baseUrl)) === $this->baseUrl) {
+            $path = trim(substr($path, strlen($this->baseUrl)), '/');
+        }
+
+        if ($path === '') {
+            throw new ImageNotFoundException('Image path missing.');
+        }
+
+        if ($this->sourcePathPrefix) {
+            $path = $this->sourcePathPrefix.'/'.$path;
+        }
+
+        return $path;
+    }
+
+    /**
+     * Check if a source file exists.
+     * @param  mixed
+     * @return bool
+     */
+    public function sourceFileExists()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        return $this->source->has($this->getSourcePath($request));
+    }
+
+    /**
      * Set the cache file system.
      * @param FilesystemInterface $cache The cache file system.
      */
@@ -85,6 +153,54 @@ class Server
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * Set the cache path prefix.
+     * @param string $cachePathPrefix The cache path prefix.
+     */
+    public function setCachePathPrefix($cachePathPrefix)
+    {
+        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+    }
+
+    /**
+     * Get the cache path prefix.
+     * @return string The cache path prefix.
+     */
+    public function getCachePathPrefix()
+    {
+        return $this->cachePathPrefix;
+    }
+
+    /**
+     * Get the cache path.
+     * @param  mixed
+     * @return string The cache path.
+     */
+    public function getCachePath()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        $path = md5($this->getSourcePath($request).'?'.http_build_query($request->query->all()));
+
+        if ($this->cachePathPrefix) {
+            $path = $this->cachePathPrefix.'/'.$path;
+        }
+
+        return $path;
+    }
+
+    /**
+     * Check if a cache file exists.
+     * @param  mixed
+     * @return bool
+     */
+    public function cacheFileExists()
+    {
+        $request = $this->resolveRequestObject(func_get_args());
+
+        return $this->cache->has($this->getCachePath($request));
     }
 
     /**
@@ -111,7 +227,7 @@ class Server
      */
     public function setBaseUrl($baseUrl)
     {
-        $this->baseUrl = $baseUrl;
+        $this->baseUrl = trim($baseUrl, '/');
     }
 
     /**
@@ -121,91 +237,6 @@ class Server
     public function getBaseUrl()
     {
         return $this->baseUrl;
-    }
-
-    /**
-     * Resolve request object.
-     * @param  array   $args Array of supplied arguments.
-     * @return Request The request object.
-     */
-    public function resolveRequestObject($args)
-    {
-        if (isset($args[0]) and $args[0] instanceof Request) {
-            return $args[0];
-        }
-
-        if (isset($args[0]) and is_string($args[0])) {
-            $filename = $args[0];
-            $params = [];
-
-            if (isset($args[1]) and is_array($args[1])) {
-                $params = $args[1];
-            }
-
-            return RequestFactory::create($filename, $params);
-        }
-
-        throw new InvalidArgumentException('Not a valid filename or Request object.');
-    }
-
-    /**
-     * Get the source filename.
-     * @param  mixed
-     * @return string                 The source filename.
-     * @throws ImageNotFoundException
-     */
-    public function getSourceFilename()
-    {
-        $request = $this->resolveRequestObject(func_get_args());
-
-        $baseUrl = trim($this->baseUrl, '/');
-        $path = trim($request->getPathInfo(), '/');
-
-        if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
-            $path = trim(substr($path, strlen($baseUrl)), '/');
-        }
-
-        if ($path === '') {
-            throw new ImageNotFoundException('Image filename missing.');
-        }
-
-        return $path;
-    }
-
-    /**
-     * Get the cache filename.
-     * @param  mixed
-     * @return string The cache filename.
-     */
-    public function getCacheFilename()
-    {
-        $request = $this->resolveRequestObject(func_get_args());
-
-        return md5($this->getSourceFilename($request).'?'.http_build_query($request->query->all()));
-    }
-
-    /**
-     * Check if a source file exists.
-     * @param  mixed
-     * @return bool
-     */
-    public function sourceFileExists()
-    {
-        $request = $this->resolveRequestObject(func_get_args());
-
-        return $this->source->has($this->getSourceFilename($request));
-    }
-
-    /**
-     * Check if a cache file exists.
-     * @param  mixed
-     * @return bool
-     */
-    public function cacheFileExists()
-    {
-        $request = $this->resolveRequestObject(func_get_args());
-
-        return $this->cache->has($this->getCacheFilename($request));
     }
 
     /**
@@ -220,7 +251,7 @@ class Server
         $this->makeImage($request);
 
         $output = new Output($this->cache);
-        $output->getResponse($this->getCacheFilename($request))->send();
+        $output->getResponse($this->getCachePath($request))->send();
 
         return $request;
     }
@@ -238,7 +269,7 @@ class Server
 
         $output = new Output($this->cache);
 
-        return $output->getResponse($this->getCacheFilename($request));
+        return $output->getResponse($this->getCachePath($request));
     }
 
     /**
@@ -256,19 +287,44 @@ class Server
 
         if ($this->sourceFileExists($request) === false) {
             throw new ImageNotFoundException(
-                'Could not find the image `'.$this->getSourceFilename($request).'`.'
+                'Could not find the image `'.$this->getSourcePath($request).'`.'
             );
         }
 
         $source = $this->source->read(
-            $this->getSourceFilename($request)
+            $this->getSourcePath($request)
         );
 
         $this->cache->write(
-            $this->getCacheFilename($request),
+            $this->getCachePath($request),
             $this->api->run($request, $source)
         );
 
         return $request;
+    }
+
+    /**
+     * Resolve request object.
+     * @param  array   $args Array of supplied arguments.
+     * @return Request The request object.
+     */
+    protected function resolveRequestObject($args)
+    {
+        if (isset($args[0]) and $args[0] instanceof Request) {
+            return $args[0];
+        }
+
+        if (isset($args[0]) and is_string($args[0])) {
+            $path = $args[0];
+            $params = [];
+
+            if (isset($args[1]) and is_array($args[1])) {
+                $params = $args[1];
+            }
+
+            return RequestFactory::create($path, $params);
+        }
+
+        throw new InvalidArgumentException('Not a valid path or Request object.');
     }
 }

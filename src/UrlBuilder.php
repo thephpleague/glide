@@ -59,7 +59,7 @@ class UrlBuilder
      * @param  array  $params The manipulation parameters.
      * @return string The built URL.
      */
-    private function buildUrl($parts, $params)
+    protected function buildUrl($parts, $params)
     {
         $url = '';
 

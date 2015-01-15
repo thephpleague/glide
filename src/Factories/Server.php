@@ -44,12 +44,17 @@ class Server
      */
     public function getServer()
     {
-        return new GlideServer(
+        $server = new GlideServer(
             $this->getSource(),
             $this->getCache(),
-            $this->getApi(),
-            $this->getBaseUrl()
+            $this->getApi()
         );
+
+        $server->setSourcePathPrefix($this->getSourcePathPrefix());
+        $server->setCachePathPrefix($this->getCachePathPrefix());
+        $server->setBaseUrl($this->getBaseUrl());
+
+        return $server;
     }
 
     /**
@@ -167,6 +172,28 @@ class Server
         }
 
         return $baseUrl;
+    }
+
+    public function getSourcePathPrefix()
+    {
+        $sourcePathPrefix = '';
+
+        if (isset($this->config['source_path_prefix'])) {
+            $sourcePathPrefix = $this->config['source_path_prefix'];
+        }
+
+        return $sourcePathPrefix;
+    }
+
+    public function getCachePathPrefix()
+    {
+        $cachePathPrefix = '';
+
+        if (isset($this->config['cache_path_prefix'])) {
+            $cachePathPrefix = $this->config['cache_path_prefix'];
+        }
+
+        return $cachePathPrefix;
     }
 
     /**

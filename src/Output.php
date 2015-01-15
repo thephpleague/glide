@@ -42,15 +42,15 @@ class Output
 
     /**
      * Get the streamed response.
-     * @param  string           $filename Unique file identifier.
+     * @param  string           $path The cache path.
      * @return StreamedResponse The response object.
      */
-    public function getResponse($filename)
+    public function getResponse($path)
     {
         $response = new StreamedResponse();
 
-        $this->setHeaders($response, $filename);
-        $this->setContent($response, $filename);
+        $this->setHeaders($response, $path);
+        $this->setContent($response, $path);
 
         return $response;
     }
@@ -58,13 +58,13 @@ class Output
     /**
      * Set the streamed response headers.
      * @param  StreamedResponse $response The response object.
-     * @param  string           $filename Unique file identifier.
+     * @param  string           $path     The cache path.
      * @return StreamedResponse
      */
-    public function setHeaders(StreamedResponse $response, $filename)
+    public function setHeaders(StreamedResponse $response, $path)
     {
-        $response->headers->set('Content-Type', $this->cache->getMimetype($filename));
-        $response->headers->set('Content-Length', $this->cache->getSize($filename));
+        $response->headers->set('Content-Type', $this->cache->getMimetype($path));
+        $response->headers->set('Content-Length', $this->cache->getSize($path));
         $response->setPublic();
         $response->setExpires(date_create('now')->modify('+1 years'));
         $response->setMaxAge(31536000);
@@ -75,12 +75,12 @@ class Output
     /**
      * Set the stream response content.
      * @param  StreamedResponse $response The response object.
-     * @param  string           $filename Unique file identifier.
+     * @param  string           $path     The cache path.
      * @return StreamedResponse
      */
-    public function setContent(StreamedResponse $response, $filename)
+    public function setContent(StreamedResponse $response, $path)
     {
-        $stream = $this->cache->readStream($filename);
+        $stream = $this->cache->readStream($path);
 
         $response->setCallback(function () use ($stream) {
             rewind($stream);

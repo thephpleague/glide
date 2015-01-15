@@ -39,6 +39,54 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getSource());
     }
 
+    public function testSetSourcePathPrefix()
+    {
+        $this->server->setSourcePathPrefix('img/');
+        $this->assertEquals('img', $this->server->getSourcePathPrefix());
+    }
+
+    public function testGetSourcePathPrefix()
+    {
+        $this->assertEquals('', $this->server->getSourcePathPrefix());
+    }
+
+    public function testGetSourcePath()
+    {
+        $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
+        $this->assertEquals('image.jpg', $this->server->getSourcePath(Request::create('image.jpg')));
+    }
+
+    public function testGetSourcePathWithBaseUrl()
+    {
+        $this->server->setBaseUrl('img/');
+        $this->assertEquals('image.jpg', $this->server->getSourcePath('img/image.jpg'));
+    }
+
+    public function testGetSourcePathWithPrefix()
+    {
+        $this->server->setSourcePathPrefix('img/');
+        $this->assertEquals('img/image.jpg', $this->server->getSourcePath('image.jpg'));
+    }
+
+    public function testGetSourcePathWithMissingPath()
+    {
+        $this->setExpectedException(
+            'League\Glide\Exceptions\ImageNotFoundException',
+            'Image path missing.'
+        );
+
+        $this->server->getSourcePath('');
+    }
+
+    public function testSourceFileExists()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->with('image.jpg')->andReturn(true)->once();
+        }));
+
+        $this->assertTrue($this->server->sourceFileExists('image.jpg'));
+    }
+
     public function testSetCache()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface'));
@@ -48,6 +96,40 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetCache()
     {
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->server->getCache());
+    }
+
+    public function testSetCachePathPrefix()
+    {
+        $this->server->setCachePathPrefix('img/');
+        $this->assertEquals('img', $this->server->getCachePathPrefix());
+    }
+
+    public function testGetCachePathPrefix()
+    {
+        $this->assertEquals('', $this->server->getCachePathPrefix());
+    }
+
+    public function testGetCachePath()
+    {
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCachePath('image.jpg', ['w' => '100'])
+        );
+    }
+
+    public function testGetCachePathWithPrefix()
+    {
+        $this->server->setCachePathPrefix('img/');
+        $this->assertEquals('img/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg'));
+    }
+
+    public function testCacheFileExists()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->with('75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
+        }));
+
+        $this->assertTrue($this->server->cacheFileExists('image.jpg'));
     }
 
     public function testSetAPI()
@@ -65,87 +147,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testSetBaseUrl()
     {
         $this->server->setBaseUrl('img/');
-        $this->assertEquals('img/', $this->server->getBaseUrl());
+        $this->assertEquals('img', $this->server->getBaseUrl());
     }
 
     public function testGetBaseUrl()
     {
         $this->assertEquals('', $this->server->getBaseUrl());
-    }
-
-    public function testResolveRequestObject()
-    {
-        $this->assertInstanceOf(
-            'Symfony\Component\HttpFoundation\Request',
-            $this->server->resolveRequestObject(
-                [Request::create('image.jpg', ['w' => '100'])]
-            )
-        );
-
-        $this->assertInstanceOf(
-            'Symfony\Component\HttpFoundation\Request',
-            $this->server->resolveRequestObject(
-                ['image.jpg', ['w' => '100']]
-            )
-        );
-    }
-
-    public function testResolveRequestObjectWithInvalidArgs()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Not a valid filename or Request object.');
-
-        $this->assertInstanceOf(
-            'Symfony\Component\HttpFoundation\Request',
-            $this->server->resolveRequestObject([])
-        );
-    }
-
-    public function testGetSourceFilename()
-    {
-        $this->assertEquals('image.jpg', $this->server->getSourceFilename('image.jpg'));
-        $this->assertEquals('image.jpg', $this->server->getSourceFilename(Request::create('image.jpg')));
-    }
-
-    public function testGetSourceFilenameWithBaseUrl()
-    {
-        $this->server->setBaseUrl('img/');
-        $this->assertEquals('image.jpg', $this->server->getSourceFilename('img/image.jpg'));
-    }
-
-    public function testGetSourceFilenameWithMissingPath()
-    {
-        $this->setExpectedException(
-            'League\Glide\Exceptions\ImageNotFoundException',
-            'Image filename missing.'
-        );
-
-        $this->server->getSourceFilename('');
-    }
-
-    public function testGetCacheFilename()
-    {
-        $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
-            $this->server->getCacheFilename('image.jpg', ['w' => '100'])
-        );
-    }
-
-    public function testSourceFileExists()
-    {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->with('image.jpg')->andReturn(true)->once();
-        }));
-
-        $this->assertTrue($this->server->sourceFileExists('image.jpg'));
-    }
-
-    public function testCacheFileExists()
-    {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->with('75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
-        }));
-
-        $this->assertTrue($this->server->cacheFileExists('image.jpg'));
     }
 
     /**
@@ -191,6 +198,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         }));
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+    }
+
+    public function testMakeImageWithInvalidRequest()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Not a valid path or Request object.'
+        );
+
+        $this->server->makeImage([]);
     }
 
     public function testMakeImageFromSourceThatDoesNotExist()

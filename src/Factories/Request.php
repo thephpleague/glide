@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\Request as ImageRequest;
 class Request
 {
     /**
-     * Unique file identifier.
+     * The source path.
      * @var string
      */
-    protected $filename;
+    protected $path;
 
     /**
      * Manipulation parameters.
@@ -20,12 +20,12 @@ class Request
 
     /**
      * Create request factory instance.
-     * @param string $filename Unique file identifier.
-     * @param array  $params   Manipulation parameters.
+     * @param string $path   The source path.
+     * @param array  $params Manipulation parameters.
      */
-    public function __construct($filename, array $params = [])
+    public function __construct($path, array $params = [])
     {
-        $this->filename = $filename;
+        $this->path = $path;
 
         $this->params = [];
         foreach ($params as $key => $value) {
@@ -40,18 +40,18 @@ class Request
     public function getRequest()
     {
         return new ImageRequest($this->params, [], [], [], [], [
-            'REQUEST_URI' => $this->filename
+            'REQUEST_URI' => $this->path
         ]);
     }
 
     /**
      * Create request instance.
-     * @param  string       $filename Unique file identifier.
-     * @param  array        $params   Manipulation parameters.
+     * @param  string       $path   The source path.
+     * @param  array        $params Manipulation parameters.
      * @return ImageRequest The request object.
      */
-    public static function create($filename, array $params = [])
+    public static function create($path, array $params = [])
     {
-        return (new self($filename, $params))->getRequest();
+        return (new self($path, $params))->getRequest();
     }
 }
