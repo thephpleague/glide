@@ -4,6 +4,7 @@ namespace League\Glide;
 
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Exceptions\FilesystemException;
 use League\Glide\Exceptions\ImageNotFoundException;
 use League\Glide\Factories\Request as RequestFactory;
 use League\Glide\Interfaces\Api as ApiInterface;
@@ -294,10 +295,22 @@ class Server
             $this->getSourcePath($request)
         );
 
-        $this->cache->write(
+        if ($source === false) {
+            throw new FilesystemException(
+                'Could not read the image `'.$this->getSourcePath($request).'`.'
+            );
+        }
+
+        $write = $this->cache->write(
             $this->getCachePath($request),
             $this->api->run($request, $source)
         );
+
+        if ($write === false) {
+            throw new FilesystemException(
+                'Could not write the image `'.$this->getCachePath($request).'`.'
+            );
+        }
 
         return $request;
     }

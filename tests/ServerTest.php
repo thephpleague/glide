@@ -228,6 +228,49 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
     }
 
+    public function testMakeImageWithUnreadableSource()
+    {
+        $this->setExpectedException(
+            'League\Glide\Exceptions\FilesystemException',
+            'Could not read the image `image.jpg`.'
+        );
+
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn(false)->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+        }));
+
+        $this->server->makeImage('image.jpg');
+    }
+
+    public function testMakeImageWithUnwritableCache()
+    {
+        $this->setExpectedException(
+            'League\Glide\Exceptions\FilesystemException',
+            'Could not write the image `75094881e9fd2b93063d6a5cb083091c`.'
+        );
+
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->andReturn(false)->once();
+        }));
+
+        $this->server->setApi(Mockery::mock('League\Glide\Interfaces\API', function ($mock) {
+            $mock->shouldReceive('run')->andReturn('content')->once();
+        }));
+
+        $this->server->makeImage('image.jpg');
+    }
+
     public function testMakeImageFromSource()
     {
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
