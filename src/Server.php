@@ -50,10 +50,9 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface $source  The source file system.
-     * @param FilesystemInterface $cache   The cache file system.
-     * @param ApiInterface        $api     The image manipulation API.
-     * @param string              $baseUrl The base URL.
+     * @param FilesystemInterface $source The source file system.
+     * @param FilesystemInterface $cache  The cache file system.
+     * @param ApiInterface        $api    The image manipulation API.
      */
     public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
     {
