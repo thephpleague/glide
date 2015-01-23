@@ -23,7 +23,7 @@
     "require": {
         "php": ">=5.4",
         "intervention/image": "~2.0",
-        "league/flysystem": "~1.0@dev",
+        "league/flysystem": "~1.0",
         "symfony/http-foundation": "~2.3",
         "symfony/http-kernel": "~2.3"
     },
