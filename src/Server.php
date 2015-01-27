@@ -4,10 +4,11 @@ namespace League\Glide;
 
 use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Exceptions\FilesystemException;
-use League\Glide\Exceptions\ImageNotFoundException;
-use League\Glide\Factories\Request as RequestFactory;
-use League\Glide\Interfaces\Api as ApiInterface;
+use League\Glide\Api\ApiInterface;
+use League\Glide\Filesystem\FilesystemException;
+use League\Glide\Http\NotFoundException;
+use League\Glide\Http\RequestFactory;
+use League\Glide\Http\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -101,8 +102,8 @@ class Server
     /**
      * Get the source path.
      * @param  mixed
-     * @return string                 The source path.
-     * @throws ImageNotFoundException
+     * @return string            The source path.
+     * @throws NotFoundException
      */
     public function getSourcePath()
     {
@@ -115,7 +116,7 @@ class Server
         }
 
         if ($path === '') {
-            throw new ImageNotFoundException('Image path missing.');
+            throw new NotFoundException('Image path missing.');
         }
 
         if ($this->sourcePathPrefix) {
@@ -250,8 +251,7 @@ class Server
 
         $this->makeImage($request);
 
-        $output = new Output($this->cache);
-        $output->getResponse($this->getCachePath($request))->send();
+        ResponseFactory::create($this->cache, $request, $this->getCachePath($request))->send();
 
         return $request;
     }
@@ -267,15 +267,13 @@ class Server
 
         $this->makeImage($request);
 
-        $output = new Output($this->cache);
-
-        return $output->getResponse($this->getCachePath($request));
+        return ResponseFactory::create($this->cache, $request, $this->getCachePath($request));
     }
 
     /**
      * Generate manipulated image.
-     * @return Request                The request object.
-     * @throws ImageNotFoundException
+     * @return Request           The request object.
+     * @throws NotFoundException
      */
     public function makeImage()
     {
@@ -286,7 +284,7 @@ class Server
         }
 
         if ($this->sourceFileExists($request) === false) {
-            throw new ImageNotFoundException(
+            throw new NotFoundException(
                 'Could not find the image `'.$this->getSourcePath($request).'`.'
             );
         }

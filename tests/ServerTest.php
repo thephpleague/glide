@@ -2,7 +2,7 @@
 
 namespace League\Glide;
 
-use League\Glide\Factories\Request;
+use League\Glide\Http\RequestFactory;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
@@ -14,7 +14,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server = new Server(
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Flysystem\FilesystemInterface'),
-            Mockery::mock('League\Glide\Interfaces\API')
+            Mockery::mock('League\Glide\Api\ApiInterface')
         );
     }
 
@@ -53,7 +53,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePath()
     {
         $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
-        $this->assertEquals('image.jpg', $this->server->getSourcePath(Request::create('image.jpg')));
+        $this->assertEquals('image.jpg', $this->server->getSourcePath(RequestFactory::create('image.jpg')));
     }
 
     public function testGetSourcePathWithBaseUrl()
@@ -71,7 +71,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePathWithMissingPath()
     {
         $this->setExpectedException(
-            'League\Glide\Exceptions\ImageNotFoundException',
+            'League\Glide\Http\NotFoundException',
             'Image path missing.'
         );
 
@@ -134,14 +134,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAPI()
     {
-        $api = Mockery::mock('League\Glide\Interfaces\API');
+        $api = Mockery::mock('League\Glide\Api\ApiInterface');
         $this->server->setApi($api);
-        $this->assertInstanceOf('League\Glide\Interfaces\API', $this->server->getApi());
+        $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
     }
 
     public function testGetAPI()
     {
-        $this->assertInstanceOf('League\Glide\Interfaces\API', $this->server->getApi());
+        $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
     }
 
     public function testSetBaseUrl()
@@ -169,6 +169,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
+            $mock->shouldReceive('getTimestamp')->andReturn(time());
             $mock->shouldReceive('readStream')->andReturn($file);
         }));
 
@@ -185,6 +186,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
+            $mock->shouldReceive('getTimestamp')->andReturn(time());
             $mock->shouldReceive('readStream')->andReturn(tmpfile());
         }));
 
@@ -213,7 +215,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testMakeImageFromSourceThatDoesNotExist()
     {
         $this->setExpectedException(
-            'League\Glide\Exceptions\ImageNotFoundException',
+            'League\Glide\Http\NotFoundException',
             'Could not find the image `image.jpg`.'
         );
 
@@ -231,7 +233,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testMakeImageWithUnreadableSource()
     {
         $this->setExpectedException(
-            'League\Glide\Exceptions\FilesystemException',
+            'League\Glide\Filesystem\FilesystemException',
             'Could not read the image `image.jpg`.'
         );
 
@@ -250,7 +252,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testMakeImageWithUnwritableCache()
     {
         $this->setExpectedException(
-            'League\Glide\Exceptions\FilesystemException',
+            'League\Glide\Filesystem\FilesystemException',
             'Could not write the image `75094881e9fd2b93063d6a5cb083091c`.'
         );
 
@@ -264,7 +266,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('write')->andReturn(false)->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Interfaces\API', function ($mock) {
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
@@ -283,7 +285,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('write')->with('75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Interfaces\API', function ($mock) {
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
