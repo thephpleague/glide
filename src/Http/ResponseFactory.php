@@ -95,7 +95,7 @@ class ResponseFactory
      * @param  FilesystemInterface $cache   The cache file system.
      * @param  Request             $request The request object.
      * @param  string              $path    The file path.
-     * @return Response            The response object.
+     * @return StreamedResponse    The response object.
      */
     public static function create(FilesystemInterface $cache, Request $request, $path)
     {
