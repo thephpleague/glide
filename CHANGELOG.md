@@ -4,17 +4,17 @@ All notable changes to Glide will be documented in this file.
 
 ## 0.3.0
 
-- Large refactor, many classes moved and renamed.
-- Changed `league/flysystem` dependency to version `1.x`.
-- Added new `FilesystemException` exception, and additional file system checks.
-- Added new source path prefix option to `Server`, with `setSourcePathPrefix()` and `getSourcePathPrefix()` methods.
-- Added new cache path prefix option to `Server`, with `setCachePathPrefix()` and `getCachePathPrefix()` methods.
-- Added new `source_path_prefix` and `cache_path_prefix` options to `Factories\Server`.
-- Changed manipulators to return an instance of `Intervention\Image\Image`.
-- Updated output manipulator to use source format when format is not set or is invalid.
-- Renamed server method `getSourceFilename()` to `getSourcePath()`.
-- Renamed server method `getCacheFilename()` to `getCachePath()`.
-- Removed `$baseUrl` parameter from the `Server` constructor.
+- Large refactor for improve code organization. Many classes moved and renamed.
+- Changed `league/flysystem` dependency to version `1.x`. Nice work [@frankdejonge](https://github.com/frankdejonge)!
+- Responses will now return `304 Not Modified` on subsequent requests. [#20](https://github.com/thephpleague/glide/issues/20])
+- Added new source path prefix option to `Server`, with `setSourcePathPrefix()` and `getSourcePathPrefix()` methods. [#26](https://github.com/thephpleague/glide/issues/26])
+- Added new cache path prefix option to `Server`, with `setCachePathPrefix()` and `getCachePathPrefix()` methods. [#26](https://github.com/thephpleague/glide/issues/26])
+- Added new `source_path_prefix` and `cache_path_prefix` options to `ServerFactory`. [#26](https://github.com/thephpleague/glide/issues/26])
+- Added new `FilesystemException\FilesystemException` exception, and additional file system checks.
+- Changed manipulators to return an instance of `Intervention\Image\Image`. This allows for more rigorous manipulations to occur. [#25](https://github.com/thephpleague/glide/issues/25])
+- Updated output manipulator to use source format when format is not set or invalid. Previously this was set to `jpg` by default. [#24](https://github.com/thephpleague/glide/issues/24])
+- Renamed server method `getSourceFilename()` to `getSourcePath()`, and `getCacheFilename()` to `getCachePath()`. 
+- Removed `$baseUrl` parameter from the `Server` constructor. Use `setBaseUrl()` method instead.
 
 ## 0.2.0
 
