@@ -18,12 +18,13 @@ Since this isn't ideal, Glide allows you to define a `base_url` which is omitted
 ## Set the base URL
 
 ~~~ php
-use League\Glide\Factories\Server;
-
-// Set base URL in Glide configuration
-$glide = Server::create([
+// Set using factory
+$server = League\Glide\ServerFactory::create([
     'base_url' => '/img/',
 ]);
+
+// Set using setter method
+$server->setBaseUrl('/img/');
 ~~~
 
 With the base URL configured, the new image source paths will no longer include `/img/`. 

@@ -10,15 +10,15 @@ Glide makes it possible to access images stored in a variety of file systems. It
 
 ## Setup using Flysystem
 
-To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. See the [Flysystem](http://flysystem.thephpleague.com/) website for a complete list of available adapters.
+To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. See the Flysystem [website](http://flysystem.thephpleague.com/) for a complete list of available adapters.
 
 ~~~ php
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use League\Glide\Factories\Server;
+use League\Glide\ServerFactory;
 
 // Setup Glide server
-$glide = Server::create([
+$server = ServerFactory::create([
     'source' => new Filesystem(new Local('path/to/source/folder')),
     'cache' => new Filesystem(new Local('path/to/cache/folder')),
 ]);
@@ -29,11 +29,26 @@ $glide = Server::create([
 Alternatively, if you are only using the local disk, you can simply provide the paths as a string.
 
 ~~~ php
-use League\Glide\Factories\Server;
-
-// Setup Glide server
-$glide = Server::create([
+$server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
 ]);
+~~~
+
+## Set default path prefix
+
+While it's normally possible to set the full source and cache path using Flysystem, there are situations where it may be desirable to set a default path prefix. For example, when only one instance of the `Filesystem` is available.
+
+~~~ php
+// Set using factory
+$server = League\Glide\ServerFactory::create([
+    'source' => $filesystem,
+    'cache' => $filesystem,
+    'source_path_prefix' => 'source',
+    'cache_path_prefix' => 'cache',
+]);
+
+// Set using setter methods
+$server->setSourcePathPrefix('source');
+$server->setCachePathPrefix('cache');
 ~~~

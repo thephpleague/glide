@@ -6,14 +6,14 @@ title: The server
 
 # The server
 
-All the Glide configuration is managed through a central object call the `Server`. This includes the image [source location](/config/source-and-cache/) (where the original images are saved), the image [cache location](/config/source-and-cache/) (where the manipulated images are saved), the image manipulation API and the [sign key](/config/secure-images/) (used to secure URLs).
+All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](/config/source-and-cache/) (where the original images are saved), the image [cache location](/config/source-and-cache/) (where the manipulated images are saved), the image manipulation API as well as any configuration options.
 
 ## Setup with factory
 
 The easiest way to configure the `Server` is using the supplied factory.
 
 ~~~ php
-$glide = League\Glide\Factories\Server::create([
+$server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
 ]);
@@ -34,30 +34,29 @@ $cache = new League\Flysystem\Filesystem(
     new League\Flysystem\Adapter\Local('path/to/cache/folder')
 );
 
-// Set sign key
-$signKey = new League\Glide\SignKey('your-sign-key');
-
 // Set image manager
-$imageManager = new Intervention\Image\ImageManager();
+$imageManager = new Intervention\Image\ImageManager([
+    'driver' => 'imagick',
+]);
 
 // Set manipulators
 $manipulators = [
-    new League\Glide\Manipulators\Orientation(),
-    new League\Glide\Manipulators\Rectangle(),
-    new League\Glide\Manipulators\Size(2000*2000),
-    new League\Glide\Manipulators\Brightness(),
-    new League\Glide\Manipulators\Contrast(),
-    new League\Glide\Manipulators\Gamma(),
-    new League\Glide\Manipulators\Sharpen(),
-    new League\Glide\Manipulators\Filter(),
-    new League\Glide\Manipulators\Blur(),
-    new League\Glide\Manipulators\Pixelate(),
-    new League\Glide\Manipulators\Output(),
+    new League\Glide\Api\Manipulator\Orientation(),
+    new League\Glide\Api\Manipulator\Rectangle(),
+    new League\Glide\Api\Manipulator\Size(2000*2000),
+    new League\Glide\Api\Manipulator\Brightness(),
+    new League\Glide\Api\Manipulator\Contrast(),
+    new League\Glide\Api\Manipulator\Gamma(),
+    new League\Glide\Api\Manipulator\Sharpen(),
+    new League\Glide\Api\Manipulator\Filter(),
+    new League\Glide\Api\Manipulator\Blur(),
+    new League\Glide\Api\Manipulator\Pixelate(),
+    new League\Glide\Api\Manipulator\Output(),
 ];
 
 // Set API
-$api = new League\Glide\Api($imageManager, $manipulators);
+$api = new League\Glide\Api\Api($imageManager, $manipulators);
 
 // Setup Glide server
-$server = new League\Glide\Server($source, $cache, $api, $signKey);
+$server = new League\Glide\Server($source, $cache, $api);
 ~~~
