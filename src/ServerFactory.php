@@ -7,7 +7,6 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiFactory;
-use League\Glide\Server as GlideServer;
 
 class ServerFactory
 {
@@ -28,11 +27,11 @@ class ServerFactory
 
     /**
      * Create server instance.
-     * @return GlideServer The configured Glide server.
+     * @return Server The configured Glide server.
      */
     public function getServer()
     {
-        $server = new GlideServer(
+        $server = new Server(
             $this->getSource(),
             $this->getCache(),
             $this->getApi()
@@ -139,8 +138,8 @@ class ServerFactory
 
     /**
      * Create server instance.
-     * @param  array       $config Configuration parameters.
-     * @return GlideServer The configured server.
+     * @param  array  $config Configuration parameters.
+     * @return Server The configured server.
      */
     public static function create(array $config = [])
     {
