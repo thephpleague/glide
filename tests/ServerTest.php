@@ -78,6 +78,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server->getSourcePath('');
     }
 
+    public function testGetSourcePathWithEncodedEntities()
+    {
+        $this->assertEquals('an image.jpg', $this->server->getSourcePath('an%20image.jpg'));
+        $this->assertEquals('an image.jpg', $this->server->getSourcePath(RequestFactory::create('an%20image.jpg')));
+    }
+
     public function testSourceFileExists()
     {
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
