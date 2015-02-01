@@ -123,7 +123,7 @@ class Server
             $path = $this->sourcePathPrefix.'/'.$path;
         }
 
-        return urldecode($path);
+        return rawurldecode($path);
     }
 
     /**
