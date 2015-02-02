@@ -2,6 +2,10 @@
 
 All notable changes to Glide will be documented in this file.
 
+## 0.3.1
+
+- Fixed bug with URLs that contain spaces or other special characters. Thanks [@jasonvarga](https://github.com/jasonvarga)! [#33](https://github.com/thephpleague/glide/issues/33])
+
 ## 0.3.0
 
 - Large refactor for improve code organization. Many classes moved and renamed.
