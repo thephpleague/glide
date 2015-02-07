@@ -50,6 +50,10 @@ $ phpunit
 
 Contributions are welcome and will be fully credited. Please see [CONTRIBUTING](https://github.com/thephpleague/glide/blob/master/CONTRIBUTING.md) for details.
 
+## Security
+
+If you discover any security related issues, please email jonathan@reinink.ca instead of using the issue tracker.
+
 ## Credits
 
 - [Jonathan Reinink](https://github.com/reinink)
