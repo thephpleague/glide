@@ -3,6 +3,7 @@
 namespace League\Glide;
 
 use InvalidArgumentException;
+use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
 use League\Glide\Filesystem\FilesystemException;
@@ -299,10 +300,15 @@ class Server
             );
         }
 
-        $write = $this->cache->write(
-            $this->getCachePath($request),
-            $this->api->run($request, $source)
-        );
+        try {
+            $write = $this->cache->write(
+                $this->getCachePath($request),
+                $this->api->run($request, $source)
+            );
+        } catch (FileExistsException $exception) {
+            // Cache file failed to write. Fail silently.
+            return $request;
+        }
 
         if ($write === false) {
             throw new FilesystemException(

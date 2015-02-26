@@ -279,6 +279,25 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server->makeImage('image.jpg');
     }
 
+    public function testMakeImageWithExistingCacheFile()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->andThrow(new \League\Flysystem\FileExistsException('75094881e9fd2b93063d6a5cb083091c'));
+        }));
+
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+            $mock->shouldReceive('run')->andReturn('content')->once();
+        }));
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+    }
+
     public function testMakeImageFromSource()
     {
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
