@@ -43,7 +43,7 @@ class SizeTest extends \PHPUnit_Framework_TestCase
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
             $mock->shouldReceive('width')->andReturn('200')->twice();
-            $mock->shouldReceive('height')->andReturn('200')->twice();
+            $mock->shouldReceive('height')->andReturn('200')->once();
             $mock->shouldReceive('resize')->with('100', '100', $this->callback)->andReturn($mock)->once();
         });
 
