@@ -56,7 +56,7 @@ class Size implements ManipulatorInterface
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
         list($width, $height) = $this->limitImageSize($width, $height);
 
-        if (round($width) !== round($image->width()) and
+        if (round($width) !== round($image->width()) or
             round($height) !== round($image->height())) {
             $image = $this->runResize($image, $fit, round($width), round($height), $crop);
         }
