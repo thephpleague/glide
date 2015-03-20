@@ -289,9 +289,15 @@ class Server
     public function makeImage()
     {
         $request = $this->resolveRequestObject(func_get_args());
+        $cachePath = $this->getCachePath($request);
+        $sourcePath = $this->getSourcePath($request);
 
         if ($this->cacheFileExists($request) === true) {
-            return $request;
+            if ($this->cache->getTimestamp($cachePath) >= $this->source->getTimestamp($sourcePath)) {
+                return $request;
+            } else {
+                $this->cache->delete($cachePath);
+            }
         }
 
         if ($this->sourceFileExists($request) === false) {
