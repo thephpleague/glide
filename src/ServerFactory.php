@@ -79,6 +79,10 @@ class ServerFactory
             $cache = $this->config['cache'];
         }
 
+        if ($cache === false) {
+            return null;
+        }
+
         if (is_string($cache)) {
             return new Filesystem(new Local($cache));
         }

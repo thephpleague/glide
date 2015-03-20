@@ -29,7 +29,7 @@ class Server
 
     /**
      * The cache file system.
-     * @var FilesystemInterface
+     * @var FilesystemInterface|null
      */
     protected $cache;
 
@@ -53,11 +53,11 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface $source The source file system.
-     * @param FilesystemInterface $cache  The cache file system.
-     * @param ApiInterface        $api    The image manipulation API.
+     * @param FilesystemInterface      $source The source file system.
+     * @param FilesystemInterface|null $cache  The cache file system.
+     * @param ApiInterface             $api    The image manipulation API.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
+    public function __construct(FilesystemInterface $source, $cache, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -141,16 +141,16 @@ class Server
 
     /**
      * Set the cache file system.
-     * @param FilesystemInterface $cache The cache file system.
+     * @param FilesystemInterface|null $cache The cache file system.
      */
-    public function setCache(FilesystemInterface $cache)
+    public function setCache($cache)
     {
         $this->cache = $cache;
     }
 
     /**
      * Get the cache file system.
-     * @return FilesystemInterface The cache file system.
+     * @return FilesystemInterface|null The cache file system.
      */
     public function getCache()
     {
@@ -200,6 +200,10 @@ class Server
      */
     public function cacheFileExists()
     {
+        if ($this->cache === null) {
+            return false;
+        }
+
         $request = $this->resolveRequestObject(func_get_args());
 
         return $this->cache->has($this->getCachePath($request));
@@ -252,6 +256,12 @@ class Server
 
         $this->makeImage($request);
 
+        if ($this->cache === null) {
+            ResponseFactory::create($this->source, $request, $this->getSourcePath($request))->send();
+
+            return $request;
+        }
+
         ResponseFactory::create($this->cache, $request, $this->getCachePath($request))->send();
 
         return $request;
@@ -301,16 +311,13 @@ class Server
         }
 
         try {
-            $write = $this->cache->write(
-                $this->getCachePath($request),
-                $this->api->run($request, $source)
-            );
+            $written = $this->writeCache($request, $source);
         } catch (FileExistsException $exception) {
             // Cache file failed to write. Fail silently.
             return $request;
         }
 
-        if ($write === false) {
+        if ($written === false) {
             throw new FilesystemException(
                 'Could not write the image `'.$this->getCachePath($request).'`.'
             );
@@ -342,5 +349,23 @@ class Server
         }
 
         throw new InvalidArgumentException('Not a valid path or Request object.');
+    }
+
+    /**
+     * Write the cache file if caching is enabled.
+     * @param Request $request
+     * @param string  $source
+     * @return mixed
+     */
+    private function writeCache(Request $request, $source)
+    {
+        if ($this->cache === null) {
+            return null;
+        }
+
+        return $this->cache->write(
+            $this->getCachePath($request),
+            $this->api->run($request, $source)
+        );
     }
 }
