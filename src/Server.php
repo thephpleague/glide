@@ -10,6 +10,7 @@ use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Http\NotFoundException;
 use League\Glide\Http\RequestFactory;
 use League\Glide\Http\ResponseFactory;
+use League\Glide\Http\UncachedResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -50,6 +51,13 @@ class Server
      * @var string
      */
     protected $baseUrl;
+
+    /**
+     * The binary string of the manipulated source image.
+     *
+     * @var string
+     */
+    protected $manipulatedSource;
 
     /**
      * Create Server instance.
@@ -257,7 +265,9 @@ class Server
         $this->makeImage($request);
 
         if ($this->cache === null) {
-            ResponseFactory::create($this->source, $request, $this->getSourcePath($request))->send();
+            $sourceLastModified = $this->source->getTimestamp('');
+
+            UncachedResponseFactory::create($this->manipulatedSource, $request, $sourceLastModified)->send();
 
             return $request;
         }
@@ -360,6 +370,8 @@ class Server
     private function writeCache(Request $request, $source)
     {
         if ($this->cache === null) {
+            $this->manipulatedSource = $this->api->run($request, $source);
+
             return null;
         }
 
