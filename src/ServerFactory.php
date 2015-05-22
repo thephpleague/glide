@@ -79,16 +79,16 @@ class ServerFactory
             $cache = $this->config['cache'];
         }
 
-        if ($cache === false) {
-            return null;
-        }
-
         if (is_string($cache)) {
             return new Filesystem(new Local($cache));
         }
 
         if ($cache instanceof FilesystemInterface) {
             return $cache;
+        }
+
+        if (is_null($cache)) {
+            return new Filesystem(new Local(sys_get_temp_dir()));
         }
 
         throw new InvalidArgumentException('Invalid `cache` parameter.');

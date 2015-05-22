@@ -28,7 +28,7 @@ class Server
 
     /**
      * The cache file system.
-     * @var FilesystemInterface|null
+     * @var FilesystemInterface
      */
     protected $cache;
 
@@ -52,11 +52,11 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface      $source The source file system.
-     * @param FilesystemInterface|null $cache  The cache file system.
-     * @param ApiInterface             $api    The image manipulation API.
+     * @param FilesystemInterface $source The source file system.
+     * @param FilesystemInterface $cache  The cache file system.
+     * @param ApiInterface        $api    The image manipulation API.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache = null, ApiInterface $api)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -140,16 +140,16 @@ class Server
 
     /**
      * Set the cache file system.
-     * @param FilesystemInterface|null $cache The cache file system.
+     * @param FilesystemInterface $cache The cache file system.
      */
-    public function setCache(FilesystemInterface $cache = null)
+    public function setCache(FilesystemInterface $cache)
     {
         $this->cache = $cache;
     }
 
     /**
      * Get the cache file system.
-     * @return FilesystemInterface|null The cache file system.
+     * @return FilesystemInterface The cache file system.
      */
     public function getCache()
     {
@@ -199,10 +199,6 @@ class Server
      */
     public function cacheFileExists()
     {
-        if ($this->cache === null) {
-            return false;
-        }
-
         $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         return $this->cache->has($this->getCachePath($request));
@@ -255,12 +251,6 @@ class Server
 
         $this->makeImage($request);
 
-        if ($this->cache === null) {
-            ResponseFactory::create($this->source, $request, $this->getSourcePath($request))->send();
-
-            return $request;
-        }
-
         ResponseFactory::create($this->cache, $request, $this->getCachePath($request))->send();
 
         return $request;
@@ -309,28 +299,24 @@ class Server
             );
         }
 
-        if ($this->cache) {
-            $this->writeCache($request, $source);
+        // We need to write the image to the local disk before
+        // doing any manipulations. This is because EXIF data
+        // can only be read from an actual file.
+        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+
+        if (file_put_contents($tmp, $source) === false) {
+            throw new FilesystemException(
+                'Unable to write temp file for `'.$this->getSourcePath($request).'`.'
+            );
         }
 
-        return $request;
-    }
-
-    /**
-     * Write the cache file if caching is enabled.
-     * @param  Request $request
-     * @param  string  $source
-     * @return mixed
-     */
-    protected function writeCache(Request $request, $source)
-    {
         try {
-            $written = $this->cache->write(
+            $write = $this->cache->write(
                 $this->getCachePath($request),
-                $this->api->run($request, $source)
+                $this->api->run($request, $tmp)
             );
 
-            if ($written === false) {
+            if ($write === false) {
                 throw new FilesystemException(
                     'Could not write the image `'.$this->getCachePath($request).'`.'
                 );
@@ -340,5 +326,9 @@ class Server
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
         }
+
+        unlink($tmp);
+
+        return $request;
     }
 }

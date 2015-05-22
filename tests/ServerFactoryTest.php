@@ -65,14 +65,6 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
     }
 
-    public function testGetCacheWithInvalidParam()
-    {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid `cache` parameter.');
-
-        $server = new ServerFactory([]);
-        $server->getCache();
-    }
-
     public function testGetApi()
     {
         $server = new ServerFactory([]);
