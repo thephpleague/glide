@@ -2,13 +2,12 @@
 
 namespace League\Glide;
 
-use InvalidArgumentException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Http\NotFoundException;
-use League\Glide\Http\RequestFactory;
+use League\Glide\Http\RequestArgumentsResolver;
 use League\Glide\Http\ResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -57,7 +56,7 @@ class Server
      * @param FilesystemInterface|null $cache  The cache file system.
      * @param ApiInterface             $api    The image manipulation API.
      */
-    public function __construct(FilesystemInterface $source, $cache, ApiInterface $api)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache = null, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -108,7 +107,7 @@ class Server
      */
     public function getSourcePath()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         $path = trim($request->getPathInfo(), '/');
 
@@ -134,7 +133,7 @@ class Server
      */
     public function sourceFileExists()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         return $this->source->has($this->getSourcePath($request));
     }
@@ -143,7 +142,7 @@ class Server
      * Set the cache file system.
      * @param FilesystemInterface|null $cache The cache file system.
      */
-    public function setCache($cache)
+    public function setCache(FilesystemInterface $cache = null)
     {
         $this->cache = $cache;
     }
@@ -182,7 +181,7 @@ class Server
      */
     public function getCachePath()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         $path = md5($this->getSourcePath($request).'?'.http_build_query($request->query->all()));
 
@@ -204,7 +203,7 @@ class Server
             return false;
         }
 
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         return $this->cache->has($this->getCachePath($request));
     }
@@ -252,7 +251,7 @@ class Server
      */
     public function outputImage()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         $this->makeImage($request);
 
@@ -274,7 +273,7 @@ class Server
      */
     public function getImageResponse()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         $this->makeImage($request);
 
@@ -288,7 +287,7 @@ class Server
      */
     public function makeImage()
     {
-        $request = $this->resolveRequestObject(func_get_args());
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
 
         if ($this->cacheFileExists($request) === true) {
             return $request;
@@ -310,62 +309,36 @@ class Server
             );
         }
 
-        try {
-            $written = $this->writeCache($request, $source);
-        } catch (FileExistsException $exception) {
-            // Cache file failed to write. Fail silently.
-            return $request;
-        }
-
-        if ($written === false) {
-            throw new FilesystemException(
-                'Could not write the image `'.$this->getCachePath($request).'`.'
-            );
+        if ($this->cache) {
+            $this->writeCache($request, $source);
         }
 
         return $request;
     }
 
     /**
-     * Resolve request object.
-     * @param  array   $args Array of supplied arguments.
-     * @return Request The request object.
-     */
-    protected function resolveRequestObject($args)
-    {
-        if (isset($args[0]) and $args[0] instanceof Request) {
-            return $args[0];
-        }
-
-        if (isset($args[0]) and is_string($args[0])) {
-            $path = $args[0];
-            $params = [];
-
-            if (isset($args[1]) and is_array($args[1])) {
-                $params = $args[1];
-            }
-
-            return RequestFactory::create($path, $params);
-        }
-
-        throw new InvalidArgumentException('Not a valid path or Request object.');
-    }
-
-    /**
      * Write the cache file if caching is enabled.
-     * @param Request $request
-     * @param string  $source
+     * @param  Request $request
+     * @param  string  $source
      * @return mixed
      */
-    private function writeCache(Request $request, $source)
+    protected function writeCache(Request $request, $source)
     {
-        if ($this->cache === null) {
-            return null;
-        }
+        try {
+            $written = $this->cache->write(
+                $this->getCachePath($request),
+                $this->api->run($request, $source)
+            );
 
-        return $this->cache->write(
-            $this->getCachePath($request),
-            $this->api->run($request, $source)
-        );
+            if ($written === false) {
+                throw new FilesystemException(
+                    'Could not write the image `'.$this->getCachePath($request).'`.'
+                );
+            }
+        } catch (FileExistsException $exception) {
+            // This edge case occurs when the target already exists
+            // because it's currently be written to disk in another
+            // request. It's best to just fail silently.
+        }
     }
 }

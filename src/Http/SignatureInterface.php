@@ -16,8 +16,8 @@ interface SignatureInterface
 
     /**
      * Validate a request signature.
-     * @param  Request            $request The request object.
+     * @param  mixed
      * @throws SignatureException
      */
-    public function validateRequest(Request $request);
+    public function validateRequest();
 }

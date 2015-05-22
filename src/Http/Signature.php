@@ -34,11 +34,13 @@ class Signature implements SignatureInterface
 
     /**
      * Validate a request signature.
-     * @param  Request            $request The request object.
+     * @param  mixed
      * @throws SignatureException
      */
-    public function validateRequest(Request $request)
+    public function validateRequest()
     {
+        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+
         if (is_null($request->get('s'))) {
             throw new SignatureException('Signature is missing.');
         }
