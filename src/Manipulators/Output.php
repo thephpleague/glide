@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Api\Manipulator;
+namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +15,15 @@ class Output implements ManipulatorInterface
      */
     public function run(Request $request, Image $image)
     {
-        return $image->encode(
-            $this->getFormat($image, $request->get('fm')),
-            $this->getQuality($request->get('q'))
-        );
+        $format = $this->getFormat($image, $request->get('fm'));
+        $quality = $this->getQuality($request->get('q'));
+
+        if ($format === 'pjpg') {
+            $image->interlace();
+            $format = 'jpg';
+        }
+
+        return $image->encode($format, $quality);
     }
 
     /**
@@ -29,18 +34,18 @@ class Output implements ManipulatorInterface
     public function getFormat(Image $image, $format)
     {
         $allowed = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
+            'gif' => 'image/gif',
+            'jpg' => 'image/jpeg',
+            'pjpg' => 'image/jpeg',
+            'png' => 'image/png',
         ];
 
-        if (in_array($format, $allowed, true)) {
+        if (array_key_exists($format, $allowed)) {
             return $format;
         }
 
-        $mime = $image->mime();
-        if (isset($allowed[$mime])) {
-            return $allowed[$mime];
+        if ($format = array_search($image->mime(), $allowed, true)) {
+            return $format;
         }
 
         return 'jpg';
@@ -59,7 +64,7 @@ class Output implements ManipulatorInterface
             return $default;
         }
 
-        if (!ctype_digit($quality)) {
+        if (!is_numeric($quality)) {
             return $default;
         }
 

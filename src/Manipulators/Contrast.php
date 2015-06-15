@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Api\Manipulator;
+namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Request;

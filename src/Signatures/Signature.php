@@ -1,7 +1,8 @@
 <?php
 
-namespace League\Glide\Http;
+namespace League\Glide\Signatures;
 
+use League\Glide\Requests\RequestFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class Signature implements SignatureInterface
@@ -39,7 +40,7 @@ class Signature implements SignatureInterface
      */
     public function validateRequest()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args());
 
         if (is_null($request->get('s'))) {
             throw new SignatureException('Signature is missing.');

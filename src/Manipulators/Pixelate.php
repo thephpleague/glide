@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Api\Manipulator;
+namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,7 @@ class Pixelate implements ManipulatorInterface
             return false;
         }
 
-        if (!ctype_digit($pixelate)) {
+        if (!is_numeric($pixelate)) {
             return false;
         }
 

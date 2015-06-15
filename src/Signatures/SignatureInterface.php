@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Http;
+namespace League\Glide\Signatures;
 
 use Symfony\Component\HttpFoundation\Request;
 

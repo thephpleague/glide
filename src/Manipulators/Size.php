@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Api\Manipulator;
+namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,7 +75,11 @@ class Size implements ManipulatorInterface
             return false;
         }
 
-        if (!ctype_digit($width)) {
+        if (!is_numeric($width)) {
+            return false;
+        }
+
+        if ($width <= 0) {
             return false;
         }
 
@@ -93,7 +97,11 @@ class Size implements ManipulatorInterface
             return false;
         }
 
-        if (!ctype_digit($height)) {
+        if (!is_numeric($height)) {
+            return false;
+        }
+
+        if ($height <= 0) {
             return false;
         }
 
@@ -138,10 +146,10 @@ class Size implements ManipulatorInterface
 
     /**
      * Resolve missing image dimensions.
-     * @param  Image        $image  The source image.
-     * @param  double|false $width  The image width.
-     * @param  double|false $height The image height.
-     * @return double[]     The resolved width and height.
+     * @param  Image       $image  The source image.
+     * @param  double|null $width  The image width.
+     * @param  double|null $height The image height.
+     * @return double[]    The resolved width and height.
      */
     public function resolveMissingDimensions(Image $image, $width, $height)
     {

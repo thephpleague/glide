@@ -4,7 +4,7 @@ namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
-use League\Glide\Api\Manipulator\ManipulatorInterface;
+use League\Glide\Manipulators\ManipulatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Api implements ApiInterface

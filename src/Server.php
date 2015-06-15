@@ -5,10 +5,10 @@ namespace League\Glide;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
+use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
-use League\Glide\Http\NotFoundException;
-use League\Glide\Http\RequestArgumentsResolver;
-use League\Glide\Http\ResponseFactory;
+use League\Glide\Requests\RequestFactory;
+use League\Glide\Responses\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -45,22 +45,36 @@ class Server
     protected $api;
 
     /**
+     * The response factory.
+     * @var ResponseFactoryInterface
+     */
+    protected $responseFactory;
+
+    /**
      * The base URL to exclude.
      * @var string
      */
     protected $baseUrl;
 
     /**
-     * Create Server instance.
-     * @param FilesystemInterface $source The source file system.
-     * @param FilesystemInterface $cache  The cache file system.
-     * @param ApiInterface        $api    The image manipulation API.
+     * The default image manipulations.
+     * @var array
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
+    protected $defaultManipulations = [];
+
+    /**
+     * Create Server instance.
+     * @param FilesystemInterface      $source          The source file system.
+     * @param FilesystemInterface      $cache           The cache file system.
+     * @param ApiInterface             $api             The image manipulation API.
+     * @param ResponseFactoryInterface $responseFactory The response factory.
+     */
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, ResponseFactoryInterface $responseFactory)
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
+        $this->setResponseFactory($responseFactory);
     }
 
     /**
@@ -102,12 +116,12 @@ class Server
     /**
      * Get the source path.
      * @param  mixed
-     * @return string            The source path.
-     * @throws NotFoundException
+     * @return string                The source path.
+     * @throws FileNotFoundException
      */
     public function getSourcePath()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
         $path = trim($request->getPathInfo(), '/');
 
@@ -116,7 +130,7 @@ class Server
         }
 
         if ($path === '') {
-            throw new NotFoundException('Image path missing.');
+            throw new FileNotFoundException('Image path missing.');
         }
 
         if ($this->sourcePathPrefix) {
@@ -129,11 +143,11 @@ class Server
     /**
      * Check if a source file exists.
      * @param  mixed
-     * @return bool
+     * @return bool Whether the source file exists.
      */
     public function sourceFileExists()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
         return $this->source->has($this->getSourcePath($request));
     }
@@ -166,6 +180,16 @@ class Server
     }
 
     /**
+     * Delete all cached manipulations for an image.
+     * @param  string $path The source image path.
+     * @return bool   Whether the delete succeeded.
+     */
+    public function deleteCache($path)
+    {
+        return $this->cache->deleteDir($path);
+    }
+
+    /**
      * Get the cache path prefix.
      * @return string The cache path prefix.
      */
@@ -181,25 +205,29 @@ class Server
      */
     public function getCachePath()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
-        $path = md5($this->getSourcePath($request).'?'.http_build_query($request->query->all()));
+        $params = $request->query->all();
+        unset($params['s']);
+        ksort($params);
+
+        $path = md5($this->getSourcePath($request).'?'.http_build_query($params));
 
         if ($this->cachePathPrefix) {
             $path = $this->cachePathPrefix.'/'.$path;
         }
 
-        return $path;
+        return $this->getSourcePath($request).'/'.$path;
     }
 
     /**
      * Check if a cache file exists.
      * @param  mixed
-     * @return bool
+     * @return bool Whether the cache file exists.
      */
     public function cacheFileExists()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
         return $this->cache->has($this->getCachePath($request));
     }
@@ -223,6 +251,42 @@ class Server
     }
 
     /**
+     * Set the response factory.
+     * @param ResponseFactoryInterface $api The response factory.
+     */
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory)
+    {
+        $this->responseFactory = $responseFactory;
+    }
+
+    /**
+     * Get the response factory.
+     * @return ResponseFactoryInterface The response factory.
+     */
+    public function getResponseFactory()
+    {
+        return $this->responseFactory;
+    }
+
+    /**
+     * Set the default image manipulations.
+     * @param array $defaultManipulations The default image manipulations.
+     */
+    public function setDefaultManipulations($defaultManipulations = [])
+    {
+        $this->defaultManipulations = $defaultManipulations;
+    }
+
+    /**
+     * Get the default image manipulations.
+     * @return array The default image manipulations.
+     */
+    public function getDefaultManipulations()
+    {
+        return $this->defaultManipulations;
+    }
+
+    /**
      * Set the base URL.
      * @param string $baseUrl The base URL.
      */
@@ -241,50 +305,65 @@ class Server
     }
 
     /**
-     * Generate and output manipulated image.
+     * Generate and output image.
      * @param  mixed
-     * @return Request The request object.
      */
     public function outputImage()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
-        $this->makeImage($request);
+        $path = $this->makeImage($request);
 
-        ResponseFactory::create($this->cache, $request, $this->getCachePath($request))->send();
+        $response = $this->responseFactory->getResponse($request, $this->cache, $path);
 
-        return $request;
+        $response->send();
     }
 
     /**
-     * Generate and return response object of manipulated image.
+     * Generate and return image response object.
      * @param  mixed
      * @return StreamedResponse The response object.
      */
     public function getImageResponse()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
-        $this->makeImage($request);
+        $path = $this->makeImage($request);
 
-        return ResponseFactory::create($this->cache, $request, $this->getCachePath($request));
+        return $this->responseFactory->getResponse($request, $this->cache, $path);
+    }
+
+    /**
+     * Generate and return Base64 encoded image.
+     * @param  mixed
+     * @return string Base64 encoded image.
+     */
+    public function getImageAsBase64()
+    {
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
+
+        $path = $this->makeImage($request);
+
+        $source = $this->cache->read($path);
+
+        return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
     }
 
     /**
      * Generate manipulated image.
-     * @return Request           The request object.
-     * @throws NotFoundException
+     * @return Request               The request object.
+     * @throws FileNotFoundException
      */
     public function makeImage()
     {
-        $request = (new RequestArgumentsResolver())->getRequest(func_get_args());
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
         if ($this->cacheFileExists($request) === true) {
-            return $request;
+            return $this->getCachePath($request);
         }
 
         if ($this->sourceFileExists($request) === false) {
-            throw new NotFoundException(
+            throw new FileNotFoundException(
                 'Could not find the image `'.$this->getSourcePath($request).'`.'
             );
         }
@@ -329,6 +408,6 @@ class Server
 
         unlink($tmp);
 
-        return $request;
+        return $this->getCachePath($request);
     }
 }

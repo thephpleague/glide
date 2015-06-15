@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Api\Manipulator;
+namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,12 +42,16 @@ class Rectangle implements ManipulatorInterface
         $coordinates = explode(',', $rectangle);
 
         if (count($coordinates) !== 4 or
-            !ctype_digit($coordinates[0]) or
-            !ctype_digit($coordinates[1]) or
-            !ctype_digit($coordinates[2]) or
-            !ctype_digit($coordinates[3]) or
-            $coordinates[2] >= $image->width() or
-            $coordinates[3] >= $image->height()) {
+            (!is_numeric($coordinates[0])) or
+            (!is_numeric($coordinates[1])) or
+            (!is_numeric($coordinates[2])) or
+            (!is_numeric($coordinates[3])) or
+            ($coordinates[0] <= 0) or
+            ($coordinates[1] <= 0) or
+            ($coordinates[2] < 0) or
+            ($coordinates[3] < 0) or
+            ($coordinates[2] >= $image->width()) or
+            ($coordinates[3] >= $image->height())) {
             return false;
         }
 
@@ -55,7 +59,7 @@ class Rectangle implements ManipulatorInterface
             (int) $coordinates[0],
             (int) $coordinates[1],
             (int) $coordinates[2],
-            (int) $coordinates[3]
+            (int) $coordinates[3],
         ];
     }
 

@@ -2,11 +2,26 @@
 
 namespace League\Glide;
 
+use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Api\ApiFactory;
+use League\Glide\Api\Api;
+use League\Glide\Manipulators\Blur;
+use League\Glide\Manipulators\Brightness;
+use League\Glide\Manipulators\Contrast;
+use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Gamma;
+use League\Glide\Manipulators\Orientation;
+use League\Glide\Manipulators\Output;
+use League\Glide\Manipulators\Pixelate;
+use League\Glide\Manipulators\Rectangle;
+use League\Glide\Manipulators\Sharpen;
+use League\Glide\Manipulators\Size;
+use League\Glide\Manipulators\Watermark;
+use League\Glide\Responses\ResponseFactoryInterface;
+use League\Glide\Responses\StreamedResponseFactory;
 
 class ServerFactory
 {
@@ -34,7 +49,8 @@ class ServerFactory
         $server = new Server(
             $this->getSource(),
             $this->getCache(),
-            $this->getApi()
+            $this->getApi(),
+            $this->getResponseFactory()
         );
 
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
@@ -68,6 +84,33 @@ class ServerFactory
     }
 
     /**
+     * Get the watermarks file system.
+     * @return FilesystemInterface The watermarks file system.
+     */
+    public function getWatermarks()
+    {
+        $watermarks = null;
+
+        if (isset($this->config['watermarks'])) {
+            $watermarks = $this->config['watermarks'];
+        }
+
+        if (is_null($watermarks)) {
+            return;
+        }
+
+        if (is_string($watermarks)) {
+            return new Filesystem(new Local($watermarks));
+        }
+
+        if ($watermarks instanceof FilesystemInterface) {
+            return $watermarks;
+        }
+
+        throw new InvalidArgumentException('Invalid `watermarks` parameter.');
+    }
+
+    /**
      * Get the cache file system.
      * @return FilesystemInterface The cache file system.
      */
@@ -85,10 +128,6 @@ class ServerFactory
 
         if ($cache instanceof FilesystemInterface) {
             return $cache;
-        }
-
-        if (is_null($cache)) {
-            return new Filesystem(new Local(sys_get_temp_dir()));
         }
 
         throw new InvalidArgumentException('Invalid `cache` parameter.');
@@ -131,13 +170,104 @@ class ServerFactory
         return $cachePathPrefix;
     }
 
+    public function getWatermarksPathPrefix()
+    {
+        $watermarksPathPrefix = '';
+
+        if (isset($this->config['watermarks_path_prefix'])) {
+            $watermarksPathPrefix = $this->config['watermarks_path_prefix'];
+        }
+
+        return $watermarksPathPrefix;
+    }
+
     /**
      * Get the image manipulation API.
      * @return Api The image manipulation API.
      */
     public function getApi()
     {
-        return ApiFactory::create($this->config);
+        return new Api(
+            $this->getImageManager(),
+            $this->getManipulators()
+        );
+    }
+
+    /**
+     * Get the image manager.
+     * @return ImageManager Intervention image manager.
+     */
+    public function getImageManager()
+    {
+        $driver = 'gd';
+
+        if (isset($this->config['driver'])) {
+            $driver = $this->config['driver'];
+        }
+
+        return new ImageManager([
+            'driver' => $driver,
+        ]);
+    }
+
+    /**
+     * Get the default manipulators.
+     * @return array Collection of manipulators.
+     */
+    public function getManipulators()
+    {
+        return [
+            new Orientation(),
+            new Rectangle(),
+            new Size($this->getMaxImageSize()),
+            new Brightness(),
+            new Contrast(),
+            new Gamma(),
+            new Sharpen(),
+            new Filter(),
+            new Blur(),
+            new Pixelate(),
+            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
+            new Output(),
+        ];
+    }
+
+    /**
+     * Get the maximum image size in pixels.
+     * @return int|null Maximum image size in pixels.
+     */
+    public function getMaxImageSize()
+    {
+        $maxImageSize = null;
+
+        if (isset($this->config['max_image_size'])) {
+            $maxImageSize = $this->config['max_image_size'];
+        }
+
+        return $maxImageSize;
+    }
+
+    /**
+     * Get the response factory.
+     * @return ResponseFactoryInterface The response factory.
+     */
+    public function getResponseFactory()
+    {
+        $responseFactory = null;
+
+        if (isset($this->config['response'])) {
+            $responseFactory = $this->config['response'];
+        }
+
+        if ($responseFactory instanceof ResponseFactoryInterface) {
+            return $responseFactory;
+        }
+
+        if (is_null($responseFactory)) {
+            return new StreamedResponseFactory();
+        }
+
+        throw new InvalidArgumentException('Invalid `response` parameter.');
     }
 
     /**
