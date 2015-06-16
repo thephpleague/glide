@@ -2,6 +2,8 @@
 
 namespace League\Glide\Urls;
 
+use League\Glide\Signatures\SignatureFactory;
+
 class UrlBuilderFactory
 {
     /**

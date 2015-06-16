@@ -3,6 +3,7 @@
 namespace League\Glide\Urls;
 
 use InvalidArgumentException;
+use League\Glide\Signatures\SignatureInterface;
 
 class UrlBuilder
 {
@@ -37,7 +38,7 @@ class UrlBuilder
      */
     public function getUrl($path, array $params = [])
     {
-        $parts = parse_url(trim($this->baseUrl, '/').'/'.trim($path, '/'));
+        $parts = parse_url(rtrim($this->baseUrl, '/').'/'.trim($path, '/'));
 
         if ($parts === false) {
             throw new InvalidArgumentException('Not a valid path.');
