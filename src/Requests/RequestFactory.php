@@ -29,7 +29,7 @@ class RequestFactory
         }
 
         if (!isset($request)) {
-            throw new InvalidArgumentException('Not a valid path or Request object.');
+            throw new InvalidArgumentException('Not a valid path/params combination or Request object.');
         }
 
         foreach ($defaultManipulations as $key => $value) {
