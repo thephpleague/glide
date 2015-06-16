@@ -1,14 +1,17 @@
 <?php
 
-namespace League\Glide\Http;
+namespace League\Glide\Responses;
 
+use League\Glide\Requests\RequestFactory;
 use Mockery;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
+class StreamedResponseFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    private $response;
     private $cache;
+
+    private $request;
+
+    private $factory;
 
     public function setUp()
     {
@@ -21,7 +24,9 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('readStream')->andReturn($file);
         });
 
-        $this->response = new ResponseFactory($this->cache, RequestFactory::create('image.jpg'), 'image.jpg');
+        $this->request = RequestFactory::create('image.jpg');
+
+        $this->factory = new StreamedResponseFactory();
     }
 
     public function tearDown()
@@ -31,42 +36,22 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('League\Glide\Http\ResponseFactory', $this->response);
+        $this->assertInstanceOf('League\Glide\Responses\StreamedResponseFactory', $this->factory);
     }
 
     public function testGetResponse()
     {
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->response->getResponse('image.jpg'));
-    }
-
-    public function testSetHeaders()
-    {
-        $response = $this->response->setHeaders(new StreamedResponse(), 'image.jpg');
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
-        $this->assertEquals('image/jpeg', $response->headers->get('Content-Type'));
-        $this->assertEquals('0', $response->headers->get('Content-Length'));
-        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')).' GMT', $response->headers->get('Expires'));
-        $this->assertEquals('max-age=31536000, public', $response->headers->get('Cache-Control'));
-    }
-
-    public function setContent()
-    {
-        $response = $this->response->setHeaders(new StreamedResponse(), 'image.jpg');
+        $response = $this->factory->getResponse($this->request, $this->cache, '');
 
         ob_start();
         $response->send();
         $content = ob_get_clean();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $response);
+        $this->assertEquals('image/jpeg', $response->headers->get('Content-Type'));
+        $this->assertEquals('0', $response->headers->get('Content-Length'));
+        $this->assertEquals(gmdate('D, d M Y H:i:s', strtotime('+1 years')).' GMT', $response->headers->get('Expires'));
+        $this->assertEquals('max-age=31536000, public', $response->headers->get('Cache-Control'));
         $this->assertEquals('content', $content);
-    }
-
-    public function testCreate()
-    {
-        $this->assertInstanceOf(
-            'Symfony\Component\HttpFoundation\Response',
-            ResponseFactory::create($this->cache, RequestFactory::create('image.jpg'), 'image.jpg')
-        );
     }
 }

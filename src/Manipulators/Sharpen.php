@@ -43,6 +43,6 @@ class Sharpen implements ManipulatorInterface
             return false;
         }
 
-        return $sharpen;
+        return (int) $sharpen;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace League\Glide\Http;
+namespace League\Glide\Signatures;
+
+use League\Glide\Requests\RequestFactory;
 
 class SignatureTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +15,7 @@ class SignatureTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('League\Glide\Http\Signature', $this->httpSignature);
+        $this->assertInstanceOf('League\Glide\Signatures\Signature', $this->httpSignature);
     }
 
     public function testAddSignature()
@@ -36,26 +38,26 @@ class SignatureTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertNull(
             $this->httpSignature->validateRequest(
-                RequestFactory::create('image.jpg', ['w' => '100', 's' => '9978a40f1fc75fa64ac92ea9baf16ff3'])
+                RequestFactory::create(['image.jpg', ['w' => '100', 's' => '9978a40f1fc75fa64ac92ea9baf16ff3']])
             )
         );
     }
 
     public function testValidateRequestWithMissingSignature()
     {
-        $this->setExpectedException('League\Glide\Http\SignatureException', 'Signature is missing.');
+        $this->setExpectedException('League\Glide\Signatures\SignatureException', 'Signature is missing.');
 
         $this->httpSignature->validateRequest(
-            RequestFactory::create('image.jpg', ['w' => '100'])
+            RequestFactory::create(['image.jpg', ['w' => '100']])
         );
     }
 
     public function testValidateRequestWithInvalidSignature()
     {
-        $this->setExpectedException('League\Glide\Http\SignatureException', 'Signature is not valid.');
+        $this->setExpectedException('League\Glide\Signatures\SignatureException', 'Signature is not valid.');
 
         $this->httpSignature->validateRequest(
-            RequestFactory::create('image.jpg', ['w' => '100', 's' => 'invalid'])
+            RequestFactory::create(['image.jpg', ['w' => '100', 's' => 'invalid']])
         );
     }
 

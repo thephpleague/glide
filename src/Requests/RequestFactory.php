@@ -2,6 +2,7 @@
 
 namespace League\Glide\Requests;
 
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequestFactory
@@ -33,7 +34,7 @@ class RequestFactory
         }
 
         foreach ($defaultManipulations as $key => $value) {
-            if (!$request->get($key)) {
+            if (is_null($request->get($key))) {
                 $request->query->set($key, $value);
             }
         }

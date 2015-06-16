@@ -43,6 +43,6 @@ class Pixelate implements ManipulatorInterface
             return false;
         }
 
-        return $pixelate;
+        return (int) $pixelate;
     }
 }

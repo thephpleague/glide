@@ -43,6 +43,6 @@ class Contrast implements ManipulatorInterface
             return false;
         }
 
-        return $contrast;
+        return (int) $contrast;
     }
 }

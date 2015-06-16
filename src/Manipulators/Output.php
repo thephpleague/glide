@@ -72,6 +72,6 @@ class Output implements ManipulatorInterface
             return $default;
         }
 
-        return $quality;
+        return (int) $quality;
     }
 }

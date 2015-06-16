@@ -10,13 +10,13 @@ class Watermark implements ManipulatorInterface
 {
     /**
      * The watermarks file system.
-     * @var FilesystemInterface
+     * @var FilesystemInterface|null
      */
     protected $watermarks;
 
     /**
      * The watermarks path prefix.
-     * @var string
+     * @var string|null
      */
     protected $watermarksPathPrefix;
 
@@ -24,7 +24,7 @@ class Watermark implements ManipulatorInterface
      * Create Watermark instance.
      * @param FilesystemInterface $watermarks The watermarks file system.
      */
-    public function __construct(FilesystemInterface $watermarks, $watermarksPathPrefix)
+    public function __construct(FilesystemInterface $watermarks = null, $watermarksPathPrefix = null)
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
@@ -34,7 +34,7 @@ class Watermark implements ManipulatorInterface
      * Set the watermarks file system.
      * @param FilesystemInterface $watermarks The watermarks file system.
      */
-    public function setWatermarks(FilesystemInterface $watermarks)
+    public function setWatermarks(FilesystemInterface $watermarks = null)
     {
         $this->watermarks = $watermarks;
     }
@@ -52,7 +52,7 @@ class Watermark implements ManipulatorInterface
      * Set the watermarks path prefix.
      * @param string $watermarksPathPrefix The watermarks path prefix.
      */
-    public function setWatermarksPathPrefix($watermarksPathPrefix)
+    public function setWatermarksPathPrefix($watermarksPathPrefix = null)
     {
         $this->watermarksPathPrefix = trim($watermarksPathPrefix, '/');
     }
@@ -101,7 +101,11 @@ class Watermark implements ManipulatorInterface
      */
     public function getWatermark(Image $image, $path)
     {
-        if (is_null($path)) {
+        if (is_null($this->watermarks)) {
+            return false;
+        }
+
+        if (!is_string($path) or $path === '') {
             return false;
         }
 

@@ -43,6 +43,6 @@ class Brightness implements ManipulatorInterface
             return false;
         }
 
-        return $brightness;
+        return (int) $brightness;
     }
 }

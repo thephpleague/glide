@@ -43,6 +43,6 @@ class Blur implements ManipulatorInterface
             return false;
         }
 
-        return $blur;
+        return (int) $blur;
     }
 }

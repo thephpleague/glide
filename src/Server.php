@@ -141,6 +141,25 @@ class Server
     }
 
     /**
+     * Get the source path without the prefix.
+     * @param  mixed
+     * @return string                The source path.
+     * @throws FileNotFoundException
+     */
+    public function getSourcePathWithoutPrefix()
+    {
+        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
+
+        $sourcePath = $this->getSourcePath($request);
+
+        if ($this->sourcePathPrefix) {
+            $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
+        }
+
+        return $sourcePath;
+    }
+
+    /**
      * Check if a source file exists.
      * @param  mixed
      * @return bool Whether the source file exists.
@@ -207,17 +226,21 @@ class Server
     {
         $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
 
+        $sourcePath = $this->getSourcePathWithoutPrefix($request);
+
         $params = $request->query->all();
         unset($params['s']);
         ksort($params);
 
-        $path = md5($this->getSourcePath($request).'?'.http_build_query($params));
+        $md5 = md5($sourcePath.'?'.http_build_query($params));
+
+        $path = $sourcePath.'/'.$md5;
 
         if ($this->cachePathPrefix) {
             $path = $this->cachePathPrefix.'/'.$path;
         }
 
-        return $this->getSourcePath($request).'/'.$path;
+        return $path;
     }
 
     /**

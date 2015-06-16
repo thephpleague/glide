@@ -43,6 +43,6 @@ class Gamma implements ManipulatorInterface
             return false;
         }
 
-        return $gamma;
+        return (double) $gamma;
     }
 }

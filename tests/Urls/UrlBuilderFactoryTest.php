@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Http;
+namespace League\Glide\Urls;
 
 class UrlBuilderFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -8,7 +8,7 @@ class UrlBuilderFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $urlBuilder = UrlBuilderFactory::create('/img');
 
-        $this->assertInstanceOf('League\Glide\Http\UrlBuilder', $urlBuilder);
+        $this->assertInstanceOf('League\Glide\Urls\UrlBuilder', $urlBuilder);
         $this->assertEquals('/img/image.jpg', $urlBuilder->getUrl('image.jpg'));
     }
 
