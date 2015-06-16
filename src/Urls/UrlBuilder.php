@@ -8,26 +8,55 @@ use League\Glide\Signatures\SignatureInterface;
 class UrlBuilder
 {
     /**
-     * Base URL prefixed to generated URL.
+     * The base URL.
      * @var string
      */
     protected $baseUrl;
 
     /**
-     * HTTP signature used to sign URLs.
+     * Whether the base URL is a relative domain.
+     * @var bool
+     */
+    protected $isRelativeDomain = false;
+
+    /**
+     * The HTTP signature used to sign URLs.
      * @var SignatureInterface
      */
-    protected $httpSignature;
+    protected $signature;
 
     /**
      * Create UrlBuilder instance.
-     * @param string                  $baseUrl       Base URL prefixed to generated URL.
-     * @param SignatureInterface|null $httpSignature HTTP signature used to sign URLs.
+     * @param string                  $baseUrl   The base URL.
+     * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
      */
-    public function __construct($baseUrl = '', SignatureInterface $httpSignature = null)
+    public function __construct($baseUrl = '', SignatureInterface $signature = null)
     {
-        $this->baseUrl = $baseUrl;
-        $this->httpSignature = $httpSignature;
+        $this->setBaseUrl($baseUrl);
+        $this->setSignature($signature);
+    }
+
+    /**
+     * Set the base URL.
+     * @param string $baseUrl The base URL.
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        if (substr($baseUrl, 0, 2) === '//') {
+            $baseUrl = 'http:'.$baseUrl;
+            $this->isRelativeDomain = true;
+        }
+
+        $this->baseUrl = rtrim($baseUrl, '/');
+    }
+
+    /**
+     * Set the HTTP signature.
+     * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
+     */
+    public function setSignature(SignatureInterface $signature = null)
+    {
+        $this->signature = $signature;
     }
 
     /**
@@ -38,7 +67,7 @@ class UrlBuilder
      */
     public function getUrl($path, array $params = [])
     {
-        $parts = parse_url(rtrim($this->baseUrl, '/').'/'.trim($path, '/'));
+        $parts = parse_url($this->baseUrl.'/'.trim($path, '/'));
 
         if ($parts === false) {
             throw new InvalidArgumentException('Not a valid path.');
@@ -46,8 +75,8 @@ class UrlBuilder
 
         $parts['path'] = '/'.trim($parts['path'], '/');
 
-        if ($this->httpSignature) {
-            $params = $this->httpSignature->addSignature($parts['path'], $params);
+        if ($this->signature) {
+            $params = $this->signature->addSignature($parts['path'], $params);
         }
 
         return $this->buildUrl($parts, $params);
@@ -63,8 +92,12 @@ class UrlBuilder
     {
         $url = '';
 
-        if (isset($parts['scheme']) and isset($parts['host'])) {
-            $url .= $parts['scheme'].'://'.$parts['host'];
+        if (isset($parts['host'])) {
+            if ($this->isRelativeDomain) {
+                $url .= '//'.$parts['host'];
+            } else {
+                $url .= $parts['scheme'].'://'.$parts['host'];
+            }
 
             if (isset($parts['port'])) {
                 $url .= ':'.$parts['port'];
