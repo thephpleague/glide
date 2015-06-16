@@ -79,7 +79,18 @@ class Watermark implements ManipulatorInterface
             $markh = $this->resolveDimension($request->get('markh'));
             $markx = $this->resolveDimension($request->get('markx'));
             $marky = $this->resolveDimension($request->get('marky'));
+            $markscale = $this->getPercentage($request->get('markscale'));
+            $markpad = $this->getPercentage($request->get('markpad'));
             $markpos = $this->getPosition($request->get('markpos'));
+
+            if ($markscale) {
+                $markw = $image->width() * ($markscale / 100);
+                $markh = null;
+            }
+
+            if ($markpad) {
+                $markx = $marky = $image->width() * ($markpad / 100);
+            }
 
             if ($markw or $markh) {
                 $watermark->resize($markw, $markh, function ($constraint) {
@@ -136,6 +147,28 @@ class Watermark implements ManipulatorInterface
         }
 
         return (int) $dimension;
+    }
+
+    /**
+     * Resolve a watermark percentage.
+     * @param  string $percentage The watermark percentage.
+     * @return int    The resolved watermark percentage.
+     */
+    public function getPercentage($percentage)
+    {
+        if (is_null($percentage)) {
+            return;
+        }
+
+        if (!is_numeric($percentage)) {
+            return;
+        }
+
+        if ($percentage < 0 or $percentage > 100) {
+            return;
+        }
+
+        return (int) $percentage;
     }
 
     /**
