@@ -143,8 +143,7 @@ class Server
     /**
      * Get the source path without the prefix.
      * @param  mixed
-     * @return string                The source path.
-     * @throws FileNotFoundException
+     * @return string The source path.
      */
     public function getSourcePathWithoutPrefix()
     {
