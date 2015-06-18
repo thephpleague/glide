@@ -11,12 +11,12 @@ use League\Glide\Api\Api;
 use League\Glide\Manipulators\Blur;
 use League\Glide\Manipulators\Brightness;
 use League\Glide\Manipulators\Contrast;
+use League\Glide\Manipulators\Crop;
+use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\Filter;
 use League\Glide\Manipulators\Gamma;
 use League\Glide\Manipulators\Orientation;
-use League\Glide\Manipulators\Output;
 use League\Glide\Manipulators\Pixelate;
-use League\Glide\Manipulators\Rectangle;
 use League\Glide\Manipulators\Sharpen;
 use League\Glide\Manipulators\Size;
 use League\Glide\Manipulators\Watermark;
@@ -218,7 +218,7 @@ class ServerFactory
     {
         return [
             new Orientation(),
-            new Rectangle(),
+            new Crop(),
             new Size($this->getMaxImageSize()),
             new Brightness(),
             new Contrast(),
@@ -228,7 +228,7 @@ class ServerFactory
             new Blur(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
-            new Output(),
+            new Encode(),
         ];
     }
 

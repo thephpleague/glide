@@ -4,7 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Flysystem\FilesystemInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class Watermark implements ManipulatorInterface
 {
@@ -68,124 +67,175 @@ class Watermark implements ManipulatorInterface
 
     /**
      * Perform watermark image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        if ($watermark = $this->getWatermark($image, $request->get('mark'))) {
-            $markw = $this->resolveDimension($request->get('markw'));
-            $markh = $this->resolveDimension($request->get('markh'));
-            $markx = $this->resolveDimension($request->get('markx'));
-            $marky = $this->resolveDimension($request->get('marky'));
-            $markscale = $this->getPercentage($request->get('markscale'));
-            $markpad = $this->getPercentage($request->get('markpad'));
-            $markpos = $this->getPosition($request->get('markpos'));
-
-            if ($markscale) {
-                $markw = $image->width() * ($markscale / 100);
-                $markh = null;
-            }
+        if ($watermark = $this->getImage($image, $params)) {
+            $markw = $this->getDimension($image, $params, 'markw');
+            $markh = $this->getDimension($image, $params, 'markh');
+            $markx = $this->getDimension($image, $params, 'markx');
+            $marky = $this->getDimension($image, $params, 'marky');
+            $markpad = $this->getDimension($image, $params, 'markpad');
+            $markfit = $this->getFit($params);
+            $markpos = $this->getPosition($params);
 
             if ($markpad) {
-                $markx = $marky = $image->width() * ($markpad / 100);
+                $markx = $marky = $markpad;
             }
 
-            if ($markw or $markh) {
-                $watermark->resize($markw, $markh, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-            }
+            $size = new Size();
+            $watermark = $size->run($watermark, [
+                'w' => $markw,
+                'h' => $markh,
+                'fit' => $markfit,
+            ]);
 
-            $image->insert($watermark, $markpos, $markx, $marky);
+            $image->insert($watermark, $markpos, intval($markx), intval($marky));
         }
 
         return $image;
     }
 
     /**
-     * Resolve watermark image.
-     * @param  Image      $image The source image.
-     * @param  string     $mark  The image path.
-     * @return Image|bool The resolved watermark image.
+     * Get the watermark image.
+     * @param  Image      $image  The source image.
+     * @param  array      $params The manipulation params.
+     * @return Image|null The watermark image.
      */
-    public function getWatermark(Image $image, $path)
+    public function getImage(Image $image, $params)
     {
         if (is_null($this->watermarks)) {
-            return false;
+            return;
         }
 
-        if (!is_string($path) or $path === '') {
-            return false;
+        if (!isset($params['mark'])) {
+            return;
         }
+
+        if (!is_string($params['mark'])) {
+            return;
+        }
+
+        if ($params['mark'] === '') {
+            return;
+        }
+
+        $path = $params['mark'];
 
         if ($this->watermarksPathPrefix) {
             $path = $this->watermarksPathPrefix.'/'.$path;
         }
 
         if ($this->watermarks->has($path)) {
-            return $image->getDriver()->init($this->watermarks->read($path));
+            $source = $this->watermarks->read($path);
+
+            if ($source === false) {
+                throw new FilesystemException(
+                    'Could not read the image `'.$path.'`.'
+                );
+            }
+
+            return $image->getDriver()->init($source);
         }
 
-        return false;
+        return;
     }
 
     /**
-     * Resolve a watermark dimension.
-     * @param  string $dimension The watermark dimension.
-     * @return int    The resolved watermark dimension.
+     * Get a dimension.
+     * @param  Image       $image  The source image.
+     * @param  array       $params The manipulation params.
+     * @param  string      $field  The requested field.
+     * @return double|null The dimension.
      */
-    public function resolveDimension($dimension)
+    public function getDimension(Image $image, array $params, $field)
     {
-        if (is_null($dimension)) {
+        if (!isset($params[$field])) {
             return;
         }
 
-        if (!is_numeric($dimension)) {
-            return;
+        if (is_numeric($params[$field]) and $params[$field] > 0) {
+            return (double) $params[$field];
         }
 
-        return (int) $dimension;
+        if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $params[$field])) {
+            $type = substr($params[$field], -1);
+            $value = substr($params[$field], 0, -1);
+
+            if ($type === 'w') {
+                return (double) $image->width() * ($value / 100);
+            } elseif ($type === 'h') {
+                return (double) $image->height() * ($value / 100);
+            }
+        }
+
+        return;
     }
 
     /**
-     * Resolve a watermark percentage.
-     * @param  string $percentage The watermark percentage.
-     * @return int    The resolved watermark percentage.
+     * Get the fit.
+     * @param  array  $params The manipulation params.
+     * @return string The fit.
      */
-    public function getPercentage($percentage)
+    public function getFit(array $params)
     {
-        if (is_null($percentage)) {
+        if (!isset($params['markfit'])) {
             return;
         }
 
-        if (!is_numeric($percentage)) {
+        $fitMethods = [
+            'contain',
+            'max',
+            'stretch',
+            'crop',
+            'crop-top-left',
+            'crop-top',
+            'crop-top-right',
+            'crop-left',
+            'crop-center',
+            'crop-right',
+            'crop-bottom-left',
+            'crop-bottom',
+            'crop-bottom-right',
+        ];
+
+        if (!in_array($params['markfit'], $fitMethods, true)) {
             return;
         }
 
-        if ($percentage < 0 or $percentage > 100) {
-            return;
-        }
-
-        return (int) $percentage;
+        return $params['markfit'];
     }
 
     /**
-     * Resolve the watermark position.
-     * @param  string $markpos The watermark position.
-     * @return string The resolved watermark position.
+     * Get the position.
+     * @param  array  $params The manipulation params.
+     * @return string The position.
      */
-    public function getPosition($markpos)
+    public function getPosition(array $params)
     {
-        if (is_null($markpos)) {
+        if (!isset($params['markpos'])) {
             return 'bottom-right';
         }
 
-        if (!in_array((string) $markpos, ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'], true)) {
+        $positions = [
+            'top-left',
+            'top',
+            'top-right',
+            'left',
+            'center',
+            'right',
+            'bottom-left',
+            'bottom',
+            'bottom-right',
+        ];
+
+        if (!in_array((string) $params['markpos'], $positions, true)) {
             return 'bottom-right';
         }
 
-        return $markpos;
+        return $params['markpos'];
     }
 }

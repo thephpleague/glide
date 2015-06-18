@@ -2,15 +2,13 @@
 
 namespace League\Glide\Api;
 
-use Symfony\Component\HttpFoundation\Request;
-
 interface ApiInterface
 {
     /**
      * Perform image manipulations.
-     * @param  Request $request The request object.
-     * @param  string  $source  Source image binary data.
-     * @return string  Manipulated image binary data.
+     * @param  string $source Source image binary data.
+     * @param  array  $params The manipulation params.
+     * @return string Manipulated image binary data.
      */
-    public function run(Request $request, $source);
+    public function run($source, array $params);
 }

@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class ContrastTest extends \PHPUnit_Framework_TestCase
@@ -32,17 +31,17 @@ class ContrastTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['con' => '50']]), $image)
+            $this->manipulator->run($image, ['con' => 50])
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getContrast('50'));
-        $this->assertSame(50, $this->manipulator->getContrast(50));
-        $this->assertSame(false, $this->manipulator->getContrast(null));
-        $this->assertSame(false, $this->manipulator->getContrast('101'));
-        $this->assertSame(false, $this->manipulator->getContrast('-101'));
-        $this->assertSame(false, $this->manipulator->getContrast('a'));
+        $this->assertSame(50, $this->manipulator->getContrast(['con' => '50']));
+        $this->assertSame(50, $this->manipulator->getContrast(['con' => 50]));
+        $this->assertSame(null, $this->manipulator->getContrast(['con' => null]));
+        $this->assertSame(null, $this->manipulator->getContrast(['con' => '101']));
+        $this->assertSame(null, $this->manipulator->getContrast(['con' => '-101']));
+        $this->assertSame(null, $this->manipulator->getContrast(['con' => 'a']));
     }
 }

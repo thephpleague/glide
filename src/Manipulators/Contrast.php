@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Contrast implements ManipulatorInterface
 {
     /**
      * Perform contrast image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $contrast = $this->getContrast($request->get('con'));
+        $contrast = $this->getContrast($params);
 
         if ($contrast) {
             $image->contrast($contrast);
@@ -26,23 +25,23 @@ class Contrast implements ManipulatorInterface
 
     /**
      * Resolve contrast amount.
-     * @param  string $contrast The contrast amount.
+     * @param  array  $params The manipulation params.
      * @return string The resolved contrast amount.
      */
-    public function getContrast($contrast)
+    public function getContrast($params)
     {
-        if (is_null($contrast)) {
-            return false;
+        if (!isset($params['con'])) {
+            return;
         }
 
-        if (!preg_match('/^-*[0-9]+$/', $contrast)) {
-            return false;
+        if (!preg_match('/^-*[0-9]+$/', $params['con'])) {
+            return;
         }
 
-        if ($contrast < -100 or $contrast > 100) {
-            return false;
+        if ($params['con'] < -100 or $params['con'] > 100) {
+            return;
         }
 
-        return (int) $contrast;
+        return (int) $params['con'];
     }
 }

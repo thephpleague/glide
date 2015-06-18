@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Brightness implements ManipulatorInterface
 {
     /**
      * Perform brightness image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $brightness = $this->getBrightness($request->get('bri'));
+        $brightness = $this->getBrightness($params);
 
         if ($brightness) {
             $image->brightness($brightness);
@@ -26,23 +25,23 @@ class Brightness implements ManipulatorInterface
 
     /**
      * Resolve brightness amount.
-     * @param  string $brightness The brightness amount.
+     * @param  array  $params The manipulation params.
      * @return string The resolved brightness amount.
      */
-    public function getBrightness($brightness)
+    public function getBrightness($params)
     {
-        if (is_null($brightness)) {
-            return false;
+        if (!isset($params['bri'])) {
+            return;
         }
 
-        if (!preg_match('/^-*[0-9]+$/', $brightness)) {
-            return false;
+        if (!preg_match('/^-*[0-9]+$/', $params['bri'])) {
+            return;
         }
 
-        if ($brightness < -100 or $brightness > 100) {
-            return false;
+        if ($params['bri'] < -100 or $params['bri'] > 100) {
+            return;
         }
 
-        return (int) $brightness;
+        return (int) $params['bri'];
     }
 }

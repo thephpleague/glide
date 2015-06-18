@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class BrightnessTest extends \PHPUnit_Framework_TestCase
@@ -32,17 +31,17 @@ class BrightnessTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['bri' => '50']]), $image)
+            $this->manipulator->run($image, ['bri' => 50])
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getBrightness('50'));
-        $this->assertSame(50, $this->manipulator->getBrightness(50));
-        $this->assertSame(false, $this->manipulator->getBrightness(null));
-        $this->assertSame(false, $this->manipulator->getBrightness('101'));
-        $this->assertSame(false, $this->manipulator->getBrightness('-101'));
-        $this->assertSame(false, $this->manipulator->getBrightness('a'));
+        $this->assertSame(50, $this->manipulator->getBrightness(['bri' => '50']));
+        $this->assertSame(50, $this->manipulator->getBrightness(['bri' => 50]));
+        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => null]));
+        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => '101']));
+        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => '-101']));
+        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => 'a']));
     }
 }

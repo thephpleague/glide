@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class OrientationTest extends \PHPUnit_Framework_TestCase
@@ -33,24 +32,24 @@ class OrientationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['or' => 'auto']]), $image)
+            $this->manipulator->run($image, ['or' => 'auto'])
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['or' => '90']]), $image)
+            $this->manipulator->run($image, ['or' => '90'])
         );
     }
 
     public function testGetOrientation()
     {
-        $this->assertSame('auto', $this->manipulator->getOrientation('auto'));
-        $this->assertSame('0', $this->manipulator->getOrientation('0'));
-        $this->assertSame('90', $this->manipulator->getOrientation('90'));
-        $this->assertSame('180', $this->manipulator->getOrientation('180'));
-        $this->assertSame('270', $this->manipulator->getOrientation('270'));
-        $this->assertSame('auto', $this->manipulator->getOrientation(null));
-        $this->assertSame('auto', $this->manipulator->getOrientation('1'));
-        $this->assertSame('auto', $this->manipulator->getOrientation('45'));
+        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => 'auto']));
+        $this->assertSame('0', $this->manipulator->getOrientation(['or' => '0']));
+        $this->assertSame('90', $this->manipulator->getOrientation(['or' => '90']));
+        $this->assertSame('180', $this->manipulator->getOrientation(['or' => '180']));
+        $this->assertSame('270', $this->manipulator->getOrientation(['or' => '270']));
+        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => null]));
+        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => '1']));
+        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => '45']));
     }
 }

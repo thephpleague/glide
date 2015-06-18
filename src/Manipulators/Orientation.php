@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Orientation implements ManipulatorInterface
 {
     /**
      * Perform orientation image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $orientation = $this->getOrientation($request->get('or'));
+        $orientation = $this->getOrientation($params);
 
         if ($orientation === 'auto') {
             return $image->orientate();
@@ -26,19 +25,19 @@ class Orientation implements ManipulatorInterface
 
     /**
      * Resolve orientation.
-     * @param  string $orientation The orientation.
+     * @param  array  $params The manipulation params.
      * @return string The resolved orientation.
      */
-    public function getOrientation($orientation)
+    public function getOrientation($params)
     {
-        if (is_null($orientation)) {
+        if (!isset($params['or'])) {
             return 'auto';
         }
 
-        if (!in_array($orientation, ['auto', '0', '90', '180', '270'], true)) {
+        if (!in_array($params['or'], ['auto', '0', '90', '180', '270'], true)) {
             return 'auto';
         }
 
-        return $orientation;
+        return $params['or'];
     }
 }

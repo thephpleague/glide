@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Size implements ManipulatorInterface
 {
@@ -42,16 +41,16 @@ class Size implements ManipulatorInterface
 
     /**
      * Perform size image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $width = $this->getWidth($request->get('w'));
-        $height = $this->getHeight($request->get('h'));
-        $fit = $this->getFit($request->get('fit'));
-        $crop = $this->getCrop($request->get('crop'));
+        $width = $this->getWidth($params);
+        $height = $this->getHeight($params);
+        $fit = $this->getFit($params);
+        $crop = $this->getCrop($params);
 
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
         list($width, $height) = $this->limitImageSize($width, $height);
@@ -66,82 +65,115 @@ class Size implements ManipulatorInterface
 
     /**
      * Resolve width.
-     * @param  string $width The width.
+     * @param  array  $params The manipulation params.
      * @return string The resolved width.
      */
-    public function getWidth($width)
+    public function getWidth($params)
     {
-        if (is_null($width)) {
-            return false;
+        if (!isset($params['w'])) {
+            return;
         }
 
-        if (!is_numeric($width)) {
-            return false;
+        if (!is_numeric($params['w'])) {
+            return;
         }
 
-        if ($width <= 0) {
-            return false;
+        if ($params['w'] <= 0) {
+            return;
         }
 
-        return (double) $width;
+        return (double) $params['w'];
     }
 
     /**
      * Resolve height.
-     * @param  string $height The height.
+     * @param  array  $params The manipulation params.
      * @return string The resolved height.
      */
-    public function getHeight($height)
+    public function getHeight($params)
     {
-        if (is_null($height)) {
-            return false;
+        if (!isset($params['h'])) {
+            return;
         }
 
-        if (!is_numeric($height)) {
-            return false;
+        if (!is_numeric($params['h'])) {
+            return;
         }
 
-        if ($height <= 0) {
-            return false;
+        if ($params['h'] <= 0) {
+            return;
         }
 
-        return (double) $height;
+        return (double) $params['h'];
     }
 
     /**
      * Resolve fit.
-     * @param  string $fit The fit.
+     * @param  array  $params The manipulation params.
      * @return string The resolved fit.
      */
-    public function getFit($fit)
+    public function getFit($params)
     {
-        if (is_null($fit)) {
+        if (!isset($params['fit'])) {
             return 'contain';
         }
 
-        if (!in_array($fit, ['contain', 'max', 'stretch', 'crop'], true)) {
-            return 'contain';
+        if (in_array($params['fit'], ['contain', 'max', 'stretch'], true)) {
+            return $params['fit'];
         }
 
-        return $fit;
+        $cropMethods = [
+            'crop',
+            'crop-top-left',
+            'crop-top',
+            'crop-top-right',
+            'crop-left',
+            'crop-center',
+            'crop-right',
+            'crop-bottom-left',
+            'crop-bottom',
+            'crop-bottom-right',
+        ];
+
+        if (in_array($params['fit'], $cropMethods, true)) {
+            return 'crop';
+        }
+
+        return 'contain';
     }
 
     /**
      * Resolve crop.
-     * @param  string $crop The crop.
+     * @param  array  $params The manipulation params.
      * @return string The resolved crop.
      */
-    public function getCrop($crop)
+    public function getCrop($params)
     {
-        if (is_null($crop)) {
+        if (!isset($params['fit'])) {
             return 'center';
         }
 
-        if (!in_array($crop, ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'], true)) {
+        if ($params['fit'] === 'crop') {
             return 'center';
         }
 
-        return $crop;
+        $cropMethods = [
+            'crop-top-left',
+            'crop-top',
+            'crop-top-right',
+            'crop-left',
+            'crop-center',
+            'crop-right',
+            'crop-bottom-left',
+            'crop-bottom',
+            'crop-bottom-right',
+        ];
+
+        if (!in_array($params['fit'], $cropMethods, true)) {
+            return 'center';
+        }
+
+        return substr($params['fit'], 5);
     }
 
     /**

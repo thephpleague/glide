@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class FilterTest extends \PHPUnit_Framework_TestCase
@@ -35,17 +34,17 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['filt' => 'greyscale']]), $image)
+            $this->manipulator->run($image, ['filt' => 'greyscale'])
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['filt' => 'sepia']]), $image)
+            $this->manipulator->run($image, ['filt' => 'sepia'])
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg']), $image)
+            $this->manipulator->run($image, [])
         );
     }
 

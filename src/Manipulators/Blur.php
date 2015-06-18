@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Blur implements ManipulatorInterface
 {
     /**
      * Perform blur image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $blur = $this->getBlur($request->get('blur'));
+        $blur = $this->getBlur($params);
 
         if ($blur) {
             $image->blur($blur);
@@ -26,23 +25,23 @@ class Blur implements ManipulatorInterface
 
     /**
      * Resolve blur amount.
-     * @param  string $blur The blur amount.
+     * @param  array  $params The manipulation params.
      * @return string The resolved blur amount.
      */
-    public function getBlur($blur)
+    public function getBlur($params)
     {
-        if (is_null($blur)) {
-            return false;
+        if (!isset($params['blur'])) {
+            return;
         }
 
-        if (!is_numeric($blur)) {
-            return false;
+        if (!is_numeric($params['blur'])) {
+            return;
         }
 
-        if ($blur < 0 or $blur > 100) {
-            return false;
+        if ($params['blur'] < 0 or $params['blur'] > 100) {
+            return;
         }
 
-        return (int) $blur;
+        return (int) $params['blur'];
     }
 }

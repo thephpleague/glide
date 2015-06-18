@@ -368,6 +368,12 @@ class Server
 
         $source = $this->cache->read($path);
 
+        if ($source === false) {
+            throw new FilesystemException(
+                'Could not read the image `'.$path.'`.'
+            );
+        }
+
         return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
     }
 
@@ -414,7 +420,7 @@ class Server
         try {
             $write = $this->cache->write(
                 $this->getCachePath($request),
-                $this->api->run($request, $tmp)
+                $this->api->run($tmp, $request->query->all())
             );
 
             if ($write === false) {

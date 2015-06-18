@@ -3,22 +3,21 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
-class Rectangle implements ManipulatorInterface
+class Crop implements ManipulatorInterface
 {
     /**
-     * Perform rectangle image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * Perform crop image manipulation.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $coordinates = $this->getCoordinates($image, $request->get('rect'));
+        $coordinates = $this->getCoordinates($image, $params);
 
         if ($coordinates) {
-            $coordinates = $this->limitCoordinatesToImageBoundaries($image, $coordinates);
+            $coordinates = $this->limitToImageBoundaries($image, $coordinates);
 
             $image->crop(
                 $coordinates[0],
@@ -33,13 +32,15 @@ class Rectangle implements ManipulatorInterface
 
     /**
      * Resolve coordinates.
-     * @param  Image  $image     The source image.
-     * @param  string $rectangle The rectangle.
-     * @return int[]  The resolved coordinates.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return int[] The resolved coordinates.
      */
-    public function getCoordinates(Image $image, $rectangle)
+    public function getCoordinates(Image $image, $params)
     {
-        $coordinates = explode(',', $rectangle);
+        $crop = isset($params['crop']) ? $params['crop'] : null;
+
+        $coordinates = explode(',', $crop);
 
         if (count($coordinates) !== 4 or
             (!is_numeric($coordinates[0])) or
@@ -52,7 +53,7 @@ class Rectangle implements ManipulatorInterface
             ($coordinates[3] < 0) or
             ($coordinates[2] >= $image->width()) or
             ($coordinates[3] >= $image->height())) {
-            return false;
+            return;
         }
 
         return [
@@ -69,7 +70,7 @@ class Rectangle implements ManipulatorInterface
      * @param  int[] $coordinates The coordinates.
      * @return int[] The limited coordinates.
      */
-    public function limitCoordinatesToImageBoundaries(Image $image, array $coordinates)
+    public function limitToImageBoundaries(Image $image, array $coordinates)
     {
         if ($coordinates[0] > ($image->width() - $coordinates[2])) {
             $coordinates[0] = $image->width() - $coordinates[2];

@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class GammaTest extends \PHPUnit_Framework_TestCase
@@ -32,19 +31,19 @@ class GammaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['gam' => '1.5']]), $image)
+            $this->manipulator->run($image, ['gam' => '1.5'])
         );
     }
 
-    public function testGetPixelate()
+    public function testGetGamma()
     {
-        $this->assertSame(1.5, $this->manipulator->getGamma('1.5'));
-        $this->assertSame(1.5, $this->manipulator->getGamma(1.5));
-        $this->assertSame(false, $this->manipulator->getGamma(null));
-        $this->assertSame(false, $this->manipulator->getGamma('a'));
-        $this->assertSame(false, $this->manipulator->getGamma('.1'));
-        $this->assertSame(false, $this->manipulator->getGamma('9.999'));
-        $this->assertSame(false, $this->manipulator->getGamma('0.005'));
-        $this->assertSame(false, $this->manipulator->getGamma('-1'));
+        $this->assertSame(1.5, $this->manipulator->getGamma(['gam' => '1.5']));
+        $this->assertSame(1.5, $this->manipulator->getGamma(['gam' => 1.5]));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => null]));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => 'a']));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '.1']));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '9.999']));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '0.005']));
+        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '-1']));
     }
 }

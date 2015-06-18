@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Pixelate implements ManipulatorInterface
 {
     /**
      * Perform pixelate image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $pixelate = $this->getPixelate($request->get('pixel'));
+        $pixelate = $this->getPixelate($params);
 
         if ($pixelate) {
             $image->pixelate($pixelate);
@@ -26,23 +25,23 @@ class Pixelate implements ManipulatorInterface
 
     /**
      * Resolve pixelate amount.
-     * @param  string $pixelate The pixelate amount.
+     * @param  array  $params The manipulation params.
      * @return string The resolved pixelate amount.
      */
-    public function getPixelate($pixelate)
+    public function getPixelate($params)
     {
-        if (is_null($pixelate)) {
-            return false;
+        if (!isset($params['pixel'])) {
+            return;
         }
 
-        if (!is_numeric($pixelate)) {
-            return false;
+        if (!is_numeric($params['pixel'])) {
+            return;
         }
 
-        if ($pixelate < 0 or $pixelate > 1000) {
-            return false;
+        if ($params['pixel'] < 0 or $params['pixel'] > 1000) {
+            return;
         }
 
-        return (int) $pixelate;
+        return (int) $params['pixel'];
     }
 }

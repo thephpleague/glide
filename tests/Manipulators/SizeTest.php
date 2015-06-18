@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class SizeTest extends \PHPUnit_Framework_TestCase
@@ -49,50 +48,51 @@ class SizeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['w' => '100']]), $image)
+            $this->manipulator->run($image, ['w' => 100])
         );
     }
 
     public function testGetWidth()
     {
-        $this->assertSame(100.0, $this->manipulator->getWidth('100'));
-        $this->assertSame(100.1, $this->manipulator->getWidth(100.1));
-        $this->assertSame(false, $this->manipulator->getWidth(null));
-        $this->assertSame(false, $this->manipulator->getWidth('a'));
-        $this->assertSame(false, $this->manipulator->getWidth('-100'));
+        $this->assertSame(100.0, $this->manipulator->getWidth(['w' => '100']));
+        $this->assertSame(100.1, $this->manipulator->getWidth(['w' => 100.1]));
+        $this->assertSame(null, $this->manipulator->getWidth(['w' => null]));
+        $this->assertSame(null, $this->manipulator->getWidth(['w' => 'a']));
+        $this->assertSame(null, $this->manipulator->getWidth(['w' => '-100']));
     }
 
     public function testGetHeight()
     {
-        $this->assertSame(100.0, $this->manipulator->getHeight('100'));
-        $this->assertSame(100.1, $this->manipulator->getHeight(100.1));
-        $this->assertSame(false, $this->manipulator->getHeight(null));
-        $this->assertSame(false, $this->manipulator->getHeight('a'));
-        $this->assertSame(false, $this->manipulator->getHeight('-100'));
+        $this->assertSame(100.0, $this->manipulator->getHeight(['h' => '100']));
+        $this->assertSame(100.1, $this->manipulator->getHeight(['h' => 100.1]));
+        $this->assertSame(null, $this->manipulator->getHeight(['h' => null]));
+        $this->assertSame(null, $this->manipulator->getHeight(['h' => 'a']));
+        $this->assertSame(null, $this->manipulator->getHeight(['h' => '-100']));
     }
 
     public function testGetFit()
     {
-        $this->assertSame('contain', $this->manipulator->getFit('contain'));
-        $this->assertSame('max', $this->manipulator->getFit('max'));
-        $this->assertSame('stretch', $this->manipulator->getFit('stretch'));
-        $this->assertSame('crop', $this->manipulator->getFit('crop'));
-        $this->assertSame('contain', $this->manipulator->getFit('invalid'));
+        $this->assertSame('contain', $this->manipulator->getFit(['fit' => 'contain']));
+        $this->assertSame('max', $this->manipulator->getFit(['fit' => 'max']));
+        $this->assertSame('stretch', $this->manipulator->getFit(['fit' => 'stretch']));
+        $this->assertSame('crop', $this->manipulator->getFit(['fit' => 'crop']));
+        $this->assertSame('contain', $this->manipulator->getFit(['fit' => 'invalid']));
     }
 
     public function testGetCrop()
     {
-        $this->assertSame('top-left', $this->manipulator->getCrop('top-left'));
-        $this->assertSame('top', $this->manipulator->getCrop('top'));
-        $this->assertSame('top-right', $this->manipulator->getCrop('top-right'));
-        $this->assertSame('left', $this->manipulator->getCrop('left'));
-        $this->assertSame('center', $this->manipulator->getCrop('center'));
-        $this->assertSame('right', $this->manipulator->getCrop('right'));
-        $this->assertSame('bottom-left', $this->manipulator->getCrop('bottom-left'));
-        $this->assertSame('bottom', $this->manipulator->getCrop('bottom'));
-        $this->assertSame('bottom-right', $this->manipulator->getCrop('bottom-right'));
-        $this->assertSame('center', $this->manipulator->getCrop(null));
-        $this->assertSame('center', $this->manipulator->getCrop('invalid'));
+        $this->assertSame('center', $this->manipulator->getCrop(['fit' => 'crop']));
+        $this->assertSame('top-left', $this->manipulator->getCrop(['fit' => 'crop-top-left']));
+        $this->assertSame('top', $this->manipulator->getCrop(['fit' => 'crop-top']));
+        $this->assertSame('top-right', $this->manipulator->getCrop(['fit' => 'crop-top-right']));
+        $this->assertSame('left', $this->manipulator->getCrop(['fit' => 'crop-left']));
+        $this->assertSame('center', $this->manipulator->getCrop(['fit' => 'crop-center']));
+        $this->assertSame('right', $this->manipulator->getCrop(['fit' => 'crop-right']));
+        $this->assertSame('bottom-left', $this->manipulator->getCrop(['fit' => 'crop-bottom-left']));
+        $this->assertSame('bottom', $this->manipulator->getCrop(['fit' => 'crop-bottom']));
+        $this->assertSame('bottom-right', $this->manipulator->getCrop(['fit' => 'crop-bottom-right']));
+        $this->assertSame('center', $this->manipulator->getCrop(['fit' => null]));
+        $this->assertSame('center', $this->manipulator->getCrop(['fit' => 'invalid']));
     }
 
     public function testResolveMissingDimensions()

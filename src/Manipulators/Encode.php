@@ -3,20 +3,19 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
-class Output implements ManipulatorInterface
+class Encode implements ManipulatorInterface
 {
     /**
      * Perform output image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $format = $this->getFormat($image, $request->get('fm'));
-        $quality = $this->getQuality($request->get('q'));
+        $format = $this->getFormat($image, $params);
+        $quality = $this->getQuality($params);
 
         if ($format === 'pjpg') {
             $image->interlace();
@@ -28,11 +27,14 @@ class Output implements ManipulatorInterface
 
     /**
      * Resolve format.
-     * @param  string $format The format.
+     * @param  Image  $image  The source image.
+     * @param  array  $params The manipulation params.
      * @return string The resolved format.
      */
-    public function getFormat(Image $image, $format)
+    public function getFormat(Image $image, $params)
     {
+        $format = isset($params['fm']) ? $params['fm'] : null;
+
         $allowed = [
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
@@ -53,25 +55,25 @@ class Output implements ManipulatorInterface
 
     /**
      * Resolve quality.
-     * @param  string $quality The quality.
+     * @param  array  $params The manipulation params.
      * @return string The resolved quality.
      */
-    public function getQuality($quality)
+    public function getQuality($params)
     {
         $default = 90;
 
-        if (is_null($quality)) {
+        if (!isset($params['q'])) {
             return $default;
         }
 
-        if (!is_numeric($quality)) {
+        if (!is_numeric($params['q'])) {
             return $default;
         }
 
-        if ($quality < 0 or $quality > 100) {
+        if ($params['q'] < 0 or $params['q'] > 100) {
             return $default;
         }
 
-        return (int) $quality;
+        return (int) $params['q'];
     }
 }

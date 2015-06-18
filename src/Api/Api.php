@@ -5,7 +5,6 @@ namespace League\Glide\Api;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Glide\Manipulators\ManipulatorInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class Api implements ApiInterface
 {
@@ -76,16 +75,16 @@ class Api implements ApiInterface
 
     /**
      * Perform image manipulations.
-     * @param  Request $request The request object.
-     * @param  string  $source  Source image binary data.
-     * @return string  Manipulated image binary data.
+     * @param  string $source Source image binary data.
+     * @param  array  $params The manipulation params.
+     * @return string Manipulated image binary data.
      */
-    public function run(Request $request, $source)
+    public function run($source, array $params)
     {
         $image = $this->imageManager->make($source);
 
         foreach ($this->manipulators as $manipulator) {
-            $image = $manipulator->run($request, $image);
+            $image = $manipulator->run($image, $params);
         }
 
         return $image->getEncoded();

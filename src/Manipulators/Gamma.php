@@ -3,19 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use Symfony\Component\HttpFoundation\Request;
 
 class Gamma implements ManipulatorInterface
 {
     /**
      * Perform gamma image manipulation.
-     * @param  Request $request The request object.
-     * @param  Image   $image   The source image.
-     * @return Image   The manipulated image.
+     * @param  Image $image  The source image.
+     * @param  array $params The manipulation params.
+     * @return Image The manipulated image.
      */
-    public function run(Request $request, Image $image)
+    public function run(Image $image, array $params)
     {
-        $gamma = $this->getGamma($request->get('gam'));
+        $gamma = $this->getGamma($params);
 
         if ($gamma) {
             $image->gamma($gamma);
@@ -26,23 +25,23 @@ class Gamma implements ManipulatorInterface
 
     /**
      * Resolve gamma amount.
-     * @param  string $gamma The gamma amount.
+     * @param  array  $params The manipulation params.
      * @return string The resolved gamma amount.
      */
-    public function getGamma($gamma)
+    public function getGamma($params)
     {
-        if (is_null($gamma)) {
-            return false;
+        if (!isset($params['gam'])) {
+            return;
         }
 
-        if (!preg_match('/^[0-9]\.*[0-9]*$/', $gamma)) {
-            return false;
+        if (!preg_match('/^[0-9]\.*[0-9]*$/', $params['gam'])) {
+            return;
         }
 
-        if ($gamma < 0.1 or $gamma > 9.99) {
-            return false;
+        if ($params['gam'] < 0.1 or $params['gam'] > 9.99) {
+            return;
         }
 
-        return (double) $gamma;
+        return (double) $params['gam'];
     }
 }

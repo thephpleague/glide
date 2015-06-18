@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use League\Glide\Requests\RequestFactory;
 use Mockery;
 
 class PixelateTest extends \PHPUnit_Framework_TestCase
@@ -32,17 +31,17 @@ class PixelateTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(RequestFactory::create(['image.jpg', ['pixel' => '10']]), $image)
+            $this->manipulator->run($image, ['pixel' => '10'])
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getPixelate('50'));
-        $this->assertSame(50, $this->manipulator->getPixelate(50.50));
-        $this->assertSame(false, $this->manipulator->getPixelate(null));
-        $this->assertSame(false, $this->manipulator->getPixelate('a'));
-        $this->assertSame(false, $this->manipulator->getPixelate('-1'));
-        $this->assertSame(false, $this->manipulator->getPixelate('1001'));
+        $this->assertSame(50, $this->manipulator->getPixelate(['pixel' => '50']));
+        $this->assertSame(50, $this->manipulator->getPixelate(['pixel' => 50.50]));
+        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => null]));
+        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => 'a']));
+        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => '-1']));
+        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => '1001']));
     }
 }
