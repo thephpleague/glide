@@ -22,6 +22,12 @@ class Encode implements ManipulatorInterface
             $format = 'jpg';
         }
 
+        if ($format === 'jpg') {
+            $image = $image->getDriver()
+                           ->newImage($image->width(), $image->height(), '#fff')
+                           ->insert($image);
+        }
+
         return $image->encode($format, $quality);
     }
 
