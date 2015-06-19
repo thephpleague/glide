@@ -4,6 +4,7 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Manipulators\Helpers\Dimension;
 
 class Watermark implements ManipulatorInterface
 {
@@ -153,26 +154,9 @@ class Watermark implements ManipulatorInterface
      */
     public function getDimension(Image $image, array $params, $field)
     {
-        if (!isset($params[$field])) {
-            return;
+        if (isset($params[$field])) {
+            return (new Dimension($image))->get($params[$field]);
         }
-
-        if (is_numeric($params[$field]) and $params[$field] > 0) {
-            return (double) $params[$field];
-        }
-
-        if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $params[$field])) {
-            $type = substr($params[$field], -1);
-            $value = substr($params[$field], 0, -1);
-
-            if ($type === 'w') {
-                return (double) $image->width() * ($value / 100);
-            } elseif ($type === 'h') {
-                return (double) $image->height() * ($value / 100);
-            }
-        }
-
-        return;
     }
 
     /**
@@ -232,7 +216,7 @@ class Watermark implements ManipulatorInterface
             'bottom-right',
         ];
 
-        if (!in_array((string) $params['markpos'], $positions, true)) {
+        if (!in_array($params['markpos'], $positions, true)) {
             return 'bottom-right';
         }
 

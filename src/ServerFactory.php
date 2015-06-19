@@ -9,6 +9,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\Api;
 use League\Glide\Manipulators\Blur;
+use League\Glide\Manipulators\Border;
 use League\Glide\Manipulators\Brightness;
 use League\Glide\Manipulators\Contrast;
 use League\Glide\Manipulators\Crop;
@@ -228,6 +229,7 @@ class ServerFactory
             new Blur(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
+            new Border(),
             new Encode(),
         ];
     }
