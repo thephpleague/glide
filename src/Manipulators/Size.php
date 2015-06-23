@@ -51,8 +51,10 @@ class Size implements ManipulatorInterface
         $height = $this->getHeight($params);
         $fit = $this->getFit($params);
         $crop = $this->getCrop($params);
+        $dpr = $this->getDpr($params);
 
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
+        list($width, $height) = $this->applyDpr($width, $height, $dpr);
         list($width, $height) = $this->limitImageSize($width, $height);
 
         if (round($width) !== round($image->width()) or
@@ -177,6 +179,28 @@ class Size implements ManipulatorInterface
     }
 
     /**
+     * Resolve the device pixel ratio.
+     * @param  array  $params The manipulation params.
+     * @return double The device pixel ratio.
+     */
+    public function getDpr($params)
+    {
+        if (!isset($params['dpr'])) {
+            return 1.0;
+        }
+
+        if (!is_numeric($params['dpr'])) {
+            return 1.0;
+        }
+
+        if ($params['dpr'] < 0 or $params['dpr'] > 8) {
+            return 1.0;
+        }
+
+        return (double) $params['dpr'];
+    }
+
+    /**
      * Resolve missing image dimensions.
      * @param  Image       $image  The source image.
      * @param  double|null $width  The image width.
@@ -197,6 +221,24 @@ class Size implements ManipulatorInterface
         if (!$height) {
             $height = $width / ($image->width() / $image->height());
         }
+
+        return [
+            (double) $width,
+            (double) $height,
+        ];
+    }
+
+    /**
+     * Apply the device pixel ratio.
+     * @param  double   $width  The target image width.
+     * @param  double   $height The target image height.
+     * @param  double   $dpr    The device pixel ratio.
+     * @return double[] The modified width and height.
+     */
+    public function applyDpr($width, $height, $dpr)
+    {
+        $width = $width * $dpr;
+        $height = $height * $dpr;
 
         return [
             (double) $width,

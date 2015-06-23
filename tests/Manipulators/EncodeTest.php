@@ -2,14 +2,24 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\ImageManager;
 use Mockery;
 
 class EncodeTest extends \PHPUnit_Framework_TestCase
 {
     private $manipulator;
+    private $jpg;
+    private $png;
+    private $gif;
+    private $tif;
 
     public function setUp()
     {
+        $manager = new ImageManager();
+        $this->jpg = $manager->canvas(100, 100)->encode('jpg');
+        $this->png = $manager->canvas(100, 100)->encode('png');
+        $this->gif = $manager->canvas(100, 100)->encode('gif');
+
         $this->manipulator = new Encode();
     }
 
@@ -25,45 +35,18 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('encode')
-                 ->with('jpg', '100')
-                 ->andReturn($mock)
-                 ->once();
-        });
-
-        $this->assertInstanceOf(
-            'Intervention\Image\Image',
-            $this->manipulator->run(
-                $image,
-                [
-                    'fm' => 'jpg',
-                    'q' => '100',
-                ]
-            )
-        );
-    }
-
-    public function testProgressiveJpeg()
-    {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('interlace')
-                    ->once()
-                 ->shouldReceive('encode')
-                    ->with('jpg', '90')
-                    ->andReturn($mock)
-                    ->once();
-        });
-
-        $this->assertInstanceOf(
-            'Intervention\Image\Image',
-            $this->manipulator->run(
-                $image,
-                [
-                    'fm' => 'pjpg',
-                ]
-            )
-        );
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->jpg, ['fm' => 'jpg'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->png, ['fm' => 'jpg'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->gif, ['fm' => 'jpg'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->jpg, ['fm' => 'pjpg'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->png, ['fm' => 'pjpg'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->run($this->gif, ['fm' => 'pjpg'])->mime);
+        $this->assertSame('image/png', $this->manipulator->run($this->jpg, ['fm' => 'png'])->mime);
+        $this->assertSame('image/png', $this->manipulator->run($this->png, ['fm' => 'png'])->mime);
+        $this->assertSame('image/png', $this->manipulator->run($this->gif, ['fm' => 'png'])->mime);
+        $this->assertSame('image/gif', $this->manipulator->run($this->jpg, ['fm' => 'gif'])->mime);
+        $this->assertSame('image/gif', $this->manipulator->run($this->png, ['fm' => 'gif'])->mime);
+        $this->assertSame('image/gif', $this->manipulator->run($this->gif, ['fm' => 'gif'])->mime);
     }
 
     public function testGetFormat()

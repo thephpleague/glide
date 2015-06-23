@@ -155,8 +155,32 @@ class Watermark implements ManipulatorInterface
     public function getDimension(Image $image, array $params, $field)
     {
         if (isset($params[$field])) {
-            return (new Dimension($image))->get($params[$field]);
+            $dpr = $this->getDpr($params);
+
+            return (new Dimension($image, $dpr))->get($params[$field]);
         }
+    }
+
+    /**
+     * Resolve the device pixel ratio.
+     * @param  array  $params The manipulation params.
+     * @return double The device pixel ratio.
+     */
+    public function getDpr($params)
+    {
+        if (!isset($params['dpr'])) {
+            return 1.0;
+        }
+
+        if (!is_numeric($params['dpr'])) {
+            return 1.0;
+        }
+
+        if ($params['dpr'] < 0 or $params['dpr'] > 8) {
+            return 1.0;
+        }
+
+        return (double) $params['dpr'];
     }
 
     /**

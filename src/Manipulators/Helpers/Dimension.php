@@ -13,12 +13,20 @@ class Dimension
     protected $image;
 
     /**
-     * Create dimension helper instance.
-     * @param Image $image The source image.
+     * The device pixel ratio.
+     * @var integer
      */
-    public function __construct(Image $image)
+    protected $dpr;
+
+    /**
+     * Create dimension helper instance.
+     * @param Image   $image The source image.
+     * @param integer $dpr   The device pixel ratio.
+     */
+    public function __construct(Image $image, $dpr = 1)
     {
         $this->image = $image;
+        $this->dpr = $dpr;
     }
 
     /**
@@ -29,7 +37,7 @@ class Dimension
     public function get($value)
     {
         if (is_numeric($value) and $value > 0) {
-            return (double) $value;
+            return (double) $value * $this->dpr;
         }
 
         if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $value)) {
