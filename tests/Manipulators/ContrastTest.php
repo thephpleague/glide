@@ -31,17 +31,17 @@ class ContrastTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['con' => 50])
+            $this->manipulator->setParams(['con' => 50])->run($image)
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getContrast(['con' => '50']));
-        $this->assertSame(50, $this->manipulator->getContrast(['con' => 50]));
-        $this->assertSame(null, $this->manipulator->getContrast(['con' => null]));
-        $this->assertSame(null, $this->manipulator->getContrast(['con' => '101']));
-        $this->assertSame(null, $this->manipulator->getContrast(['con' => '-101']));
-        $this->assertSame(null, $this->manipulator->getContrast(['con' => 'a']));
+        $this->assertSame(50, $this->manipulator->setParams(['con' => '50'])->getContrast());
+        $this->assertSame(50, $this->manipulator->setParams(['con' => 50])->getContrast());
+        $this->assertSame(null, $this->manipulator->setParams(['con' => null])->getContrast());
+        $this->assertSame(null, $this->manipulator->setParams(['con' => '101'])->getContrast());
+        $this->assertSame(null, $this->manipulator->setParams(['con' => '-101'])->getContrast());
+        $this->assertSame(null, $this->manipulator->setParams(['con' => 'a'])->getContrast());
     }
 }

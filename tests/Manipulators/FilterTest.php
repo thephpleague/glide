@@ -34,17 +34,17 @@ class FilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['filt' => 'greyscale'])
+            $this->manipulator->setParams(['filt' => 'greyscale'])->run($image)
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['filt' => 'sepia'])
+            $this->manipulator->setParams(['filt' => 'sepia'])->run($image)
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, [])
+            $this->manipulator->setParams([])->run($image)
         );
     }
 

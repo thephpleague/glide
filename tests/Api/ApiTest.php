@@ -64,6 +64,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         });
 
         $manipulator = Mockery::mock('League\Glide\Manipulators\ManipulatorInterface', function ($mock) use ($image) {
+            $mock->shouldReceive('setParams')->with([]);
             $mock->shouldReceive('run')->andReturn($image);
         });
 

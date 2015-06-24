@@ -31,17 +31,17 @@ class PixelateTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['pixel' => '10'])
+            $this->manipulator->setParams(['pixel' => '10'])->run($image)
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getPixelate(['pixel' => '50']));
-        $this->assertSame(50, $this->manipulator->getPixelate(['pixel' => 50.50]));
-        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => null]));
-        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => 'a']));
-        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => '-1']));
-        $this->assertSame(null, $this->manipulator->getPixelate(['pixel' => '1001']));
+        $this->assertSame(50, $this->manipulator->setParams(['pixel' => '50'])->getPixelate());
+        $this->assertSame(50, $this->manipulator->setParams(['pixel' => 50.50])->getPixelate());
+        $this->assertSame(null, $this->manipulator->setParams(['pixel' => null])->getPixelate());
+        $this->assertSame(null, $this->manipulator->setParams(['pixel' => 'a'])->getPixelate());
+        $this->assertSame(null, $this->manipulator->setParams(['pixel' => '-1'])->getPixelate());
+        $this->assertSame(null, $this->manipulator->setParams(['pixel' => '1001'])->getPixelate());
     }
 }

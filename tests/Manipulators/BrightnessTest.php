@@ -31,17 +31,17 @@ class BrightnessTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['bri' => 50])
+            $this->manipulator->setParams(['bri' => 50])->run($image)
         );
     }
 
     public function testGetPixelate()
     {
-        $this->assertSame(50, $this->manipulator->getBrightness(['bri' => '50']));
-        $this->assertSame(50, $this->manipulator->getBrightness(['bri' => 50]));
-        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => null]));
-        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => '101']));
-        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => '-101']));
-        $this->assertSame(null, $this->manipulator->getBrightness(['bri' => 'a']));
+        $this->assertSame(50, $this->manipulator->setParams(['bri' => '50'])->getBrightness());
+        $this->assertSame(50, $this->manipulator->setParams(['bri' => 50])->getBrightness());
+        $this->assertSame(null, $this->manipulator->setParams(['bri' => null])->getBrightness());
+        $this->assertSame(null, $this->manipulator->setParams(['bri' => '101'])->getBrightness());
+        $this->assertSame(null, $this->manipulator->setParams(['bri' => '-101'])->getBrightness());
+        $this->assertSame(null, $this->manipulator->setParams(['bri' => 'a'])->getBrightness());
     }
 }

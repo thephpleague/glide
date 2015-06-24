@@ -4,7 +4,7 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Size implements ManipulatorInterface
+class Size extends BaseManipulator
 {
     /**
      * Maximum image size in pixels.
@@ -41,17 +41,16 @@ class Size implements ManipulatorInterface
 
     /**
      * Perform size image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $width = $this->getWidth($params);
-        $height = $this->getHeight($params);
-        $fit = $this->getFit($params);
-        $crop = $this->getCrop($params);
-        $dpr = $this->getDpr($params);
+        $width = $this->getWidth();
+        $height = $this->getHeight();
+        $fit = $this->getFit();
+        $crop = $this->getCrop();
+        $dpr = $this->getDpr();
 
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
         list($width, $height) = $this->applyDpr($width, $height, $dpr);
@@ -67,61 +66,46 @@ class Size implements ManipulatorInterface
 
     /**
      * Resolve width.
-     * @param  array  $params The manipulation params.
      * @return string The resolved width.
      */
-    public function getWidth($params)
+    public function getWidth()
     {
-        if (!isset($params['w'])) {
+        if (!is_numeric($this->w)) {
             return;
         }
 
-        if (!is_numeric($params['w'])) {
+        if ($this->w <= 0) {
             return;
         }
 
-        if ($params['w'] <= 0) {
-            return;
-        }
-
-        return (double) $params['w'];
+        return (double) $this->w;
     }
 
     /**
      * Resolve height.
-     * @param  array  $params The manipulation params.
      * @return string The resolved height.
      */
-    public function getHeight($params)
+    public function getHeight()
     {
-        if (!isset($params['h'])) {
+        if (!is_numeric($this->h)) {
             return;
         }
 
-        if (!is_numeric($params['h'])) {
+        if ($this->h <= 0) {
             return;
         }
 
-        if ($params['h'] <= 0) {
-            return;
-        }
-
-        return (double) $params['h'];
+        return (double) $this->h;
     }
 
     /**
      * Resolve fit.
-     * @param  array  $params The manipulation params.
      * @return string The resolved fit.
      */
-    public function getFit($params)
+    public function getFit()
     {
-        if (!isset($params['fit'])) {
-            return 'contain';
-        }
-
-        if (in_array($params['fit'], ['contain', 'max', 'stretch'], true)) {
-            return $params['fit'];
+        if (in_array($this->fit, ['contain', 'max', 'stretch'], true)) {
+            return $this->fit;
         }
 
         $cropMethods = [
@@ -137,7 +121,7 @@ class Size implements ManipulatorInterface
             'crop-bottom-right',
         ];
 
-        if (in_array($params['fit'], $cropMethods, true)) {
+        if (in_array($this->fit, $cropMethods, true)) {
             return 'crop';
         }
 
@@ -146,19 +130,10 @@ class Size implements ManipulatorInterface
 
     /**
      * Resolve crop.
-     * @param  array  $params The manipulation params.
      * @return string The resolved crop.
      */
-    public function getCrop($params)
+    public function getCrop()
     {
-        if (!isset($params['fit'])) {
-            return 'center';
-        }
-
-        if ($params['fit'] === 'crop') {
-            return 'center';
-        }
-
         $cropMethods = [
             'crop-top-left',
             'crop-top',
@@ -171,33 +146,28 @@ class Size implements ManipulatorInterface
             'crop-bottom-right',
         ];
 
-        if (!in_array($params['fit'], $cropMethods, true)) {
+        if (!in_array($this->fit, $cropMethods, true)) {
             return 'center';
         }
 
-        return substr($params['fit'], 5);
+        return substr($this->fit, 5);
     }
 
     /**
      * Resolve the device pixel ratio.
-     * @param  array  $params The manipulation params.
      * @return double The device pixel ratio.
      */
-    public function getDpr($params)
+    public function getDpr()
     {
-        if (!isset($params['dpr'])) {
+        if (!is_numeric($this->dpr)) {
             return 1.0;
         }
 
-        if (!is_numeric($params['dpr'])) {
+        if ($this->dpr < 0 or $this->dpr > 8) {
             return 1.0;
         }
 
-        if ($params['dpr'] < 0 or $params['dpr'] > 8) {
-            return 1.0;
-        }
-
-        return (double) $params['dpr'];
+        return (double) $this->dpr;
     }
 
     /**

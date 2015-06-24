@@ -4,17 +4,16 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Crop implements ManipulatorInterface
+class Crop extends BaseManipulator
 {
     /**
      * Perform crop image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $coordinates = $this->getCoordinates($image, $params);
+        $coordinates = $this->getCoordinates($image);
 
         if ($coordinates) {
             $coordinates = $this->limitToImageBoundaries($image, $coordinates);
@@ -32,15 +31,12 @@ class Crop implements ManipulatorInterface
 
     /**
      * Resolve coordinates.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return int[] The resolved coordinates.
      */
-    public function getCoordinates(Image $image, $params)
+    public function getCoordinates(Image $image)
     {
-        $crop = isset($params['crop']) ? $params['crop'] : null;
-
-        $coordinates = explode(',', $crop);
+        $coordinates = explode(',', $this->crop);
 
         if (count($coordinates) !== 4 or
             (!is_numeric($coordinates[0])) or

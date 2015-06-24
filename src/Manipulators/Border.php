@@ -6,17 +6,16 @@ use Intervention\Image\Image;
 use League\Glide\Manipulators\Helpers\Color;
 use League\Glide\Manipulators\Helpers\Dimension;
 
-class Border implements ManipulatorInterface
+class Border extends BaseManipulator
 {
     /**
      * Perform border image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        if ($border = $this->getBorder($image, $params)) {
+        if ($border = $this->getBorder($image)) {
             list($width, $color, $method) = $border;
 
             if ($method === 'overlay') {
@@ -37,19 +36,18 @@ class Border implements ManipulatorInterface
 
     /**
      * Resolve border amount.
-     * @param  array  $params The manipulation params.
+     * @param  Image  $image The source image.
      * @return string The resolved border amount.
      */
-    public function getBorder(Image $image, $params)
+    public function getBorder(Image $image)
     {
-        if (!isset($params['border'])) {
+        if (!$this->border) {
             return;
         }
 
-        $values = explode(',', $params['border']);
-        $dpr = $this->getDpr($params);
+        $values = explode(',', $this->border);
 
-        $width = $this->getWidth($image, $dpr, isset($values[0]) ? $values[0] : null);
+        $width = $this->getWidth($image, $this->getDpr(), isset($values[0]) ? $values[0] : null);
         $color = $this->getColor(isset($values[1]) ? $values[1] : null);
         $method = $this->getMethod(isset($values[2]) ? $values[2] : null);
 
@@ -60,36 +58,13 @@ class Border implements ManipulatorInterface
 
     /**
      * Get a dimension.
-     * @param  Image       $image  The source image.
-     * @param  array       $params The manipulation params.
-     * @param  string      $field  The requested field.
+     * @param  Image       $image The source image.
+     * @param  string      $field The requested field.
      * @return double|null The dimension.
      */
     public function getWidth(Image $image, $dpr, $width)
     {
         return (new Dimension($image, $dpr))->get($width);
-    }
-
-    /**
-     * Resolve the device pixel ratio.
-     * @param  array  $params The manipulation params.
-     * @return double The device pixel ratio.
-     */
-    public function getDpr($params)
-    {
-        if (!isset($params['dpr'])) {
-            return 1.0;
-        }
-
-        if (!is_numeric($params['dpr'])) {
-            return 1.0;
-        }
-
-        if ($params['dpr'] < 0 or $params['dpr'] > 8) {
-            return 1.0;
-        }
-
-        return (double) $params['dpr'];
     }
 
     /**
@@ -114,6 +89,23 @@ class Border implements ManipulatorInterface
         }
 
         return $method;
+    }
+
+    /**
+     * Resolve the device pixel ratio.
+     * @return double The device pixel ratio.
+     */
+    public function getDpr()
+    {
+        if (!is_numeric($this->dpr)) {
+            return 1.0;
+        }
+
+        if ($this->dpr < 0 or $this->dpr > 8) {
+            return 1.0;
+        }
+
+        return (double) $this->dpr;
     }
 
     /**

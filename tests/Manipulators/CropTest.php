@@ -33,25 +33,25 @@ class CropTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($this->image, ['crop' => '100,100,0,0'])
+            $this->manipulator->setParams(['crop' => '100,100,0,0'])->run($this->image)
         );
     }
 
     public function testGetCoordinates()
     {
-        $this->assertSame([100, 100, 0, 0], $this->manipulator->getCoordinates($this->image, ['crop' => '100,100,0,0']));
-        $this->assertSame([101, 1, 1, 1], $this->manipulator->getCoordinates($this->image, ['crop' => '101,1,1,1']));
-        $this->assertSame([1, 101, 1, 1], $this->manipulator->getCoordinates($this->image, ['crop' => '1,101,1,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => null]));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '1,1,1,']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '1,1,,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '1,,1,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => ',1,1,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '-1,1,1,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '1,1,101,1']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '1,1,1,101']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => 'a']));
-        $this->assertSame(null, $this->manipulator->getCoordinates($this->image, ['crop' => '']));
+        $this->assertSame([100, 100, 0, 0], $this->manipulator->setParams(['crop' => '100,100,0,0'])->getCoordinates($this->image));
+        $this->assertSame([101, 1, 1, 1], $this->manipulator->setParams(['crop' => '101,1,1,1'])->getCoordinates($this->image));
+        $this->assertSame([1, 101, 1, 1], $this->manipulator->setParams(['crop' => '1,101,1,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => null])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '1,1,1,'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '1,1,,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '1,,1,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => ',1,1,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '-1,1,1,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '1,1,101,1'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => '1,1,1,101'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => 'a'])->getCoordinates($this->image));
+        $this->assertSame(null, $this->manipulator->setParams(['crop' => ''])->getCoordinates($this->image));
     }
 
     public function testValidateCoordinates()

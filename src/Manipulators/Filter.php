@@ -4,25 +4,20 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Filter implements ManipulatorInterface
+class Filter extends BaseManipulator
 {
     /**
      * Perform filter image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        if (!isset($params['filt'])) {
-            return $image;
-        }
-
-        if ($params['filt'] === 'greyscale') {
+        if ($this->filt === 'greyscale') {
             return $this->runGreyscaleFilter($image);
         }
 
-        if ($params['filt'] === 'sepia') {
+        if ($this->filt === 'sepia') {
             return $this->runSepiaFilter($image);
         }
 

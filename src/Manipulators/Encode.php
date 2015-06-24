@@ -4,18 +4,17 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Encode implements ManipulatorInterface
+class Encode extends BaseManipulator
 {
     /**
      * Perform output image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $format = $this->getFormat($image, $params);
-        $quality = $this->getQuality($params);
+        $format = $this->getFormat($image);
+        $quality = $this->getQuality();
 
         if ($format === 'pjpg') {
             $image->interlace();
@@ -33,14 +32,11 @@ class Encode implements ManipulatorInterface
 
     /**
      * Resolve format.
-     * @param  Image  $image  The source image.
-     * @param  array  $params The manipulation params.
+     * @param  Image  $image The source image.
      * @return string The resolved format.
      */
-    public function getFormat(Image $image, $params)
+    public function getFormat(Image $image)
     {
-        $format = isset($params['fm']) ? $params['fm'] : null;
-
         $allowed = [
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
@@ -48,8 +44,8 @@ class Encode implements ManipulatorInterface
             'png' => 'image/png',
         ];
 
-        if (array_key_exists($format, $allowed)) {
-            return $format;
+        if (array_key_exists($this->fm, $allowed)) {
+            return $this->fm;
         }
 
         if ($format = array_search($image->mime(), $allowed, true)) {
@@ -61,25 +57,20 @@ class Encode implements ManipulatorInterface
 
     /**
      * Resolve quality.
-     * @param  array  $params The manipulation params.
      * @return string The resolved quality.
      */
-    public function getQuality($params)
+    public function getQuality()
     {
         $default = 90;
 
-        if (!isset($params['q'])) {
+        if (!is_numeric($this->q)) {
             return $default;
         }
 
-        if (!is_numeric($params['q'])) {
+        if ($this->q < 0 or $this->q > 100) {
             return $default;
         }
 
-        if ($params['q'] < 0 or $params['q'] > 100) {
-            return $default;
-        }
-
-        return (int) $params['q'];
+        return (int) $this->q;
     }
 }

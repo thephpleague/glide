@@ -4,17 +4,16 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Sharpen implements ManipulatorInterface
+class Sharpen extends BaseManipulator
 {
     /**
      * Perform sharpen image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $sharpen = $this->getSharpen($params);
+        $sharpen = $this->getSharpen();
 
         if ($sharpen) {
             $image->sharpen($sharpen);
@@ -25,23 +24,18 @@ class Sharpen implements ManipulatorInterface
 
     /**
      * Resolve sharpen amount.
-     * @param  array  $params The manipulation params.
      * @return string The resolved sharpen amount.
      */
-    public function getSharpen($params)
+    public function getSharpen()
     {
-        if (!isset($params['sharp'])) {
+        if (!is_numeric($this->sharp)) {
             return;
         }
 
-        if (!is_numeric($params['sharp'])) {
+        if ($this->sharp < 0 or $this->sharp > 100) {
             return;
         }
 
-        if ($params['sharp'] < 0 or $params['sharp'] > 100) {
-            return;
-        }
-
-        return (int) $params['sharp'];
+        return (int) $this->sharp;
     }
 }

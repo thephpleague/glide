@@ -48,7 +48,7 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
               ->andReturn($driver)
               ->once();
 
-        $this->manipulator->getImage($image, ['mark' => 'image.jpg']);
+        $this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image);
     }
 
     public function testGetDimension()
@@ -57,46 +57,46 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
         $image->shouldReceive('width')->andReturn(2000);
         $image->shouldReceive('height')->andReturn(1000);
 
-        $this->assertSame(300.0, $this->manipulator->getDimension($image, ['w' => '300'], 'w'));
-        $this->assertSame(300.0, $this->manipulator->getDimension($image, ['w' => 300], 'w'));
-        $this->assertSame(1000.0, $this->manipulator->getDimension($image, ['w' => '50w'], 'w'));
-        $this->assertSame(500.0, $this->manipulator->getDimension($image, ['w' => '50h'], 'w'));
-        $this->assertSame(null, $this->manipulator->getDimension($image, ['w' => '101h'], 'w'));
-        $this->assertSame(null, $this->manipulator->getDimension($image, ['w' => -1], 'w'));
-        $this->assertSame(null, $this->manipulator->getDimension($image, ['w' => ''], 'w'));
+        $this->assertSame(300.0, $this->manipulator->setParams(['w' => '300'])->getDimension($image, 'w'));
+        $this->assertSame(300.0, $this->manipulator->setParams(['w' => 300])->getDimension($image, 'w'));
+        $this->assertSame(1000.0, $this->manipulator->setParams(['w' => '50w'])->getDimension($image, 'w'));
+        $this->assertSame(500.0, $this->manipulator->setParams(['w' => '50h'])->getDimension($image, 'w'));
+        $this->assertSame(null, $this->manipulator->setParams(['w' => '101h'])->getDimension($image, 'w'));
+        $this->assertSame(null, $this->manipulator->setParams(['w' => -1])->getDimension($image, 'w'));
+        $this->assertSame(null, $this->manipulator->setParams(['w' => ''])->getDimension($image, 'w'));
     }
 
     public function testGetFit()
     {
-        $this->assertSame('contain', $this->manipulator->getFit(['markfit' => 'contain']));
-        $this->assertSame('max', $this->manipulator->getFit(['markfit' => 'max']));
-        $this->assertSame('stretch', $this->manipulator->getFit(['markfit' => 'stretch']));
-        $this->assertSame('crop', $this->manipulator->getFit(['markfit' => 'crop']));
-        $this->assertSame('crop-top-left', $this->manipulator->getFit(['markfit' => 'crop-top-left']));
-        $this->assertSame('crop-top', $this->manipulator->getFit(['markfit' => 'crop-top']));
-        $this->assertSame('crop-top-right', $this->manipulator->getFit(['markfit' => 'crop-top-right']));
-        $this->assertSame('crop-left', $this->manipulator->getFit(['markfit' => 'crop-left']));
-        $this->assertSame('crop-center', $this->manipulator->getFit(['markfit' => 'crop-center']));
-        $this->assertSame('crop-right', $this->manipulator->getFit(['markfit' => 'crop-right']));
-        $this->assertSame('crop-bottom-left', $this->manipulator->getFit(['markfit' => 'crop-bottom-left']));
-        $this->assertSame('crop-bottom', $this->manipulator->getFit(['markfit' => 'crop-bottom']));
-        $this->assertSame('crop-bottom-right', $this->manipulator->getFit(['markfit' => 'crop-bottom-right']));
-        $this->assertSame(null, $this->manipulator->getFit(['markfit' => null]));
-        $this->assertSame(null, $this->manipulator->getFit(['markfit' => 'invalid']));
+        $this->assertSame('contain', $this->manipulator->setParams(['markfit' => 'contain'])->getFit());
+        $this->assertSame('max', $this->manipulator->setParams(['markfit' => 'max'])->getFit());
+        $this->assertSame('stretch', $this->manipulator->setParams(['markfit' => 'stretch'])->getFit());
+        $this->assertSame('crop', $this->manipulator->setParams(['markfit' => 'crop'])->getFit());
+        $this->assertSame('crop-top-left', $this->manipulator->setParams(['markfit' => 'crop-top-left'])->getFit());
+        $this->assertSame('crop-top', $this->manipulator->setParams(['markfit' => 'crop-top'])->getFit());
+        $this->assertSame('crop-top-right', $this->manipulator->setParams(['markfit' => 'crop-top-right'])->getFit());
+        $this->assertSame('crop-left', $this->manipulator->setParams(['markfit' => 'crop-left'])->getFit());
+        $this->assertSame('crop-center', $this->manipulator->setParams(['markfit' => 'crop-center'])->getFit());
+        $this->assertSame('crop-right', $this->manipulator->setParams(['markfit' => 'crop-right'])->getFit());
+        $this->assertSame('crop-bottom-left', $this->manipulator->setParams(['markfit' => 'crop-bottom-left'])->getFit());
+        $this->assertSame('crop-bottom', $this->manipulator->setParams(['markfit' => 'crop-bottom'])->getFit());
+        $this->assertSame('crop-bottom-right', $this->manipulator->setParams(['markfit' => 'crop-bottom-right'])->getFit());
+        $this->assertSame(null, $this->manipulator->setParams(['markfit' => null])->getFit());
+        $this->assertSame(null, $this->manipulator->setParams(['markfit' => 'invalid'])->getFit());
     }
 
     public function testGetPosition()
     {
-        $this->assertSame('top-left', $this->manipulator->getPosition(['markpos' => 'top-left']));
-        $this->assertSame('top', $this->manipulator->getPosition(['markpos' => 'top']));
-        $this->assertSame('top-right', $this->manipulator->getPosition(['markpos' => 'top-right']));
-        $this->assertSame('left', $this->manipulator->getPosition(['markpos' => 'left']));
-        $this->assertSame('center', $this->manipulator->getPosition(['markpos' => 'center']));
-        $this->assertSame('right', $this->manipulator->getPosition(['markpos' => 'right']));
-        $this->assertSame('bottom-left', $this->manipulator->getPosition(['markpos' => 'bottom-left']));
-        $this->assertSame('bottom', $this->manipulator->getPosition(['markpos' => 'bottom']));
-        $this->assertSame('bottom-right', $this->manipulator->getPosition(['markpos' => 'bottom-right']));
-        $this->assertSame('bottom-right', $this->manipulator->getPosition([]));
-        $this->assertSame('bottom-right', $this->manipulator->getPosition(['markpos' => 'invalid']));
+        $this->assertSame('top-left', $this->manipulator->setParams(['markpos' => 'top-left'])->getPosition());
+        $this->assertSame('top', $this->manipulator->setParams(['markpos' => 'top'])->getPosition());
+        $this->assertSame('top-right', $this->manipulator->setParams(['markpos' => 'top-right'])->getPosition());
+        $this->assertSame('left', $this->manipulator->setParams(['markpos' => 'left'])->getPosition());
+        $this->assertSame('center', $this->manipulator->setParams(['markpos' => 'center'])->getPosition());
+        $this->assertSame('right', $this->manipulator->setParams(['markpos' => 'right'])->getPosition());
+        $this->assertSame('bottom-left', $this->manipulator->setParams(['markpos' => 'bottom-left'])->getPosition());
+        $this->assertSame('bottom', $this->manipulator->setParams(['markpos' => 'bottom'])->getPosition());
+        $this->assertSame('bottom-right', $this->manipulator->setParams(['markpos' => 'bottom-right'])->getPosition());
+        $this->assertSame('bottom-right', $this->manipulator->setParams([])->getPosition());
+        $this->assertSame('bottom-right', $this->manipulator->setParams(['markpos' => 'invalid'])->getPosition());
     }
 }

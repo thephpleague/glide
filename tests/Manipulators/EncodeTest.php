@@ -35,18 +35,18 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testRun()
     {
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->jpg, ['fm' => 'jpg'])->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->png, ['fm' => 'jpg'])->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->gif, ['fm' => 'jpg'])->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->jpg, ['fm' => 'pjpg'])->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->png, ['fm' => 'pjpg'])->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->run($this->gif, ['fm' => 'pjpg'])->mime);
-        $this->assertSame('image/png', $this->manipulator->run($this->jpg, ['fm' => 'png'])->mime);
-        $this->assertSame('image/png', $this->manipulator->run($this->png, ['fm' => 'png'])->mime);
-        $this->assertSame('image/png', $this->manipulator->run($this->gif, ['fm' => 'png'])->mime);
-        $this->assertSame('image/gif', $this->manipulator->run($this->jpg, ['fm' => 'gif'])->mime);
-        $this->assertSame('image/gif', $this->manipulator->run($this->png, ['fm' => 'gif'])->mime);
-        $this->assertSame('image/gif', $this->manipulator->run($this->gif, ['fm' => 'gif'])->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->jpg)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->png)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->gif)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->jpg)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->png)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->gif)->mime);
+        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->jpg)->mime);
+        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->png)->mime);
+        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->gif)->mime);
+        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->jpg)->mime);
+        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->png)->mime);
+        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->gif)->mime);
     }
 
     public function testGetFormat()
@@ -59,25 +59,25 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('mime')->andReturn('image/jpeg')->twice();
         });
 
-        $this->assertSame('jpg', $this->manipulator->getFormat($image, ['fm' => 'jpg']));
-        $this->assertSame('png', $this->manipulator->getFormat($image, ['fm' => 'png']));
-        $this->assertSame('gif', $this->manipulator->getFormat($image, ['fm' => 'gif']));
-        $this->assertSame('jpg', $this->manipulator->getFormat($image, ['fm' => null]));
-        $this->assertSame('png', $this->manipulator->getFormat($image, ['fm' => null]));
-        $this->assertSame('gif', $this->manipulator->getFormat($image, ['fm' => null]));
-        $this->assertSame('jpg', $this->manipulator->getFormat($image, ['fm' => null]));
-        $this->assertSame('jpg', $this->manipulator->getFormat($image, ['fm' => '']));
-        $this->assertSame('jpg', $this->manipulator->getFormat($image, ['fm' => 'invalid']));
+        $this->assertSame('jpg', $this->manipulator->setParams(['fm' => 'jpg'])->getFormat($image));
+        $this->assertSame('png', $this->manipulator->setParams(['fm' => 'png'])->getFormat($image));
+        $this->assertSame('gif', $this->manipulator->setParams(['fm' => 'gif'])->getFormat($image));
+        $this->assertSame('jpg', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+        $this->assertSame('png', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+        $this->assertSame('gif', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+        $this->assertSame('jpg', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+        $this->assertSame('jpg', $this->manipulator->setParams(['fm' => ''])->getFormat($image));
+        $this->assertSame('jpg', $this->manipulator->setParams(['fm' => 'invalid'])->getFormat($image));
     }
 
     public function testGetQuality()
     {
-        $this->assertSame(100, $this->manipulator->getQuality(['q' => '100']));
-        $this->assertSame(100, $this->manipulator->getQuality(['q' => 100]));
-        $this->assertSame(90, $this->manipulator->getQuality(['q' => null]));
-        $this->assertSame(90, $this->manipulator->getQuality(['q' => 'a']));
-        $this->assertSame(50, $this->manipulator->getQuality(['q' => '50.50']));
-        $this->assertSame(90, $this->manipulator->getQuality(['q' => '-1']));
-        $this->assertSame(90, $this->manipulator->getQuality(['q' => '101']));
+        $this->assertSame(100, $this->manipulator->setParams(['q' => '100'])->getQuality());
+        $this->assertSame(100, $this->manipulator->setParams(['q' => 100])->getQuality());
+        $this->assertSame(90, $this->manipulator->setParams(['q' => null])->getQuality());
+        $this->assertSame(90, $this->manipulator->setParams(['q' => 'a'])->getQuality());
+        $this->assertSame(50, $this->manipulator->setParams(['q' => '50.50'])->getQuality());
+        $this->assertSame(90, $this->manipulator->setParams(['q' => '-1'])->getQuality());
+        $this->assertSame(90, $this->manipulator->setParams(['q' => '101'])->getQuality());
     }
 }

@@ -6,7 +6,7 @@ use Intervention\Image\Image;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Manipulators\Helpers\Dimension;
 
-class Watermark implements ManipulatorInterface
+class Watermark extends BaseManipulator
 {
     /**
      * The watermarks file system.
@@ -68,20 +68,19 @@ class Watermark implements ManipulatorInterface
 
     /**
      * Perform watermark image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        if ($watermark = $this->getImage($image, $params)) {
-            $markw = $this->getDimension($image, $params, 'markw');
-            $markh = $this->getDimension($image, $params, 'markh');
-            $markx = $this->getDimension($image, $params, 'markx');
-            $marky = $this->getDimension($image, $params, 'marky');
-            $markpad = $this->getDimension($image, $params, 'markpad');
-            $markfit = $this->getFit($params);
-            $markpos = $this->getPosition($params);
+        if ($watermark = $this->getImage($image)) {
+            $markw = $this->getDimension($image, 'markw');
+            $markh = $this->getDimension($image, 'markh');
+            $markx = $this->getDimension($image, 'markx');
+            $marky = $this->getDimension($image, 'marky');
+            $markpad = $this->getDimension($image, 'markpad');
+            $markfit = $this->getFit();
+            $markpos = $this->getPosition();
 
             if ($markpad) {
                 $markx = $marky = $markpad;
@@ -102,29 +101,24 @@ class Watermark implements ManipulatorInterface
 
     /**
      * Get the watermark image.
-     * @param  Image      $image  The source image.
-     * @param  array      $params The manipulation params.
+     * @param  Image      $image The source image.
      * @return Image|null The watermark image.
      */
-    public function getImage(Image $image, $params)
+    public function getImage(Image $image)
     {
         if (is_null($this->watermarks)) {
             return;
         }
 
-        if (!isset($params['mark'])) {
+        if (!is_string($this->mark)) {
             return;
         }
 
-        if (!is_string($params['mark'])) {
+        if ($this->mark === '') {
             return;
         }
 
-        if ($params['mark'] === '') {
-            return;
-        }
-
-        $path = $params['mark'];
+        $path = $this->mark;
 
         if ($this->watermarksPathPrefix) {
             $path = $this->watermarksPathPrefix.'/'.$path;
@@ -147,53 +141,40 @@ class Watermark implements ManipulatorInterface
 
     /**
      * Get a dimension.
-     * @param  Image       $image  The source image.
-     * @param  array       $params The manipulation params.
-     * @param  string      $field  The requested field.
+     * @param  Image       $image The source image.
+     * @param  string      $field The requested field.
      * @return double|null The dimension.
      */
-    public function getDimension(Image $image, array $params, $field)
+    public function getDimension(Image $image, $field)
     {
-        if (isset($params[$field])) {
-            $dpr = $this->getDpr($params);
-
-            return (new Dimension($image, $dpr))->get($params[$field]);
+        if ($this->{$field}) {
+            return (new Dimension($image, $this->getDpr()))->get($this->{$field});
         }
     }
 
     /**
      * Resolve the device pixel ratio.
-     * @param  array  $params The manipulation params.
      * @return double The device pixel ratio.
      */
-    public function getDpr($params)
+    public function getDpr()
     {
-        if (!isset($params['dpr'])) {
+        if (!is_numeric($this->dpr)) {
             return 1.0;
         }
 
-        if (!is_numeric($params['dpr'])) {
+        if ($this->dpr < 0 or $this->dpr > 8) {
             return 1.0;
         }
 
-        if ($params['dpr'] < 0 or $params['dpr'] > 8) {
-            return 1.0;
-        }
-
-        return (double) $params['dpr'];
+        return (double) $this->dpr;
     }
 
     /**
      * Get the fit.
-     * @param  array  $params The manipulation params.
      * @return string The fit.
      */
-    public function getFit(array $params)
+    public function getFit()
     {
-        if (!isset($params['markfit'])) {
-            return;
-        }
-
         $fitMethods = [
             'contain',
             'max',
@@ -210,24 +191,17 @@ class Watermark implements ManipulatorInterface
             'crop-bottom-right',
         ];
 
-        if (!in_array($params['markfit'], $fitMethods, true)) {
-            return;
+        if (in_array($this->markfit, $fitMethods, true)) {
+            return $this->markfit;
         }
-
-        return $params['markfit'];
     }
 
     /**
      * Get the position.
-     * @param  array  $params The manipulation params.
      * @return string The position.
      */
-    public function getPosition(array $params)
+    public function getPosition()
     {
-        if (!isset($params['markpos'])) {
-            return 'bottom-right';
-        }
-
         $positions = [
             'top-left',
             'top',
@@ -240,10 +214,10 @@ class Watermark implements ManipulatorInterface
             'bottom-right',
         ];
 
-        if (!in_array($params['markpos'], $positions, true)) {
-            return 'bottom-right';
+        if (in_array($this->markpos, $positions, true)) {
+            return $this->markpos;
         }
 
-        return $params['markpos'];
+        return 'bottom-right';
     }
 }

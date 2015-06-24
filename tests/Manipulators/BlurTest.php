@@ -31,17 +31,17 @@ class BlurTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['blur' => 10])
+            $this->manipulator->setParams(['blur' => 10])->run($image)
         );
     }
 
     public function testGetBlur()
     {
-        $this->assertSame(50, $this->manipulator->getBlur(['blur' => '50']));
-        $this->assertSame(50, $this->manipulator->getBlur(['blur' => 50]));
-        $this->assertSame(null, $this->manipulator->getBlur(['blur' => null]));
-        $this->assertSame(null, $this->manipulator->getBlur(['blur' => 'a']));
-        $this->assertSame(null, $this->manipulator->getBlur(['blur' => '-1']));
-        $this->assertSame(null, $this->manipulator->getBlur(['blur' => '101']));
+        $this->assertSame(50, $this->manipulator->setParams(['blur' => '50'])->getBlur());
+        $this->assertSame(50, $this->manipulator->setParams(['blur' => 50])->getBlur());
+        $this->assertSame(null, $this->manipulator->setParams(['blur' => null])->getBlur());
+        $this->assertSame(null, $this->manipulator->setParams(['blur' => 'a'])->getBlur());
+        $this->assertSame(null, $this->manipulator->setParams(['blur' => '-1'])->getBlur());
+        $this->assertSame(null, $this->manipulator->setParams(['blur' => '101'])->getBlur());
     }
 }

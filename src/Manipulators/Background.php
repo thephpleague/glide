@@ -5,17 +5,16 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 use League\Glide\Manipulators\Helpers\Color;
 
-class Background implements ManipulatorInterface
+class Background extends BaseManipulator
 {
     /**
      * Perform blur image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $color = $this->getBackground($params);
+        $color = (new Color($this->bg))->formatted();
 
         if ($color) {
             $new = $image->getDriver()->newImage($image->width(), $image->height(), $color);
@@ -24,19 +23,5 @@ class Background implements ManipulatorInterface
         }
 
         return $image;
-    }
-
-    /**
-     * Get background color.
-     * @param  array  $params The manipulation params.
-     * @return string The background color.
-     */
-    public function getBackground($params)
-    {
-        if (!isset($params['bg'])) {
-            return;
-        }
-
-        return (new Color($params['bg']))->formatted();
     }
 }

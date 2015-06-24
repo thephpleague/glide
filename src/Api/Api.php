@@ -84,7 +84,9 @@ class Api implements ApiInterface
         $image = $this->imageManager->make($source);
 
         foreach ($this->manipulators as $manipulator) {
-            $image = $manipulator->run($image, $params);
+            $manipulator->setParams($params);
+
+            $image = $manipulator->run($image);
         }
 
         return $image->getEncoded();

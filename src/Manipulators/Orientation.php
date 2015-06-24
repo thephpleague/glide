@@ -4,17 +4,16 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Orientation implements ManipulatorInterface
+class Orientation extends BaseManipulator
 {
     /**
      * Perform orientation image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $orientation = $this->getOrientation($params);
+        $orientation = $this->getOrientation();
 
         if ($orientation === 'auto') {
             return $image->orientate();
@@ -25,19 +24,14 @@ class Orientation implements ManipulatorInterface
 
     /**
      * Resolve orientation.
-     * @param  array  $params The manipulation params.
      * @return string The resolved orientation.
      */
-    public function getOrientation($params)
+    public function getOrientation()
     {
-        if (!isset($params['or'])) {
-            return 'auto';
+        if (in_array($this->or, ['auto', '0', '90', '180', '270'], true)) {
+            return $this->or;
         }
 
-        if (!in_array($params['or'], ['auto', '0', '90', '180', '270'], true)) {
-            return 'auto';
-        }
-
-        return $params['or'];
+        return 'auto';
     }
 }

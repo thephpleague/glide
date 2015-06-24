@@ -32,24 +32,24 @@ class OrientationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['or' => 'auto'])
+            $this->manipulator->setParams(['or' => 'auto'])->run($image)
         );
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['or' => '90'])
+            $this->manipulator->setParams(['or' => '90'])->run($image)
         );
     }
 
     public function testGetOrientation()
     {
-        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => 'auto']));
-        $this->assertSame('0', $this->manipulator->getOrientation(['or' => '0']));
-        $this->assertSame('90', $this->manipulator->getOrientation(['or' => '90']));
-        $this->assertSame('180', $this->manipulator->getOrientation(['or' => '180']));
-        $this->assertSame('270', $this->manipulator->getOrientation(['or' => '270']));
-        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => null]));
-        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => '1']));
-        $this->assertSame('auto', $this->manipulator->getOrientation(['or' => '45']));
+        $this->assertSame('auto', $this->manipulator->setParams(['or' => 'auto'])->getOrientation());
+        $this->assertSame('0', $this->manipulator->setParams(['or' => '0'])->getOrientation());
+        $this->assertSame('90', $this->manipulator->setParams(['or' => '90'])->getOrientation());
+        $this->assertSame('180', $this->manipulator->setParams(['or' => '180'])->getOrientation());
+        $this->assertSame('270', $this->manipulator->setParams(['or' => '270'])->getOrientation());
+        $this->assertSame('auto', $this->manipulator->setParams(['or' => null])->getOrientation());
+        $this->assertSame('auto', $this->manipulator->setParams(['or' => '1'])->getOrientation());
+        $this->assertSame('auto', $this->manipulator->setParams(['or' => '45'])->getOrientation());
     }
 }

@@ -4,17 +4,16 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
-class Blur implements ManipulatorInterface
+class Blur extends BaseManipulator
 {
     /**
      * Perform blur image manipulation.
-     * @param  Image $image  The source image.
-     * @param  array $params The manipulation params.
+     * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image, array $params)
+    public function run(Image $image)
     {
-        $blur = $this->getBlur($params);
+        $blur = $this->getBlur();
 
         if ($blur) {
             $image->blur($blur);
@@ -25,23 +24,18 @@ class Blur implements ManipulatorInterface
 
     /**
      * Resolve blur amount.
-     * @param  array  $params The manipulation params.
      * @return string The resolved blur amount.
      */
-    public function getBlur($params)
+    public function getBlur()
     {
-        if (!isset($params['blur'])) {
+        if (!is_numeric($this->blur)) {
             return;
         }
 
-        if (!is_numeric($params['blur'])) {
+        if ($this->blur < 0 or $this->blur > 100) {
             return;
         }
 
-        if ($params['blur'] < 0 or $params['blur'] > 100) {
-            return;
-        }
-
-        return (int) $params['blur'];
+        return (int) $this->blur;
     }
 }

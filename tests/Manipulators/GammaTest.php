@@ -31,19 +31,19 @@ class GammaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run($image, ['gam' => '1.5'])
+            $this->manipulator->setParams(['gam' => '1.5'])->run($image)
         );
     }
 
     public function testGetGamma()
     {
-        $this->assertSame(1.5, $this->manipulator->getGamma(['gam' => '1.5']));
-        $this->assertSame(1.5, $this->manipulator->getGamma(['gam' => 1.5]));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => null]));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => 'a']));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '.1']));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '9.999']));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '0.005']));
-        $this->assertSame(null, $this->manipulator->getGamma(['gam' => '-1']));
+        $this->assertSame(1.5, $this->manipulator->setParams(['gam' => '1.5'])->getGamma());
+        $this->assertSame(1.5, $this->manipulator->setParams(['gam' => 1.5])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => null])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => 'a'])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => '.1'])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => '9.999'])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => '0.005'])->getGamma());
+        $this->assertSame(null, $this->manipulator->setParams(['gam' => '-1'])->getGamma());
     }
 }
