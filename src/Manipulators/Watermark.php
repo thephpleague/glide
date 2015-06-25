@@ -87,11 +87,12 @@ class Watermark extends BaseManipulator
             }
 
             $size = new Size();
-            $watermark = $size->run($watermark, [
+            $size->setParams([
                 'w' => $markw,
                 'h' => $markh,
                 'fit' => $markfit,
             ]);
+            $watermark = $size->run($watermark);
 
             $image->insert($watermark, $markpos, intval($markx), intval($marky));
         }
