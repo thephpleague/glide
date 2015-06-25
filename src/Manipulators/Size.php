@@ -104,7 +104,7 @@ class Size extends BaseManipulator
      */
     public function getFit()
     {
-        if (in_array($this->fit, ['contain', 'max', 'stretch'], true)) {
+        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch'], true)) {
             return $this->fit;
         }
 
@@ -254,6 +254,10 @@ class Size extends BaseManipulator
             return $this->runContainResize($image, $width, $height);
         }
 
+        if ($fit === 'fill') {
+            return $this->runFillResize($image, $width, $height);
+        }
+
         if ($fit === 'max') {
             return $this->runMaxResize($image, $width, $height);
         }
@@ -296,6 +300,19 @@ class Size extends BaseManipulator
             $constraint->aspectRatio();
             $constraint->upsize();
         });
+    }
+
+    /**
+     * Perform fill resize image manipulation.
+     * @param  Image  $image  The source image.
+     * @param  string $width  The width.
+     * @param  string $height The height.
+     * @return Image  The manipulated image.
+     */
+    public function runFillResize($image, $width, $height)
+    {
+        $image = $this->runMaxResize($image, $width, $height);
+        return $image->resizeCanvas($width, $height, 'center');
     }
 
     /**
