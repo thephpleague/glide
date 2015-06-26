@@ -23,7 +23,6 @@ use League\Glide\Manipulators\Sharpen;
 use League\Glide\Manipulators\Size;
 use League\Glide\Manipulators\Watermark;
 use League\Glide\Responses\ResponseFactoryInterface;
-use League\Glide\Responses\StreamedResponseFactory;
 
 class ServerFactory
 {
@@ -265,10 +264,6 @@ class ServerFactory
 
         if ($responseFactory instanceof ResponseFactoryInterface) {
             return $responseFactory;
-        }
-
-        if (is_null($responseFactory)) {
-            return new StreamedResponseFactory();
         }
 
         throw new InvalidArgumentException('Invalid `response` parameter.');

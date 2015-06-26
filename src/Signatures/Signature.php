@@ -2,9 +2,6 @@
 
 namespace League\Glide\Signatures;
 
-use League\Glide\Requests\RequestFactory;
-use Symfony\Component\HttpFoundation\Request;
-
 class Signature implements SignatureInterface
 {
     /**
@@ -35,18 +32,17 @@ class Signature implements SignatureInterface
 
     /**
      * Validate a request signature.
-     * @param  mixed
+     * @param  string             $path   The resource path.
+     * @param  array              $params The manipulation params.
      * @throws SignatureException
      */
-    public function validateRequest()
+    public function validateRequest($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args());
-
-        if (is_null($request->get('s'))) {
+        if (!isset($params['s'])) {
             throw new SignatureException('Signature is missing.');
         }
 
-        if ($request->get('s') !== $this->generateSignature($request->getPathInfo(), $request->query->all())) {
+        if ($params['s'] !== $this->generateSignature($path, $params)) {
             throw new SignatureException('Signature is not valid.');
         }
     }

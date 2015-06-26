@@ -2,8 +2,6 @@
 
 namespace League\Glide\Signatures;
 
-use League\Glide\Requests\RequestFactory;
-
 class SignatureTest extends \PHPUnit_Framework_TestCase
 {
     private $httpSignature;
@@ -37,9 +35,10 @@ class SignatureTest extends \PHPUnit_Framework_TestCase
     public function testValidateRequest()
     {
         $this->assertNull(
-            $this->httpSignature->validateRequest(
-                RequestFactory::create(['image.jpg', ['w' => '100', 's' => '9978a40f1fc75fa64ac92ea9baf16ff3']])
-            )
+            $this->httpSignature->validateRequest('image.jpg', [
+                'w' => '100',
+                's' => '9978a40f1fc75fa64ac92ea9baf16ff3',
+            ])
         );
     }
 
@@ -47,18 +46,19 @@ class SignatureTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('League\Glide\Signatures\SignatureException', 'Signature is missing.');
 
-        $this->httpSignature->validateRequest(
-            RequestFactory::create(['image.jpg', ['w' => '100']])
-        );
+        $this->httpSignature->validateRequest('image.jpg', [
+            'w' => '100',
+        ]);
     }
 
     public function testValidateRequestWithInvalidSignature()
     {
         $this->setExpectedException('League\Glide\Signatures\SignatureException', 'Signature is not valid.');
 
-        $this->httpSignature->validateRequest(
-            RequestFactory::create(['image.jpg', ['w' => '100', 's' => 'invalid']])
-        );
+        $this->httpSignature->validateRequest('image.jpg', [
+            'w' => '100',
+            's' => 'invalid',
+        ]);
     }
 
     public function testGenerateSignature()

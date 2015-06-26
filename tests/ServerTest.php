@@ -2,8 +2,6 @@
 
 namespace League\Glide;
 
-use League\Glide\Requests\RequestFactory;
-use League\Glide\Responses\StreamedResponseFactory;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
@@ -12,11 +10,22 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+
+        $responseFactory = Mockery::mock('League\Glide\Responses\ResponseFactoryInterface');
+        $responseFactory
+            ->shouldReceive('create')
+            ->andReturn($response)
+            ->shouldReceive('send')
+            ->andReturnUsing(function () {
+                echo 'content';
+            });
+
         $this->server = new Server(
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Glide\Api\ApiInterface'),
-            new StreamedResponseFactory()
+            $responseFactory
         );
     }
 
@@ -55,7 +64,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePath()
     {
         $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
-        $this->assertEquals('image.jpg', $this->server->getSourcePath(RequestFactory::create(['image.jpg'])));
     }
 
     public function testGetSourcePathWithBaseUrl()
@@ -83,7 +91,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePathWithEncodedEntities()
     {
         $this->assertEquals('an image.jpg', $this->server->getSourcePath('an%20image.jpg'));
-        $this->assertEquals('an image.jpg', $this->server->getSourcePath(RequestFactory::create(['an%20image.jpg'])));
     }
 
     public function testSourceFileExists()
@@ -128,7 +135,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetCachePathWithPrefix()
     {
         $this->server->setCachePathPrefix('img/');
-        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg'));
+        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testCacheFileExists()
@@ -137,7 +144,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
         }));
 
-        $this->assertTrue($this->server->cacheFileExists('image.jpg'));
+        $this->assertTrue($this->server->cacheFileExists('image.jpg', []));
     }
 
     public function testSetAPI()
@@ -181,7 +188,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('readStream')->andReturn($file);
         }));
 
-        $response = $this->server->outputImage('image.jpg');
+        $response = $this->server->outputImage('image.jpg', []);
         $content = ob_get_clean();
 
         $this->assertNull($response);
@@ -198,7 +205,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('readStream')->andReturn(tmpfile());
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->getImageResponse('image.jpg'));
+        $this->assertInstanceOf(
+            'Psr\Http\Message\ResponseInterface',
+            $this->server->getImageResponse('image.jpg', [])
+        );
     }
 
     public function testMakeImageFromCache()
@@ -207,17 +217,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->makeImage('image.jpg'));
-    }
-
-    public function testMakeImageWithInvalidRequest()
-    {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Not a valid path/params combination or Request object.'
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
         );
-
-        $this->server->makeImage([]);
     }
 
     public function testMakeImageFromSourceThatDoesNotExist()
@@ -235,7 +238,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithUnreadableSource()
@@ -254,7 +257,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->server->makeImage('image.jpg');
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithUnwritableCache()
@@ -278,7 +281,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->server->makeImage('image.jpg');
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithExistingCacheFile()
@@ -297,7 +300,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->makeImage('image.jpg'));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
     }
 
     public function testMakeImageFromSource()
@@ -316,6 +322,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->makeImage('image.jpg'));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
     }
 }

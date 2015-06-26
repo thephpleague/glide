@@ -11,7 +11,7 @@
         "imagemagick",
         "imagick"
     ],
-    "homepage": "https://github.com/thephpleague/glide",
+    "homepage": "http://glide.thephpleague.com",
     "license": "MIT",
     "authors" : [
         {
@@ -22,9 +22,9 @@
     ],
     "require": {
         "php": ">=5.4",
-        "intervention/image": "~2.1",
-        "league/flysystem": "~1.0",
-        "symfony/http-foundation": "~2.3"
+        "psr/http-message": "^1.0",
+        "league/flysystem": "^1.0",
+        "intervention/image": "^2.1"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",

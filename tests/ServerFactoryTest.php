@@ -16,6 +16,7 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $server = new ServerFactory([
             'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
 
         $this->assertInstanceOf('League\Glide\Server', $server->getServer());
@@ -86,7 +87,9 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $server = ServerFactory::create([
             'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
+
         $this->assertInstanceOf('League\Glide\Server', $server);
     }
 }

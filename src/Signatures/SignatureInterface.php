@@ -2,22 +2,21 @@
 
 namespace League\Glide\Signatures;
 
-use Symfony\Component\HttpFoundation\Request;
-
 interface SignatureInterface
 {
     /**
-     * Add an HTTP signature to manipulation parameters.
+     * Add an HTTP signature to manipulation params.
      * @param  string $path   The resource path.
-     * @param  array  $params The manipulation parameters.
-     * @return array  The updated manipulation parameters.
+     * @param  array  $params The manipulation params.
+     * @return array  The updated manipulation params.
      */
     public function addSignature($path, array $params);
 
     /**
      * Validate a request signature.
-     * @param  mixed
+     * @param  string             $path   The resource path.
+     * @param  array              $params The manipulation params.
      * @throws SignatureException
      */
-    public function validateRequest();
+    public function validateRequest($path, array $params);
 }

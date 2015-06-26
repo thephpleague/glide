@@ -7,10 +7,7 @@ use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
-use League\Glide\Requests\RequestFactory;
 use League\Glide\Responses\ResponseFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Server
 {
@@ -115,15 +112,13 @@ class Server
 
     /**
      * Get the source path.
-     * @param  mixed
+     * @param  string                $path The resource path.
      * @return string                The source path.
      * @throws FileNotFoundException
      */
-    public function getSourcePath()
+    public function getSourcePath($path)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        $path = trim($request->getPathInfo(), '/');
+        $path = trim($path, '/');
 
         if (substr($path, 0, strlen($this->baseUrl)) === $this->baseUrl) {
             $path = trim(substr($path, strlen($this->baseUrl)), '/');
@@ -142,14 +137,12 @@ class Server
 
     /**
      * Get the source path without the prefix.
-     * @param  mixed
+     * @param  string $path The resource path.
      * @return string The source path.
      */
-    public function getSourcePathWithoutPrefix()
+    public function getSourcePathWithoutPrefix($path)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        $sourcePath = $this->getSourcePath($request);
+        $sourcePath = $this->getSourcePath($path);
 
         if ($this->sourcePathPrefix) {
             $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
@@ -160,14 +153,12 @@ class Server
 
     /**
      * Check if a source file exists.
-     * @param  mixed
-     * @return bool Whether the source file exists.
+     * @param  string $path The resource path.
+     * @return bool   Whether the source file exists.
      */
-    public function sourceFileExists()
+    public function sourceFileExists($path)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        return $this->source->has($this->getSourcePath($request));
+        return $this->source->has($this->getSourcePath($path));
     }
 
     /**
@@ -218,16 +209,15 @@ class Server
 
     /**
      * Get the cache path.
-     * @param  mixed
+     * @param  string $path   The resource path.
+     * @param  array  $params The manipulation params.
      * @return string The cache path.
      */
-    public function getCachePath()
+    public function getCachePath($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
+        $sourcePath = $this->getSourcePathWithoutPrefix($path);
 
-        $sourcePath = $this->getSourcePathWithoutPrefix($request);
-
-        $params = $request->query->all();
+        $params = array_merge($this->defaultManipulations, $params);
         unset($params['s']);
         ksort($params);
 
@@ -244,14 +234,15 @@ class Server
 
     /**
      * Check if a cache file exists.
-     * @param  mixed
-     * @return bool Whether the cache file exists.
+     * @param  string $path   The resource path.
+     * @param  array  $params The manipulation params.
+     * @return bool   Whether the cache file exists.
      */
-    public function cacheFileExists()
+    public function cacheFileExists($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        return $this->cache->has($this->getCachePath($request));
+        return $this->cache->has(
+            $this->getCachePath($path, $params)
+        );
     }
 
     /**
@@ -328,43 +319,38 @@ class Server
 
     /**
      * Generate and output image.
-     * @param  mixed
+     * @param string $path   The resource path.
+     * @param array  $params The manipulation params.
      */
-    public function outputImage()
+    public function outputImage($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
+        $path = $this->makeImage($path, $params);
 
-        $path = $this->makeImage($request);
-
-        $response = $this->responseFactory->getResponse($request, $this->cache, $path);
-
-        $response->send();
+        $this->responseFactory->send($this->cache, $path);
     }
 
     /**
      * Generate and return image response object.
-     * @param  mixed
+     * @param  string           $path   The resource path.
+     * @param  array            $params The manipulation params.
      * @return StreamedResponse The response object.
      */
-    public function getImageResponse()
+    public function getImageResponse($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
+        $path = $this->makeImage($path, $params);
 
-        $path = $this->makeImage($request);
-
-        return $this->responseFactory->getResponse($request, $this->cache, $path);
+        return $this->responseFactory->create($this->cache, $path);
     }
 
     /**
      * Generate and return Base64 encoded image.
-     * @param  mixed
+     * @param  string $path   The resource path.
+     * @param  array  $params The manipulation params.
      * @return string Base64 encoded image.
      */
-    public function getImageAsBase64()
+    public function getImageAsBase64($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        $path = $this->makeImage($request);
+        $path = $this->makeImage($path, $params);
 
         $source = $this->cache->read($path);
 
@@ -382,27 +368,25 @@ class Server
      * @return Request               The request object.
      * @throws FileNotFoundException
      */
-    public function makeImage()
+    public function makeImage($path, array $params)
     {
-        $request = RequestFactory::create(func_get_args(), $this->defaultManipulations);
-
-        if ($this->cacheFileExists($request) === true) {
-            return $this->getCachePath($request);
+        if ($this->cacheFileExists($path, $params) === true) {
+            return $this->getCachePath($path, $params);
         }
 
-        if ($this->sourceFileExists($request) === false) {
+        if ($this->sourceFileExists($path) === false) {
             throw new FileNotFoundException(
-                'Could not find the image `'.$this->getSourcePath($request).'`.'
+                'Could not find the image `'.$this->getSourcePath($path).'`.'
             );
         }
 
         $source = $this->source->read(
-            $this->getSourcePath($request)
+            $this->getSourcePath($path)
         );
 
         if ($source === false) {
             throw new FilesystemException(
-                'Could not read the image `'.$this->getSourcePath($request).'`.'
+                'Could not read the image `'.$this->getSourcePath($path).'`.'
             );
         }
 
@@ -413,19 +397,19 @@ class Server
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
-                'Unable to write temp file for `'.$this->getSourcePath($request).'`.'
+                'Unable to write temp file for `'.$this->getSourcePath($path).'`.'
             );
         }
 
         try {
             $write = $this->cache->write(
-                $this->getCachePath($request),
-                $this->api->run($tmp, $request->query->all())
+                $this->getCachePath($path, $params),
+                $this->api->run($tmp, array_merge($this->defaultManipulations, $params))
             );
 
             if ($write === false) {
                 throw new FilesystemException(
-                    'Could not write the image `'.$this->getCachePath($request).'`.'
+                    'Could not write the image `'.$this->getCachePath($path, $params).'`.'
                 );
             }
         } catch (FileExistsException $exception) {
@@ -436,6 +420,6 @@ class Server
 
         unlink($tmp);
 
-        return $this->getCachePath($request);
+        return $this->getCachePath($path, $params);
     }
 }
