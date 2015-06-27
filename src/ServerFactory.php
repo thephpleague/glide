@@ -56,6 +56,7 @@ class ServerFactory
 
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
         $server->setCachePathPrefix($this->getCachePathPrefix());
+        $server->setDefaultManipulations($this->getDefaultManipulations());
         $server->setBaseUrl($this->getBaseUrl());
 
         return $server;
@@ -132,6 +133,19 @@ class ServerFactory
         }
 
         throw new InvalidArgumentException('Invalid `cache` parameter.');
+    }
+
+    /**
+     * Get the default image manipulations.
+     * @return array The default image manipulations.
+     */
+    public function getDefaultManipulations()
+    {
+        if (isset($this->config['default_manipulations'])) {
+            return $this->config['default_manipulations'];
+        }
+
+        return [];
     }
 
     /**

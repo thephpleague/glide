@@ -285,7 +285,7 @@ class Server
      * Set the default image manipulations.
      * @param array $defaultManipulations The default image manipulations.
      */
-    public function setDefaultManipulations($defaultManipulations = [])
+    public function setDefaultManipulations(array $defaultManipulations)
     {
         $this->defaultManipulations = $defaultManipulations;
     }
