@@ -10,7 +10,7 @@ title: Background
 Sets the background color of the image. See [colors](../colors/) for more information on the available color formats.
 
 ~~~ html
-<img src="kayaks.jpg?w=500&bg=red">
+<img src="logo.png?w=400&bg=black">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=500&bg=red)](https://glide.herokuapp.com/kayaks.jpg?w=500&bg=red)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/logo.png?w=400&bg=black)](https://glide.herokuapp.com/1.0/logo.png?w=500&bg=black)

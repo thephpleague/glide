@@ -10,10 +10,10 @@ title: Border
 Add a border to the image. Required format: `width,color,method`.
 
 ~~~ html
-<img src="kayaks.jpg?w=500&border=15,red,overlay">
+<img src="kayaks.jpg?w=500&border=10,5000,overlay">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/kayaks.jpg?w=500&border=15,red,overlay)](https://glide.herokuapp.com/kayaks.jpg?w=500&border=15,red,overlay)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,5000,overlay)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,5000,overlay)
 
 ### Width
 
@@ -31,3 +31,8 @@ Sets how the border will be displayed. Available options:
 - `shrink`: Shrink image within border (canvas does not change).
 - `expand`: Expands canvas to accommodate border.
 
+~~~ html
+<img src="kayaks.jpg?w=500&border=10,FFCC33,expand">
+~~~
+
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,FFCC33,expand)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,FFCC33,expand)
