@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Overview
+title: Quick reference
 ---
 
-# Overview
+# Quick reference
 
 Name    | Function         | Description | 
 ------- | ---------------- | ----------- | ----
