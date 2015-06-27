@@ -6,9 +6,9 @@ use Mockery;
 
 class ServerFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateServer()
+    public function testCreateServerFactory()
     {
-        $this->assertInstanceOf('League\Glide\ServerFactory', new ServerFactory([]));
+        $this->assertInstanceOf('League\Glide\ServerFactory', new ServerFactory());
     }
 
     public function testGetServer()
@@ -29,10 +29,7 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
-    }
 
-    public function testGetSourceWithLocalPath()
-    {
         $server = new ServerFactory([
             'source' => sys_get_temp_dir(),
         ]);
@@ -40,12 +37,13 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
     }
 
-    public function testGetSourceWithInvalidParam()
+    public function testGetSourcePathPrefix()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Invalid `source` parameter.');
+        $server = new ServerFactory([
+            'source_path_prefix' => 'source',
+        ]);
 
-        $server = new ServerFactory([]);
-        $server->getSource();
+        $this->assertSame('source', $server->getSourcePathPrefix());
     }
 
     public function testGetCache()
@@ -55,10 +53,7 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
-    }
 
-    public function testGetCacheWithLocalPath()
-    {
         $server = new ServerFactory([
             'cache' => sys_get_temp_dir(),
         ]);
@@ -66,11 +61,84 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
     }
 
+    public function testGetCachePathPrefix()
+    {
+        $server = new ServerFactory([
+            'cache_path_prefix' => 'cache',
+        ]);
+
+        $this->assertSame('cache', $server->getCachePathPrefix());
+    }
+
+    public function testGetWatermarks()
+    {
+        $server = new ServerFactory([
+            'watermarks' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+        ]);
+
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getWatermarks());
+
+        $server = new ServerFactory([
+            'watermarks' => sys_get_temp_dir(),
+        ]);
+
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getWatermarks());
+    }
+
+    public function testGetWatermarksPathPrefix()
+    {
+        $server = new ServerFactory([
+            'watermarks_path_prefix' => 'watermarks',
+        ]);
+
+        $this->assertSame('watermarks', $server->getWatermarksPathPrefix());
+    }
+
     public function testGetApi()
     {
-        $server = new ServerFactory([]);
+        $server = new ServerFactory();
 
         $this->assertInstanceOf('League\Glide\Api\Api', $server->getApi());
+    }
+
+    public function testGetImageManager()
+    {
+        $server = new ServerFactory();
+        $imageManager = $server->getImageManager();
+
+        $this->assertInstanceOf('Intervention\Image\ImageManager', $imageManager);
+        $this->assertSame('gd', $imageManager->config['driver']);
+    }
+
+    public function testGetManipulators()
+    {
+        $server = new ServerFactory();
+        $manipulators = $server->getManipulators();
+
+        $this->assertInternalType('array', $manipulators);
+        $this->assertInstanceOf('League\Glide\Manipulators\ManipulatorInterface', $manipulators[0]);
+    }
+
+    public function testGetMaxImageSize()
+    {
+        $server = new ServerFactory([
+            'max_image_size' => 100,
+        ]);
+
+        $this->assertSame(100, $server->getMaxImageSize());
+    }
+
+    public function testGetDefaultManipulations()
+    {
+        $defaultManipulations = [
+            'fm' => 'jpg',
+        ];
+
+        $server = new ServerFactory([
+            'default_manipulations' => $defaultManipulations,
+        ]);
+
+        $this->assertSame($defaultManipulations, $server->getDefaultManipulations());
     }
 
     public function testGetBaseUrl()
@@ -79,7 +147,16 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
             'base_url' => 'img/',
         ]);
 
-        $this->assertEquals('img/', $server->getBaseUrl());
+        $this->assertSame('img/', $server->getBaseUrl());
+    }
+
+    public function testGetResponseFactory()
+    {
+        $server = new ServerFactory([
+            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
+        ]);
+
+        $this->assertInstanceOf('League\Glide\Responses\ResponseFactoryInterface', $server->getResponseFactory());
     }
 
     public function testCreate()

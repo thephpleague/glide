@@ -12,59 +12,59 @@ use League\Glide\Responses\ResponseFactoryInterface;
 class Server
 {
     /**
-     * The source file system.
+     * Source file system.
      * @var FilesystemInterface
      */
     protected $source;
 
     /**
-     * The source path prefix.
+     * Source path prefix.
      * @var string
      */
     protected $sourcePathPrefix;
 
     /**
-     * The cache file system.
+     * Cache file system.
      * @var FilesystemInterface
      */
     protected $cache;
 
     /**
-     * The cache path prefix.
+     * Cache path prefix.
      * @var string
      */
     protected $cachePathPrefix;
 
     /**
-     * The image manipulation API.
+     * Image manipulation API.
      * @var ApiInterface
      */
     protected $api;
 
     /**
-     * The response factory.
+     * Response factory.
      * @var ResponseFactoryInterface
      */
     protected $responseFactory;
 
     /**
-     * The base URL to exclude.
+     * Base URL.
      * @var string
      */
     protected $baseUrl;
 
     /**
-     * The default image manipulations.
+     * Default image manipulations.
      * @var array
      */
     protected $defaultManipulations = [];
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface      $source          The source file system.
-     * @param FilesystemInterface      $cache           The cache file system.
-     * @param ApiInterface             $api             The image manipulation API.
-     * @param ResponseFactoryInterface $responseFactory The response factory.
+     * @param FilesystemInterface      $source          Source file system.
+     * @param FilesystemInterface      $cache           Cache file system.
+     * @param ApiInterface             $api             Image manipulation API.
+     * @param ResponseFactoryInterface $responseFactory Response factory.
      */
     public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, ResponseFactoryInterface $responseFactory)
     {
@@ -75,8 +75,8 @@ class Server
     }
 
     /**
-     * Set the source file system.
-     * @param FilesystemInterface $source The source file system.
+     * Set source file system.
+     * @param FilesystemInterface $source Source file system.
      */
     public function setSource(FilesystemInterface $source)
     {
@@ -84,8 +84,8 @@ class Server
     }
 
     /**
-     * Get the source file system.
-     * @return FilesystemInterface The source file system.
+     * Get source file system.
+     * @return FilesystemInterface Source file system.
      */
     public function getSource()
     {
@@ -93,8 +93,8 @@ class Server
     }
 
     /**
-     * Set the source path prefix.
-     * @param string $sourcePathPrefix The source path prefix.
+     * Set source path prefix.
+     * @param string $sourcePathPrefix Source path prefix.
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
@@ -102,8 +102,8 @@ class Server
     }
 
     /**
-     * Get the source path prefix.
-     * @return string The source path prefix.
+     * Get source path prefix.
+     * @return string Source path prefix.
      */
     public function getSourcePathPrefix()
     {
@@ -111,8 +111,8 @@ class Server
     }
 
     /**
-     * Get the source path.
-     * @param  string                $path The resource path.
+     * Get source path.
+     * @param  string                $path Image path.
      * @return string                The source path.
      * @throws FileNotFoundException
      */
@@ -136,24 +136,8 @@ class Server
     }
 
     /**
-     * Get the source path without the prefix.
-     * @param  string $path The resource path.
-     * @return string The source path.
-     */
-    public function getSourcePathWithoutPrefix($path)
-    {
-        $sourcePath = $this->getSourcePath($path);
-
-        if ($this->sourcePathPrefix) {
-            $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
-        }
-
-        return $sourcePath;
-    }
-
-    /**
      * Check if a source file exists.
-     * @param  string $path The resource path.
+     * @param  string $path Image path.
      * @return bool   Whether the source file exists.
      */
     public function sourceFileExists($path)
@@ -162,8 +146,8 @@ class Server
     }
 
     /**
-     * Set the cache file system.
-     * @param FilesystemInterface $cache The cache file system.
+     * Set cache file system.
+     * @param FilesystemInterface $cache Cache file system.
      */
     public function setCache(FilesystemInterface $cache)
     {
@@ -171,8 +155,8 @@ class Server
     }
 
     /**
-     * Get the cache file system.
-     * @return FilesystemInterface The cache file system.
+     * Get cache file system.
+     * @return FilesystemInterface Cache file system.
      */
     public function getCache()
     {
@@ -180,8 +164,8 @@ class Server
     }
 
     /**
-     * Set the cache path prefix.
-     * @param string $cachePathPrefix The cache path prefix.
+     * Set cache path prefix.
+     * @param string $cachePathPrefix Cache path prefix.
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
@@ -189,18 +173,8 @@ class Server
     }
 
     /**
-     * Delete all cached manipulations for an image.
-     * @param  string $path The source image path.
-     * @return bool   Whether the delete succeeded.
-     */
-    public function deleteCache($path)
-    {
-        return $this->cache->deleteDir($path);
-    }
-
-    /**
-     * Get the cache path prefix.
-     * @return string The cache path prefix.
+     * Get cache path prefix.
+     * @return string Cache path prefix.
      */
     public function getCachePathPrefix()
     {
@@ -208,14 +182,18 @@ class Server
     }
 
     /**
-     * Get the cache path.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation params.
-     * @return string The cache path.
+     * Get cache path.
+     * @param  string $path   Image path.
+     * @param  array  $params Image manipulation params.
+     * @return string Cache path.
      */
     public function getCachePath($path, array $params)
     {
-        $sourcePath = $this->getSourcePathWithoutPrefix($path);
+        $sourcePath = $this->getSourcePath($path);
+
+        if ($this->sourcePathPrefix) {
+            $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
+        }
 
         $params = array_merge($this->defaultManipulations, $params);
         unset($params['s']);
@@ -234,8 +212,8 @@ class Server
 
     /**
      * Check if a cache file exists.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation params.
+     * @param  string $path   Image path.
+     * @param  array  $params Image manipulation params.
      * @return bool   Whether the cache file exists.
      */
     public function cacheFileExists($path, array $params)
@@ -246,8 +224,18 @@ class Server
     }
 
     /**
-     * Set the image manipulation API.
-     * @param ApiInterface $api The image manipulation API.
+     * Delete cached manipulations for an image.
+     * @param  string $path Image path.
+     * @return bool   Whether the delete succeeded.
+     */
+    public function deleteCache($path)
+    {
+        return $this->cache->deleteDir($path);
+    }
+
+    /**
+     * Set image manipulation API.
+     * @param ApiInterface $api Image manipulation API.
      */
     public function setApi(ApiInterface $api)
     {
@@ -255,8 +243,8 @@ class Server
     }
 
     /**
-     * Get the image manipulation API.
-     * @return ApiInterface The image manipulation API.
+     * Get image manipulation API.
+     * @return ApiInterface Image manipulation API.
      */
     public function getApi()
     {
@@ -264,26 +252,8 @@ class Server
     }
 
     /**
-     * Set the response factory.
-     * @param ResponseFactoryInterface $api The response factory.
-     */
-    public function setResponseFactory(ResponseFactoryInterface $responseFactory)
-    {
-        $this->responseFactory = $responseFactory;
-    }
-
-    /**
-     * Get the response factory.
-     * @return ResponseFactoryInterface The response factory.
-     */
-    public function getResponseFactory()
-    {
-        return $this->responseFactory;
-    }
-
-    /**
-     * Set the default image manipulations.
-     * @param array $defaultManipulations The default image manipulations.
+     * Set default image manipulations.
+     * @param array $defaultManipulations Default image manipulations.
      */
     public function setDefaultManipulations(array $defaultManipulations)
     {
@@ -291,8 +261,8 @@ class Server
     }
 
     /**
-     * Get the default image manipulations.
-     * @return array The default image manipulations.
+     * Get default image manipulations.
+     * @return array Default image manipulations.
      */
     public function getDefaultManipulations()
     {
@@ -300,8 +270,8 @@ class Server
     }
 
     /**
-     * Set the base URL.
-     * @param string $baseUrl The base URL.
+     * Set base URL.
+     * @param string $baseUrl Base URL.
      */
     public function setBaseUrl($baseUrl)
     {
@@ -309,8 +279,8 @@ class Server
     }
 
     /**
-     * Get the base URL.
-     * @return string The base URL.
+     * Get base URL.
+     * @return string Base URL.
      */
     public function getBaseUrl()
     {
@@ -318,9 +288,27 @@ class Server
     }
 
     /**
+     * Set response factory.
+     * @param ResponseFactoryInterface $responseFactory Response factory.
+     */
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory)
+    {
+        $this->responseFactory = $responseFactory;
+    }
+
+    /**
+     * Get response factory.
+     * @return ResponseFactoryInterface Response factory.
+     */
+    public function getResponseFactory()
+    {
+        return $this->responseFactory;
+    }
+
+    /**
      * Generate and output image.
-     * @param string $path   The resource path.
-     * @param array  $params The manipulation params.
+     * @param string $path   Image path.
+     * @param array  $params Image manipulation params.
      */
     public function outputImage($path, array $params)
     {
@@ -330,10 +318,10 @@ class Server
     }
 
     /**
-     * Generate and return image response object.
-     * @param  string           $path   The resource path.
-     * @param  array            $params The manipulation params.
-     * @return StreamedResponse The response object.
+     * Generate and return image response.
+     * @param  string $path   Image path.
+     * @param  array  $params Image manipulation params.
+     * @return mixed  Image response.
      */
     public function getImageResponse($path, array $params)
     {
@@ -344,8 +332,8 @@ class Server
 
     /**
      * Generate and return Base64 encoded image.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation params.
+     * @param  string $path   Image path.
+     * @param  array  $params Image manipulation params.
      * @return string Base64 encoded image.
      */
     public function getImageAsBase64($path, array $params)
@@ -365,28 +353,34 @@ class Server
 
     /**
      * Generate manipulated image.
-     * @return Request               The request object.
+     * @param  string                $path   Image path.
+     * @param  array                 $params Image manipulation params.
+     * @return string                Cache path.
      * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function makeImage($path, array $params)
     {
+        $sourcePath = $this->getSourcePath($path);
+        $cachedPath = $this->getCachePath($path, $params);
+
         if ($this->cacheFileExists($path, $params) === true) {
-            return $this->getCachePath($path, $params);
+            return $cachedPath;
         }
 
         if ($this->sourceFileExists($path) === false) {
             throw new FileNotFoundException(
-                'Could not find the image `'.$this->getSourcePath($path).'`.'
+                'Could not find the image `'.$sourcePath.'`.'
             );
         }
 
         $source = $this->source->read(
-            $this->getSourcePath($path)
+            $sourcePath
         );
 
         if ($source === false) {
             throw new FilesystemException(
-                'Could not read the image `'.$this->getSourcePath($path).'`.'
+                'Could not read the image `'.$sourcePath.'`.'
             );
         }
 
@@ -397,19 +391,19 @@ class Server
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
-                'Unable to write temp file for `'.$this->getSourcePath($path).'`.'
+                'Unable to write temp file for `'.$sourcePath.'`.'
             );
         }
 
         try {
             $write = $this->cache->write(
-                $this->getCachePath($path, $params),
+                $cachedPath,
                 $this->api->run($tmp, array_merge($this->defaultManipulations, $params))
             );
 
             if ($write === false) {
                 throw new FilesystemException(
-                    'Could not write the image `'.$this->getCachePath($path, $params).'`.'
+                    'Could not write the image `'.$cachedPath.'`.'
                 );
             }
         } catch (FileExistsException $exception) {
@@ -420,6 +414,6 @@ class Server
 
         unlink($tmp);
 
-        return $this->getCachePath($path, $params);
+        return $cachedPath;
     }
 }
