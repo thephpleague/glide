@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: api/size/
 title: Size
 ---
 

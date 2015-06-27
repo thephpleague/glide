@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/base-url/
 title: Base URL
 ---
 

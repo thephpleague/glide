@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/basic-usage/
 title: Basic usage
 ---
 

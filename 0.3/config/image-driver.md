@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/image-driver/
 title: Image driver
 ---
 

@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: api/effects/
 title: Effects
 ---
 

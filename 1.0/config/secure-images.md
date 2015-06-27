@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/secure-images/
 title: Secure images
 ---
 
@@ -17,14 +16,10 @@ Start by configuring the Glide server to validate each request before you ouput 
 ~~~ php
 use League\Glide\Http\SignatureFactory;
 use League\Glide\Http\SignatureException;
-use Symfony\Component\HttpFoundation\Request;
 
-// Create request object
-$request = Request::createFromGlobals();
-
-// Validate HTTP signature
 try {
-    SignatureFactory::create('your-sign-key')->validateRequest($request);
+    // Validate HTTP signature
+    SignatureFactory::create('your-sign-key')->validateRequest($path, $_GET);
 } catch (SignatureException $e) {
     // Handle error
 }

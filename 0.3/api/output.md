@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: api/output/
 title: Output
 ---
 

@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/the-server/
 title: The server
 ---
 

@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/source-and-cache/
 title: Source & cache
 ---
 
@@ -51,4 +50,16 @@ $server = League\Glide\ServerFactory::create([
 // Set using setter methods
 $server->setSourcePathPrefix('source');
 $server->setCachePathPrefix('cache');
+~~~
+
+## Disabling the cache
+
+In some situations it may be desirable to disable the cache. For example, you may choose to use a tool like Varnish for caching instead. The best way to do this with Glide is to use an [in-memory adapter](http://flysystem.thephpleague.com/adapter/memory/) for Flysystem. This will prevent any cached images from being saved to your local disk.
+
+## Deleting cached images
+
+Glide does not automatically purge cached images. However, this can be done by your application using the `deleteCache()` method.
+
+~~~ php
+$server->deleteCache('kayaks.jpg');
 ~~~

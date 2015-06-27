@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: config/max-image-size/
 title: Max image size
 ---
 

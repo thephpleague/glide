@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: api/adjustments/
 title: Adjustments
 ---
 
