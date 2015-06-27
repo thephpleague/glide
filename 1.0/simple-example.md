@@ -43,4 +43,4 @@ $server->outputImage('users/1.jpg', ['w' => 300, 'h' => 400]);
 $server->outputImage($path, $_GET);
 ~~~
 
-<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="../config/responses/">responses</a>.</p>
+<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="config/responses/">responses</a>.</p>

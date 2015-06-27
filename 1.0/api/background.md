@@ -7,7 +7,7 @@ title: Background
 
 ## Background `bg`
 
-Sets the background color of the image. See [colors](../colors/) for more information on the available color formats.
+Sets the background color of the image. See [colors](api/colors/) for more information on the available color formats.
 
 ~~~ html
 <img src="logo.png?w=400&bg=black">

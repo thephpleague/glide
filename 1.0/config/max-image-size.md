@@ -5,7 +5,7 @@ title: Max image size
 
 # Max image size
 
-In addition to [securing images](../secure-images/) with a signing key, you can also limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
+In addition to [securing images](config/secure-images/) with a signing key, you can also limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
 
 ~~~ php
 $server = League\Glide\ServerFactory::create([

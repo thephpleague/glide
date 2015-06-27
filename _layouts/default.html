@@ -22,7 +22,9 @@
     {% endif %}
 
     {% if site.github.url %}
-        <base href="{{ site.github.url }}">
+        <base href="{{ site.github.url }}/{{ version }}/">
+    {% else %}
+        <base href="/{{ version }}/">
     {% endif %}
 
     {% if site.data.images.favicon %}

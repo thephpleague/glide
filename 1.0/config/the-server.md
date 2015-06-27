@@ -5,7 +5,7 @@ title: The server
 
 # The server
 
-All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](../source-and-cache/) (where the original images are saved), the image [cache location](../source-and-cache/) (where the manipulated images are saved), the image manipulation API as well as any configuration options.
+All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](config/source-and-cache/) (where the original images are saved), the image [cache location](config/source-and-cache/) (where the manipulated images are saved), the image manipulation API as well as any configuration options.
 
 ## Setup with factory
 
@@ -23,7 +23,7 @@ $server = ServerFactory::create([
 ]);
 ~~~
 
-<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="../responses/">responses</a>.</p>
+<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="config/responses/">responses</a>.</p>
 
 ## Setup manually
 

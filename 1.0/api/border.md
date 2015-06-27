@@ -17,11 +17,11 @@ Add a border to the image. Required format: `width,color,method`.
 
 ### Width
 
-Sets the border width in pixels, or using [relative dimensions](../relative-dimensions/).
+Sets the border width in pixels, or using [relative dimensions](api/relative-dimensions/).
 
 ### Color
 
-Sets the border color. See [colors](../colors/) for more information on the available color formats.
+Sets the border color. See [colors](api/colors/) for more information on the available color formats.
 
 ### Method
 

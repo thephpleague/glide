@@ -17,7 +17,7 @@ Adds a watermark to the image. Must be a path to an image in the watermarks file
 
 ### Configuring the watermarks file system
 
-Configuring the watermarks file system is exactly the same as configuring the `source` and `cache` file systems. See the [source & cache](../../config/source-and-cache/) for more information about setting up file systems.
+Configuring the watermarks file system is exactly the same as configuring the `source` and `cache` file systems. See the [source & cache](config/source-and-cache/) for more information about setting up file systems.
 
 ~~~ php
 $server = ServerFactory::create([
@@ -28,7 +28,7 @@ $server = ServerFactory::create([
 
 ## Width `markw`
 
-Sets the width of the watermark in pixels, or using [relative dimensions](../relative-dimensions/).
+Sets the width of the watermark in pixels, or using [relative dimensions](api/relative-dimensions/).
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markw=200">
@@ -36,7 +36,7 @@ Sets the width of the watermark in pixels, or using [relative dimensions](../rel
 
 ## Height `markh`
 
-Sets the height of the watermark in pixels, or using [relative dimensions](../relative-dimensions/).
+Sets the height of the watermark in pixels, or using [relative dimensions](api/relative-dimensions/).
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markh=200">
@@ -44,7 +44,7 @@ Sets the height of the watermark in pixels, or using [relative dimensions](../re
 
 ## X-offset `markx`
 
-Sets how far the watermark is away from the left and right edges of the image. Set in pixels, or using [relative dimensions](../relative-dimensions/). Ignored if `markpos` is set to `center`.
+Sets how far the watermark is away from the left and right edges of the image. Set in pixels, or using [relative dimensions](api/relative-dimensions/). Ignored if `markpos` is set to `center`.
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markw=200&markx=20">
@@ -52,7 +52,7 @@ Sets how far the watermark is away from the left and right edges of the image. S
 
 ## Y-offset `marky`
 
-Sets how far the watermark is away from the top and bottom edges of the image. Set in pixels, or using [relative dimensions](../relative-dimensions/). Ignored if `markpos` is set to `center`.
+Sets how far the watermark is away from the top and bottom edges of the image. Set in pixels, or using [relative dimensions](api/relative-dimensions/). Ignored if `markpos` is set to `center`.
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markw=200&marky=20">
@@ -60,7 +60,7 @@ Sets how far the watermark is away from the top and bottom edges of the image. S
 
 ## Padding `markpad`
 
-Sets how far the watermark is away from edges of the image. Basically a shortcut for using both `markx` and `marky`. Set in pixels, or using [relative dimensions](../relative-dimensions/). Ignored if `markpos` is set to `center`.
+Sets how far the watermark is away from edges of the image. Basically a shortcut for using both `markx` and `marky`. Set in pixels, or using [relative dimensions](api/relative-dimensions/). Ignored if `markpos` is set to `center`.
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markw=200&markpad=20">
