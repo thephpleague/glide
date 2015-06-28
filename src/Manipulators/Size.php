@@ -312,6 +312,7 @@ class Size extends BaseManipulator
     public function runFillResize($image, $width, $height)
     {
         $image = $this->runMaxResize($image, $width, $height);
+
         return $image->resizeCanvas($width, $height, 'center');
     }
 
