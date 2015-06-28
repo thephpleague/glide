@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use InvalidArgumentException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
@@ -43,7 +44,7 @@ class Server
 
     /**
      * Response factory.
-     * @var ResponseFactoryInterface
+     * @var ResponseFactoryInterface|null
      */
     protected $responseFactory;
 
@@ -66,7 +67,7 @@ class Server
      * @param ApiInterface             $api             Image manipulation API.
      * @param ResponseFactoryInterface $responseFactory Response factory.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, ResponseFactoryInterface $responseFactory)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, ResponseFactoryInterface $responseFactory = null)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -289,9 +290,9 @@ class Server
 
     /**
      * Set response factory.
-     * @param ResponseFactoryInterface $responseFactory Response factory.
+     * @param ResponseFactoryInterface|null $responseFactory Response factory.
      */
-    public function setResponseFactory(ResponseFactoryInterface $responseFactory)
+    public function setResponseFactory(ResponseFactoryInterface $responseFactory = null)
     {
         $this->responseFactory = $responseFactory;
     }
@@ -306,25 +307,20 @@ class Server
     }
 
     /**
-     * Generate and output image.
-     * @param string $path   Image path.
-     * @param array  $params Image manipulation params.
-     */
-    public function outputImage($path, array $params)
-    {
-        $path = $this->makeImage($path, $params);
-
-        $this->responseFactory->send($this->cache, $path);
-    }
-
-    /**
      * Generate and return image response.
-     * @param  string $path   Image path.
-     * @param  array  $params Image manipulation params.
-     * @return mixed  Image response.
+     * @param  string                   $path   Image path.
+     * @param  array                    $params Image manipulation params.
+     * @return mixed                    Image response.
+     * @throws InvalidArgumentException
      */
     public function getImageResponse($path, array $params)
     {
+        if (is_null($this->responseFactory)) {
+            throw new InvalidArgumentException(
+                'Unable to get image response, no response factory defined.'
+            );
+        }
+
         $path = $this->makeImage($path, $params);
 
         return $this->responseFactory->create($this->cache, $path);
@@ -332,9 +328,10 @@ class Server
 
     /**
      * Generate and return Base64 encoded image.
-     * @param  string $path   Image path.
-     * @param  array  $params Image manipulation params.
-     * @return string Base64 encoded image.
+     * @param  string              $path   Image path.
+     * @param  array               $params Image manipulation params.
+     * @return string              Base64 encoded image.
+     * @throws FilesystemException
      */
     public function getImageAsBase64($path, array $params)
     {
@@ -349,6 +346,25 @@ class Server
         }
 
         return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
+    }
+
+    /**
+     * Generate and output image.
+     * @param  string                   $path   Image path.
+     * @param  array                    $params Image manipulation params.
+     * @throws InvalidArgumentException
+     */
+    public function outputImage($path, array $params)
+    {
+        if (is_null($this->responseFactory)) {
+            throw new InvalidArgumentException(
+                'Unable to output image, no response factory defined.'
+            );
+        }
+
+        $path = $this->makeImage($path, $params);
+
+        $this->responseFactory->send($this->cache, $path);
     }
 
     /**
