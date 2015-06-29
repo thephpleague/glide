@@ -7,7 +7,7 @@ title: Changelog
 
 All notable changes to Glide will be documented in this file.
 
-{% for release in site.github.releases %}   
-## {{ release.name }}
+{% for release in site.github.releases %}
+## [{{ release.name }}]({{ release.html_url }})
 {{ release.body | markdownify }}
 {% endfor %}
