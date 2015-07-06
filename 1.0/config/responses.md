@@ -9,6 +9,11 @@ In addition to generating manipulated images, Glide also helps with generating H
 
 However, the type of response object needed depends on your application or framework. For example, you may want a PSR-7 response object if your using the Slim framework. Or, if you're using Laravel or Symfony, you may want to use an HttpFoundation object. To use the `getImageResponse()` method you must configure Glide to return the response you want.
 
+- [PSR-7 responses](config/responses#psr-7-responses)
+- [HttpFoundation responses](config/responses#httpfoundation-responses)
+- [CakePHP responses](config/responses#cakephp-responses)
+- [Custom responses](config/responses#custom-responses)
+
 ## PSR-7 responses
 
 Glide ships with a `PsrResponseFactory` class, allowing you to use any PSR-7 compliant library. However, since Glide only depends on the  PSR-7 interfaces, it cannot actually create the `Response` or `Stream` objects. Instead, you must provide them:
