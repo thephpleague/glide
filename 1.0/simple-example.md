@@ -25,14 +25,10 @@ Next, within your routes, setup a Glide server. Configure where the source image
 
 <div class="filename">routes.php</div>
 ~~~ php
-use League\Glide\ServerFactory;
-use League\Glide\Responses\PsrResponseFactory;
-
 // Setup Glide server
-$server = ServerFactory::create([
+$server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
-    'response' => new SymfonyResponseFactory(),
 ]);
 
 // You could manually output the image, just
@@ -42,5 +38,3 @@ $server->outputImage('users/1.jpg', ['w' => 300, 'h' => 400]);
 // Or better yet, output the image based on the current URL
 $server->outputImage($path, $_GET);
 ~~~
-
-<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="config/responses/">responses</a>.</p>

@@ -5,37 +5,54 @@ title: Responses
 
 # Responses
 
-In addition to generating manipulated images, Glide also helps with outputting them using HTTP responses. However, the type of response object needed depends on your app/framework. For example, you may want a PSR-7 response object if your using the Slim framework. Or, if you're using Laravel or Symfony, you may want an HttpFoundation response object. You must configure Glide to return the response you want.
+In addition to generating manipulated images, Glide also helps with generating HTTP responses using the `getImageResponse()` method. This is recommended over the `outputImage()` method.
+
+However, the type of response object needed depends on your application or framework. For example, you may want a PSR-7 response object if your using the Slim framework. Or, if you're using Laravel or Symfony, you may want to use an HttpFoundation object. To use the `getImageResponse()` method you must configure Glide to return the response you want.
 
 ## PSR-7 responses
 
-Glide ships with a `PsrResponseFactory` class, allowing you to use any PSR-7 compliant library. However, since Glide only depends on the  PSR-7 interfaces, it cannot actually create the base response object. Instead, you must provide it.
+Glide ships with a `PsrResponseFactory` class, allowing you to use any PSR-7 compliant library. However, since Glide only depends on the  PSR-7 interfaces, it cannot actually create the `Response` or `Stream` objects. Instead, you must provide them:
 
 ~~~ php
 use League\Glide\ServerFactory;
-use League\Glide\Responses\PsrResponseFactory;
+$server = League\Glide\ServerFactory::create([
+    'response' => new PsrResponseFactory(new Zend\Diactoros\Response(), function ($stream) {
+        return new Zend\Diactoros\Stream($stream);
+    }),
+]);
+~~~
 
-$server = ServerFactory::create([
-    'response' => new PsrResponseFactory(new Slim\Http\Response())
+However, for simplicity, Glide provides a few vendor adapters to make this easier:
+
+~~~ php
+use League\Glide\Responses\GuzzleResponseFactory;
+use League\Glide\Responses\SlimResponseFactory;
+use League\Glide\Responses\ZendResponseFactory;
+
+$server = League\Glide\ServerFactory::create([
+    'response' => new GuzzleResponseFactory(), // requires guzzlehttp/psr7
+    'response' => new SlimResponseFactory(),   // requires slim/slim (> 3.0)
+    'response' => new ZendResponseFactory(),   // requires zendframework/zend-diactoros
 ]);
 ~~~
 
 ## HttpFoundation responses
 
-If your applicaton uses Symfony's HttpFoundation library, you can use the `SymfonyResponseFactory`, which is provided as a bridge package. Start by installing it:
-
-~~~ bash
-composer require league/glide-symfony
-~~~
-
-Once you have installed the bridge, simply pass in a new instance of the factory:
+If your application uses Symfony's HttpFoundation library, you can use the `SymfonyResponseFactory`.
 
 ~~~ php
-use League\Glide\ServerFactory;
-use League\Glide\Responses\PsrResponseFactory;
+$server = League\Glide\ServerFactory::create([
+    'response' => new League\Glide\Responses\SymfonyResponseFactory()
+]);
+~~~
 
-$server = ServerFactory::create([
-    'response' => new SymfonyResponseFactory()
+## CakePHP responses
+
+If your application uses the CakePHP framework, you can use the `CakeResponseFactory`.
+
+~~~ php
+$server = League\Glide\ServerFactory::create([
+    'response' => new League\Glide\Responses\CakeResponseFactory()
 ]);
 ~~~
 
@@ -59,13 +76,5 @@ interface ResponseFactoryInterface
      * @return mixed               The response object.
      */
     public function create(FilesystemInterface $cache, $path);
-
-    /**
-     * Send the response.
-     * @param  FilesystemInterface $cache The cache file system.
-     * @param  string              $path  The cached file path.
-     * @return null
-     */
-    public function send(FilesystemInterface $cache, $path);
 }
 ~~~

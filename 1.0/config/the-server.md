@@ -5,25 +5,28 @@ title: The server
 
 # The server
 
-All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](config/source-and-cache/) (where the original images are saved), the image [cache location](config/source-and-cache/) (where the manipulated images are saved), the image manipulation API as well as any configuration options.
+All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](config/source-and-cache/) (where the original images are saved), the image [cache location](config/source-and-cache/) (where the manipulated images are saved), as well as all other configuration options.
 
 ## Setup with factory
 
 The easiest way to configure the `Server` is using the supplied factory.
 
 ~~~ php
-use League\Glide\ServerFactory;
-use League\Glide\Responses\PsrResponseFactory;
-
-// Setup Glide server
-$server = ServerFactory::create([
-    'source' => 'path/to/source/folder',
-    'cache' => 'path/to/cache/folder',
-    'response' => new SymfonyResponseFactory(),
+$server = League\Glide\ServerFactory::create([
+    'source' =>                 // Source filesystem
+    'source_path_prefix' =>     // Source filesystem path prefix
+    'cache' =>                  // Cache filesystem
+    'cache_path_prefix' =>      // Cache filesystem path prefix
+    'watermarks' =>             // Watermarks filesystem
+    'watermarks_path_prefix' => // Watermarks filesystem path prefix
+    'driver' =>                 // Image driver (gd or imagick)
+    'max_image_size' =>         // Image size limit
+    'defaults' =>               // Default image manipulations
+    'presets' =>                // Preset image manipulations
+    'base_url' =>               // Base URL of the images
+    'response' =>               // Response factory
 ]);
 ~~~
-
-<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>league/glide-symfony</code> package. For more information, see <a href="config/responses/">responses</a>.</p>
 
 ## Setup manually
 
@@ -47,7 +50,7 @@ $watermarks = new League\Flysystem\Filesystem(
 
 // Set image manager
 $imageManager = new Intervention\Image\ImageManager([
-    'driver' => 'imagick',
+    'driver' => 'gd',
 ]);
 
 // Set manipulators
@@ -71,15 +74,15 @@ $manipulators = [
 // Set API
 $api = new League\Glide\Api\Api($imageManager, $manipulators);
 
-// Set response factory
-$responseFactory = new SymfonyResponseFactory(); // requires league/glide-symfony
-$responseFactory = new PsrResponseFactory($response); // requires PSR-7 compliant library
-
 // Setup Glide server
 $server = new League\Glide\Server(
     $source,
     $cache,
     $api,
-    $responseFactory
 );
+
+// Set response factory
+$server->setResponseFactory(new SymfonyResponseFactory());
 ~~~
+
+<p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>symfony/http-foundation</code> package with your project. For more information, see <a href="config/responses/">responses</a>.</p>

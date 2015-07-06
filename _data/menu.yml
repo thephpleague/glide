@@ -31,7 +31,7 @@
         Image driver: '/1.0/config/image-driver/'
         Secure images: '/1.0/config/secure-images/'
         Max image size: '/1.0/config/max-image-size/'
-        Defaults & Presets: '/1.0/config/defaults-and-presets/'
+        Defaults & presets: '/1.0/config/defaults-and-presets/'
         Advanced usage: '/1.0/config/advanced-usage/'
     Image API:
         Quick reference: '/1.0/api/quick-reference/'
