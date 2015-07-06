@@ -38,3 +38,5 @@ $server->outputImage('users/1.jpg', ['w' => 300, 'h' => 400]);
 // Or better yet, output the image based on the current URL
 $server->outputImage($path, $_GET);
 ~~~
+
+<p class="message-notice">While the <code>outputImage()</code> method works great when you're first getting started, it's recommended that you actually use the <code>getImageResponse()</code> method instead. This allows your application to handle the outputting of the manipulated images. For more information, see <a href="config/responses/">responses</a>.</p>
