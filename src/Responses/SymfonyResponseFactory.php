@@ -39,9 +39,9 @@ class SymfonyResponseFactory implements ResponseFactoryInterface
         $response->setPublic();
         $response->setMaxAge(31536000);
         $response->setExpires(date_create()->modify('+1 years'));
-        $response->setLastModified(date_create()->setTimestamp($cache->getTimestamp($path)));
 
         if ($this->request) {
+            $response->setLastModified(date_create()->setTimestamp($cache->getTimestamp($path)));
             $response->isNotModified($this->request);
         }
 
@@ -52,16 +52,5 @@ class SymfonyResponseFactory implements ResponseFactoryInterface
         });
 
         return $response;
-    }
-
-    /**
-     * Send the response.
-     * @param  FilesystemInterface $cache The cache file system.
-     * @param  string              $path  The cached file path.
-     * @return null
-     */
-    public function send(FilesystemInterface $cache, $path)
-    {
-        $this->create($cache, $path)->send();
     }
 }

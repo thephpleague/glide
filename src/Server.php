@@ -58,7 +58,13 @@ class Server
      * Default image manipulations.
      * @var array
      */
-    protected $defaultManipulations = [];
+    protected $defaults = [];
+
+    /**
+     * Preset image manipulations.
+     * @var array
+     */
+    protected $presets = [];
 
     /**
      * Create Server instance.
@@ -67,12 +73,11 @@ class Server
      * @param ApiInterface             $api             Image manipulation API.
      * @param ResponseFactoryInterface $responseFactory Response factory.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, ResponseFactoryInterface $responseFactory = null)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
-        $this->setResponseFactory($responseFactory);
     }
 
     /**
@@ -147,6 +152,24 @@ class Server
     }
 
     /**
+     * Set base URL.
+     * @param string $baseUrl Base URL.
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = trim($baseUrl, '/');
+    }
+
+    /**
+     * Get base URL.
+     * @return string Base URL.
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
      * Set cache file system.
      * @param FilesystemInterface $cache Cache file system.
      */
@@ -196,8 +219,8 @@ class Server
             $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
         }
 
-        $params = array_merge($this->defaultManipulations, $params);
-        unset($params['s']);
+        $params = $this->getAllParams($params);
+        unset($params['s'], $params['p']);
         ksort($params);
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
@@ -254,38 +277,58 @@ class Server
 
     /**
      * Set default image manipulations.
-     * @param array $defaultManipulations Default image manipulations.
+     * @param array $defaults Default image manipulations.
      */
-    public function setDefaultManipulations(array $defaultManipulations)
+    public function setDefaults(array $defaults)
     {
-        $this->defaultManipulations = $defaultManipulations;
+        $this->defaults = $defaults;
     }
 
     /**
      * Get default image manipulations.
      * @return array Default image manipulations.
      */
-    public function getDefaultManipulations()
+    public function getDefaults()
     {
-        return $this->defaultManipulations;
+        return $this->defaults;
     }
 
     /**
-     * Set base URL.
-     * @param string $baseUrl Base URL.
+     * Set preset image manipulations.
+     * @param array $defaults Preset image manipulations.
      */
-    public function setBaseUrl($baseUrl)
+    public function setPresets(array $presets)
     {
-        $this->baseUrl = trim($baseUrl, '/');
+        $this->presets = $presets;
     }
 
     /**
-     * Get base URL.
-     * @return string Base URL.
+     * Get preset image manipulations.
+     * @return array Preset image manipulations.
      */
-    public function getBaseUrl()
+    public function getPresets()
     {
-        return $this->baseUrl;
+        return $this->presets;
+    }
+
+    /**
+     * Get all image manipulations params, including defaults and presets.
+     * @param  array $params Image manipulation params.
+     * @return array All image manipulation params.
+     */
+    public function getAllParams(array $params)
+    {
+        $all = $this->defaults;
+
+        if (isset($params['p'])) {
+            foreach (explode(',', $params['p']) as $preset) {
+                if (isset($this->presets[$preset])) {
+                    $all = array_merge($all, $this->presets[$preset]);
+                }
+            }
+        }
+
+        return array_merge($all, $params);
     }
 
     /**
@@ -356,15 +399,18 @@ class Server
      */
     public function outputImage($path, array $params)
     {
-        if (is_null($this->responseFactory)) {
-            throw new InvalidArgumentException(
-                'Unable to output image, no response factory defined.'
-            );
-        }
-
         $path = $this->makeImage($path, $params);
 
-        $this->responseFactory->send($this->cache, $path);
+        header('Content-Type:'.$this->cache->getMimetype($path));
+        header('Content-Length:'.$this->cache->getSize($path));
+        header('Cache-Control:'.'max-age=31536000, public');
+        header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
+
+        $stream = $this->cache->readStream($path);
+
+        rewind($stream);
+        fpassthru($stream);
+        fclose($stream);
     }
 
     /**
@@ -414,7 +460,7 @@ class Server
         try {
             $write = $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, array_merge($this->defaultManipulations, $params))
+                $this->api->run($tmp, $this->getAllParams($params))
             );
 
             if ($write === false) {

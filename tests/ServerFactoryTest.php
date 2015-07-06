@@ -128,17 +128,32 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(100, $server->getMaxImageSize());
     }
 
-    public function testGetDefaultManipulations()
+    public function testGetDefaults()
     {
-        $defaultManipulations = [
+        $defaults = [
             'fm' => 'jpg',
         ];
 
         $server = new ServerFactory([
-            'default_manipulations' => $defaultManipulations,
+            'defaults' => $defaults,
         ]);
 
-        $this->assertSame($defaultManipulations, $server->getDefaultManipulations());
+        $this->assertSame($defaults, $server->getDefaults());
+    }
+
+    public function testGetPresets()
+    {
+        $presets = [
+            'small' => [
+                'w' => 500,
+            ],
+        ];
+
+        $server = new ServerFactory([
+            'presets' => $presets,
+        ]);
+
+        $this->assertSame($presets, $server->getPresets());
     }
 
     public function testGetBaseUrl()

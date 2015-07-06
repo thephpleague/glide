@@ -13,11 +13,4 @@ interface ResponseFactoryInterface
      * @return mixed               The response object.
      */
     public function create(FilesystemInterface $cache, $path);
-
-    /**
-     * Send response.
-     * @param FilesystemInterface $cache Cache file system.
-     * @param string              $path  Cached file path.
-     */
-    public function send(FilesystemInterface $cache, $path);
 }

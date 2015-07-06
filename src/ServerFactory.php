@@ -49,14 +49,15 @@ class ServerFactory
         $server = new Server(
             $this->getSource(),
             $this->getCache(),
-            $this->getApi(),
-            $this->getResponseFactory()
+            $this->getApi()
         );
 
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
         $server->setCachePathPrefix($this->getCachePathPrefix());
-        $server->setDefaultManipulations($this->getDefaultManipulations());
+        $server->setDefaults($this->getDefaults());
+        $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
+        $server->setResponseFactory($this->getResponseFactory());
 
         return $server;
     }
@@ -219,10 +220,23 @@ class ServerFactory
      * Get default image manipulations.
      * @return array Default image manipulations.
      */
-    public function getDefaultManipulations()
+    public function getDefaults()
     {
-        if (isset($this->config['default_manipulations'])) {
-            return $this->config['default_manipulations'];
+        if (isset($this->config['defaults'])) {
+            return $this->config['defaults'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Get preset image manipulations.
+     * @return array Preset image manipulations.
+     */
+    public function getPresets()
+    {
+        if (isset($this->config['presets'])) {
+            return $this->config['presets'];
         }
 
         return [];

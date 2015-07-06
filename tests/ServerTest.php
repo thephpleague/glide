@@ -197,12 +197,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetImageResponse()
     {
+        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
+            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+        }));
+
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
-            $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
-            $mock->shouldReceive('getSize')->andReturn(0);
-            $mock->shouldReceive('getTimestamp')->andReturn(time());
-            $mock->shouldReceive('readStream')->andReturn(tmpfile());
         }));
 
         $this->assertInstanceOf(
