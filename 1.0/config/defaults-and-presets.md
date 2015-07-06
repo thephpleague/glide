@@ -65,10 +65,22 @@ $server->setPresets([
 
 ### Using presets
 
-To actually use the presets, use the `p` function to set the preset:
+To use a presets, set it using the `p` parameter:
 
 ~~~ html
 <img src="kayaks.jpg?p=small">
+~~~
+
+It's also possible to use multiple presets together:
+
+~~~ html
+<img src="kayaks.jpg?p=small,watermarked">
+~~~
+
+It's even possible to use presets with additional parameters:
+
+~~~ html
+<img src="kayaks.jpg?p=small,watermarked&filt=sepia">
 ~~~
 
 ## Overriding defaults and presets
