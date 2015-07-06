@@ -31,7 +31,7 @@
         Image driver: '/1.0/config/image-driver/'
         Secure images: '/1.0/config/secure-images/'
         Max image size: '/1.0/config/max-image-size/'
-        '<span style="letter-spacing: -0.012em;">Default manipulations</span>': '/1.0/config/default-manipulations/'
+        Defaults & Presets: '/1.0/config/defaults-and-presets/'
         Advanced usage: '/1.0/config/advanced-usage/'
     Image API:
         Quick reference: '/1.0/api/quick-reference/'
