@@ -11,13 +11,10 @@ class SymfonyResponseFactoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->cache = Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $file = tmpfile();
-            fwrite($file, 'content');
-
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
             $mock->shouldReceive('getTimestamp')->andReturn(time());
-            $mock->shouldReceive('readStream')->andReturn($file);
+            $mock->shouldReceive('readStream');
         });
     }
 
