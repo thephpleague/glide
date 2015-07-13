@@ -2,11 +2,26 @@
 
 namespace League\Glide;
 
-use InvalidArgumentException;
+use Intervention\Image\ImageManager;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Api\ApiFactory;
+use League\Glide\Api\Api;
+use League\Glide\Manipulators\Background;
+use League\Glide\Manipulators\Blur;
+use League\Glide\Manipulators\Border;
+use League\Glide\Manipulators\Brightness;
+use League\Glide\Manipulators\Contrast;
+use League\Glide\Manipulators\Crop;
+use League\Glide\Manipulators\Encode;
+use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Gamma;
+use League\Glide\Manipulators\Orientation;
+use League\Glide\Manipulators\Pixelate;
+use League\Glide\Manipulators\Sharpen;
+use League\Glide\Manipulators\Size;
+use League\Glide\Manipulators\Watermark;
+use League\Glide\Responses\ResponseFactoryInterface;
 
 class ServerFactory
 {
@@ -17,17 +32,17 @@ class ServerFactory
     protected $config;
 
     /**
-     * Create server factory instance.
+     * Create ServerFactory instance.
      * @param array $config Configuration parameters.
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
 
     /**
-     * Create server instance.
-     * @return Server The configured Glide server.
+     * Get configured server.
+     * @return Server Configured Glide server.
      */
     public function getServer()
     {
@@ -39,111 +54,220 @@ class ServerFactory
 
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
         $server->setCachePathPrefix($this->getCachePathPrefix());
+        $server->setDefaults($this->getDefaults());
+        $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
+        $server->setResponseFactory($this->getResponseFactory());
 
         return $server;
     }
 
     /**
-     * Get the source file system.
-     * @return FilesystemInterface The source file system.
+     * Get source file system.
+     * @return FilesystemInterface|null Source file system.
      */
     public function getSource()
     {
-        $source = null;
-
-        if (isset($this->config['source'])) {
-            $source = $this->config['source'];
+        if (!isset($this->config['source'])) {
+            return;
         }
 
-        if (is_string($source)) {
-            return new Filesystem(new Local($source));
+        if (is_string($this->config['source'])) {
+            return new Filesystem(
+                new Local($this->config['source'])
+            );
         }
 
-        if ($source instanceof FilesystemInterface) {
-            return $source;
-        }
-
-        throw new InvalidArgumentException('Invalid `source` parameter.');
+        return $this->config['source'];
     }
 
     /**
-     * Get the cache file system.
-     * @return FilesystemInterface The cache file system.
+     * Get source path prefix.
+     * @return string|null Source path prefix.
+     */
+    public function getSourcePathPrefix()
+    {
+        if (isset($this->config['source_path_prefix'])) {
+            return $this->config['source_path_prefix'];
+        }
+    }
+
+    /**
+     * Get cache file system.
+     * @return FilesystemInterface|null Cache file system.
      */
     public function getCache()
     {
-        $cache = null;
-
-        if (isset($this->config['cache'])) {
-            $cache = $this->config['cache'];
+        if (!isset($this->config['cache'])) {
+            return;
         }
 
-        if (is_string($cache)) {
-            return new Filesystem(new Local($cache));
+        if (is_string($this->config['cache'])) {
+            return new Filesystem(
+                new Local($this->config['cache'])
+            );
         }
 
-        if ($cache instanceof FilesystemInterface) {
-            return $cache;
-        }
-
-        if (is_null($cache)) {
-            return new Filesystem(new Local(sys_get_temp_dir()));
-        }
-
-        throw new InvalidArgumentException('Invalid `cache` parameter.');
+        return $this->config['cache'];
     }
 
     /**
-     * Get the base URL.
-     * @return string The base URL.
+     * Get cache path prefix.
+     * @return string|null Cache path prefix.
      */
-    public function getBaseUrl()
-    {
-        $baseUrl = '';
-
-        if (isset($this->config['base_url'])) {
-            $baseUrl = $this->config['base_url'];
-        }
-
-        return $baseUrl;
-    }
-
-    public function getSourcePathPrefix()
-    {
-        $sourcePathPrefix = '';
-
-        if (isset($this->config['source_path_prefix'])) {
-            $sourcePathPrefix = $this->config['source_path_prefix'];
-        }
-
-        return $sourcePathPrefix;
-    }
-
     public function getCachePathPrefix()
     {
-        $cachePathPrefix = '';
-
         if (isset($this->config['cache_path_prefix'])) {
-            $cachePathPrefix = $this->config['cache_path_prefix'];
+            return $this->config['cache_path_prefix'];
         }
-
-        return $cachePathPrefix;
     }
 
     /**
-     * Get the image manipulation API.
-     * @return Api The image manipulation API.
+     * Get watermarks file system.
+     * @return FilesystemInterface|null Watermarks file system.
+     */
+    public function getWatermarks()
+    {
+        if (!isset($this->config['watermarks'])) {
+            return;
+        }
+
+        if (is_string($this->config['watermarks'])) {
+            return new Filesystem(
+                new Local($this->config['watermarks'])
+            );
+        }
+
+        return $this->config['watermarks'];
+    }
+
+    /**
+     * Get watermarks path prefix.
+     * @return string|null Watermarks path prefix.
+     */
+    public function getWatermarksPathPrefix()
+    {
+        if (isset($this->config['watermarks_path_prefix'])) {
+            return $this->config['watermarks_path_prefix'];
+        }
+    }
+
+    /**
+     * Get image manipulation API.
+     * @return Api Image manipulation API.
      */
     public function getApi()
     {
-        return ApiFactory::create($this->config);
+        return new Api(
+            $this->getImageManager(),
+            $this->getManipulators()
+        );
     }
 
     /**
-     * Create server instance.
+     * Get Intervention image manager.
+     * @return ImageManager Intervention image manager.
+     */
+    public function getImageManager()
+    {
+        $driver = 'gd';
+
+        if (isset($this->config['driver'])) {
+            $driver = $this->config['driver'];
+        }
+
+        return new ImageManager([
+            'driver' => $driver,
+        ]);
+    }
+
+    /**
+     * Get image manipulators.
+     * @return array Image manipulators.
+     */
+    public function getManipulators()
+    {
+        return [
+            new Orientation(),
+            new Crop(),
+            new Size($this->getMaxImageSize()),
+            new Brightness(),
+            new Contrast(),
+            new Gamma(),
+            new Sharpen(),
+            new Filter(),
+            new Blur(),
+            new Pixelate(),
+            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
+            new Background(),
+            new Border(),
+            new Encode(),
+        ];
+    }
+
+    /**
+     * Get maximum image size.
+     * @return int|null Maximum image size.
+     */
+    public function getMaxImageSize()
+    {
+        if (isset($this->config['max_image_size'])) {
+            return $this->config['max_image_size'];
+        }
+    }
+
+    /**
+     * Get default image manipulations.
+     * @return array Default image manipulations.
+     */
+    public function getDefaults()
+    {
+        if (isset($this->config['defaults'])) {
+            return $this->config['defaults'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Get preset image manipulations.
+     * @return array Preset image manipulations.
+     */
+    public function getPresets()
+    {
+        if (isset($this->config['presets'])) {
+            return $this->config['presets'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Get base URL.
+     * @return string|null Base URL.
+     */
+    public function getBaseUrl()
+    {
+        if (isset($this->config['base_url'])) {
+            return $this->config['base_url'];
+        }
+    }
+
+    /**
+     * Get response factory.
+     * @return ResponseFactoryInterface|null Response factory.
+     */
+    public function getResponseFactory()
+    {
+        if (isset($this->config['response'])) {
+            return $this->config['response'];
+        }
+    }
+
+    /**
+     * Create configured server.
      * @param  array  $config Configuration parameters.
-     * @return Server The configured server.
+     * @return Server Configured server.
      */
     public static function create(array $config = [])
     {

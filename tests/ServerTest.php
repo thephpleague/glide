@@ -2,7 +2,6 @@
 
 namespace League\Glide;
 
-use League\Glide\Http\RequestFactory;
 use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
@@ -11,10 +10,22 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+
+        $responseFactory = Mockery::mock('League\Glide\Responses\ResponseFactoryInterface');
+        $responseFactory
+            ->shouldReceive('create')
+            ->andReturn($response)
+            ->shouldReceive('send')
+            ->andReturnUsing(function () {
+                echo 'content';
+            });
+
         $this->server = new Server(
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Flysystem\FilesystemInterface'),
-            Mockery::mock('League\Glide\Api\ApiInterface')
+            Mockery::mock('League\Glide\Api\ApiInterface'),
+            $responseFactory
         );
     }
 
@@ -53,7 +64,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePath()
     {
         $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
-        $this->assertEquals('image.jpg', $this->server->getSourcePath(RequestFactory::create('image.jpg')));
     }
 
     public function testGetSourcePathWithBaseUrl()
@@ -71,7 +81,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePathWithMissingPath()
     {
         $this->setExpectedException(
-            'League\Glide\Http\NotFoundException',
+            'League\Glide\Filesystem\FileNotFoundException',
             'Image path missing.'
         );
 
@@ -81,7 +91,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetSourcePathWithEncodedEntities()
     {
         $this->assertEquals('an image.jpg', $this->server->getSourcePath('an%20image.jpg'));
-        $this->assertEquals('an image.jpg', $this->server->getSourcePath(RequestFactory::create('an%20image.jpg')));
     }
 
     public function testSourceFileExists()
@@ -118,7 +127,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetCachePath()
     {
         $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
+            'image.jpg/e863e008b6f09807c3b0aa3805bc9c63',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }
@@ -126,16 +135,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetCachePathWithPrefix()
     {
         $this->server->setCachePathPrefix('img/');
-        $this->assertEquals('img/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg'));
+        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testCacheFileExists()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->with('75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
+            $mock->shouldReceive('has')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
         }));
 
-        $this->assertTrue($this->server->cacheFileExists('image.jpg'));
+        $this->assertTrue($this->server->cacheFileExists('image.jpg', []));
     }
 
     public function testSetAPI()
@@ -166,37 +175,38 @@ class ServerTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutputImage()
     {
-        ob_start();
-
-        $file = tmpfile();
-        fwrite($file, 'content');
-
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) use ($file) {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
-            $mock->shouldReceive('getTimestamp')->andReturn(time());
+
+            $file = tmpfile();
+            fwrite($file, 'content');
             $mock->shouldReceive('readStream')->andReturn($file);
         }));
 
-        $response = $this->server->outputImage('image.jpg');
+        ob_start();
+        $response = $this->server->outputImage('image.jpg', []);
         $content = ob_get_clean();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $response);
+        $this->assertNull($response);
         $this->assertEquals('content', $content);
     }
 
     public function testGetImageResponse()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true);
-            $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
-            $mock->shouldReceive('getSize')->andReturn(0);
-            $mock->shouldReceive('getTimestamp')->andReturn(time());
-            $mock->shouldReceive('readStream')->andReturn(tmpfile());
+        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
+            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\StreamedResponse', $this->server->getImageResponse('image.jpg'));
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+        }));
+
+        $this->assertInstanceOf(
+            'Psr\Http\Message\ResponseInterface',
+            $this->server->getImageResponse('image.jpg', [])
+        );
     }
 
     public function testMakeImageFromCache()
@@ -205,23 +215,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
-    }
-
-    public function testMakeImageWithInvalidRequest()
-    {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Not a valid path or Request object.'
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
         );
-
-        $this->server->makeImage([]);
     }
 
     public function testMakeImageFromSourceThatDoesNotExist()
     {
         $this->setExpectedException(
-            'League\Glide\Http\NotFoundException',
+            'League\Glide\Filesystem\FileNotFoundException',
             'Could not find the image `image.jpg`.'
         );
 
@@ -233,7 +236,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithUnreadableSource()
@@ -252,14 +255,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(false)->once();
         }));
 
-        $this->server->makeImage('image.jpg');
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithUnwritableCache()
     {
         $this->setExpectedException(
             'League\Glide\Filesystem\FilesystemException',
-            'Could not write the image `75094881e9fd2b93063d6a5cb083091c`.'
+            'Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.'
         );
 
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
@@ -276,7 +279,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->server->makeImage('image.jpg');
+        $this->server->makeImage('image.jpg', []);
     }
 
     public function testMakeImageWithExistingCacheFile()
@@ -295,7 +298,10 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
     }
 
     public function testMakeImageFromSource()
@@ -307,13 +313,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
         $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Request', $this->server->makeImage('image.jpg'));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
     }
 }

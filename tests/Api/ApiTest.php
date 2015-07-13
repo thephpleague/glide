@@ -36,9 +36,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
     public function testSetManipulators()
     {
-        $this->api->setManipulators([Mockery::mock('League\Glide\Api\Manipulator\ManipulatorInterface')]);
+        $this->api->setManipulators([Mockery::mock('League\Glide\Manipulators\ManipulatorInterface')]);
         $manipulators = $this->api->getManipulators();
-        $this->assertInstanceOf('League\Glide\Api\Manipulator\ManipulatorInterface', $manipulators[0]);
+        $this->assertInstanceOf('League\Glide\Manipulators\ManipulatorInterface', $manipulators[0]);
     }
 
     public function testSetInvalidManipulator()
@@ -63,14 +63,13 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('make')->andReturn($image);
         });
 
-        $manipulator = Mockery::mock('League\Glide\Api\Manipulator\ManipulatorInterface', function ($mock) use ($image) {
+        $manipulator = Mockery::mock('League\Glide\Manipulators\ManipulatorInterface', function ($mock) use ($image) {
+            $mock->shouldReceive('setParams')->with([]);
             $mock->shouldReceive('run')->andReturn($image);
         });
 
         $api = new Api($manager, [$manipulator]);
 
-        $request = Mockery::mock('Symfony\Component\HttpFoundation\Request');
-
-        $this->assertEquals('encoded', $api->run($request, 'source'));
+        $this->assertEquals('encoded', $api->run('source', []));
     }
 }
