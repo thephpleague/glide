@@ -27,10 +27,6 @@ class CakeResponseFactory implements ResponseFactoryInterface
         $response->header('Content-Length', $contentLength);
         $response->header('Cache-Control', $cacheControl);
         $response->header('Expires', $expires);
-
-        // Callable response bodies are not available
-        // before Cake 3.1. For more information, see
-        // https://github.com/cakephp/cakephp/pull/6913
         $response->body(function () use ($stream) {
             rewind($stream);
             fpassthru($stream);
