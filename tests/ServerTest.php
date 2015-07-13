@@ -179,7 +179,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
             $mock->shouldReceive('getSize')->andReturn(0);
-            $mock->shouldReceive('getTimestamp')->andReturn(time());
 
             $file = tmpfile();
             fwrite($file, 'content');
