@@ -44,7 +44,7 @@ class Color
 
     /**
      * The alpha value.
-     * @var int
+     * @var double
      */
     protected $alpha;
 
@@ -54,9 +54,6 @@ class Color
      */
     public function __construct($value)
     {
-        $rgba = null;
-        $alpha = 0;
-
         do {
             if ($hex = $this->getHexFromColorName($value)) {
                 $rgba = $this->parseHex($hex);
@@ -89,6 +86,7 @@ class Color
             }
 
             $rgba = [255, 255, 255];
+            $alpha = 0;
         } while (false);
 
         $this->red = $rgba[0];
