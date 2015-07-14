@@ -230,7 +230,7 @@ class Size extends BaseManipulator
      */
     public function limitImageSize($width, $height)
     {
-        if ($this->maxImageSize) {
+        if ($this->maxImageSize !== null) {
             $imageSize = $width * $height;
 
             if ($imageSize > $this->maxImageSize) {

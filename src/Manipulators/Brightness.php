@@ -18,7 +18,7 @@ class Brightness extends BaseManipulator
     {
         $brightness = $this->getBrightness();
 
-        if ($brightness) {
+        if ($brightness !== null) {
             $image->brightness($brightness);
         }
 

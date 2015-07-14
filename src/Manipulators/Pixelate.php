@@ -18,7 +18,7 @@ class Pixelate extends BaseManipulator
     {
         $pixelate = $this->getPixelate();
 
-        if ($pixelate) {
+        if ($pixelate !== null) {
             $image->pixelate($pixelate);
         }
 

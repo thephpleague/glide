@@ -18,7 +18,7 @@ class Contrast extends BaseManipulator
     {
         $contrast = $this->getContrast();
 
-        if ($contrast) {
+        if ($contrast !== null) {
             $image->contrast($contrast);
         }
 
