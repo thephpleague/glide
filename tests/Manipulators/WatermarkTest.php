@@ -25,6 +25,47 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Glide\Manipulators\Watermark', $this->manipulator);
     }
 
+    public function testSetWatermarks()
+    {
+        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface'));
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->manipulator->getWatermarks());
+    }
+
+    public function testGetWatermarks()
+    {
+        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->manipulator->getWatermarks());
+    }
+
+    public function testSetWatermarksPathPrefix()
+    {
+        $this->manipulator->setWatermarksPathPrefix('watermarks/');
+        $this->assertEquals('watermarks', $this->manipulator->getWatermarksPathPrefix());
+    }
+
+    public function testGetWatermarksPathPrefix()
+    {
+        $this->assertEquals('', $this->manipulator->getWatermarksPathPrefix());
+    }
+
+    public function testRun()
+    {
+        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface', function ($watermarks) {
+            $watermarks->shouldReceive('has')->with('image.jpg')->once();
+        }));
+
+        $this->manipulator->setParams([
+            'mark' => 'image.jpg',
+            'markw' => '100',
+            'markh' => '100',
+            'markpad' => '10',
+        ]);
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run(Mockery::mock('Intervention\Image\Image'))
+        );
+    }
+
     public function testGetImage()
     {
         $this->manipulator->getWatermarks()
