@@ -42,6 +42,22 @@ Sets the height of the watermark in pixels, or using [relative dimensions](api/r
 <img src="kayaks.jpg?mark=logo.png&markh=200">
 ~~~
 
+## Fit `markfit`
+
+Sets how the watermark is fitted to its target dimensions.
+
+### Accepts: 
+
+- `contain`: Default. Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio.
+- `max`: Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio, and will also not increase the size of the image if it is smaller than the output size. 
+- `fill`: Resizes the image to fit within the width and height boundaries without cropping or distorting the image, and the remaining space is filled with the background color. The resulting image will match the constraining dimensions.
+- `stretch`: Stretches the image to fit the constraining dimensions exactly. The resulting image will fill the dimensions, and will not maintain the aspect ratio of the input image.
+- `crop`: Resizes the image to fill the width and height boundaries and crops any excess image data. The resulting image will match the width and height constraints without distorting the image. See the [crop](api/crop/) page for more information.
+
+~~~ html
+<img src="kayaks.jpg?mark=logo.png&markw=200&markh=200&markfit=crop">
+~~~
+
 ## X-offset `markx`
 
 Sets how far the watermark is away from the left and right edges of the image. Set in pixels, or using [relative dimensions](api/relative-dimensions/). Ignored if `markpos` is set to `center`.
