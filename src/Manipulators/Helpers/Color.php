@@ -57,13 +57,13 @@ class Color
         do {
             if ($hex = $this->getHexFromColorName($value)) {
                 $rgba = $this->parseHex($hex);
-                $alpha = 1;
+                $alpha = 1.0;
                 break;
             }
 
             if (preg_match(self::SHORT_RGB, $value)) {
                 $rgba = $this->parseHex($value.$value);
-                $alpha = 1;
+                $alpha = 1.0;
                 break;
             }
 
@@ -75,7 +75,7 @@ class Color
 
             if (preg_match(self::LONG_RGB, $value)) {
                 $rgba = $this->parseHex($value);
-                $alpha = 1;
+                $alpha = 1.0;
                 break;
             }
 
@@ -86,7 +86,7 @@ class Color
             }
 
             $rgba = [255, 255, 255];
-            $alpha = 0;
+            $alpha = 0.0;
         } while (false);
 
         $this->red = $rgba[0];
