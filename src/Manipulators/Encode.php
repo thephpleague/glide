@@ -4,6 +4,10 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
+/**
+ * @property string $fm
+ * @property string $q
+ */
 class Encode extends BaseManipulator
 {
     /**

@@ -6,6 +6,10 @@ use Intervention\Image\Image;
 use League\Glide\Manipulators\Helpers\Color;
 use League\Glide\Manipulators\Helpers\Dimension;
 
+/**
+ * @property string $border
+ * @property string $dpr
+ */
 class Border extends BaseManipulator
 {
     /**

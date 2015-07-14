@@ -4,6 +4,9 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
+/**
+ * @property string $or
+ */
 class Orientation extends BaseManipulator
 {
     /**

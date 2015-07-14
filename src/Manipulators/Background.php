@@ -6,7 +6,7 @@ use Intervention\Image\Image;
 use League\Glide\Manipulators\Helpers\Color;
 
 /**
- * @property string $bg The background param.
+ * @property string $bg
  */
 class Background extends BaseManipulator
 {

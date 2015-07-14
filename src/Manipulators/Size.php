@@ -4,6 +4,12 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 
+/**
+ * @property string $dpr
+ * @property string $fit
+ * @property string $h
+ * @property string $w
+ */
 class Size extends BaseManipulator
 {
     /**

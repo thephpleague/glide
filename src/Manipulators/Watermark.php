@@ -6,6 +6,17 @@ use Intervention\Image\Image;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Manipulators\Helpers\Dimension;
 
+/**
+ * @property string $dpr
+ * @property string $mark
+ * @property string $markfit
+ * @property string $markh
+ * @property string $markpad
+ * @property string $markpos
+ * @property string $markw
+ * @property string $markx
+ * @property string $marky
+ */
 class Watermark extends BaseManipulator
 {
     /**
