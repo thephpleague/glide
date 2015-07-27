@@ -211,7 +211,7 @@ class Server
      * @param  array  $params Image manipulation params.
      * @return string Cache path.
      */
-    public function getCachePath($path, array $params)
+    public function getCachePath($path, array $params = [])
     {
         $sourcePath = $this->getSourcePath($path);
 
@@ -254,7 +254,9 @@ class Server
      */
     public function deleteCache($path)
     {
-        return $this->cache->deleteDir($path);
+        return $this->cache->deleteDir(
+            dirname($this->getCachePath($path))
+        );
     }
 
     /**
