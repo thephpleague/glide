@@ -30,7 +30,7 @@ try {
 Next, generate a signature for each image request you make. Glide comes with a URL builder to make this process easy. Be sure to use the same signing key you configured earlier.
 
 ~~~ php
-use League\Glide\Http\UrlBuilderFactory;
+use League\Glide\Urls\UrlBuilderFactory;
 
 // Create an instance of the URL builder
 $urlBuilder = UrlBuilderFactory::create('http://example.com', 'your-sign-key');
@@ -42,5 +42,5 @@ $url = $urlBuilder->getUrl('cat.jpg', ['w' => 500]);
 echo '<img src="'.$url.'">';
 
 // Prints out
-<img src="http://example.com/img/cat.jpg?w=500&token=af3dc18fc6bfb2afb521e587c348b904">
+<img src="http://example.com/img/cat.jpg?w=500&s=af3dc18fc6bfb2afb521e587c348b904">
 ~~~
