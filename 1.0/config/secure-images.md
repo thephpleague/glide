@@ -14,8 +14,8 @@ Add additional security to your Glide image server with HTTP signatures. By sign
 Start by configuring the Glide server to validate each request before you ouput the image. In the event that the validation fails, Glide will throw an `SignatureException` exception.
 
 ~~~ php
-use League\Glide\Http\SignatureFactory;
-use League\Glide\Http\SignatureException;
+use League\Glide\Signatures\SignatureFactory;
+use League\Glide\Signatures\SignatureException;
 
 try {
     // Validate HTTP signature
