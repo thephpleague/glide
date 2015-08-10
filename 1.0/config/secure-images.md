@@ -33,7 +33,7 @@ Next, generate a signature for each image request you make. Glide comes with a U
 use League\Glide\Urls\UrlBuilderFactory;
 
 // Create an instance of the URL builder
-$urlBuilder = UrlBuilderFactory::create('http://example.com', 'your-sign-key');
+$urlBuilder = UrlBuilderFactory::create('/img/', 'your-sign-key');
 
 // Generate a URL
 $url = $urlBuilder->getUrl('cat.jpg', ['w' => 500]);
@@ -42,5 +42,5 @@ $url = $urlBuilder->getUrl('cat.jpg', ['w' => 500]);
 echo '<img src="'.$url.'">';
 
 // Prints out
-<img src="http://example.com/img/cat.jpg?w=500&s=af3dc18fc6bfb2afb521e587c348b904">
+<img src="/img/cat.jpg?w=500&s=af3dc18fc6bfb2afb521e587c348b904">
 ~~~
