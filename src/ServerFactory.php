@@ -11,6 +11,7 @@ use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
 use League\Glide\Manipulators\Border;
 use League\Glide\Manipulators\Brightness;
+use League\Glide\Manipulators\ColorSpace;
 use League\Glide\Manipulators\Contrast;
 use League\Glide\Manipulators\Crop;
 use League\Glide\Manipulators\Encode;
@@ -188,6 +189,7 @@ class ServerFactory
     public function getManipulators()
     {
         return [
+            new ColorSpace(),
             new Orientation(),
             new Crop(),
             new Size($this->getMaxImageSize()),
