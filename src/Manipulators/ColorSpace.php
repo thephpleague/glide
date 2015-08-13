@@ -29,7 +29,7 @@ class ColorSpace extends BaseManipulator
 
         $this->colorSpaces = [
             'rgb' => \Imagick::COLORSPACE_RGB,
-            'srgb' => \Imagick::COLORSPACE_RGB,
+            'srgb' => \Imagick::COLORSPACE_SRGB,
             'cmyk' => \Imagick::COLORSPACE_CMYK
         ];
 
