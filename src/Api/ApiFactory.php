@@ -6,6 +6,7 @@ use Intervention\Image\ImageManager;
 use League\Glide\Api\Manipulator\Blur;
 use League\Glide\Api\Manipulator\Brightness;
 use League\Glide\Api\Manipulator\Contrast;
+use League\Glide\Api\Manipulator\Circle;
 use League\Glide\Api\Manipulator\Filter;
 use League\Glide\Api\Manipulator\Gamma;
 use League\Glide\Api\Manipulator\Orientation;
@@ -77,6 +78,7 @@ class ApiFactory
             new Orientation(),
             new Rectangle(),
             new Size($maxImageSize),
+            new Circle($maxImageSize),
             new Brightness(),
             new Contrast(),
             new Gamma(),
