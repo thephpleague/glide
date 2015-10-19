@@ -49,20 +49,24 @@ class Circle implements ManipulatorInterface
      */
     public function run(Request $request, Image $image)
     {
-        $width  = $this->getWidth($request->get('w'));
-        $height = $this->getHeight($request->get('h'));
+        if ($request->get('circle')) {
+            $width  = $this->getWidth($request->get('w'));
+            $height = $this->getHeight($request->get('h'));
 
-        list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
-        list($width, $height) = $this->limitImageSize($width, $height);
+            list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
+            list($width, $height) = $this->limitImageSize($width, $height);
 
-        $manager = new ImageManager(['driver' => 'imagick']);
+            $manager = new ImageManager(['driver' => 'imagick']);
 
-        $circleMask = $manager->canvas($width, $height);
-        $circleMask = $circleMask->ellipse($width, $height, ($width * 0.5), ($height * 0.5), function ($draw) {
-            $draw->background('#fff');
-        });
+            $circleMask = $manager->canvas($width, $height);
+            $circleMask = $circleMask->ellipse($width, $height, ($width * 0.5), ($height * 0.5), function ($draw) {
+                $draw->background('#fff');
+            });
 
-        return $image->mask($circleMask, true);
+            $image->mask($circleMask, true);
+        }
+
+        return $image;
     }
 
     /**
