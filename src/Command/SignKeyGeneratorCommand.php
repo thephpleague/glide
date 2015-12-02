@@ -9,6 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SignKeyGeneratorCommand extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
@@ -31,6 +34,9 @@ final class SignKeyGeneratorCommand extends Command
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entropy = $input->getOption('entropy');
