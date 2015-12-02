@@ -9,7 +9,6 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         exec('php ' . __DIR__ . '/../bin/console', $output);
 
         $searchStrings = [
-            'Available commands:',
             'help',
             'list',
             'sign-key-generator',
