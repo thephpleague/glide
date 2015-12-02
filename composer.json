@@ -24,7 +24,9 @@
         "php": ">=5.4",
         "psr/http-message": "^1.0",
         "league/flysystem": "^1.0",
-        "intervention/image": "^2.1"
+        "intervention/image": "^2.1",
+        "paragonie/random_compat": "^1.1",
+        "symfony/console": "^2.8"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
