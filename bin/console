@@ -7,6 +7,6 @@ use League\Glide\Command\SignKeyGeneratorCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
-$application->add(new SignKeyGeneratorCommand);
+$application->add(new SignKeyGeneratorCommand());
 
 $application->run();
