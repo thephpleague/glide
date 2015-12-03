@@ -6,7 +6,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 {
     public function testConsole()
     {
-        exec('php ' . __DIR__ . '/../bin/console', $output);
+        exec('php ' . __DIR__ . '/../bin/glide-console', $output);
 
         $searchStrings = [
             'help',

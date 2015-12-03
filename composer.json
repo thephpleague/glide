@@ -44,6 +44,6 @@
         }
     },
     "bin": [
-        "bin/console"
+        "bin/glide-console"
     ]
 }
