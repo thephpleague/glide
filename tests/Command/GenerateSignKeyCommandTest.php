@@ -7,14 +7,14 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class GenerateSignKeyCommandTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConfigure()
+    public function testCommandSetup()
     {
         $command = new GenerateSignKeyCommand();
         $this->assertEquals('generate-sign-key', $command->getName());
         $this->assertEquals('Generate a key for signing image URLs', $command->getDescription());
     }
 
-    public function testExecute()
+    public function testCommandOutput()
     {
         $this->assertBase64($this->getCommandOutput(), 32);
         $this->assertHex($this->getCommandOutput(null, 'hex'), 32);
@@ -24,6 +24,16 @@ class GenerateSignKeyCommandTest extends \PHPUnit_Framework_TestCase
         foreach ($lengths as $length) {
             $this->assertBase64($this->getCommandOutput($length, 'base64'), $length);
             $this->assertHex($this->getCommandOutput($length, 'hex'), $length);
+        }
+    }
+
+    public function testInvalidFormat()
+    {
+        try {
+            $this->getCommandOutput(null, 'invalid-format');
+            $this->fail('Should have thrown InvalidArgumentException when provided with invalid format');
+        } catch (\InvalidArgumentException $exception) {
+            $this->assertEquals('Unrecognized format: invalid-format', $exception->getMessage());
         }
     }
 
