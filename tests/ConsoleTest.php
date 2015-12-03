@@ -11,7 +11,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $searchStrings = [
             'help',
             'list',
-            'sign-key-generator',
+            'generate-sign-key',
             'Generate a key for signing image URLs'
         ];
 

@@ -5,12 +5,12 @@ namespace League\Glide\Command;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class SignKeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
+class GenerateSignKeyCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testConfigure()
     {
-        $command = new SignKeyGeneratorCommand();
-        $this->assertEquals('sign-key-generator', $command->getName());
+        $command = new GenerateSignKeyCommand();
+        $this->assertEquals('generate-sign-key', $command->getName());
         $this->assertEquals('Generate a key for signing image URLs', $command->getDescription());
     }
 
@@ -29,7 +29,7 @@ class SignKeyGeneratorCommandTest extends \PHPUnit_Framework_TestCase
 
     private function getCommandOutput($entropy = null, $format = null)
     {
-        $command = new SignKeyGeneratorCommand();
+        $command = new GenerateSignKeyCommand();
 
         $argv = '';
 

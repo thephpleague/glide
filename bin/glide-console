@@ -3,10 +3,10 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use League\Glide\Command\SignKeyGeneratorCommand;
+use League\Glide\Command\GenerateSignKeyCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
-$application->add(new SignKeyGeneratorCommand());
+$application->add(new GenerateSignKeyCommand());
 
 $application->run();

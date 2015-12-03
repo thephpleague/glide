@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class SignKeyGeneratorCommand extends Command
+final class GenerateSignKeyCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -15,7 +15,7 @@ final class SignKeyGeneratorCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('sign-key-generator')
+            ->setName('generate-sign-key')
             ->setDescription('Generate a key for signing image URLs')
             ->addOption(
                 'entropy',
