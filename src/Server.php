@@ -68,10 +68,9 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface      $source          Source file system.
-     * @param FilesystemInterface      $cache           Cache file system.
-     * @param ApiInterface             $api             Image manipulation API.
-     * @param ResponseFactoryInterface $responseFactory Response factory.
+     * @param FilesystemInterface $source Source file system.
+     * @param FilesystemInterface $cache  Cache file system.
+     * @param ApiInterface        $api    Image manipulation API.
      */
     public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
     {
@@ -297,7 +296,7 @@ class Server
 
     /**
      * Set preset image manipulations.
-     * @param array $defaults Preset image manipulations.
+     * @param array $presets Preset image manipulations.
      */
     public function setPresets(array $presets)
     {

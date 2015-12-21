@@ -102,6 +102,17 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->server->sourceFileExists('image.jpg'));
     }
 
+    public function testSetBaseUrl()
+    {
+        $this->server->setBaseUrl('img/');
+        $this->assertEquals('img', $this->server->getBaseUrl());
+    }
+
+    public function testGetBaseUrl()
+    {
+        $this->assertEquals('', $this->server->getBaseUrl());
+    }
+
     public function testSetCache()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface'));
@@ -147,27 +158,134 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->server->cacheFileExists('image.jpg', []));
     }
 
-    public function testSetAPI()
+    public function testDeleteCache()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('deleteDir')->with('image.jpg')->andReturn(true)->once();
+        }));
+
+        $this->assertTrue($this->server->deleteCache('image.jpg', []));
+    }
+
+    public function testSetApi()
     {
         $api = Mockery::mock('League\Glide\Api\ApiInterface');
         $this->server->setApi($api);
         $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
     }
 
-    public function testGetAPI()
+    public function testGetApi()
     {
         $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
     }
 
-    public function testSetBaseUrl()
+    public function testSetDefaults()
     {
-        $this->server->setBaseUrl('img/');
-        $this->assertEquals('img', $this->server->getBaseUrl());
+        $defaults = [
+            'fm' => 'jpg',
+        ];
+
+        $this->server->setDefaults($defaults);
+
+        $this->assertSame($defaults, $this->server->getDefaults());
     }
 
-    public function testGetBaseUrl()
+    public function testGetDefaults()
     {
-        $this->assertEquals('', $this->server->getBaseUrl());
+        $this->testSetDefaults();
+    }
+
+    public function testSetPresets()
+    {
+        $presets = [
+            'small' => [
+                'w' => '200',
+                'h' => '200',
+                'fit' => 'crop',
+            ],
+        ];
+
+        $this->server->setPresets($presets);
+
+        $this->assertSame($presets, $this->server->getPresets());
+    }
+
+    public function testGetPresets()
+    {
+        $this->testSetPresets();
+    }
+
+    public function testGetAllParams()
+    {
+        $this->server->setDefaults([
+            'fm' => 'jpg',
+        ]);
+
+        $this->server->setPresets([
+            'small' => [
+                'w' => '200',
+                'h' => '200',
+                'fit' => 'crop',
+            ],
+        ]);
+
+        $all_params = $this->server->getAllParams([
+            'w' => '100',
+            'p' => 'small',
+        ]);
+
+        $this->assertSame([
+            'fm' => 'jpg',
+            'w' => '100',
+            'h' => '200',
+            'fit' => 'crop',
+            'p' => 'small',
+        ], $all_params);
+    }
+
+    public function testSetResponseFactory()
+    {
+        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'));
+
+        $this->assertInstanceOf(
+            'League\Glide\Responses\ResponseFactoryInterface',
+            $this->server->getResponseFactory()
+        );
+    }
+
+    public function testGetResponseFactory()
+    {
+        $this->testSetResponseFactory();
+    }
+
+    public function testGetImageResponse()
+    {
+        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
+            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+        }));
+
+        $this->assertInstanceOf(
+            'Psr\Http\Message\ResponseInterface',
+            $this->server->getImageResponse('image.jpg', [])
+        );
+    }
+
+    public function testGetImageAsBase64()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+            $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->assertEquals(
+            'data:image/jpeg;base64,Y29udGVudA==',
+            $this->server->getImageAsBase64('image.jpg', [])
+        );
     }
 
     /**
@@ -193,19 +311,25 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('content', $content);
     }
 
-    public function testGetImageResponse()
+    public function testMakeImageFromSource()
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
-            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true);
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
-        $this->assertInstanceOf(
-            'Psr\Http\Message\ResponseInterface',
-            $this->server->getImageResponse('image.jpg', [])
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+            $mock->shouldReceive('run')->andReturn('content')->once();
+        }));
+
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
         );
     }
 
@@ -292,28 +416,6 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(false)->once();
             $mock->shouldReceive('write')->andThrow(new \League\Flysystem\FileExistsException('75094881e9fd2b93063d6a5cb083091c'));
-        }));
-
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $mock->shouldReceive('run')->andReturn('content')->once();
-        }));
-
-        $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
-            $this->server->makeImage('image.jpg', [])
-        );
-    }
-
-    public function testMakeImageFromSource()
-    {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true)->once();
-            $mock->shouldReceive('read')->andReturn('content')->once();
-        }));
-
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
         $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {

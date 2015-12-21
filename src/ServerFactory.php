@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use Exception;
 use Intervention\Image\ImageManager;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -69,7 +70,7 @@ class ServerFactory
     public function getSource()
     {
         if (!isset($this->config['source'])) {
-            return;
+            throw new Exception('A "source" file system must be set.');
         }
 
         if (is_string($this->config['source'])) {
@@ -99,7 +100,7 @@ class ServerFactory
     public function getCache()
     {
         if (!isset($this->config['cache'])) {
-            return;
+            throw new Exception('A "cache" file system must be set.');
         }
 
         if (is_string($this->config['cache'])) {
