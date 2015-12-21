@@ -1,6 +1,9 @@
 filter:
     paths: [src/*]
     excluded_paths: [tests/*]
+before_commands:
+    - "composer self-update"
+    - "composer install --prefer-source --dev"
 checks:
     php:
         code_rating: true
