@@ -29,8 +29,6 @@ $cache = new League\Flysystem\Filesystem(
 // Setup Glide server
 $server = new League\Glide\Server($source, $cache, $api);
 
-$urlComponents = parse_url($_SERVER['REQUEST_URI'] );
+$urlComponents = parse_url($_SERVER['REQUEST_URI']);
 parse_str($urlComponents['query'], $query);
-$server->outputImage( $urlComponents['path'], $query);
-
-?>
+$server->outputImage($urlComponents['path'], $query);
