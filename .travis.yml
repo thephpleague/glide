@@ -2,6 +2,10 @@ language: php
 
 sudo: false
 
+env:
+  - COMPOSER_OPTS=""
+  - COMPOSER_OPTS="--prefer-lowest"
+
 php:
   - 5.4
   - 5.5
