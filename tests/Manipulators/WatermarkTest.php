@@ -49,8 +49,19 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
 
     public function testRun()
     {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('insert')->once();
+            $mock->shouldReceive('getDriver')->andReturn(Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
+                $mock->shouldReceive('init')->with('content')->andReturn(Mockery::mock('Intervention\Image\Image', function ($mock) {
+                    $mock->shouldReceive('width')->andReturn(0)->once();
+                    $mock->shouldReceive('resize')->once();
+                }))->once();
+            }))->once();
+        });
+
         $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface', function ($watermarks) {
-            $watermarks->shouldReceive('has')->with('image.jpg')->once();
+            $watermarks->shouldReceive('has')->with('image.jpg')->andReturn(true)->once();
+            $watermarks->shouldReceive('read')->with('image.jpg')->andReturn('content')->once();
         }));
 
         $this->manipulator->setParams([
@@ -62,7 +73,7 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->run(Mockery::mock('Intervention\Image\Image'))
+            $this->manipulator->run($image)
         );
     }
 

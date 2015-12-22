@@ -147,8 +147,6 @@ class Watermark extends BaseManipulator
 
             return $image->getDriver()->init($source);
         }
-
-        return;
     }
 
     /**
