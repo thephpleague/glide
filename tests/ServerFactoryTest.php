@@ -37,6 +37,17 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
     }
 
+    public function testGetSourceWithNoneSet()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'A "source" file system must be set.'
+        );
+
+        $server = new ServerFactory();
+        $server->getSource();
+    }
+
     public function testGetSourcePathPrefix()
     {
         $server = new ServerFactory([
@@ -59,6 +70,17 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
+    }
+
+    public function testGetCacheWithNoneSet()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'A "cache" file system must be set.'
+        );
+
+        $server = new ServerFactory();
+        $server->getCache();
     }
 
     public function testGetCachePathPrefix()
@@ -102,6 +124,17 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testGetImageManager()
+    {
+        $server = new ServerFactory([
+            'driver' => 'imagick',
+        ]);
+        $imageManager = $server->getImageManager();
+
+        $this->assertInstanceOf('Intervention\Image\ImageManager', $imageManager);
+        $this->assertSame('imagick', $imageManager->config['driver']);
+    }
+
+    public function testGetImageManagerWithNoneSet()
     {
         $server = new ServerFactory();
         $imageManager = $server->getImageManager();
@@ -172,6 +205,13 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertInstanceOf('League\Glide\Responses\ResponseFactoryInterface', $server->getResponseFactory());
+    }
+
+    public function testGetResponseFactoryWithNoneSet()
+    {
+        $server = new ServerFactory();
+
+        $this->assertNull($server->getResponseFactory());
     }
 
     public function testCreate()
