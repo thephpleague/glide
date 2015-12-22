@@ -149,6 +149,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
     }
 
+    public function testGetCachePathWithSourcePrefix()
+    {
+        $this->server->setSourcePathPrefix('img/');
+        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+    }
+
     public function testCacheFileExists()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
@@ -274,6 +280,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGetImageResponseWithoutResponseFactory()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Unable to get image response, no response factory defined.'
+        );
+
+        $this->server->getImageResponse('image.jpg', []);
+    }
+
     public function testGetImageAsBase64()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
@@ -286,6 +302,21 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'data:image/jpeg;base64,Y29udGVudA==',
             $this->server->getImageAsBase64('image.jpg', [])
         );
+    }
+
+    public function testGetImageAsBase64WithUnreadableSource()
+    {
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true);
+            $mock->shouldReceive('read')->andReturn(false)->once();
+        }));
+
+        $this->setExpectedException(
+            'League\Glide\Filesystem\FilesystemException',
+            'Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.'
+        );
+
+        $this->server->getImageAsBase64('image.jpg', []);
     }
 
     /**
