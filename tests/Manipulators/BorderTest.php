@@ -28,7 +28,18 @@ class BorderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [10.0, 'rgba(0, 0, 0, 1)', 'overlay'],
-            $border->setParams(['border' => '10,black'])->getBorder($image, 1, '100')
+            $border->setParams(['border' => '10,black'])->getBorder($image)
+        );
+    }
+
+    public function testGetInvalidBorder()
+    {
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $border = new Border();
+
+        $this->assertNull(
+            $border->setParams(['border' => '0,black'])->getBorder($image)
         );
     }
 
@@ -66,6 +77,15 @@ class BorderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1.0, $border->setParams(['dpr' => '-1'])->getDpr());
         $this->assertSame(1.0, $border->setParams(['dpr' => '9'])->getDpr());
         $this->assertSame(2.0, $border->setParams(['dpr' => '2'])->getDpr());
+    }
+
+    public function testRunWithNoBorder()
+    {
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $border = new Border();
+
+        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
     }
 
     public function testRunOverlay()

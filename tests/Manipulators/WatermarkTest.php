@@ -81,13 +81,15 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
     {
         $this->manipulator->getWatermarks()
             ->shouldReceive('has')
-                ->with('image.jpg')
+                ->with('watermarks/image.jpg')
                 ->andReturn(true)
                 ->once()
             ->shouldReceive('read')
-                ->with('image.jpg')
+                ->with('watermarks/image.jpg')
                 ->andReturn('content')
                 ->once();
+
+        $this->manipulator->setWatermarksPathPrefix('watermarks');
 
         $driver = Mockery::mock('Intervention\Image\AbstractDriver');
         $driver->shouldReceive('init')
