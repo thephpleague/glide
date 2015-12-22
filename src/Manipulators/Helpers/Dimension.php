@@ -40,17 +40,12 @@ class Dimension
             return (double) $value * $this->dpr;
         }
 
-        if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $value)) {
-            $type = substr($value, -1);
-            $value = substr($value, 0, -1);
-
-            if ($type === 'w') {
-                return (double) $this->image->width() * ($value / 100);
+        if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $value, $matches)) {
+            if ($matches[2] === 'h') {
+                return (double) $this->image->height() * ($matches[1] / 100);
             }
 
-            if ($type === 'h') {
-                return (double) $this->image->height() * ($value / 100);
-            }
+            return (double) $this->image->width() * ($matches[1] / 100);
         }
     }
 }
