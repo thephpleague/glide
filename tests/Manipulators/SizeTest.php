@@ -98,8 +98,6 @@ class SizeTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDpr()
     {
-        $border = new Border();
-
         $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => 'invalid'])->getDpr());
         $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '-1'])->getDpr());
         $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '9'])->getDpr());
@@ -180,7 +178,7 @@ class SizeTest extends \PHPUnit_Framework_TestCase
 
     public function testRunFillResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function($mock) {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
             $mock->shouldReceive('resize')->with('100', '100', $this->callback)->andReturn($mock)->once();
             $mock->shouldReceive('resizeCanvas')->with('100', '100', 'center')->andReturn($mock)->once();
         });

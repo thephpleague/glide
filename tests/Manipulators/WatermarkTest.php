@@ -103,6 +103,51 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
         $this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image);
     }
 
+    public function testGetImageWithUnreadableSource()
+    {
+        $this->manipulator->getWatermarks()
+            ->shouldReceive('has')
+                ->with('image.jpg')
+                ->andReturn(true)
+                ->once()
+            ->shouldReceive('read')
+                ->with('image.jpg')
+                ->andReturn(false)
+                ->once();
+
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $this->setExpectedException(
+            'League\Glide\Filesystem\FilesystemException',
+            'Could not read the image `image.jpg`.'
+        );
+
+        $this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image);
+    }
+
+    public function testGetImageWithoutMarkParam()
+    {
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $this->assertNull($this->manipulator->getImage($image));
+    }
+
+    public function testGetImageWithEmptyMarkParam()
+    {
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $this->assertNull($this->manipulator->setParams(['mark' => ''])->getImage($image));
+    }
+
+    public function testGetImageWithoutWatermarksFilesystem()
+    {
+        $this->manipulator->setWatermarks(null);
+
+        $image = Mockery::mock('Intervention\Image\Image');
+
+        $this->assertNull($this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image));
+    }
+
     public function testGetDimension()
     {
         $image = Mockery::mock('Intervention\Image\Image');
@@ -116,6 +161,14 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $this->manipulator->setParams(['w' => '101h'])->getDimension($image, 'w'));
         $this->assertSame(null, $this->manipulator->setParams(['w' => -1])->getDimension($image, 'w'));
         $this->assertSame(null, $this->manipulator->setParams(['w' => ''])->getDimension($image, 'w'));
+    }
+
+    public function testGetDpr()
+    {
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => 'invalid'])->getDpr());
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '-1'])->getDpr());
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '9'])->getDpr());
+        $this->assertSame(2.0, $this->manipulator->setParams(['dpr' => '2'])->getDpr());
     }
 
     public function testGetFit()

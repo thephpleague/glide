@@ -4,6 +4,7 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
 
 /**
