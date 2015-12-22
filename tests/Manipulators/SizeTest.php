@@ -96,6 +96,16 @@ class SizeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('center', $this->manipulator->setParams(['fit' => 'invalid'])->getCrop());
     }
 
+    public function testGetDpr()
+    {
+        $border = new Border();
+
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => 'invalid'])->getDpr());
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '-1'])->getDpr());
+        $this->assertSame(1.0, $this->manipulator->setParams(['dpr' => '9'])->getDpr());
+        $this->assertSame(2.0, $this->manipulator->setParams(['dpr' => '2'])->getDpr());
+    }
+
     public function testResolveMissingDimensions()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
@@ -148,6 +158,11 @@ class SizeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(
             'Intervention\Image\Image',
             $this->manipulator->runResize($image, 'crop', '100', '100', 'center')
+        );
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->runResize($image, 'invalid', '100', '100')
         );
     }
 
