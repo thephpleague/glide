@@ -38,4 +38,11 @@ class ColorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('rgba(0, 0, 0, 1)', $color->formatted());
     }
+
+    public function testUnknownColor()
+    {
+        $color = new Color('unknown');
+
+        $this->assertSame('rgba(255, 255, 255, 0)', $color->formatted());
+    }
 }
