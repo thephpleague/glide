@@ -18,11 +18,6 @@ class BorderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('League\Glide\Manipulators\Border', new Border());
     }
 
-    public function testRun()
-    {
-        $this->markTestIncomplete();
-    }
-
     public function testGetBorder()
     {
         $image = Mockery::mock('Intervention\Image\Image');
@@ -75,16 +70,44 @@ class BorderTest extends \PHPUnit_Framework_TestCase
 
     public function testRunOverlay()
     {
-        $this->markTestIncomplete();
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100)->once();
+            $mock->shouldReceive('height')->andReturn(100)->once();
+            $mock->shouldReceive('rectangle')->with(5, 5, 95, 95, Mockery::on(function ($closure) {
+                return true;
+            }))->andReturn($mock)->once();
+        });
+
+        $border = new Border();
+        $border->setParams(['border' => '10,5000,overlay']);
+
+        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
     }
 
     public function testRunShrink()
     {
-        $this->markTestIncomplete();
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100)->once();
+            $mock->shouldReceive('height')->andReturn(100)->once();
+            $mock->shouldReceive('resize')->with(80, 80)->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+        });
+
+        $border = new Border();
+        $border->setParams(['border' => '10,5000,shrink']);
+
+        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
     }
 
     public function testRunExpand()
     {
-        $this->markTestIncomplete();
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+        });
+
+        $border = new Border();
+        $border->setParams(['border' => '10,5000,expand']);
+
+        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
     }
 }
