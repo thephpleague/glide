@@ -20,6 +20,7 @@ Glide ships with a `PsrResponseFactory` class, allowing you to use any PSR-7 com
 
 ~~~ php
 use League\Glide\ServerFactory;
+
 $server = League\Glide\ServerFactory::create([
     'response' => new PsrResponseFactory(new Zend\Diactoros\Response(), function ($stream) {
         return new Zend\Diactoros\Stream($stream);

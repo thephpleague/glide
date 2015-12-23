@@ -35,12 +35,12 @@ Glide also makes it possible to define groups of defaults, known as presets. Thi
 // Set using factory
 $server = League\Glide\ServerFactory::create([
     'presets' => [
-        'small' = [
+        'small' => [
             'w' => 200,
             'h' => 200,
             'fit' => 'crop',
         ],
-        'medium' = [
+        'medium' => [
             'w' => 600,
             'h' => 400,
             'fit' => 'crop',
@@ -50,12 +50,12 @@ $server = League\Glide\ServerFactory::create([
 
 // Set using setter method
 $server->setPresets([
-    'small' = [
+    'small' => [
         'w' => 200,
         'h' => 200,
         'fit' => 'crop',
     ],
-    'medium' = [
+    'medium' => [
         'w' => 600,
         'h' => 400,
         'fit' => 'crop',
