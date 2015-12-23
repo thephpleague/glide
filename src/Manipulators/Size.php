@@ -14,13 +14,13 @@ class Size extends BaseManipulator
 {
     /**
      * Maximum image size in pixels.
-     * @var int|null
+     * @var integer|null
      */
     protected $maxImageSize;
 
     /**
      * Create Size instance.
-     * @param int|null $maxImageSize Maximum image size in pixels.
+     * @param integer|null $maxImageSize Maximum image size in pixels.
      */
     public function __construct($maxImageSize = null)
     {
@@ -29,7 +29,7 @@ class Size extends BaseManipulator
 
     /**
      * Set the maximum image size.
-     * @param int|null Maximum image size in pixels.
+     * @param integer|null Maximum image size in pixels.
      */
     public function setMaxImageSize($maxImageSize)
     {
@@ -38,7 +38,7 @@ class Size extends BaseManipulator
 
     /**
      * Get the maximum image size.
-     * @return int|null Maximum image size in pixels.
+     * @return integer|null Maximum image size in pixels.
      */
     public function getMaxImageSize()
     {
@@ -70,7 +70,7 @@ class Size extends BaseManipulator
 
     /**
      * Resolve width.
-     * @return int The resolved width.
+     * @return integer|null The resolved width.
      */
     public function getWidth()
     {
@@ -87,7 +87,7 @@ class Size extends BaseManipulator
 
     /**
      * Resolve height.
-     * @return int The resolved height.
+     * @return integer|null The resolved height.
      */
     public function getHeight()
     {
@@ -121,7 +121,7 @@ class Size extends BaseManipulator
 
     /**
      * Resolve crop.
-     * @return array The resolved crop.
+     * @return integer[] The resolved crop.
      */
     public function getCrop()
     {
@@ -171,23 +171,23 @@ class Size extends BaseManipulator
 
     /**
      * Resolve missing image dimensions.
-     * @param  Image    $image  The source image.
-     * @param  int|null $width  The image width.
-     * @param  int|null $height The image height.
-     * @return int[]    The resolved width and height.
+     * @param  Image        $image  The source image.
+     * @param  integer|null $width  The image width.
+     * @param  integer|null $height The image height.
+     * @return integer[]    The resolved width and height.
      */
     public function resolveMissingDimensions(Image $image, $width, $height)
     {
-        if (!$width and !$height) {
+        if (is_null($width) and is_null($height)) {
             $width = $image->width();
             $height = $image->height();
         }
 
-        if (!$width) {
+        if (is_null($width)) {
             $width = $height * ($image->width() / $image->height());
         }
 
-        if (!$height) {
+        if (is_null($height)) {
             $height = $width / ($image->width() / $image->height());
         }
 
@@ -199,10 +199,10 @@ class Size extends BaseManipulator
 
     /**
      * Apply the device pixel ratio.
-     * @param  int   $width  The target image width.
-     * @param  int   $height The target image height.
-     * @param  int   $dpr    The device pixel ratio.
-     * @return int[] The modified width and height.
+     * @param  integer   $width  The target image width.
+     * @param  integer   $height The target image height.
+     * @param  integer   $dpr    The device pixel ratio.
+     * @return integer[] The modified width and height.
      */
     public function applyDpr($width, $height, $dpr)
     {
@@ -217,9 +217,9 @@ class Size extends BaseManipulator
 
     /**
      * Limit image size to maximum allowed image size.
-     * @param  int   $width  The image width.
-     * @param  int   $height The image height.
-     * @return int[] The limited width and height.
+     * @param  integer   $width  The image width.
+     * @param  integer   $height The image height.
+     * @return integer[] The limited width and height.
      */
     public function limitImageSize($width, $height)
     {
@@ -240,11 +240,11 @@ class Size extends BaseManipulator
 
     /**
      * Perform resize image manipulation.
-     * @param  Image  $image  The source image.
-     * @param  string $fit    The fit.
-     * @param  int    $width  The width.
-     * @param  int    $height The height.
-     * @return Image  The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  string  $fit    The fit.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runResize(Image $image, $fit, $width, $height)
     {
@@ -273,10 +273,10 @@ class Size extends BaseManipulator
 
     /**
      * Perform contain resize image manipulation.
-     * @param  Image $image  The source image.
-     * @param  int   $width  The width.
-     * @param  int   $height The height.
-     * @return Image The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runContainResize(Image $image, $width, $height)
     {
@@ -287,10 +287,10 @@ class Size extends BaseManipulator
 
     /**
      * Perform max resize image manipulation.
-     * @param  Image $image  The source image.
-     * @param  int   $width  The width.
-     * @param  int   $height The height.
-     * @return Image The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runMaxResize(Image $image, $width, $height)
     {
@@ -302,10 +302,10 @@ class Size extends BaseManipulator
 
     /**
      * Perform fill resize image manipulation.
-     * @param  Image $image  The source image.
-     * @param  int   $width  The width.
-     * @param  int   $height The height.
-     * @return Image The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runFillResize($image, $width, $height)
     {
@@ -316,10 +316,10 @@ class Size extends BaseManipulator
 
     /**
      * Perform stretch resize image manipulation.
-     * @param  Image $image  The source image.
-     * @param  int   $width  The width.
-     * @param  int   $height The height.
-     * @return Image The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runStretchResize(Image $image, $width, $height)
     {
@@ -328,10 +328,10 @@ class Size extends BaseManipulator
 
     /**
      * Perform crop resize image manipulation.
-     * @param  Image $image  The source image.
-     * @param  int   $width  The width.
-     * @param  int   $height The height.
-     * @return Image The manipulated image.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
      */
     public function runCropResize(Image $image, $width, $height)
     {

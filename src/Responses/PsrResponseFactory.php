@@ -4,6 +4,7 @@ namespace League\Glide\Responses;
 
 use Closure;
 use League\Flysystem\FilesystemInterface;
+use League\Glide\Filesystem\FilesystemException;
 use Psr\Http\Message\ResponseInterface;
 
 class PsrResponseFactory implements ResponseFactoryInterface
@@ -47,6 +48,14 @@ class PsrResponseFactory implements ResponseFactoryInterface
         $contentLength = (string) $cache->getSize($path);
         $cacheControl = 'max-age=31536000, public';
         $expires = date_create('+1 years')->format('D, d M Y H:i:s').' GMT';
+
+        if ($contentType === false) {
+            throw new FilesystemException('Unable to determine the image content type.');
+        }
+
+        if ($contentLength === false) {
+            throw new FilesystemException('Unable to determine the image content length.');
+        }
 
         return $this->response->withBody($stream)
             ->withHeader('Content-Type', $contentType)

@@ -65,7 +65,7 @@ class ServerFactory
 
     /**
      * Get source file system.
-     * @return FilesystemInterface|null Source file system.
+     * @return FilesystemInterface Source file system.
      */
     public function getSource()
     {
@@ -95,7 +95,7 @@ class ServerFactory
 
     /**
      * Get cache file system.
-     * @return FilesystemInterface|null Cache file system.
+     * @return FilesystemInterface Cache file system.
      */
     public function getCache()
     {
