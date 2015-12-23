@@ -23,7 +23,15 @@ You can also set where the image is cropped by adding a crop position. Accepts `
 <img src="kayaks.jpg?w=300&h=300&fit=crop-left">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop-left)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop-left)
+### Crop focal point
+
+In addition to the crop position, you can be more specific about the exact crop position using a focal point. This is defined using two offset percentages: `crop-x%-y%`.
+
+~~~ html
+<img src="kayaks.jpg?w=300&h=300&fit=crop-25-75">
+~~~
+
+
 
 ## Crop `crop`
 
