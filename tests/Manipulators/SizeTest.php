@@ -130,8 +130,8 @@ class SizeTest extends \PHPUnit_Framework_TestCase
     public function testRunResize()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('width')->andReturn(100)->times(3);
-            $mock->shouldReceive('height')->andReturn(100)->times(3);
+            $mock->shouldReceive('width')->andReturn(100)->times(4);
+            $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->times(4);
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
@@ -221,8 +221,8 @@ class SizeTest extends \PHPUnit_Framework_TestCase
     public function testRunCropResize()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('width')->andReturn(100)->times(3);
-            $mock->shouldReceive('height')->andReturn(100)->times(3);
+            $mock->shouldReceive('width')->andReturn(100)->times(4);
+            $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
             $mock->shouldReceive('crop')->with(100, 100, 0, 0)->andReturn($mock)->once();
         });

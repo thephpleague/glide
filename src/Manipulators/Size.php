@@ -120,39 +120,6 @@ class Size extends BaseManipulator
     }
 
     /**
-     * Resolve crop.
-     * @return integer[] The resolved crop.
-     */
-    public function getCrop()
-    {
-        $cropMethods = [
-            'crop-top-left' => [0, 0],
-            'crop-top' => [50, 0],
-            'crop-top-right' => [100, 0],
-            'crop-left' => [0, 50],
-            'crop-center' => [50, 50],
-            'crop-right' => [100, 50],
-            'crop-bottom-left' => [0, 100],
-            'crop-bottom' => [50, 100],
-            'crop-bottom-right' => [100, 100],
-        ];
-
-        if (array_key_exists($this->fit, $cropMethods)) {
-            return $cropMethods[$this->fit];
-        }
-
-        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})*$/', $this->fit, $matches)) {
-            if ($matches[1] > 100 or $matches[2] > 100) {
-                return [50, 50];
-            }
-
-            return [(int) $matches[1], (int) $matches[2]];
-        }
-
-        return [50, 50];
-    }
-
-    /**
      * Resolve the device pixel ratio.
      * @return double The device pixel ratio.
      */
@@ -335,19 +302,43 @@ class Size extends BaseManipulator
      */
     public function runCropResize(Image $image, $width, $height)
     {
-        list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
-
-        $resize_width = $width;
-        $resize_height = $width * ($image->height() / $image->width());
-
-        if ($height > $resize_height) {
-            $resize_width = $height * ($image->width() / $image->height());
-            $resize_height = $height;
-        }
+        list($resize_width, $resize_height) = $this->resolveCropResizeDimensions($image, $width, $height);
 
         $image->resize($resize_width, $resize_height, function ($constraint) {
             $constraint->aspectRatio();
         });
+
+        list($offset_x, $offset_y) = $this->resolveCropOffset($image, $width, $height);
+
+        return $image->crop($width, $height, $offset_x, $offset_y);
+    }
+
+    /**
+     * Resolve the crop resize dimensions.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return array   The resize dimensions.
+     */
+    public function resolveCropResizeDimensions(Image $image, $width, $height)
+    {
+        if ($height > $width * ($image->height() / $image->width())) {
+            return [$height * ($image->width() / $image->height()), $height];
+        }
+
+        return [$width, $width * ($image->height() / $image->width())];
+    }
+
+    /**
+     * Resolve the crop offset.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return array   The crop offset.
+     */
+    public function resolveCropOffset(Image $image, $width, $height)
+    {
+        list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
 
         $offset_x = (int) (($image->width() * $offset_percentage_x / 100) - ($width / 2));
         $offset_y = (int) (($image->height() * $offset_percentage_y / 100) - ($height / 2));
@@ -371,11 +362,42 @@ class Size extends BaseManipulator
             $offset_y = $max_offset_y;
         }
 
-        return $image->crop(
-            $width,
-            $height,
-            $offset_x,
-            $offset_y
-        );
+        return [$offset_x, $offset_y];
+    }
+
+    /**
+     * Resolve crop.
+     * @return integer[] The resolved crop.
+     */
+    public function getCrop()
+    {
+        $cropMethods = [
+            'crop-top-left' => [0, 0],
+            'crop-top' => [50, 0],
+            'crop-top-right' => [100, 0],
+            'crop-left' => [0, 50],
+            'crop-center' => [50, 50],
+            'crop-right' => [100, 50],
+            'crop-bottom-left' => [0, 100],
+            'crop-bottom' => [50, 100],
+            'crop-bottom-right' => [100, 100],
+        ];
+
+        if (array_key_exists($this->fit, $cropMethods)) {
+            return $cropMethods[$this->fit];
+        }
+
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})*$/', $this->fit, $matches)) {
+            if ($matches[1] > 100 or $matches[2] > 100) {
+                return [50, 50];
+            }
+
+            return [
+                (int) $matches[1],
+                (int) $matches[2],
+            ];
+        }
+
+        return [50, 50];
     }
 }
