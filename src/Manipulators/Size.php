@@ -338,10 +338,10 @@ class Size extends BaseManipulator
         list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
 
         $resize_width = $width;
-        $resize_height = (int) ($width * ($image->height() / $image->width()));
+        $resize_height = $width * ($image->height() / $image->width());
 
         if ($height > $resize_height) {
-            $resize_width = (int) ($height * ($image->width() / $image->height()));
+            $resize_width = $height * ($image->width() / $image->height());
             $resize_height = $height;
         }
 
