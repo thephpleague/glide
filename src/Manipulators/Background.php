@@ -18,7 +18,7 @@ class Background extends BaseManipulator
     public function run(Image $image)
     {
         if (is_null($this->bg)) {
-            return;
+            return $image;
         }
 
         $color = (new Color($this->bg))->formatted();

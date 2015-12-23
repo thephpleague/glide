@@ -55,7 +55,6 @@ class Size extends BaseManipulator
         $width = $this->getWidth();
         $height = $this->getHeight();
         $fit = $this->getFit();
-        $crop = $this->getCrop();
         $dpr = $this->getDpr();
 
         list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
@@ -64,7 +63,7 @@ class Size extends BaseManipulator
 
         if (round($width) !== round($image->width()) or
             round($height) !== round($image->height())) {
-            $image = $this->runResize($image, $fit, round($width), round($height), $crop);
+            $image = $this->runResize($image, $fit, round($width), round($height));
         }
 
         return $image;
@@ -114,20 +113,7 @@ class Size extends BaseManipulator
             return $this->fit;
         }
 
-        $cropMethods = [
-            'crop',
-            'crop-top-left',
-            'crop-top',
-            'crop-top-right',
-            'crop-left',
-            'crop-center',
-            'crop-right',
-            'crop-bottom-left',
-            'crop-bottom',
-            'crop-bottom-right',
-        ];
-
-        if (in_array($this->fit, $cropMethods, true)) {
+        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3})*$/', $this->fit)) {
             return 'crop';
         }
 
@@ -136,27 +122,35 @@ class Size extends BaseManipulator
 
     /**
      * Resolve crop.
-     * @return string The resolved crop.
+     * @return string|array The resolved crop.
      */
     public function getCrop()
     {
         $cropMethods = [
-            'crop-top-left',
-            'crop-top',
-            'crop-top-right',
-            'crop-left',
-            'crop-center',
-            'crop-right',
-            'crop-bottom-left',
-            'crop-bottom',
-            'crop-bottom-right',
+            'crop-top-left' => [0, 0],
+            'crop-top' => [50, 0],
+            'crop-top-right' => [100, 0],
+            'crop-left' => [0, 50],
+            'crop-center' => [50, 50],
+            'crop-right' => [100, 50],
+            'crop-bottom-left' => [0, 100],
+            'crop-bottom' => [50, 100],
+            'crop-bottom-right' => [100, 100],
         ];
 
-        if (!in_array($this->fit, $cropMethods, true)) {
-            return 'center';
+        if (array_key_exists($this->fit, $cropMethods)) {
+            return $cropMethods[$this->fit];
         }
 
-        return substr($this->fit, 5);
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})*$/', $this->fit, $matches)) {
+            if ($matches[1] > 100 or $matches[2] > 100) {
+                return [50, 50];
+            }
+
+            return [(int) $matches[1], (int) $matches[2]];
+        }
+
+        return [50, 50];
     }
 
     /**
@@ -339,17 +333,51 @@ class Size extends BaseManipulator
      * @param  Image  $image  The source image.
      * @param  string $width  The width.
      * @param  string $height The height.
-     * @param  string $crop   The crop.
      * @return Image  The manipulated image.
      */
-    public function runCropResize(Image $image, $width, $height, $crop)
+    public function runCropResize(Image $image, $width, $height)
     {
-        return $image->fit(
+        list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
+
+        $resize_width = $width;
+        $resize_height = $width * ($image->height() / $image->width());
+
+        if ($height > $resize_height) {
+            $resize_width = $height * ($image->width() / $image->height());
+            $resize_height = $height;
+        }
+
+        $image->resize($resize_width, $resize_height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        $offset_x = round(($image->width() * $offset_percentage_x / 100) - ($width / 2));
+        $offset_y = round(($image->height() * $offset_percentage_y / 100) - ($height / 2));
+
+        $max_offset_x = $image->width() - $width;
+        $max_offset_y = $image->height() - $height;
+
+        if ($offset_x < 0) {
+            $offset_x = 0;
+        }
+
+        if ($offset_y < 0) {
+            $offset_y = 0;
+        }
+
+        if ($offset_x > $max_offset_x) {
+            $offset_x = $max_offset_x;
+        }
+
+        if ($offset_y > $max_offset_y) {
+            $offset_y = $max_offset_y;
+        }
+
+        return $image->crop(
             $width,
             $height,
-            function () {
-            },
-            $crop
+            $offset_x,
+            $offset_y
         );
     }
 }

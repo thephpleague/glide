@@ -82,18 +82,21 @@ class SizeTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCrop()
     {
-        $this->assertSame('center', $this->manipulator->setParams(['fit' => 'crop'])->getCrop());
-        $this->assertSame('top-left', $this->manipulator->setParams(['fit' => 'crop-top-left'])->getCrop());
-        $this->assertSame('top', $this->manipulator->setParams(['fit' => 'crop-top'])->getCrop());
-        $this->assertSame('top-right', $this->manipulator->setParams(['fit' => 'crop-top-right'])->getCrop());
-        $this->assertSame('left', $this->manipulator->setParams(['fit' => 'crop-left'])->getCrop());
-        $this->assertSame('center', $this->manipulator->setParams(['fit' => 'crop-center'])->getCrop());
-        $this->assertSame('right', $this->manipulator->setParams(['fit' => 'crop-right'])->getCrop());
-        $this->assertSame('bottom-left', $this->manipulator->setParams(['fit' => 'crop-bottom-left'])->getCrop());
-        $this->assertSame('bottom', $this->manipulator->setParams(['fit' => 'crop-bottom'])->getCrop());
-        $this->assertSame('bottom-right', $this->manipulator->setParams(['fit' => 'crop-bottom-right'])->getCrop());
-        $this->assertSame('center', $this->manipulator->setParams(['fit' => null])->getCrop());
-        $this->assertSame('center', $this->manipulator->setParams(['fit' => 'invalid'])->getCrop());
+        $this->assertSame([0, 0], $this->manipulator->setParams(['fit' => 'crop-top-left'])->getCrop());
+        $this->assertSame([0, 100], $this->manipulator->setParams(['fit' => 'crop-bottom-left'])->getCrop());
+        $this->assertSame([0, 50], $this->manipulator->setParams(['fit' => 'crop-left'])->getCrop());
+        $this->assertSame([100, 0], $this->manipulator->setParams(['fit' => 'crop-top-right'])->getCrop());
+        $this->assertSame([100, 100], $this->manipulator->setParams(['fit' => 'crop-bottom-right'])->getCrop());
+        $this->assertSame([100, 50], $this->manipulator->setParams(['fit' => 'crop-right'])->getCrop());
+        $this->assertSame([50, 0], $this->manipulator->setParams(['fit' => 'crop-top'])->getCrop());
+        $this->assertSame([50, 100], $this->manipulator->setParams(['fit' => 'crop-bottom'])->getCrop());
+        $this->assertSame([50, 50], $this->manipulator->setParams(['fit' => 'crop-center'])->getCrop());
+        $this->assertSame([50, 50], $this->manipulator->setParams(['fit' => 'crop'])->getCrop());
+        $this->assertSame([50, 50], $this->manipulator->setParams(['fit' => 'crop-center'])->getCrop());
+        $this->assertSame([25, 75], $this->manipulator->setParams(['fit' => 'crop-25-75'])->getCrop());
+        $this->assertSame([0, 100], $this->manipulator->setParams(['fit' => 'crop-0-100'])->getCrop());
+        $this->assertSame([50, 50], $this->manipulator->setParams(['fit' => 'crop-101-102'])->getCrop());
+        $this->assertSame([50, 50], $this->manipulator->setParams(['fit' => 'invalid'])->getCrop());
     }
 
     public function testGetDpr()
@@ -127,10 +130,12 @@ class SizeTest extends \PHPUnit_Framework_TestCase
     public function testRunResize()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('resize')->with('100', '100', $this->callback)->andReturn($mock)->times(3);
+            $mock->shouldReceive('width')->andReturn(100)->times(3);
+            $mock->shouldReceive('height')->andReturn(100)->times(3);
+            $mock->shouldReceive('crop')->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with('100', '100', $this->callback)->andReturn($mock)->times(4);
             $mock->shouldReceive('resize')->with('100', '100')->andReturn($mock)->once();
             $mock->shouldReceive('resizeCanvas')->with('100', '100', 'center')->andReturn($mock)->once();
-            $mock->shouldReceive('fit')->with('100', '100', $this->callback, 'center')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -155,7 +160,7 @@ class SizeTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
-            $this->manipulator->runResize($image, 'crop', '100', '100', 'center')
+            $this->manipulator->runResize($image, 'crop', '100', '100')
         );
 
         $this->assertInstanceOf(
@@ -216,7 +221,10 @@ class SizeTest extends \PHPUnit_Framework_TestCase
     public function testRunCropResize()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('fit')->with('100', '100', $this->callback, 'center')->andReturn($mock)->once();
+            $mock->shouldReceive('width')->andReturn(100)->times(3);
+            $mock->shouldReceive('height')->andReturn(100)->times(3);
+            $mock->shouldReceive('resize')->with('100', '100', $this->callback)->andReturn($mock)->once();
+            $mock->shouldReceive('crop')->with(100, 100, 0, 0)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(

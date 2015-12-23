@@ -32,7 +32,7 @@ class BackgroundTest extends \PHPUnit_Framework_TestCase
 
         $border = new Background();
 
-        $this->assertNull($border->run($image));
+        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
         $this->assertInstanceOf('Intervention\Image\Image', $border->setParams(['bg' => 'black'])->run($image));
     }
 }
