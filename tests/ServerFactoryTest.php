@@ -92,6 +92,19 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('cache', $server->getCachePathPrefix());
     }
 
+    public function testGetGroupCacheInFolders()
+    {
+        $server = new ServerFactory();
+
+        $this->assertTrue($server->getGroupCacheInFolders());
+
+        $server = new ServerFactory([
+            'group_cache_in_folders' => false,
+        ]);
+
+        $this->assertFalse($server->getGroupCacheInFolders());
+    }
+
     public function testGetWatermarks()
     {
         $server = new ServerFactory([

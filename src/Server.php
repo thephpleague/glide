@@ -37,6 +37,12 @@ class Server
     protected $cachePathPrefix;
 
     /**
+     * Whether to group cache in folders.
+     * @var bool
+     */
+    protected $groupCacheInFolders = true;
+
+    /**
      * Image manipulation API.
      * @var ApiInterface
      */
@@ -205,6 +211,24 @@ class Server
     }
 
     /**
+     * Set the group cache in folders setting.
+     * @param bool $groupCacheInFolders Whether to group cache in folders.
+     */
+    public function setGroupCacheInFolders($groupCacheInFolders)
+    {
+        $this->groupCacheInFolders = $groupCacheInFolders;
+    }
+
+    /**
+     * Get the group cache in folders setting.
+     * @return bool Whether to group cache in folders.
+     */
+    public function getGroupCacheInFolders()
+    {
+        return $this->groupCacheInFolders;
+    }
+
+    /**
      * Get cache path.
      * @param  string $path   Image path.
      * @param  array  $params Image manipulation params.
@@ -224,7 +248,7 @@ class Server
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
 
-        $path = $sourcePath.'/'.$md5;
+        $path = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
         if ($this->cachePathPrefix) {
             $path = $this->cachePathPrefix.'/'.$path;

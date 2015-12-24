@@ -135,10 +135,32 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $this->server->getCachePathPrefix());
     }
 
+    public function testSetGroupCacheInFolders()
+    {
+        $this->server->setGroupCacheInFolders(false);
+
+        $this->assertFalse($this->server->getGroupCacheInFolders());
+    }
+
+    public function testGetGroupCacheInFolders()
+    {
+        $this->assertTrue($this->server->getGroupCacheInFolders());
+    }
+
     public function testGetCachePath()
     {
         $this->assertEquals(
             'image.jpg/e863e008b6f09807c3b0aa3805bc9c63',
+            $this->server->getCachePath('image.jpg', ['w' => '100'])
+        );
+    }
+
+    public function testGetCachePathWithNoFolderGrouping()
+    {
+        $this->server->setGroupCacheInFolders(false);
+
+        $this->assertEquals(
+            'e863e008b6f09807c3b0aa3805bc9c63',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }

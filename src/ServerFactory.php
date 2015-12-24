@@ -55,6 +55,7 @@ class ServerFactory
 
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
         $server->setCachePathPrefix($this->getCachePathPrefix());
+        $server->setGroupCacheInFolders($this->getGroupCacheInFolders());
         $server->setDefaults($this->getDefaults());
         $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
@@ -121,6 +122,19 @@ class ServerFactory
         if (isset($this->config['cache_path_prefix'])) {
             return $this->config['cache_path_prefix'];
         }
+    }
+
+    /**
+     * Get the group cache in folders setting.
+     * @return bool Whether to group cache in folders.
+     */
+    public function getGroupCacheInFolders()
+    {
+        if (isset($this->config['group_cache_in_folders'])) {
+            return $this->config['group_cache_in_folders'];
+        }
+
+        return true;
     }
 
     /**
