@@ -277,6 +277,12 @@ class Server
      */
     public function deleteCache($path)
     {
+        if (!$this->groupCacheInFolders) {
+            throw new InvalidArgumentException(
+                'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
+            );
+        }
+
         return $this->cache->deleteDir(
             dirname($this->getCachePath($path))
         );

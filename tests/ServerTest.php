@@ -195,6 +195,18 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->server->deleteCache('image.jpg', []));
     }
 
+    public function testDeleteCacheWithGroupCacheInFoldersDisabled()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
+        );
+
+        $this->server->setGroupCacheInFolders(false);
+
+        $this->server->deleteCache('image.jpg', []);
+    }
+
     public function testSetApi()
     {
         $api = Mockery::mock('League\Glide\Api\ApiInterface');
