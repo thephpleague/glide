@@ -10,10 +10,10 @@ By default Glide uses the [GD](http://php.net/manual/en/book.image.php) library.
 ~~~ php
 $server = League\Glide\ServerFactory::create([
 
-    // Use ImageMagick
-    'driver' => 'imagick',
-
     // Use GD (default)
     'driver' => 'gd',
+
+    // Use ImageMagick
+    'driver' => 'imagick',
 ]);
 ~~~

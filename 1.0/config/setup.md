@@ -1,9 +1,9 @@
 ---
 layout: default
-title: The server
+title: Setup
 ---
 
-# The server
+# Setup
 
 All the Glide configuration is managed through a central object called the `Server`. This includes the image [source location](config/source-and-cache/) (where the original images are saved), the image [cache location](config/source-and-cache/) (where the manipulated images are saved), as well as all other configuration options.
 
@@ -13,18 +13,19 @@ The easiest way to configure the `Server` is using the supplied factory.
 
 ~~~ php
 $server = League\Glide\ServerFactory::create([
-    'source' =>                 // Source filesystem
-    'source_path_prefix' =>     // Source filesystem path prefix
-    'cache' =>                  // Cache filesystem
-    'cache_path_prefix' =>      // Cache filesystem path prefix
-    'watermarks' =>             // Watermarks filesystem
-    'watermarks_path_prefix' => // Watermarks filesystem path prefix
-    'driver' =>                 // Image driver (gd or imagick)
-    'max_image_size' =>         // Image size limit
-    'defaults' =>               // Default image manipulations
-    'presets' =>                // Preset image manipulations
-    'base_url' =>               // Base URL of the images
-    'response' =>               // Response factory
+    'source' =>                  // Source filesystem
+    'source_path_prefix' =>      // Source filesystem path prefix
+    'cache' =>                   // Cache filesystem
+    'cache_path_prefix' =>       // Cache filesystem path prefix
+    'group_cache_in_folders' =>  // Whether to group cached images in folders
+    'watermarks' =>              // Watermarks filesystem
+    'watermarks_path_prefix' =>  // Watermarks filesystem path prefix
+    'driver' =>                  // Image driver (gd or imagick)
+    'max_image_size' =>          // Image size limit
+    'defaults' =>                // Default image manipulations
+    'presets' =>                 // Preset image manipulations
+    'base_url' =>                // Base URL of the images
+    'response' =>                // Response factory
 ]);
 ~~~
 

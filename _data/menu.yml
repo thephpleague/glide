@@ -1,6 +1,6 @@
 '0.3':
     Getting Started:
-        Introduction: '/'
+        Introduction: '/0.3/'
         Changelog: '/0.3/changelog/'
         Installation: '/0.3/installation/'
         Simple example: '/0.3/simple-example/'
@@ -19,18 +19,16 @@
         Output: '/0.3/api/output/'
 '1.0':
     Getting Started:
-        Introduction: '/1.0/'
+        Introduction: '/'
         Changelog: '/1.0/changelog/'
         Installation: '/1.0/installation/'
         Simple example: '/1.0/simple-example/'
     Configuration:
-        The server: '/1.0/config/the-server/'
+        Setup: '/1.0/config/setup/'
         Source & cache: '/1.0/config/source-and-cache/'
+        Security: '/1.0/config/security/'
         Responses: '/1.0/config/responses/'
-        Base URL: '/1.0/config/base-url/'
         Image driver: '/1.0/config/image-driver/'
-        Secure images: '/1.0/config/secure-images/'
-        Max image size: '/1.0/config/max-image-size/'
         Defaults & presets: '/1.0/config/defaults-and-presets/'
         Advanced usage: '/1.0/config/advanced-usage/'
     Image API:

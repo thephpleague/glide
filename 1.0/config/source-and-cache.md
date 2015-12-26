@@ -52,13 +52,53 @@ $server->setSourcePathPrefix('source');
 $server->setCachePathPrefix('cache');
 ~~~
 
+## Set a base URL
+
+It's common to route all images under the path `/img/`. However, since Glide maps the image request path directly to the image source path, you would need to have an `/img/` folder in your source location as well. For example:
+
+~~~ php
+'http://example.com/img/kayaks.jpg' => '/path/to/source/img/kayaks.jpg'
+~~~
+
+The `base_url` allows you to define which part of the URL should be omitted from the source path.
+
+~~~ php
+// Set using factory
+$server = League\Glide\ServerFactory::create([
+    'base_url' => '/img/',
+]);
+
+// Set using setter method
+$server->setBaseUrl('/img/');
+~~~
+
+With the base URL configured, the new image source paths will no longer include `/img/`.
+
+~~~ php
+'http://example.com/img/kayaks.jpg' => '/path/to/source/kayaks.jpg'
+~~~
+
 ## Disabling the cache
 
 In some situations it may be desirable to disable the cache. For example, you may choose to use a tool like Varnish for caching instead. The best way to do this with Glide is to use an [in-memory adapter](http://flysystem.thephpleague.com/adapter/memory/) for Flysystem. This will prevent any cached images from being saved to your local disk.
 
+## Grouping cache in folders
+
+By default Glide groups cached images into folders. For example, all variations of `kayaks.jpg` will be found in a `/path/to/cache/folder/kayaks.jpg` folder. If you'd prefer to have all cached images in the same folder, this can be done in two ways:
+
+~~~ php
+// Set using factory
+$server = League\Glide\ServerFactory::create([
+    'group_cache_in_folders' => false
+]);
+
+// Set using setter method
+$server->setGroupCacheInFolders(false);
+~~~
+
 ## Deleting cached images
 
-Glide does not automatically purge cached images. However, this can be done by your application using the `deleteCache()` method.
+Glide does not automatically purge cached images. However, this can be done by your application using the `deleteCache()` method. Note, grouping cache in folders MUST be enabled in order to delete cached images, which is the default setting.
 
 ~~~ php
 $server->deleteCache('kayaks.jpg');

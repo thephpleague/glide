@@ -68,3 +68,17 @@ table code {
 .photo_credit a:hover {
     text-decoration: underline;
 }
+
+.github {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+    z-index: 1000;
+}
+
+@media screen and (max-width: 1065px) {
+    .github {
+        display: none;
+    }
+}

@@ -1,6 +1,5 @@
 ---
 layout: default
-permalink: /
 title: Introduction
 ---
 
@@ -15,6 +14,8 @@ title: Introduction
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/glide/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/glide)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/glide.svg?style=flat-square)](https://packagist.org/packages/league/glide)
+
+<p class="message-notice">Version 0.3 is no longer actively maintained. Consider using version <a href="/">1.0</a> instead.</p>
 
 Glide is a wonderfully easy on-demand image manipulation library written in PHP. It's straightforward API is exposed via HTTP, similar to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/). Glide leverages powerful libraries like [Intervention Image](http://image.intervention.io/) (for image handling and manipulation) and [Flysystem](http://flysystem.thephpleague.com/) (for file system abstraction).
 
