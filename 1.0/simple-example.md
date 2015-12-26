@@ -19,7 +19,7 @@ In your templates simply define how the image will be manipulated. Following Gli
 <img src="/img/users/<?=$user->id?>.jpg?w=300&h=400&fit=crop">
 ~~~
 
-<p class="message-notice">For simplicity this example has omitted HTTP signatures, however a production environment it's very important to <a href="/1.0/config/secure-images/">secure your images</a>.</p>
+<p class="message-notice">For simplicity this example has omitted HTTP signatures, however a production environment it's very important to <a href="/1.0/config/security/">secure your images</a>.</p>
 
 ## In your routes
 
