@@ -14,10 +14,20 @@ class UrlBuilderFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWithSignKey()
     {
-        $urlBuilder = UrlBuilderFactory::create('/img', 'example');
+        $urlBuilder = UrlBuilderFactory::create('img', 'example-sign-key');
 
         $this->assertEquals(
-            '/img/image.jpg?s=2aed6cf637d60951a66200eda3f5e568',
+            '/img/image.jpg?s=56020c3dc5f68487c14510343c3e2c43',
+            $urlBuilder->getUrl('image.jpg')
+        );
+    }
+
+    public function testCreateWithSignKeyWithLeadingSlash()
+    {
+        $urlBuilder = UrlBuilderFactory::create('/img', 'example-sign-key');
+
+        $this->assertEquals(
+            '/img/image.jpg?s=56020c3dc5f68487c14510343c3e2c43',
             $urlBuilder->getUrl('image.jpg')
         );
     }

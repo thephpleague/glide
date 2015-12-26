@@ -42,6 +42,16 @@ class SignatureTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testValidateRequestWithLeadingSlash()
+    {
+        $this->assertNull(
+            $this->httpSignature->validateRequest('/image.jpg', [
+                'w' => '100',
+                's' => '9978a40f1fc75fa64ac92ea9baf16ff3',
+            ])
+        );
+    }
+
     public function testValidateRequestWithMissingSignature()
     {
         $this->setExpectedException('League\Glide\Signatures\SignatureException', 'Signature is missing.');

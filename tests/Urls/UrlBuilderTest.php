@@ -53,10 +53,10 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUrlWithToken()
     {
-        $urlBuilder = new UrlBuilder('http://example.com', new Signature('example'));
+        $urlBuilder = new UrlBuilder('http://example.com', new Signature('example-sign-key'));
 
         $this->assertEquals(
-            'http://example.com/image.jpg?w=100&s=ada01955c63b41fff1ea1f65522a0444',
+            'http://example.com/image.jpg?w=100&s=e1b69d4b79ecf33283128819fd008906',
             $urlBuilder->getUrl('image.jpg', ['w' => '100'])
         );
     }

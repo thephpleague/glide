@@ -58,6 +58,6 @@ class Signature implements SignatureInterface
         unset($params['s']);
         ksort($params);
 
-        return md5($this->signKey.':'.$path.'?'.http_build_query($params));
+        return md5($this->signKey.':'.ltrim($path, '/').'?'.http_build_query($params));
     }
 }
