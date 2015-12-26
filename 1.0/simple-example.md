@@ -5,11 +5,11 @@ title: Simple example
 
 # Simple example
 
-Say you're creating a user profile page that displays a user's name and profile photo. The user has already uploaded an image, but it hasn't been resized, all you have is the original file saved somewhere. The following example illustrates how easy Glide makes cropping and resizing the profile image without having to do any image processing ahead of time.
+Say you're creating a user profile page that displays a user's name and profile photo. The user has already uploaded an image, but it hasn't been resized. All you have is the original file saved somewhere. The following example illustrates how easy Glide makes cropping and resizing the profile image without having to do any image processing ahead of time.
 
 ## In your templates
 
-In your templates simply define how the image will be manipulated. Following Glide's HTTP based API, set the image manipulations in the profile image's `src` attribute.
+In your templates simply define how the image will be manipulated. Using Glide's HTTP based API, set the image manipulations in the profile image's `src` attribute.
 
 <div class="filename">profile.php</div>
 ~~~ php
