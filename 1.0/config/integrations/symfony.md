@@ -5,7 +5,7 @@ title: Symfony (HttpFoundation) integration
 
 # Symfony integration
 
-If your application uses the Symfony framework or anything that uses `HttpFoundation`, you can use the `SymfonyResponseFactory`.
+If your application uses the [Symfony](https://symfony.com/) framework or anything that uses the `HttpFoundation` library, you can use the `SymfonyResponseFactory`.
 
 ## Installation
 
@@ -15,10 +15,11 @@ composer require league/glide-symfony
 
 ## Configuration
 
-If your application uses Symfony's HttpFoundation library, you can use the `SymfonyResponseFactory`.
-
 ~~~ php
-$server = League\Glide\ServerFactory::create([
-    'response' => new League\Glide\Responses\SymfonyResponseFactory()
+use League\Glide\ServerFactory;
+use League\Glide\Responses\SymfonyResponseFactory;
+
+$server = ServerFactory::create([
+    'response' => new SymfonyResponseFactory()
 ]);
 ~~~

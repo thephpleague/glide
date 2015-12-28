@@ -5,7 +5,7 @@ title: Slim integration
 
 # Slim integration
 
-If your application uses [Slim Framework](http://www.slimframework.com/), you can use the `SlimResponseFactory`.
+If your application uses [Slim](http://www.slimframework.com/) framework, you can use the `SlimResponseFactory`.
 
 <p class="message-notice">This adapter requires Slim 3 or newer, which is based on PSR-7.</p>
 
@@ -21,7 +21,7 @@ composer require league/slim
 use League\Glide\ServerFactory;
 use League\Glide\Responses\SlimResponseFactory;
 
-$server = League\Glide\ServerFactory::create([
+$server = ServerFactory::create([
     'response' => new SlimResponseFactory(),
 ]);
 ~~~
