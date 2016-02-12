@@ -19,7 +19,7 @@ composer require league/glide-laravel
 
 ~~~ php
 use League\Glide\ServerFactory;
-League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\Responses\LaravelResponseFactory;
 
 $server = ServerFactory::create([
     'response' => new LaravelResponseFactory()
