@@ -8,6 +8,8 @@ title: Defaults & presets
 In certain situations you may want to define default image manipulations. For example, maybe you want to specify that all images are outputted as JPEGs (`fm=jpg`). Or maybe you have a watermark that you want added to all images. Glide makes this possible using default manipulations.
 
 ~~~ php
+<?php
+
 // Set using factory
 $server = League\Glide\ServerFactory::create([
     'defaults' => [
@@ -32,6 +34,8 @@ Glide also makes it possible to define groups of defaults, known as presets. Thi
 ### Configuring presets
 
 ~~~ php
+<?php
+
 // Set using factory
 $server = League\Glide\ServerFactory::create([
     'presets' => [

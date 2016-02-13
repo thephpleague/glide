@@ -18,6 +18,8 @@ composer require league/glide-laravel
 ## Configuration
 
 ~~~ php
+<?php
+
 use League\Glide\ServerFactory;
 use League\Glide\Responses\LaravelResponseFactory;
 

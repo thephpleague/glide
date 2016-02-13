@@ -16,6 +16,8 @@ composer require league/glide
 Be sure to also include the Composer autoload file in your project:
 
 ~~~ php
+<?php
+
 require 'vendor/autoload.php';
 ~~~
 

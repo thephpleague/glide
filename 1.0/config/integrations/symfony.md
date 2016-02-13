@@ -16,6 +16,8 @@ composer require league/glide-symfony
 ## Configuration
 
 ~~~ php
+<?php
+
 use League\Glide\ServerFactory;
 use League\Glide\Responses\SymfonyResponseFactory;
 

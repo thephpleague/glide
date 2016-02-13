@@ -12,6 +12,8 @@ All the Glide configuration is managed through a central object called the `Serv
 The easiest way to configure the `Server` is using the supplied factory.
 
 ~~~ php
+<?php
+
 $server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
@@ -23,6 +25,8 @@ $server = League\Glide\ServerFactory::create([
 You can also choose to instantiate the `Server` object manually. This allows finer control over what dependencies are being used. For example, if you wanted to add additional functionality to the API, you could load custom manipulators in addition to those provided with Glide.
 
 ~~~ php
+<?php
+
 // Set image source
 $source = new League\Flysystem\Filesystem(
     new League\Flysystem\Adapter\Local('path/to/source/folder')

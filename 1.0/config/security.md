@@ -14,6 +14,8 @@ Secure your Glide image server with HTTP signatures. By signing each request wit
 Start by configuring the Glide server to validate each request before you ouput the image. In the event that the validation fails, Glide will throw an `SignatureException` exception.
 
 ~~~ php
+<?php
+
 use League\Glide\Signatures\SignatureFactory;
 use League\Glide\Signatures\SignatureException;
 
@@ -36,6 +38,8 @@ try {
 Next, generate a signature for each image request you make. Glide comes with a URL builder to make this process easy. Be sure to use the same signing key you configured earlier.
 
 ~~~ php
+<?php
+
 use League\Glide\Urls\UrlBuilderFactory;
 
 // Set complicated sign key
@@ -59,6 +63,8 @@ echo '<img src="'.$url.'">';
 In addition signing URLs, you can also limit how large images can be generated. The following setting will set the maximum allowed total image size, in pixels.
 
 ~~~ php
+<?php
+
 $server = League\Glide\ServerFactory::create([
     'max_image_size' => 2000*2000,
 ]);

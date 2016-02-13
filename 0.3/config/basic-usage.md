@@ -10,6 +10,8 @@ Once your [Glide server](/config/the-server/) is configured, there are a number 
 ## Available methods
 
 ~~~ php
+<?php
+
 $server->getSourcePath();       // Get the source path
 $server->getCachePath();        // Get the cache path
 $server->sourceFileExists();    // Check if a source file exists
@@ -24,6 +26,8 @@ $server->makeImage();           // Generate manipulated image
 All of the above methods will accept an instance of the `Symfony\Component\HttpFoundation\Request` class. However, sometimes it's desirable to manually pass the image path and manipulation parameters. Glide makes this easy by also allowing you to pass a `$path` and `$params` combination to the above methods. Consider the following example:
 
 ~~~ php
+<?php
+
 Route::get('img/users/{id}/small', function($id) use ($server) {
     $server->outputImage(
         '/users/' . $id . '.jpg',

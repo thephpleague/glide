@@ -12,6 +12,8 @@ Glide ships with the `PsrResponseFactory` class, allowing you to use any [PSR-7]
 The following example uses the [Zend Diactoros](https://github.com/zendframework/zend-diactoros) library, but any PSR-7 compatible package will work.
 
 ~~~ php
+<?php
+
 use League\Glide\ServerFactory;
 use League\Glide\Responses\PsrResponseFactory;
 use Zend\Diactoros\Response;

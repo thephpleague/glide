@@ -18,6 +18,8 @@ composer require league/glide-cake
 ## Configuration
 
 ~~~ php
+<?php
+
 use League\Glide\ServerFactory;
 use League\Glide\Responses\CakeResponseFactory;
 

@@ -25,6 +25,8 @@ Next, within your routes, setup a Glide server. Configure where the source image
 
 <div class="filename">routes.php</div>
 ~~~ php
+<?php
+
 // Setup Glide server
 $server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',

@@ -16,6 +16,8 @@ composer require league/zend
 ## Configuration
 
 ~~~ php
+<?php
+
 use League\Glide\ServerFactory;
 use League\Glide\Responses\ZendResponseFactory;
 

@@ -27,6 +27,8 @@ Next, within your routes, setup your Glide server. Configure where the source im
 
 <div class="filename">routes.php</div>
 ~~~ php
+<?php
+
 // Setup Glide server
 $server = League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',

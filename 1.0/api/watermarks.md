@@ -20,6 +20,8 @@ Adds a watermark to the image. Must be a path to an image in the watermarks file
 Configuring the watermarks file system is exactly the same as configuring the `source` and `cache` file systems. See the [source & cache](config/source-and-cache/) for more information about setting up file systems.
 
 ~~~ php
+<?php
+
 $server = ServerFactory::create([
     'watermarks' => new Filesystem(new Local('path/to/watermarks/folder')),
     'watermarks_path_prefix' => 'images/watermarks', // optional
@@ -46,10 +48,10 @@ Sets the height of the watermark in pixels, or using [relative dimensions](api/r
 
 Sets how the watermark is fitted to its target dimensions.
 
-### Accepts: 
+### Accepts:
 
 - `contain`: Default. Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio.
-- `max`: Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio, and will also not increase the size of the image if it is smaller than the output size. 
+- `max`: Resizes the image to fit within the width and height boundaries without cropping, distorting or altering the aspect ratio, and will also not increase the size of the image if it is smaller than the output size.
 - `fill`: Resizes the image to fit within the width and height boundaries without cropping or distorting the image, and the remaining space is filled with the background color. The resulting image will match the constraining dimensions.
 - `stretch`: Stretches the image to fit the constraining dimensions exactly. The resulting image will fill the dimensions, and will not maintain the aspect ratio of the input image.
 - `crop`: Resizes the image to fill the width and height boundaries and crops any excess image data. The resulting image will match the width and height constraints without distorting the image. See the [crop](api/crop/) page for more information.

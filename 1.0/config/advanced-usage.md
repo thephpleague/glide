@@ -10,6 +10,8 @@ Once your Glide [server](/1.0/config/setup/) is configured, there are a number o
 ## Source
 
 ~~~ php
+<?php
+
 // Set the source file system
 public function setSource(FilesystemInterface $source)
 
@@ -35,6 +37,8 @@ public function sourceFileExists($path)
 ## Cache
 
 ~~~ php
+<?php
+
 // Set the cache file system
 public function setCache(FilesystemInterface $cache)
 
@@ -66,6 +70,8 @@ public function cacheFileExists($path, array $params)
 ## Api
 
 ~~~ php
+<?php
+
 // Set the image manipulation Api
 public function setApi(ApiInterface $api)
 
@@ -76,6 +82,8 @@ public function getApi()
 ## Responses
 
 ~~~ php
+<?php
+
 // Set the response factory
 public function setResponseFactory(ResponseFactoryInterface $responseFactory)
 
@@ -86,6 +94,8 @@ public function getResponseFactory()
 ## Default manipulations
 
 ~~~ php
+<?php
+
 // Set the default manipulations
 public function setDefaultManipulations(array $defaultManipulations)
 
@@ -96,6 +106,8 @@ public function getDefaultManipulations()
 ## Base URL
 
 ~~~ php
+<?php
+
 // Set the base url
 public function setBaseUrl($baseUrl)
 
@@ -106,6 +118,8 @@ public function getBaseUrl()
 ## Image generation
 
 ~~~ php
+<?php
+
 // Generates and outputs the image
 $server->outputImage($path, array $params);
 
