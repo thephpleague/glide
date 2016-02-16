@@ -63,7 +63,7 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInvalidUrl()
     {
-        $this->setExpectedException('\InvalidArgumentException', 'Not a valid path.');
+        $this->setExpectedException('\RuntimeException', 'The URI properties will produce an invalid `League\Uri\Schemes\Http`');
 
         $urlBuilder = new UrlBuilder(':80');
         $urlBuilder->getUrl('image.jpg');

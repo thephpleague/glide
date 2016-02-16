@@ -24,7 +24,8 @@
         "intervention/image": "^2.1",
         "league/flysystem": "^1.0",
         "php": "^5.4 | ^7.0",
-        "psr/http-message": "^1.0"
+        "psr/http-message": "^1.0",
+        "league/uri": "^4.0"
     },
     "require-dev": {
         "mockery/mockery": "~0.9",
