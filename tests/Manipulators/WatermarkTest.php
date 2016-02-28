@@ -206,4 +206,13 @@ class WatermarkTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bottom-right', $this->manipulator->setParams([])->getPosition());
         $this->assertSame('bottom-right', $this->manipulator->setParams(['markpos' => 'invalid'])->getPosition());
     }
+
+    public function testGetAlpha()
+    {
+        $this->assertSame(100, $this->manipulator->setParams(['markalpha' => 'invalid'])->getAlpha());
+        $this->assertSame(100, $this->manipulator->setParams(['markalpha' => 255])->getAlpha());
+        $this->assertSame(100, $this->manipulator->setParams(['markalpha' => -1])->getAlpha());
+        $this->assertSame(65, $this->manipulator->setParams(['markalpha' => '65'])->getAlpha());
+        $this->assertSame(65, $this->manipulator->setParams(['markalpha' => 65])->getAlpha());
+    }
 }

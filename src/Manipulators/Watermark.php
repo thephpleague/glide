@@ -17,6 +17,7 @@ use League\Glide\Manipulators\Helpers\Dimension;
  * @property string $markw
  * @property string $markx
  * @property string $marky
+ * @property string $markalpha
  */
 class Watermark extends BaseManipulator
 {
@@ -93,6 +94,7 @@ class Watermark extends BaseManipulator
             $markpad = $this->getDimension($image, 'markpad');
             $markfit = $this->getFit();
             $markpos = $this->getPosition();
+            $markalpha = $this->getAlpha();
 
             if ($markpad) {
                 $markx = $marky = $markpad;
@@ -105,6 +107,10 @@ class Watermark extends BaseManipulator
                 'fit' => $markfit,
             ]);
             $watermark = $size->run($watermark);
+
+            if ($markalpha < 100) {
+                $watermark->opacity($markalpha);
+            }
 
             $image->insert($watermark, $markpos, intval($markx), intval($marky));
         }
@@ -230,5 +236,22 @@ class Watermark extends BaseManipulator
         }
 
         return 'bottom-right';
+    }
+
+    /**
+     * Get the alpha channel.
+     * @return int The alpha.
+     */
+    public function getAlpha()
+    {
+        if (!is_numeric($this->markalpha)) {
+            return 100;
+        }
+
+        if ($this->markalpha < 0 or $this->markalpha > 100) {
+            return 100;
+        }
+
+        return (int) $this->markalpha;
     }
 }
