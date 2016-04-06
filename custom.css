@@ -3,23 +3,44 @@ header .logo .icon {
     top: 0;
 }
 
+menu .tool {
+    margin: 15px 0 0 0;
+    padding: 0 45px;
+}
+
 menu .versions {
-    margin: 15px 0 0 50px;
+    display: inline-block;
+    width: 100%;
+}
+
+menu .search {
+    display: inline-block;
+    width: 100%;
+    padding: 7px 10px;
+
+    color: #6abcdd;
+    font-size: 14px;
+    font-family: "Museo Sans 300";
+
+    border: 0;
+    outline: 0;
+    background: #22303f;
+    border-radius: 3px;
 }
 
 @media screen and (max-width: 549px) {
     menu {
         text-align: center;
     }
-    menu .versions {
+    menu .tool {
         margin: 15px 0 0 0;
-        display: inline-block;
     }
 }
 
 @media screen and (min-width: 550px) and (max-width: 849px) {
-    menu .versions {
-        margin: 15px 0 0 30px;
+    menu .tool {
+        margin: 15px 0 0 0;
+        padding: 0 30px;
     }
 }
 

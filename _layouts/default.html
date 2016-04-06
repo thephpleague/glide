@@ -40,7 +40,8 @@
     {% endif %}
 
     <link rel="stylesheet" href="http://theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="/custom.css">
+    <link rel="stylesheet" href="/custom.css?1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
 </head>
 <body>
 
@@ -81,13 +82,20 @@
 
 <main>
     <menu>
-        <select class="versions">
-            {% for v in site.data.menu %}
-                <option data-url="{% if v[0] == site.data.project.default_version %}/{% else %}/{{ v[0] }}/{% endif %}" {% if version == v[0] %}selected="selected"{% endif %}>
-                    Version: {{ v[0] }}
-                </option>
-            {% endfor %}
-        </select>
+
+        <div class="tool">
+            <select class="versions">
+                {% for v in site.data.menu %}
+                    <option data-url="{% if v[0] == site.data.project.default_version %}/{% else %}/{{ v[0] }}/{% endif %}" {% if version == v[0] %}selected="selected"{% endif %}>
+                        Version: {{ v[0] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="tool">
+            <input id="search" class="search" placeholder="Search&hellip;">
+        </div>
 
         {% for section in site.data.menu[version] %}
             <h2>{{ section[0] }}</h2>
@@ -124,6 +132,15 @@
         ga('create','{{  site.data.project.google_analytics_tracking_id }}');ga('send','pageview');
     </script>
 {% endif %}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
+<script type="text/javascript">
+    docsearch({
+        apiKey: 'f80ad04b27fad1483c381090747a8be7',
+        indexName: 'glide',
+        inputSelector: '#search'
+    });
+</script>
 
 </body>
 </html>
