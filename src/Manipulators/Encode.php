@@ -25,12 +25,6 @@ class Encode extends BaseManipulator
             $format = 'jpg';
         }
 
-        if ($format === 'jpg') {
-            $image = $image->getDriver()
-                           ->newImage($image->width(), $image->height(), '#fff')
-                           ->insert($image, 'top-left', 0, 0);
-        }
-
         return $image->encode($format, $quality);
     }
 
