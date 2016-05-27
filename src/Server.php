@@ -91,6 +91,9 @@ class Server
         $this->setApi($api);
     }
 
+    /**
+     * Delete temp image
+     */
     public function __destruct()
     {
         @unlink($this->tmp);
@@ -491,7 +494,7 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $this->tmp = tempnam(sys_get_temp_dir(), 'Glide'.rand(0,10));
+        $this->tmp = tempnam(sys_get_temp_dir(), 'Glide');
 
         if (file_put_contents($this->tmp, $source) === false) {
             throw new FilesystemException(
