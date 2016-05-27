@@ -73,6 +73,12 @@ class Server
     protected $presets = [];
 
     /**
+     * Temp image
+     * @var string
+     */
+    protected $tmp;
+
+    /**
      * Create Server instance.
      * @param FilesystemInterface $source Source file system.
      * @param FilesystemInterface $cache  Cache file system.
@@ -83,6 +89,11 @@ class Server
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
+    }
+
+    public function __destruct()
+    {
+        @unlink($this->tmp);
     }
 
     /**
@@ -480,9 +491,9 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide'.rand(0,10));
+        $this->tmp = tempnam(sys_get_temp_dir(), 'Glide'.rand(0,10));
 
-        if (file_put_contents($tmp, $source) === false) {
+        if (file_put_contents($this->tmp, $source) === false) {
             throw new FilesystemException(
                 'Unable to write temp file for `'.$sourcePath.'`.'
             );
@@ -491,23 +502,21 @@ class Server
         try {
             $write = $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, $this->getAllParams($params))
+                $this->api->run($this->tmp, $this->getAllParams($params))
             );
 
             if ($write === false) {
-                @unlink($tmp);
                 throw new FilesystemException(
                     'Could not write the image `'.$cachedPath.'`.'
                 );
             }
         } catch (FileExistsException $exception) {
-            @unlink($tmp);
             // This edge case occurs when the target already exists
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
         }
 
-        unlink($tmp);
+        @unlink($this->tmp);
 
         return $cachedPath;
     }
