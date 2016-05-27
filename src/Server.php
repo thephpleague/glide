@@ -480,7 +480,7 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+        $tmp = tempnam(sys_get_temp_dir(), 'Glide'.rand(0,10));
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
@@ -495,11 +495,13 @@ class Server
             );
 
             if ($write === false) {
+                @unlink($tmp);
                 throw new FilesystemException(
                     'Could not write the image `'.$cachedPath.'`.'
                 );
             }
         } catch (FileExistsException $exception) {
+            @unlink($tmp);
             // This edge case occurs when the target already exists
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
