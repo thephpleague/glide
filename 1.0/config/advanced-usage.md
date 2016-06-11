@@ -27,9 +27,6 @@ public function getSourcePathPrefix()
 // Get the source path for an image
 public function getSourcePath($path)
 
-// Get the source path for an image with the prefix
-public function getSourcePathWithoutPrefix($path)
-
 // Check if a source file exists
 public function sourceFileExists($path)
 ~~~
