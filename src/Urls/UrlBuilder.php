@@ -4,20 +4,18 @@ namespace League\Glide\Urls;
 
 use InvalidArgumentException;
 use League\Glide\Signatures\SignatureInterface;
+use League\Uri\Schemes\Http as HttpUri;
+use League\Uri\Modifiers\AppendSegment;
+use League\Uri\Modifiers\AddLeadingSlash;
+use Psr\Http\Message\UriInterface;
 
 class UrlBuilder
 {
     /**
-     * The base URL.
-     * @var string
+     * The base URI
+     * @var UriInterface
      */
     protected $baseUrl;
-
-    /**
-     * Whether the base URL is a relative domain.
-     * @var bool
-     */
-    protected $isRelativeDomain = false;
 
     /**
      * The HTTP signature used to sign URLs.
@@ -42,12 +40,12 @@ class UrlBuilder
      */
     public function setBaseUrl($baseUrl)
     {
-        if (substr($baseUrl, 0, 2) === '//') {
-            $baseUrl = 'http:'.$baseUrl;
-            $this->isRelativeDomain = true;
+        static $addLeadingSlash;
+        if (!$addLeadingSlash) {
+            $addLeadingSlash = new AddLeadingSlash();
         }
 
-        $this->baseUrl = rtrim($baseUrl, '/');
+        $this->baseUrl = $addLeadingSlash->__invoke(HttpUri::createFromString($baseUrl));
     }
 
     /**
@@ -67,49 +65,11 @@ class UrlBuilder
      */
     public function getUrl($path, array $params = [])
     {
-        $parts = parse_url($this->baseUrl.'/'.trim($path, '/'));
-
-        if ($parts === false) {
-            throw new InvalidArgumentException('Not a valid path.');
-        }
-
-        $parts['path'] = '/'.trim($parts['path'], '/');
-
+        $uri = (new AppendSegment($path))->__invoke($this->baseUrl);
         if ($this->signature) {
-            $params = $this->signature->addSignature($parts['path'], $params);
+            $params = $this->signature->addSignature($uri->getPath(), $params);
         }
 
-        return $this->buildUrl($parts, $params);
-    }
-
-    /**
-     * Build the URL.
-     * @param  array  $parts  The URL parts.
-     * @param  array  $params The manipulation parameters.
-     * @return string The built URL.
-     */
-    protected function buildUrl($parts, $params)
-    {
-        $url = '';
-
-        if (isset($parts['host'])) {
-            if ($this->isRelativeDomain) {
-                $url .= '//'.$parts['host'];
-            } else {
-                $url .= $parts['scheme'].'://'.$parts['host'];
-            }
-
-            if (isset($parts['port'])) {
-                $url .= ':'.$parts['port'];
-            }
-        }
-
-        $url .= $parts['path'];
-
-        if (count($params)) {
-            $url .= '?'.http_build_query($params);
-        }
-
-        return $url;
+        return (string) $uri->withQuery(http_build_query($params, '', '&', PHP_QUERY_RFC3986));
     }
 }
