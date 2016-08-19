@@ -192,7 +192,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetCachePathWithExtension()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg'), []);
+        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testCacheFileExists()
