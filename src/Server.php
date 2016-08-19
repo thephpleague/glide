@@ -236,7 +236,7 @@ class Server
 
     /**
      * Set the cache with file extensions setting.
-     * @param bool $groupCacheInFolders Whether to cache with file extensions.
+     * @param bool $cacheWithFileExtensions Whether to cache with file extensions.
      */
     public function setCacheWithFileExtensions($cacheWithFileExtensions)
     {
