@@ -56,6 +56,7 @@ class ServerFactory
         $server->setSourcePathPrefix($this->getSourcePathPrefix());
         $server->setCachePathPrefix($this->getCachePathPrefix());
         $server->setGroupCacheInFolders($this->getGroupCacheInFolders());
+        $server->setCacheWithFileExtensions($this->getCacheWithFileExtensions());
         $server->setDefaults($this->getDefaults());
         $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
@@ -135,6 +136,19 @@ class ServerFactory
         }
 
         return true;
+    }
+
+    /**
+     * Get the cache with file extensions setting.
+     * @return bool Whether to cache with file extensions.
+     */
+    public function getCacheWithFileExtensions()
+    {
+        if (isset($this->config['cache_with_file_extensions'])) {
+            return $this->config['cache_with_file_extensions'];
+        }
+
+        return false;
     }
 
     /**

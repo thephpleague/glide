@@ -105,6 +105,19 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($server->getGroupCacheInFolders());
     }
 
+    public function testGetCacheWithFileExtensions()
+    {
+        $server = new ServerFactory();
+
+        $this->assertFalse($server->getCacheWithFileExtensions());
+
+        $server = new ServerFactory([
+            'cache_with_file_extensions' => true,
+        ]);
+
+        $this->assertTrue($server->getCacheWithFileExtensions());
+    }
+
     public function testGetWatermarks()
     {
         $server = new ServerFactory([

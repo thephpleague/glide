@@ -43,6 +43,12 @@ class Server
     protected $groupCacheInFolders = true;
 
     /**
+     * Whether to cache with file extensions.
+     * @var bool
+     */
+    protected $cacheWithFileExtensions = false;
+
+    /**
      * Image manipulation API.
      * @var ApiInterface
      */
@@ -229,6 +235,24 @@ class Server
     }
 
     /**
+     * Set the cache with file extensions setting.
+     * @param bool $groupCacheInFolders Whether to cache with file extensions.
+     */
+    public function setCacheWithFileExtensions($cacheWithFileExtensions)
+    {
+        $this->cacheWithFileExtensions = $cacheWithFileExtensions;
+    }
+
+    /**
+     * Get the cache with file extensions setting.
+     * @return bool Whether to cache with file extensions.
+     */
+    public function getCacheWithFileExtensions()
+    {
+        return $this->cacheWithFileExtensions;
+    }
+
+    /**
      * Get cache path.
      * @param  string $path   Image path.
      * @param  array  $params Image manipulation params.
@@ -248,13 +272,17 @@ class Server
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
 
-        $path = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $path = $this->cachePathPrefix.'/'.$path;
+            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+        }
+        
+        if ($this->cacheWithFileExtensions) {
+            $cachedPath .= '.'.pathinfo($path)['extension'];
         }
 
-        return $path;
+        return $cachedPath;
     }
 
     /**

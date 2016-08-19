@@ -147,6 +147,18 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->server->getGroupCacheInFolders());
     }
 
+    public function testSetCacheWithFileExtensions()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+
+        $this->assertTrue($this->server->getCacheWithFileExtensions());
+    }
+
+    public function testGetCacheWithFileExtensions()
+    {
+        $this->assertFalse($this->server->getCacheWithFileExtensions());
+    }
+
     public function testGetCachePath()
     {
         $this->assertEquals(
@@ -175,6 +187,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+    }
+    
+    public function testGetCachePathWithExtension()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg'), []);
     }
 
     public function testCacheFileExists()
