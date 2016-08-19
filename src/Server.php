@@ -279,8 +279,7 @@ class Server
         }
         
         if ($this->cacheWithFileExtensions) {
-            $ext = isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension'];
-            $cachedPath .= '.'.$ext;
+            $cachedPath .= '.'.(isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
         }
 
         return $cachedPath;
