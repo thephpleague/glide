@@ -147,6 +147,18 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->server->getGroupCacheInFolders());
     }
 
+    public function testSetCacheWithFileExtensions()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+
+        $this->assertTrue($this->server->getCacheWithFileExtensions());
+    }
+
+    public function testGetCacheWithFileExtensions()
+    {
+        $this->assertFalse($this->server->getCacheWithFileExtensions());
+    }
+
     public function testGetCachePath()
     {
         $this->assertEquals(
@@ -175,6 +187,36 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     {
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+    }
+    
+    public function testGetCachePathWithExtension()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
+    }
+    
+    public function testGetCachePathWithExtensionAndFmParam()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
+    }
+    
+    public function testGetCachePathWithExtensionAndFmFromDefaults()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->server->setDefaults(['fm' => 'gif']);
+        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
+    }
+    
+    public function testGetCachePathWithExtensionAndFmFromPreset()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        
+        $this->server->setPresets(['gif' => [
+            'fm' => 'gif'
+        ]]);
+        
+        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
     }
 
     public function testCacheFileExists()
