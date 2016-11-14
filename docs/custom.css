@@ -1,0 +1,105 @@
+header .logo .icon {
+    position: relative;
+    top: 0;
+}
+
+menu .tool {
+    margin: 15px 0 0 0;
+    padding: 0 45px;
+}
+
+menu .versions {
+    display: inline-block;
+    width: 100%;
+}
+
+menu .search {
+    display: inline-block;
+    width: 100%;
+    padding: 7px 10px;
+
+    color: #6abcdd;
+    font-size: 14px;
+    font-family: "Museo Sans 300";
+
+    border: 0;
+    outline: 0;
+    background: #22303f;
+    border-radius: 3px;
+}
+
+@media screen and (max-width: 549px) {
+    menu {
+        text-align: center;
+    }
+    menu .tool {
+        margin: 15px 0 0 0;
+    }
+}
+
+@media screen and (min-width: 550px) and (max-width: 849px) {
+    menu .tool {
+        margin: 15px 0 0 0;
+        padding: 0 30px;
+    }
+}
+
+img[src*="herokuapp"] {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+h2 code {
+    position: relative;
+    top: -4px;
+    display: inline-block;
+    padding: 4px 10px 2px 10px;
+    font-family: Consolas,Monaco,'Andale Mono',monospace;
+    font-size: 22px;
+    line-height: 100%;
+    border-radius: 2px;
+    background: #f5f6f7;
+    border: solid #dcdddd 1px;
+    font-weight: normal;
+}
+
+table code {
+    display: inline-block;
+    padding: 3px 5px;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    font-size: 17px;
+    line-height: 100%;
+    border-radius: 2px;
+    background: #f5f6f7;
+    border: solid #dcdddd 1px;
+}
+
+.photo_credit {
+    margin: -5px 0 0 0;
+    font-size: 14px;
+    color: #8e8e8e;
+}
+
+.photo_credit a {
+    color: #8e8e8e;
+    text-decoration: none;
+}
+
+.photo_credit a:hover {
+    text-decoration: underline;
+}
+
+.github {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+    z-index: 1000;
+}
+
+@media screen and (max-width: 1065px) {
+    .github {
+        display: none;
+    }
+}

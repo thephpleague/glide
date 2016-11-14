@@ -1,0 +1,5 @@
+title: Glide
+tagline: HTTP based image manipulations
+description: Wonderfully easy on-demand image manipulation library with an HTTP based API.
+google_analytics_tracking_id: UA-46050814-13
+default_version: "1.0"
