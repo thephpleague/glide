@@ -24,6 +24,6 @@ use League\Glide\ServerFactory;
 use League\Glide\Responses\LaravelResponseFactory;
 
 $server = ServerFactory::create([
-    'response' => new LaravelResponseFactory()
+    'response' => new LaravelResponseFactory(app('request'))
 ]);
 ~~~
