@@ -27,3 +27,41 @@ $server = ServerFactory::create([
     'response' => new LaravelResponseFactory()
 ]);
 ~~~
+
+## Working example
+
+Here is a fully functioning example of how to get Glide up and running with Laravel really quick. First, create a new entry in your routes file:
+
+~~~ php
+<?php
+
+Route::get('/img/{path}', 'ImageController@show')->where('path', '.*');
+~~~
+
+Next, create a controller that will serve all your Glide images. This will use the default Laravel storage path (`/storage/app`) for the source images.
+
+~~~ php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Contracts\Filesystem\Filesystem;
+use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\ServerFactory;
+
+class ImageController extends Controller
+{
+    public function show(Filesystem $filesystem, $path)
+    {
+        $server = ServerFactory::create([
+            'response' => new LaravelResponseFactory(),
+            'source' => $filesystem->getDriver(),
+            'cache' => $filesystem->getDriver(),
+            'cache_path_prefix' => '.cache',
+            'base_url' => 'img',
+        ]);
+
+        return $server->getImageResponse($path, request()->all());
+    }
+}
+~~~
