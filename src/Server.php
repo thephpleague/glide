@@ -79,6 +79,12 @@ class Server
     protected $presets = [];
 
     /**
+     * Path to store temp files.
+     * @var string
+     */
+    protected $tempDir;
+
+    /**
      * Create Server instance.
      * @param FilesystemInterface $source Source file system.
      * @param FilesystemInterface $cache  Cache file system.
@@ -89,6 +95,7 @@ class Server
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
+        $this->tempDir = sys_get_temp_dir();
     }
 
     /**
@@ -510,7 +517,7 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+        $tmp = tempnam($this->tempDir, 'Glide');
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
@@ -538,5 +545,23 @@ class Server
         unlink($tmp);
 
         return $cachedPath;
+    }
+
+    /**
+     * Sets the temp directory used by this server to
+     * store images. This MUST to be a local path. This is because EXIF data
+     * can only be read from an actual file.
+     * @param string $path to store temp files.
+     * @throws InvalidArgumentException
+     */
+    public function setTempDir($path)
+    {
+        if (is_dir($path) && is_writable($path)) {
+            $this->tempDir = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf('%s is not a local directory or not writable', $path)
+        );
     }
 }

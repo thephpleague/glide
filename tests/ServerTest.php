@@ -6,6 +6,7 @@ use Mockery;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var Server */
     private $server;
 
     public function setUp()
@@ -111,6 +112,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testGetBaseUrl()
     {
         $this->assertEquals('', $this->server->getBaseUrl());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetInvalidTempDir()
+    {
+        $this->server->setTempDir('/some/random/path');
     }
 
     public function testSetCache()
@@ -431,7 +440,32 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         }));
 
         $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $mock->shouldReceive('run')->andReturn('content')->once();
+            $tmpDirPattern = matchesPattern('~^'.sys_get_temp_dir().'.*~');
+            $mock->shouldReceive('run')->with($tmpDirPattern, array())->andReturn('content')->once();
+        }));
+
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
+    }
+
+    public function testMakeImageFromSourceWithCustomTmpDir()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+        }));
+
+        $this->server->setTempDir(__DIR__);
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+            $tmpDirPattern = matchesPattern('~^'.__DIR__.'.*~');
+            $mock->shouldReceive('run')->with($tmpDirPattern, array())->andReturn('content')->once();
         }));
 
         $this->assertEquals(
