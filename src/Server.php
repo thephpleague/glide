@@ -556,12 +556,12 @@ class Server
      */
     public function setTempDir($path)
     {
-        if (is_dir($path) && is_writable($path)) {
+        if (is_dir($path)) {
             $this->tempDir = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
 
         throw new InvalidArgumentException(
-            sprintf('%s is not a local directory or not writable', $path)
+            sprintf('%s is not a local directory', $path)
         );
     }
 }
