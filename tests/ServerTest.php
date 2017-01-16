@@ -78,6 +78,16 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('img/image.jpg', $this->server->getSourcePath('image.jpg'));
     }
 
+    public function testGetsSourcePathWithBaseUrl()
+    {
+        $this->server->setBaseUrl('img/');
+        $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
+        
+        // Test for a bug where if the path starts with the same substring as the base url, the source
+        // path would trim the base url off the filename. eg, the following would've returned 'ur.jpg'
+        $this->assertEquals('imgur.jpg', $this->server->getSourcePath('imgur.jpg'));
+    }
+
     public function testGetSourcePathWithMissingPath()
     {
         $this->setExpectedException(
