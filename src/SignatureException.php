@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Signatures;
+namespace League\Glide;
 
 use Exception;
 

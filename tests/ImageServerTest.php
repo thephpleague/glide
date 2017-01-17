@@ -4,7 +4,7 @@ namespace League\Glide;
 
 use Mockery;
 
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ImageServerTest extends \PHPUnit_Framework_TestCase
 {
     private $server;
 
@@ -21,7 +21,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                 echo 'content';
             });
 
-        $this->server = new Server(
+        $this->server = new ImageServer(
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Flysystem\FilesystemInterface'),
             Mockery::mock('League\Glide\Api\ApiInterface'),
@@ -36,7 +36,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInstance()
     {
-        $this->assertInstanceOf('League\Glide\Server', $this->server);
+        $this->assertInstanceOf('League\Glide\ImageServer', $this->server);
     }
 
     public function testSetSource()
@@ -188,34 +188,34 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
     }
-    
+
     public function testGetCachePathWithExtension()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
     }
-    
+
     public function testGetCachePathWithExtensionAndFmParam()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
     }
-    
+
     public function testGetCachePathWithExtensionAndFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'gif']);
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
     }
-    
+
     public function testGetCachePathWithExtensionAndFmFromPreset()
     {
         $this->server->setCacheWithFileExtensions(true);
-        
+
         $this->server->setPresets(['gif' => [
-            'fm' => 'gif'
+            'fm' => 'gif',
         ]]);
-        
+
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
     }
 

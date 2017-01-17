@@ -10,7 +10,7 @@ use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Responses\ResponseFactoryInterface;
 
-class Server
+class ImageServer
 {
     /**
      * Source file system.
@@ -19,10 +19,10 @@ class Server
     protected $source;
 
     /**
-     * Source path prefix.
+     * Source folder.
      * @var string
      */
-    protected $sourcePathPrefix;
+    protected $sourceFolder;
 
     /**
      * Cache file system.
@@ -31,22 +31,10 @@ class Server
     protected $cache;
 
     /**
-     * Cache path prefix.
+     * Cache folder.
      * @var string
      */
-    protected $cachePathPrefix;
-
-    /**
-     * Whether to group cache in folders.
-     * @var bool
-     */
-    protected $groupCacheInFolders = true;
-
-    /**
-     * Whether to cache with file extensions.
-     * @var bool
-     */
-    protected $cacheWithFileExtensions = false;
+    protected $cacheFolder;
 
     /**
      * Image manipulation API.
@@ -67,6 +55,18 @@ class Server
     protected $baseUrl;
 
     /**
+     * Cache URL.
+     * @var string
+     */
+    protected $cacheUrl;
+
+    /**
+     * Sign key.
+     * @var string
+     */
+    protected $signKey;
+
+    /**
      * Default image manipulations.
      * @var array
      */
@@ -80,15 +80,17 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface $source Source file system.
-     * @param FilesystemInterface $cache  Cache file system.
-     * @param ApiInterface        $api    Image manipulation API.
+     * @param FilesystemInterface $source  Source file system.
+     * @param FilesystemInterface $cache   Cache file system.
+     * @param ApiInterface        $api     Image manipulation API.
+     * @param string              $signKey Sign key.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
+    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api, $signKey)
     {
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
+        $this->setSignKey($signKey);
     }
 
     /**
@@ -109,22 +111,32 @@ class Server
         return $this->source;
     }
 
-    /**
-     * Set source path prefix.
-     * @param string $sourcePathPrefix Source path prefix.
-     */
-    public function setSourcePathPrefix($sourcePathPrefix)
+    public function setSignKey($signKey)
     {
-        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+        $this->signKey = $signKey;
+    }
+
+    public function getSignKey()
+    {
+        return $this->signKey;
     }
 
     /**
-     * Get source path prefix.
-     * @return string Source path prefix.
+     * Set source folder.
+     * @param string $sourceFolder Source folder.
      */
-    public function getSourcePathPrefix()
+    public function setSourceFolder($sourceFolder)
     {
-        return $this->sourcePathPrefix;
+        $this->sourceFolder = trim($sourceFolder, '/');
+    }
+
+    /**
+     * Get source folder.
+     * @return string Source folder.
+     */
+    public function getSourceFolder()
+    {
+        return $this->sourceFolder;
     }
 
     /**
@@ -135,18 +147,8 @@ class Server
      */
     public function getSourcePath($path)
     {
-        $path = trim($path, '/');
-
-        if (substr($path, 0, strlen($this->baseUrl)) === $this->baseUrl) {
-            $path = trim(substr($path, strlen($this->baseUrl)), '/');
-        }
-
-        if ($path === '') {
-            throw new FileNotFoundException('Image path missing.');
-        }
-
-        if ($this->sourcePathPrefix) {
-            $path = $this->sourcePathPrefix.'/'.$path;
+        if ($this->sourceFolder) {
+            $path = $this->sourceFolder.'/'.$path;
         }
 
         return rawurldecode($path);
@@ -181,6 +183,24 @@ class Server
     }
 
     /**
+     * Set cache URL.
+     * @param string $cacheUrl Cache URL.
+     */
+    public function setCacheUrl($cacheUrl)
+    {
+        $this->cacheUrl = trim($cacheUrl, '/');
+    }
+
+    /**
+     * Get cache URL.
+     * @return string Cache URL.
+     */
+    public function getCacheUrl()
+    {
+        return $this->cacheUrl;
+    }
+
+    /**
      * Set cache file system.
      * @param FilesystemInterface $cache Cache file system.
      */
@@ -199,57 +219,21 @@ class Server
     }
 
     /**
-     * Set cache path prefix.
-     * @param string $cachePathPrefix Cache path prefix.
+     * Set cache folder.
+     * @param string $cacheFolder Cache folder.
      */
-    public function setCachePathPrefix($cachePathPrefix)
+    public function setCacheFolder($cacheFolder)
     {
-        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+        $this->cacheFolder = trim($cacheFolder, '/');
     }
 
     /**
-     * Get cache path prefix.
-     * @return string Cache path prefix.
+     * Get cache folder.
+     * @return string Cache folder.
      */
-    public function getCachePathPrefix()
+    public function getCacheFolder()
     {
-        return $this->cachePathPrefix;
-    }
-
-    /**
-     * Set the group cache in folders setting.
-     * @param bool $groupCacheInFolders Whether to group cache in folders.
-     */
-    public function setGroupCacheInFolders($groupCacheInFolders)
-    {
-        $this->groupCacheInFolders = $groupCacheInFolders;
-    }
-
-    /**
-     * Get the group cache in folders setting.
-     * @return bool Whether to group cache in folders.
-     */
-    public function getGroupCacheInFolders()
-    {
-        return $this->groupCacheInFolders;
-    }
-
-    /**
-     * Set the cache with file extensions setting.
-     * @param bool $cacheWithFileExtensions Whether to cache with file extensions.
-     */
-    public function setCacheWithFileExtensions($cacheWithFileExtensions)
-    {
-        $this->cacheWithFileExtensions = $cacheWithFileExtensions;
-    }
-
-    /**
-     * Get the cache with file extensions setting.
-     * @return bool Whether to cache with file extensions.
-     */
-    public function getCacheWithFileExtensions()
-    {
-        return $this->cacheWithFileExtensions;
+        return $this->cacheFolder;
     }
 
     /**
@@ -260,29 +244,27 @@ class Server
      */
     public function getCachePath($path, array $params = [])
     {
-        $sourcePath = $this->getSourcePath($path);
+        $filename = $this->getCacheFilename($path, $params);
 
-        if ($this->sourcePathPrefix) {
-            $sourcePath = substr($sourcePath, strlen($this->sourcePathPrefix) + 1);
-        }
+        return $this->cacheFolder ? $this->cacheFolder.'/'.$filename : $filename;
+    }
 
-        $params = $this->getAllParams($params);
-        unset($params['s'], $params['p']);
+    public function getCacheFilename($path, array $params = [])
+    {
+        $filename = pathinfo($path)['filename'];
+        $signature = $this->generateSignature($path, $params);
+        $extension = $params['fm'] === 'pjpg' ? 'jpg' : $params['fm'];
+
+        unset($params['s'], $params['fm']);
         ksort($params);
 
-        $md5 = md5($sourcePath.'?'.http_build_query($params));
+        $params = array_map(function ($key, $value) {
+            return $key.'-'.$value;
+        }, array_keys($params), $params);
 
-        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        array_unshift($params, $filename);
 
-        if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
-        }
-        
-        if ($this->cacheWithFileExtensions) {
-            $cachedPath .= '.'.(isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
-        }
-
-        return $cachedPath;
+        return $path.'/'.$signature.'/'.implode('-', $params).'.'.$extension;
     }
 
     /**
@@ -291,7 +273,7 @@ class Server
      * @param  array  $params Image manipulation params.
      * @return bool   Whether the cache file exists.
      */
-    public function cacheFileExists($path, array $params)
+    public function cacheFileExists($path, array $params = [])
     {
         return $this->cache->has(
             $this->getCachePath($path, $params)
@@ -305,14 +287,8 @@ class Server
      */
     public function deleteCache($path)
     {
-        if (!$this->groupCacheInFolders) {
-            throw new InvalidArgumentException(
-                'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
-            );
-        }
-
         return $this->cache->deleteDir(
-            dirname($this->getCachePath($path))
+            $this->cacheFolder ? $this->cacheFolder.'/'.$path : $path
         );
     }
 
@@ -371,26 +347,6 @@ class Server
     }
 
     /**
-     * Get all image manipulations params, including defaults and presets.
-     * @param  array $params Image manipulation params.
-     * @return array All image manipulation params.
-     */
-    public function getAllParams(array $params)
-    {
-        $all = $this->defaults;
-
-        if (isset($params['p'])) {
-            foreach (explode(',', $params['p']) as $preset) {
-                if (isset($this->presets[$preset])) {
-                    $all = array_merge($all, $this->presets[$preset]);
-                }
-            }
-        }
-
-        return array_merge($all, $params);
-    }
-
-    /**
      * Set response factory.
      * @param ResponseFactoryInterface|null $responseFactory Response factory.
      */
@@ -415,7 +371,7 @@ class Server
      * @return mixed                    Image response.
      * @throws InvalidArgumentException
      */
-    public function getImageResponse($path, array $params)
+    public function getImageResponse($path, array $params = [])
     {
         if (is_null($this->responseFactory)) {
             throw new InvalidArgumentException(
@@ -435,7 +391,7 @@ class Server
      * @return string              Base64 encoded image.
      * @throws FilesystemException
      */
-    public function getImageAsBase64($path, array $params)
+    public function getImageAsBase64($path, array $params = [])
     {
         $path = $this->makeImage($path, $params);
 
@@ -456,7 +412,7 @@ class Server
      * @param  array                    $params Image manipulation params.
      * @throws InvalidArgumentException
      */
-    public function outputImage($path, array $params)
+    public function outputImage($path, array $params = [])
     {
         $path = $this->makeImage($path, $params);
 
@@ -482,8 +438,14 @@ class Server
      * @throws FileNotFoundException
      * @throws FilesystemException
      */
-    public function makeImage($path, array $params)
+    public function makeImage($path, array $params = [])
     {
+        if (substr(ltrim($path, '/'), 0, strlen($this->baseUrl)) === $this->baseUrl) {
+            $path = trim(substr(ltrim($path, '/'), strlen($this->baseUrl)), '/');
+        }
+
+        $this->validateSignature($path, $params);
+
         $sourcePath = $this->getSourcePath($path);
         $cachedPath = $this->getCachePath($path, $params);
 
@@ -521,7 +483,7 @@ class Server
         try {
             $write = $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, $this->getAllParams($params))
+                $this->api->run($tmp, $params)
             );
 
             if ($write === false) {
@@ -538,5 +500,98 @@ class Server
         unlink($tmp);
 
         return $cachedPath;
+    }
+
+    public function parseFilenameUrl($path)
+    {
+        $info = pathinfo($path);
+        $path = explode('/', trim($info['dirname'], '/'));
+        $params['s'] = array_pop($path);
+        $path = implode('/', $path);
+        $params['fm'] = $info['extension'];
+        $filename = $info['filename'];
+        $info = pathinfo($path);
+        $filename = trim(substr($filename, strlen($info['filename'])), '-');
+
+        foreach (array_chunk(explode('-', $filename), 2) as $param) {
+            if (isset($param[0]) and isset($param[1])) {
+                $params[$param[0]] = $param[1];
+            }
+        }
+
+        return [$path, $params];
+    }
+
+    /**
+     * Get all image manipulations params, including defaults and presets.
+     * @param  array $params Image manipulation params.
+     * @return array All image manipulation params.
+     */
+    public function getAllParams(array $params = [])
+    {
+        $all = $this->defaults;
+
+        if (isset($params['p'])) {
+            foreach (explode(',', $params['p']) as $preset) {
+                if (isset($this->presets[$preset])) {
+                    $all = array_merge($all, $this->presets[$preset]);
+                }
+            }
+        }
+
+        $params = array_filter(array_merge($all, $params));
+
+        if (!isset($params['fm'])) {
+            $params['fm'] = 'jpg';
+        }
+
+        unset($params['p']);
+
+        return $params;
+    }
+
+    public function getFilenameUrl($path, array $params = [])
+    {
+        $params = $this->getAllParams($params);
+
+        $base = $this->cacheUrl ? $this->cacheUrl : $this->baseUrl;
+
+        return $base.'/'.$this->getCacheFilename($path, $params);
+    }
+
+    public function getQueryStringUrl($path, array $params = [])
+    {
+        $params = $this->getAllParams($params);
+
+        $base = $this->cacheUrl ? $this->cacheUrl : $this->baseUrl;
+
+        $params['s'] = $this->generateSignature($path, $params);
+
+        return $base.'/'.$path.'?'.http_build_query($params);
+    }
+
+    public function generateSignature($path, array $params = [])
+    {
+        unset($params['s']);
+        ksort($params);
+
+        return hash_hmac('sha256', ltrim($path, '/').'?'.http_build_query($params), $this->signKey);
+    }
+
+    public function validateSignature($path, $params)
+    {
+        if (!isset($params['s']) or $params['s'] !== $this->generateSignature($path, $params)) {
+            throw new SignatureException();
+        }
+    }
+
+    /**
+     * Create configured server.
+     * @param  array  $config Configuration parameters.
+     * @return Server Configured server.
+     */
+    public static function create(array $config = [])
+    {
+        return (new ImageServerFactory($config))->create();
     }
 }

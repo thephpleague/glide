@@ -24,7 +24,7 @@ use League\Glide\Manipulators\Size;
 use League\Glide\Manipulators\Watermark;
 use League\Glide\Responses\ResponseFactoryInterface;
 
-class ServerFactory
+class ImageServerFactory
 {
     /**
      * Configuration parameters.
@@ -33,7 +33,7 @@ class ServerFactory
     protected $config;
 
     /**
-     * Create ServerFactory instance.
+     * Create ImageServerFactory instance.
      * @param array $config Configuration parameters.
      */
     public function __construct(array $config = [])
@@ -43,23 +43,23 @@ class ServerFactory
 
     /**
      * Get configured server.
-     * @return Server Configured Glide server.
+     * @return ImageServer Configured Glide server.
      */
-    public function getServer()
+    public function create()
     {
-        $server = new Server(
+        $server = new ImageServer(
             $this->getSource(),
             $this->getCache(),
-            $this->getApi()
+            $this->getApi(),
+            $this->getSignKey()
         );
 
-        $server->setSourcePathPrefix($this->getSourcePathPrefix());
-        $server->setCachePathPrefix($this->getCachePathPrefix());
-        $server->setGroupCacheInFolders($this->getGroupCacheInFolders());
-        $server->setCacheWithFileExtensions($this->getCacheWithFileExtensions());
+        $server->setSourceFolder($this->getSourceFolder());
+        $server->setCacheFolder($this->getCacheFolder());
         $server->setDefaults($this->getDefaults());
         $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
+        $server->setCacheUrl($this->getCacheUrl());
         $server->setResponseFactory($this->getResponseFactory());
 
         return $server;
@@ -85,13 +85,13 @@ class ServerFactory
     }
 
     /**
-     * Get source path prefix.
-     * @return string|null Source path prefix.
+     * Get source folder.
+     * @return string|null Source folder.
      */
-    public function getSourcePathPrefix()
+    public function getSourceFolder()
     {
-        if (isset($this->config['source_path_prefix'])) {
-            return $this->config['source_path_prefix'];
+        if (isset($this->config['source_folder'])) {
+            return $this->config['source_folder'];
         }
     }
 
@@ -115,40 +115,14 @@ class ServerFactory
     }
 
     /**
-     * Get cache path prefix.
-     * @return string|null Cache path prefix.
+     * Get cache folder.
+     * @return string|null Cache folder.
      */
-    public function getCachePathPrefix()
+    public function getCacheFolder()
     {
-        if (isset($this->config['cache_path_prefix'])) {
-            return $this->config['cache_path_prefix'];
+        if (isset($this->config['cache_folder'])) {
+            return $this->config['cache_folder'];
         }
-    }
-
-    /**
-     * Get the group cache in folders setting.
-     * @return bool Whether to group cache in folders.
-     */
-    public function getGroupCacheInFolders()
-    {
-        if (isset($this->config['group_cache_in_folders'])) {
-            return $this->config['group_cache_in_folders'];
-        }
-
-        return true;
-    }
-
-    /**
-     * Get the cache with file extensions setting.
-     * @return bool Whether to cache with file extensions.
-     */
-    public function getCacheWithFileExtensions()
-    {
-        if (isset($this->config['cache_with_file_extensions'])) {
-            return $this->config['cache_with_file_extensions'];
-        }
-
-        return false;
     }
 
     /**
@@ -171,13 +145,13 @@ class ServerFactory
     }
 
     /**
-     * Get watermarks path prefix.
-     * @return string|null Watermarks path prefix.
+     * Get watermarks folder.
+     * @return string|null Watermarks folder.
      */
-    public function getWatermarksPathPrefix()
+    public function getWatermarksFolder()
     {
-        if (isset($this->config['watermarks_path_prefix'])) {
-            return $this->config['watermarks_path_prefix'];
+        if (isset($this->config['watermarks_folder'])) {
+            return $this->config['watermarks_folder'];
         }
     }
 
@@ -227,7 +201,7 @@ class ServerFactory
             new Filter(),
             new Blur(),
             new Pixelate(),
-            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
+            new Watermark($this->getWatermarks(), $this->getWatermarksFolder()),
             new Background(),
             new Border(),
             new Encode(),
@@ -272,6 +246,32 @@ class ServerFactory
     }
 
     /**
+     * Get sign key.
+     * @return string|null Sign key.
+     */
+    public function getSignKey()
+    {
+        if (!isset($this->config['sign_key'])) {
+            throw new InvalidArgumentException('A signing key must be set.');
+        }
+
+        if (isset($this->config['sign_key'])) {
+            return $this->config['sign_key'];
+        }
+    }
+
+    /**
+     * Get cache URL.
+     * @return string|null Cache URl.
+     */
+    public function getCacheUrl()
+    {
+        if (isset($this->config['cache_url'])) {
+            return $this->config['cache_url'];
+        }
+    }
+
+    /**
      * Get base URL.
      * @return string|null Base URL.
      */
@@ -291,15 +291,5 @@ class ServerFactory
         if (isset($this->config['response'])) {
             return $this->config['response'];
         }
-    }
-
-    /**
-     * Create configured server.
-     * @param  array  $config Configuration parameters.
-     * @return Server Configured server.
-     */
-    public static function create(array $config = [])
-    {
-        return (new self($config))->getServer();
     }
 }
