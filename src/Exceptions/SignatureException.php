@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide;
+namespace League\Glide\Exceptions;
 
 use Exception;
 

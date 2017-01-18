@@ -3,7 +3,7 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Glide\Manipulators\Helpers\Color;
+use League\Glide\Helpers\Color;
 
 /**
  * @property string $bg

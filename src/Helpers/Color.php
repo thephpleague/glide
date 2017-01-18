@@ -1,6 +1,6 @@
 <?php
 
-namespace League\Glide\Manipulators\Helpers;
+namespace League\Glide\Helpers;
 
 class Color
 {

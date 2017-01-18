@@ -2,6 +2,9 @@
 
 namespace League\Glide;
 
+use League\Glide\Exceptions\FileNotFoundException;
+use League\Glide\Exceptions\FilesystemException;
+use League\Glide\Exceptions\SignatureException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Image
@@ -31,7 +34,7 @@ class Image
     protected $signature;
 
     /**
-     * Create Image instance.
+     * Create image.
      * @param Server $server     Glide server.
      * @param string $path       Image path.
      * @param array  $attributes Image manipulation attributes.
@@ -252,7 +255,7 @@ class Image
         try {
             $write = $this->server->getCache()->write(
                 $cachedPath,
-                $this->server->getApi()->run($tmp, $this->attributes)
+                $this->server->generateImage($tmp, $this->attributes)
             );
 
             if ($write === false) {

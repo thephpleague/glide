@@ -7,7 +7,6 @@ use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Api\Api;
 use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
 use League\Glide\Manipulators\Border;
@@ -47,7 +46,8 @@ class ServerFactory
     public function create()
     {
         $server = new Server(
-            $this->getApi(),
+            $this->getImageManager(),
+            $this->getManipulators(),
             $this->getSource(),
             $this->getCache()
         );
@@ -151,18 +151,6 @@ class ServerFactory
         if (isset($this->config['watermarks_folder'])) {
             return $this->config['watermarks_folder'];
         }
-    }
-
-    /**
-     * Get image manipulation API.
-     * @return Api Image manipulation API.
-     */
-    public function getApi()
-    {
-        return new Api(
-            $this->getImageManager(),
-            $this->getManipulators()
-        );
     }
 
     /**

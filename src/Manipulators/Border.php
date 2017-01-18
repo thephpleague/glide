@@ -3,8 +3,8 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Glide\Manipulators\Helpers\Color;
-use League\Glide\Manipulators\Helpers\Dimension;
+use League\Glide\Helpers\Color;
+use League\Glide\Helpers\Dimension;
 
 /**
  * @property string $border

@@ -2,17 +2,26 @@
 
 namespace League\Glide;
 
+use Intervention\Image\ImageManager;
+use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Api\ApiInterface;
+use League\Glide\Manipulators\ManipulatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Server
 {
     /**
-     * Image manipulation API.
-     * @var ApiInterface
+     * Intervention image manager.
+     * @var ImageManager
      */
-    protected $api;
+    protected $imageManager;
+
+    /**
+     * Collection of manipulators.
+     * @var array
+     */
+    protected $manipulators;
 
     /**
      * Source file system.
@@ -69,16 +78,59 @@ class Server
     protected $presets = [];
 
     /**
-     * Create Server instance.
+     * Create server.
      * @param ApiInterface        $api    Image manipulation API.
      * @param FilesystemInterface $source Source file system.
      * @param FilesystemInterface $cache  Cache file system.
      */
-    public function __construct(ApiInterface $api, FilesystemInterface $source, FilesystemInterface $cache)
+    public function __construct(ImageManager $imageManager, array $manipulators, FilesystemInterface $source, FilesystemInterface $cache)
     {
-        $this->setApi($api);
+        $this->setImageManager($imageManager);
+        $this->setManipulators($manipulators);
         $this->setSource($source);
         $this->setCache($cache);
+    }
+
+    /**
+     * Set the image manager.
+     * @param ImageManager $imageManager Intervention image manager.
+     */
+    public function setImageManager(ImageManager $imageManager)
+    {
+        $this->imageManager = $imageManager;
+    }
+
+    /**
+     * Get the image manager.
+     * @return ImageManager Intervention image manager.
+     */
+    public function getImageManager()
+    {
+        return $this->imageManager;
+    }
+
+    /**
+     * Set the manipulators.
+     * @param array $manipulators Collection of manipulators.
+     */
+    public function setManipulators(array $manipulators)
+    {
+        foreach ($manipulators as $manipulator) {
+            if (!($manipulator instanceof ManipulatorInterface)) {
+                throw new InvalidArgumentException('Not a valid manipulator.');
+            }
+        }
+
+        $this->manipulators = $manipulators;
+    }
+
+    /**
+     * Get the manipulators.
+     * @return array Collection of manipulators.
+     */
+    public function getManipulators()
+    {
+        return $this->manipulators;
     }
 
     /**
@@ -99,11 +151,19 @@ class Server
         return $this->source;
     }
 
+    /**
+     * Set the sign key.
+     * @param string $signKey The sign key.
+     */
     public function setSignKey($signKey)
     {
         $this->signKey = $signKey;
     }
 
+    /**
+     * Get the sign key.
+     * @return string The sign key.
+     */
     public function getSignKey()
     {
         return $this->signKey;
@@ -200,24 +260,6 @@ class Server
     }
 
     /**
-     * Set image manipulation API.
-     * @param ApiInterface $api Image manipulation API.
-     */
-    public function setApi(ApiInterface $api)
-    {
-        $this->api = $api;
-    }
-
-    /**
-     * Get image manipulation API.
-     * @return ApiInterface Image manipulation API.
-     */
-    public function getApi()
-    {
-        return $this->api;
-    }
-
-    /**
      * Set default image manipulations.
      * @param array $defaults Default image manipulations.
      */
@@ -253,11 +295,23 @@ class Server
         return $this->presets;
     }
 
+    /**
+     * Create image.
+     * @param  string $path       Image path.
+     * @param  array  $attributes Image manipulation attributes.
+     * @param  string $signature  The request image signature.
+     * @return Image  The image.
+     */
     public function image($path, $attributes = [], $signature = null)
     {
         return new Image($this, $path, $attributes, $signature);
     }
 
+    /**
+     * Create Image from a request.
+     * @param  Request $request The request.
+     * @return Image   The image.
+     */
     public function createFromRequest(Request $request = null)
     {
         $request = $request ?: Request::createFromGlobals();
@@ -282,6 +336,25 @@ class Server
         }
 
         return new Image($this, $path, $attributes, $signature);
+    }
+
+    /**
+     * Perform image manipulations.
+     * @param  string $source Source image binary data.
+     * @param  array  $params The manipulation params.
+     * @return string Manipulated image binary data.
+     */
+    public function generateImage($source, array $params)
+    {
+        $image = $this->imageManager->make($source);
+
+        foreach ($this->manipulators as $manipulator) {
+            $manipulator->setParams($params);
+
+            $image = $manipulator->run($image);
+        }
+
+        return $image->getEncoded();
     }
 
     /**
