@@ -22,9 +22,8 @@ use League\Glide\Manipulators\Pixelate;
 use League\Glide\Manipulators\Sharpen;
 use League\Glide\Manipulators\Size;
 use League\Glide\Manipulators\Watermark;
-use League\Glide\Responses\ResponseFactoryInterface;
 
-class ImageServerFactory
+class ServerFactory
 {
     /**
      * Configuration parameters.
@@ -33,7 +32,7 @@ class ImageServerFactory
     protected $config;
 
     /**
-     * Create ImageServerFactory instance.
+     * Create ServerFactory instance.
      * @param array $config Configuration parameters.
      */
     public function __construct(array $config = [])
@@ -43,15 +42,14 @@ class ImageServerFactory
 
     /**
      * Get configured server.
-     * @return ImageServer Configured Glide server.
+     * @return Server Configured Glide server.
      */
     public function create()
     {
-        $server = new ImageServer(
-            $this->getSource(),
-            $this->getCache(),
+        $server = new Server(
             $this->getApi(),
-            $this->getSignKey()
+            $this->getSource(),
+            $this->getCache()
         );
 
         $server->setSourceFolder($this->getSourceFolder());
@@ -60,7 +58,7 @@ class ImageServerFactory
         $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
         $server->setCacheUrl($this->getCacheUrl());
-        $server->setResponseFactory($this->getResponseFactory());
+        $server->setSignKey($this->getSignKey());
 
         return $server;
     }
@@ -251,10 +249,6 @@ class ImageServerFactory
      */
     public function getSignKey()
     {
-        if (!isset($this->config['sign_key'])) {
-            throw new InvalidArgumentException('A signing key must be set.');
-        }
-
         if (isset($this->config['sign_key'])) {
             return $this->config['sign_key'];
         }
@@ -279,17 +273,6 @@ class ImageServerFactory
     {
         if (isset($this->config['base_url'])) {
             return $this->config['base_url'];
-        }
-    }
-
-    /**
-     * Get response factory.
-     * @return ResponseFactoryInterface|null Response factory.
-     */
-    public function getResponseFactory()
-    {
-        if (isset($this->config['response'])) {
-            return $this->config['response'];
         }
     }
 }
