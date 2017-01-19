@@ -65,6 +65,12 @@ class Server
      * @var string
      */
     protected $baseUrl;
+    
+    /**
+     * Modify the cache path relative to its self
+     * @var \Closure
+     */
+    protected $cachePathFilter;
 
     /**
      * Default image manipulations.
@@ -276,6 +282,11 @@ class Server
 
         $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
+        if ($this->cachePathFilter instanceof \Closure) {
+            $filter = $this->cachePathFilter;
+            $path = $filter($path);
+        }
+
         if ($this->cachePathPrefix) {
             $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
         }
@@ -285,6 +296,27 @@ class Server
         }
 
         return $cachedPath;
+    }
+    
+    /**
+     * Set cache path filter - allowing modification of cache path relative to its self. This
+     * is useful for implementing a nested directory approach for local filesystems. For example:
+     *
+     * <code>
+     * // Register the cache path filter
+     * $server->setCachePathFilter(function ($path) {
+     *     return '/' . implode('/', array_slice(str_split($path, 2), 0, 2)) . '/' . $path;
+     * });
+     * </code>
+     *
+     * The above example would prefix the cache path with something like '/7e/af' which is useful
+     * for getting around the limitations of maximum object constraints on some filesystems
+     *
+     * @param callable $filter
+     */
+    public function setCachePathFilter(\Closure $filter)
+    {
+        $this->cachePathFilter = $filter;
     }
 
     /**
