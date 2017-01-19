@@ -4,9 +4,24 @@ namespace League\Glide;
 
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Api\ApiInterface;
+use League\Glide\Manipulators\Background;
+use League\Glide\Manipulators\Blur;
+use League\Glide\Manipulators\Border;
+use League\Glide\Manipulators\Brightness;
+use League\Glide\Manipulators\Contrast;
+use League\Glide\Manipulators\Crop;
+use League\Glide\Manipulators\Encode;
+use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Gamma;
 use League\Glide\Manipulators\ManipulatorInterface;
+use League\Glide\Manipulators\Orientation;
+use League\Glide\Manipulators\Pixelate;
+use League\Glide\Manipulators\Sharpen;
+use League\Glide\Manipulators\Size;
+use League\Glide\Manipulators\Watermark;
 use Symfony\Component\HttpFoundation\Request;
 
 class Server
@@ -79,11 +94,10 @@ class Server
 
     /**
      * Create server.
-     * @param ApiInterface        $api    Image manipulation API.
-     * @param FilesystemInterface $source Source file system.
-     * @param FilesystemInterface $cache  Cache file system.
+     * @param ImageManager $imageManager Intervention image manager.
+     * @param array        $manipulators Collection of manipulators.
      */
-    public function __construct(ImageManager $imageManager, array $manipulators, FilesystemInterface $source, FilesystemInterface $cache)
+    public function __construct(ImageManager $imageManager, array $manipulators, $source, $cache)
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
@@ -98,6 +112,8 @@ class Server
     public function setImageManager(ImageManager $imageManager)
     {
         $this->imageManager = $imageManager;
+
+        return $this;
     }
 
     /**
@@ -122,6 +138,8 @@ class Server
         }
 
         $this->manipulators = $manipulators;
+
+        return $this;
     }
 
     /**
@@ -135,11 +153,19 @@ class Server
 
     /**
      * Set source file system.
-     * @param FilesystemInterface $source Source file system.
+     * @param FilesystemInterface|string $source Source file system.
      */
-    public function setSource(FilesystemInterface $source)
+    public function setSource($source)
     {
+        if (is_string($source)) {
+            $source = new Filesystem(
+                new Local($source)
+            );
+        }
+
         $this->source = $source;
+
+        return $this;
     }
 
     /**
@@ -158,6 +184,8 @@ class Server
     public function setSignKey($signKey)
     {
         $this->signKey = $signKey;
+
+        return $this;
     }
 
     /**
@@ -176,6 +204,8 @@ class Server
     public function setSourceFolder($sourceFolder)
     {
         $this->sourceFolder = trim($sourceFolder, '/');
+
+        return $this;
     }
 
     /**
@@ -194,6 +224,8 @@ class Server
     public function setBaseUrl($baseUrl)
     {
         $this->baseUrl = trim($baseUrl, '/');
+
+        return $this;
     }
 
     /**
@@ -212,6 +244,8 @@ class Server
     public function setCacheUrl($cacheUrl)
     {
         $this->cacheUrl = trim($cacheUrl, '/');
+
+        return $this;
     }
 
     /**
@@ -225,11 +259,19 @@ class Server
 
     /**
      * Set cache file system.
-     * @param FilesystemInterface $cache Cache file system.
+     * @param FilesystemInterface|string $cache Cache file system.
      */
-    public function setCache(FilesystemInterface $cache)
+    public function setCache($cache)
     {
+        if (is_string($cache)) {
+            $cache = new Filesystem(
+                new Local($cache)
+            );
+        }
+
         $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -248,6 +290,8 @@ class Server
     public function setCacheFolder($cacheFolder)
     {
         $this->cacheFolder = trim($cacheFolder, '/');
+
+        return $this;
     }
 
     /**
@@ -266,6 +310,8 @@ class Server
     public function setDefaults(array $defaults)
     {
         $this->defaults = $defaults;
+
+        return $this;
     }
 
     /**
@@ -284,6 +330,8 @@ class Server
     public function setPresets(array $presets)
     {
         $this->presets = $presets;
+
+        return $this;
     }
 
     /**
@@ -299,12 +347,11 @@ class Server
      * Create image.
      * @param  string $path       Image path.
      * @param  array  $attributes Image manipulation attributes.
-     * @param  string $signature  The request image signature.
      * @return Image  The image.
      */
-    public function image($path, $attributes = [], $signature = null)
+    public function fromPath($path, $attributes = [])
     {
-        return new Image($this, $path, $attributes, $signature);
+        return new Image($this, $path, $attributes);
     }
 
     /**
@@ -312,49 +359,23 @@ class Server
      * @param  Request $request The request.
      * @return Image   The image.
      */
-    public function createFromRequest(Request $request = null)
+    public function fromRequest(Request $request = null)
     {
         $request = $request ?: Request::createFromGlobals();
-        $path = $request->getPathInfo();
-        $signature = $request->get('s');
+        $path = array_filter(explode('/', $request->getPathInfo()));
+        $filename = array_pop($path);
+        $signature = array_pop($path);
+        $path = implode('/', $path);
+        $baseUrl = trim($this->baseUrl, '/').'/';
 
-        $info = pathinfo($path);
-        $path = $info['dirname'];
-        $attributes['fm'] = $info['extension'];
-        $filename = $info['filename'];
-        $info = pathinfo($path);
-        $filename = trim(substr($filename, strlen($info['filename'])), '-');
-
-        foreach (array_chunk(explode('-', $filename), 2) as $attribute) {
-            if (isset($attribute[0]) and isset($attribute[1])) {
-                $attributes[$attribute[0]] = $attribute[1];
-            }
+        if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
+            $path = substr($path, strlen($baseUrl));
         }
 
-        if (substr(ltrim($path, '/'), 0, strlen($this->baseUrl)) === $this->baseUrl) {
-            $path = trim(substr(ltrim($path, '/'), strlen($this->baseUrl)), '/');
-        }
+        $image = new Image($this, $path, $request->query->all());
+        $image->validateSignature($signature);
 
-        return new Image($this, $path, $attributes, $signature);
-    }
-
-    /**
-     * Perform image manipulations.
-     * @param  string $source Source image binary data.
-     * @param  array  $params The manipulation params.
-     * @return string Manipulated image binary data.
-     */
-    public function generateImage($source, array $params)
-    {
-        $image = $this->imageManager->make($source);
-
-        foreach ($this->manipulators as $manipulator) {
-            $manipulator->setParams($params);
-
-            $image = $manipulator->run($image);
-        }
-
-        return $image->getEncoded();
+        return $image;
     }
 
     /**
@@ -364,6 +385,39 @@ class Server
      */
     public static function create(array $config = [])
     {
-        return (new ServerFactory($config))->create();
+        $server = new self(
+            new ImageManager(['driver' => $config['driver'] ?? 'gd']),
+            [
+                new Orientation(),
+                new Crop(),
+                new Size($config['max_image_size'] ?? null),
+                new Brightness(),
+                new Contrast(),
+                new Gamma(),
+                new Sharpen(),
+                new Filter(),
+                new Blur(),
+                new Pixelate(),
+                new Watermark($config['watermarks'] ?? null, $config['watermarks_folder'] ?? null),
+                new Background(),
+                new Border(),
+                new Encode(),
+            ],
+            $config['source'],
+            $config['cache']
+        );
+
+        unset(
+            $config['driver'],
+            $config['max_image_size'],
+            $config['watermarks'],
+            $config['watermarks_folder']
+        );
+
+        foreach ($config as $setting => $value) {
+            $server->{'set'.str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $setting)))}($value);
+        }
+
+        return $server;
     }
 }

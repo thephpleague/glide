@@ -3,6 +3,8 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Glide\Exceptions\FilesystemException;
 use League\Glide\Helpers\Dimension;
@@ -35,9 +37,9 @@ class Watermark extends BaseManipulator
 
     /**
      * Create Watermark instance.
-     * @param FilesystemInterface $watermarks The watermarks file system.
+     * @param FilesystemInterface|string $watermarks The watermarks file system.
      */
-    public function __construct(FilesystemInterface $watermarks = null, $watermarksPathPrefix = '')
+    public function __construct($watermarks = null, $watermarksPathPrefix = '')
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
@@ -45,10 +47,16 @@ class Watermark extends BaseManipulator
 
     /**
      * Set the watermarks file system.
-     * @param FilesystemInterface $watermarks The watermarks file system.
+     * @param FilesystemInterface|string $watermarks The watermarks file system.
      */
-    public function setWatermarks(FilesystemInterface $watermarks = null)
+    public function setWatermarks($watermarks = null)
     {
+        if (is_string($watermarks)) {
+            $watermarks = new Filesystem(
+                new Local($watermarks)
+            );
+        }
+
         $this->watermarks = $watermarks;
     }
 

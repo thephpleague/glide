@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use League\Flysystem\FileExistsException;
 use League\Glide\Exceptions\FileNotFoundException;
 use League\Glide\Exceptions\FilesystemException;
 use League\Glide\Exceptions\SignatureException;
@@ -28,32 +29,23 @@ class Image
     protected $attributes;
 
     /**
-     * The request image signature.
-     * @var array
-     */
-    protected $signature;
-
-    /**
      * Create image.
      * @param Server $server     Glide server.
      * @param string $path       Image path.
      * @param array  $attributes Image manipulation attributes.
-     * @param string $signature  The request image signature.
      */
-    public function __construct(Server $server, string $path, array $attributes = [], string $signature = null)
+    public function __construct(Server $server, string $path, array $attributes = [])
     {
         $this->server = $server;
         $this->path = $path;
         $this->attributes = $attributes;
-        $this->signature = $signature;
     }
 
     /**
      * Get the image source path.
-     * @return string                The image source path.
-     * @throws FileNotFoundException
+     * @return string The image source path.
      */
-    public function getSourcePath()
+    public function sourcePath()
     {
         if ($this->server->getSourceFolder()) {
             return $this->server->getSourceFolder().'/'.$this->path;
@@ -73,44 +65,24 @@ class Image
 
     /**
      * Get the image cache path.
-     * @return string                The image cache path.
-     * @throws FileNotFoundException
+     * @return string The image cache path.
      */
-    public function getCachePath()
+    public function cachePath()
     {
         if ($this->server->getCacheFolder()) {
-            return $this->server->getCacheFolder().'/'.$this->getCacheFilename();
+            return $this->server->getCacheFolder().'/'.$this->cacheFilename();
         }
 
-        return $this->getCacheFilename();
+        return $this->cacheFilename();
     }
 
     /**
      * Get the image cache filename.
      * @return string The image cache filename.
      */
-    public function getCacheFilename()
+    public function cacheFilename()
     {
-        $info = pathinfo($this->path);
-        $filename = $info['filename'];
-        $attributes = $this->attributes;
-
-        if (!isset($attributes['fm'])) {
-            $attributes['fm'] = $info['extension'];
-        }
-
-        $extension = $attributes['fm'] === 'pjpg' ? 'jpg' : $attributes['fm'];
-
-        unset($attributes['fm']);
-        ksort($attributes);
-
-        $attributes = array_map(function ($key, $value) {
-            return $key.'-'.$value;
-        }, array_keys($attributes), $attributes);
-
-        array_unshift($attributes, $filename);
-
-        return $this->path.'/'.implode('-', $attributes).'.'.$extension;
+        return $this->path.'/'.$this->signature().'/'.pathinfo($this->path)['filename'].'.'.($this->attributes()['fm'] ?? 'jpg');
     }
 
     /**
@@ -120,7 +92,7 @@ class Image
     public function cacheExists()
     {
         return $this->server->getCache()->has(
-            $this->getCachePath()
+            $this->cachePath()
         );
     }
 
@@ -140,7 +112,7 @@ class Image
      * @param  array $params Image manipulation params.
      * @return array All image manipulation params.
      */
-    public function getAttributes()
+    public function attributes()
     {
         $attributes = $this->attributes;
         $defaults = $this->server->getDefaults();
@@ -156,10 +128,6 @@ class Image
 
         $attributes = array_filter(array_merge($defaults, $attributes));
 
-        if (!isset($attributes['fm'])) {
-            $attributes['fm'] = 'jpg';
-        }
-
         unset($attributes['p']);
 
         return $attributes;
@@ -169,17 +137,11 @@ class Image
      * Get the image url.
      * @return string The image url.
      */
-    public function getUrl()
+    public function url()
     {
-        $base = $this->server->getCacheUrl() ? $this->server->getCacheUrl() : $this->server->getBaseUrl();
+        $baseUrl = $this->server->getCacheUrl() ? $this->server->getCacheUrl() : $this->server->getBaseUrl();
 
-        $url = $base.'/'.$this->getCacheFilename($this->path, $this->getAttributes());
-
-        if ($this->server->getSignKey()) {
-            $url .= '?'.http_build_query(['s' => $this->generateSignature()]);
-        }
-
-        return $url;
+        return $baseUrl.'/'.$this->cacheFilename().'?'.http_build_query($this->attributes());
     }
 
     /**
@@ -187,10 +149,10 @@ class Image
      * @throws SignatureException
      * @return $this
      */
-    public function validateSignature()
+    public function validateSignature($signature)
     {
-        if ($this->generateSignature() !== $this->signature) {
-            throw new SignatureException();
+        if ($this->signature() !== $signature) {
+            throw new SignatureException('Not a valid signature.');
         }
 
         return $this;
@@ -200,9 +162,13 @@ class Image
      * Generate a signature.
      * @return string The generated signature.
      */
-    public function generateSignature()
+    public function signature()
     {
-        $attributes = $this->getAttributes();
+        if (!$this->server->getSignKey()) {
+            throw new InvalidArgumentException('A signature sign key has not been set.');
+        }
+
+        $attributes = $this->attributes();
 
         unset($attributes['s']);
         ksort($attributes);
@@ -216,59 +182,56 @@ class Image
      * @throws FilesystemException
      * @return $this
      */
-    public function makeImage()
+    public function generate()
     {
-        $sourcePath = $this->getSourcePath();
-        $cachedPath = $this->getCachePath();
-
         if ($this->cacheExists() === true) {
             return $this;
         }
 
         if ($this->sourceExists() === false) {
-            throw new FileNotFoundException(
-                'Could not find the image `'.$sourcePath.'`.'
-            );
+            throw new FileNotFoundException('Could not find the image `'.$this->sourcePath().'`.');
         }
 
         $source = $this->server->getSource()->read(
-            $sourcePath
+            $this->sourcePath()
         );
 
         if ($source === false) {
-            throw new FilesystemException(
-                'Could not read the image `'.$sourcePath.'`.'
-            );
-        }
-
-        // We need to write the image to the local disk before
-        // doing any manipulations. This is because EXIF data
-        // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
-
-        if (file_put_contents($tmp, $source) === false) {
-            throw new FilesystemException(
-                'Unable to write temp file for `'.$sourcePath.'`.'
-            );
+            throw new FilesystemException('Could not read the image `'.$this->sourcePath().'`.');
         }
 
         try {
+            // We need to write the image to the local disk before
+            // doing any manipulations. This is because EXIF data
+            // can only be read from an actual file.
+            $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+
+            if (file_put_contents($tmp, $source) === false) {
+                throw new FilesystemException('Unable to write temp file for `'.$this->sourcePath().'`.');
+            }
+
+            $image = $this->server->getImageManager()->make($tmp);
+
+            foreach ($this->server->getManipulators() as $manipulator) {
+                $manipulator->setParams($this->attributes);
+
+                $image = $manipulator->run($image);
+            }
+
             $write = $this->server->getCache()->write(
-                $cachedPath,
-                $this->server->generateImage($tmp, $this->attributes)
+                $this->cachePath(),
+                $image->getEncoded()
             );
 
             if ($write === false) {
-                throw new FilesystemException(
-                    'Could not write the image `'.$cachedPath.'`.'
-                );
+                throw new FilesystemException('Could not write the image `'.$this->cachePath().'`.');
             }
         } catch (FileExistsException $exception) {
             // This edge case occurs when the target already exists
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
         } finally {
-            unlink($tmp);
+            @unlink($tmp);
         }
 
         return $this;
@@ -279,54 +242,57 @@ class Image
      * @return string              Base64 encoded image.
      * @throws FilesystemException
      */
-    public function getAsBase64()
+    public function base64()
     {
-        $this->makeImage();
+        $this->generate();
 
         $source = $this->server->getCache()->read(
-            $this->getCachePath()
+            $this->cachePath()
         );
 
         if ($source === false) {
-            throw new FilesystemException(
-                'Could not read the image `'.$this->path.'`.'
-            );
+            throw new FilesystemException('Could not read the image `'.$this->path.'`.');
         }
 
-        return 'data:'.$this->server->getCache()->getMimetype($this->getCachePath()).';base64,'.base64_encode($source);
+        return 'data:'.$this->server->getCache()->getMimetype($this->cachePath()).';base64,'.base64_encode($source);
     }
 
     /**
      * Generate and output image.
-     * @throws InvalidArgumentException
      */
     public function output()
     {
-        $this->makeImage()->getResponse()->send();
+        $this->generate()->response()->send();
     }
 
     /**
      * Generate and return image response.
-     * @return mixed                    Image response.
-     * @throws InvalidArgumentException
+     * @param  Request $request Optional request.
+     * @return mixed   Image response.
      */
-    public function getResponse()
+    public function response(Request $request = null)
     {
         $stream = $this->server->getCache()->readStream(
-            $this->getCachePath()
+            $this->cachePath()
         );
 
         $response = new StreamedResponse();
-        $response->headers->set('Content-Type', $this->server->getCache()->getMimetype($this->getCachePath()));
-        $response->headers->set('Content-Length', $this->server->getCache()->getSize($this->getCachePath()));
+        $response->headers->set('Content-Type', $this->server->getCache()->getMimetype($this->cachePath()));
+        $response->headers->set('Content-Length', $this->server->getCache()->getSize($this->cachePath()));
         $response->setPublic();
         $response->setMaxAge(31536000);
         $response->setExpires(date_create()->modify('+1 years'));
 
-        // if ($this->request) {
-        //     $response->setLastModified(date_create()->setTimestamp($this->server->getCache()->getTimestamp($this->getCachePath())));
-        //     $response->isNotModified($this->request);
-        // }
+        if ($request) {
+            $response->setLastModified(
+                date_create()->setTimestamp(
+                    $this->server->getCache()->getTimestamp(
+                        $this->cachePath()
+                    )
+                )
+            );
+            $response->isNotModified($request);
+        }
 
         $response->setCallback(function () use ($stream) {
             rewind($stream);
