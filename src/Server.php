@@ -7,21 +7,6 @@ use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use League\Glide\Manipulators\Background;
-use League\Glide\Manipulators\Blur;
-use League\Glide\Manipulators\Border;
-use League\Glide\Manipulators\Brightness;
-use League\Glide\Manipulators\Contrast;
-use League\Glide\Manipulators\Crop;
-use League\Glide\Manipulators\Encode;
-use League\Glide\Manipulators\Filter;
-use League\Glide\Manipulators\Gamma;
-use League\Glide\Manipulators\ManipulatorInterface;
-use League\Glide\Manipulators\Orientation;
-use League\Glide\Manipulators\Pixelate;
-use League\Glide\Manipulators\Sharpen;
-use League\Glide\Manipulators\Size;
-use League\Glide\Manipulators\Watermark;
 use Symfony\Component\HttpFoundation\Request;
 
 class Server
@@ -132,7 +117,7 @@ class Server
     public function setManipulators(array $manipulators)
     {
         foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof ManipulatorInterface)) {
+            if (!($manipulator instanceof Manipulators\ManipulatorInterface)) {
                 throw new InvalidArgumentException('Not a valid manipulator.');
             }
         }
@@ -388,20 +373,20 @@ class Server
         $server = new self(
             new ImageManager(['driver' => $config['driver'] ?? 'gd']),
             [
-                new Orientation(),
-                new Crop(),
-                new Size($config['max_image_size'] ?? null),
-                new Brightness(),
-                new Contrast(),
-                new Gamma(),
-                new Sharpen(),
-                new Filter(),
-                new Blur(),
-                new Pixelate(),
-                new Watermark($config['watermarks'] ?? null, $config['watermarks_folder'] ?? null),
-                new Background(),
-                new Border(),
-                new Encode(),
+                new Manipulators\Orientation(),
+                new Manipulators\Crop(),
+                new Manipulators\Size($config['max_image_size'] ?? null),
+                new Manipulators\Brightness(),
+                new Manipulators\Contrast(),
+                new Manipulators\Gamma(),
+                new Manipulators\Sharpen(),
+                new Manipulators\Filter(),
+                new Manipulators\Blur(),
+                new Manipulators\Pixelate(),
+                new Manipulators\Watermark($config['watermarks'] ?? null, $config['watermarks_folder'] ?? null),
+                new Manipulators\Background(),
+                new Manipulators\Border(),
+                new Manipulators\Encode(),
             ],
             $config['source'],
             $config['cache']

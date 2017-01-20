@@ -3,9 +3,6 @@
 namespace League\Glide;
 
 use League\Flysystem\FileExistsException;
-use League\Glide\Exceptions\FileNotFoundException;
-use League\Glide\Exceptions\FilesystemException;
-use League\Glide\Exceptions\SignatureException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Image
@@ -146,13 +143,13 @@ class Image
 
     /**
      * Validate a signature.
-     * @throws SignatureException
+     * @throws Exceptions\SignatureException
      * @return $this
      */
     public function validateSignature($signature)
     {
         if ($this->signature() !== $signature) {
-            throw new SignatureException('Not a valid signature.');
+            throw new Exceptions\SignatureException('Not a valid signature.');
         }
 
         return $this;
@@ -178,8 +175,8 @@ class Image
 
     /**
      * Generate manipulated image.
-     * @throws FileNotFoundException
-     * @throws FilesystemException
+     * @throws Exceptions\FileNotFoundException
+     * @throws Exceptions\FilesystemException
      * @return $this
      */
     public function generate()
@@ -189,7 +186,7 @@ class Image
         }
 
         if ($this->sourceExists() === false) {
-            throw new FileNotFoundException('Could not find the image `'.$this->sourcePath().'`.');
+            throw new Exceptions\FileNotFoundException('Could not find the image `'.$this->sourcePath().'`.');
         }
 
         $source = $this->server->getSource()->read(
@@ -197,7 +194,7 @@ class Image
         );
 
         if ($source === false) {
-            throw new FilesystemException('Could not read the image `'.$this->sourcePath().'`.');
+            throw new Exceptions\FilesystemException('Could not read the image `'.$this->sourcePath().'`.');
         }
 
         try {
@@ -207,7 +204,7 @@ class Image
             $tmp = tempnam(sys_get_temp_dir(), 'Glide');
 
             if (file_put_contents($tmp, $source) === false) {
-                throw new FilesystemException('Unable to write temp file for `'.$this->sourcePath().'`.');
+                throw new Exceptions\FilesystemException('Unable to write temp file for `'.$this->sourcePath().'`.');
             }
 
             $image = $this->server->getImageManager()->make($tmp);
@@ -224,7 +221,7 @@ class Image
             );
 
             if ($write === false) {
-                throw new FilesystemException('Could not write the image `'.$this->cachePath().'`.');
+                throw new Exceptions\FilesystemException('Could not write the image `'.$this->cachePath().'`.');
             }
         } catch (FileExistsException $exception) {
             // This edge case occurs when the target already exists
@@ -239,8 +236,8 @@ class Image
 
     /**
      * Generate and return Base64 encoded image.
-     * @return string              Base64 encoded image.
-     * @throws FilesystemException
+     * @return string                         Base64 encoded image.
+     * @throws Exceptions\FilesystemException
      */
     public function base64()
     {
@@ -251,7 +248,7 @@ class Image
         );
 
         if ($source === false) {
-            throw new FilesystemException('Could not read the image `'.$this->path.'`.');
+            throw new Exceptions\FilesystemException('Could not read the image `'.$this->path.'`.');
         }
 
         return 'data:'.$this->server->getCache()->getMimetype($this->cachePath()).';base64,'.base64_encode($source);
