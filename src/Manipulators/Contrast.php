@@ -7,7 +7,7 @@ use Intervention\Image\Image;
 /**
  * @property string $con
  */
-class Contrast extends BaseManipulator
+class Contrast extends Manipulator
 {
     /**
      * Perform contrast image manipulation.

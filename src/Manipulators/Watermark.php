@@ -3,6 +3,7 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
+use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
@@ -21,7 +22,7 @@ use League\Glide\Helpers\Dimension;
  * @property string $marky
  * @property string $markalpha
  */
-class Watermark extends BaseManipulator
+class Watermark extends Manipulator
 {
     /**
      * The watermarks file system.
@@ -55,6 +56,10 @@ class Watermark extends BaseManipulator
             $watermarks = new Filesystem(
                 new Local($watermarks)
             );
+        }
+
+        if (!is_null($watermarks) and !is_a($watermarks, FilesystemInterface::class)) {
+            throw new InvalidArgumentException('Not a valid "watermarks" file system.');
         }
 
         $this->watermarks = $watermarks;

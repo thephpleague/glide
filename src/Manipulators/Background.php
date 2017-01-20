@@ -8,7 +8,7 @@ use League\Glide\Helpers\Color;
 /**
  * @property string $bg
  */
-class Background extends BaseManipulator
+class Background extends Manipulator
 {
     /**
      * Perform blur image manipulation.

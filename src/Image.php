@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use League\Flysystem\FileExistsException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -257,9 +258,9 @@ class Image
     /**
      * Generate and output image.
      */
-    public function output()
+    public function output(Request $request = null)
     {
-        $this->generate()->response()->send();
+        $this->httpFoundationResponse($request)->send();
     }
 
     /**
@@ -267,11 +268,19 @@ class Image
      * @param  Request $request Optional request.
      * @return mixed   Image response.
      */
-    public function response(Request $request = null)
+    public function response(...$arguments)
     {
-        $stream = $this->server->getCache()->readStream(
-            $this->cachePath()
-        );
+        switch ($this->server->getResponseType()) {
+            case 'httpfoundation':
+                return $this->httpFoundation(...$arguments);
+            case 'psr7':
+                return $this->psr7(...$arguments);
+        }
+    }
+
+    public function httpFoundation(Request $request = null)
+    {
+        $this->generate();
 
         $response = new StreamedResponse();
         $response->headers->set('Content-Type', $this->server->getCache()->getMimetype($this->cachePath()));
@@ -291,13 +300,33 @@ class Image
             $response->isNotModified($request);
         }
 
-        $response->setCallback(function () use ($stream) {
+        $response->setCallback(function () {
+            $stream = $this->server->getCache()->readStream(
+                $this->cachePath()
+            );
+
             rewind($stream);
             fpassthru($stream);
             fclose($stream);
         });
 
         return $response;
+    }
+
+    public function psr7()
+    {
+        $this->generate();
+
+        return new Psr7Response(
+            200,
+            [
+                'Content-Type'   => $this->server->getCache()->getMimetype($this->cachePath()),
+                'Content-Length' => $this->server->getCache()->getSize($this->cachePath()),
+            ],
+            $this->server->getCache()->readStream(
+                $this->cachePath()
+            )
+        );
     }
 
     /**

@@ -7,7 +7,7 @@ use Intervention\Image\Image;
 /**
  * @property string $gam
  */
-class Gamma extends BaseManipulator
+class Gamma extends Manipulator
 {
     /**
      * Perform gamma image manipulation.

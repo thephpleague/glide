@@ -7,7 +7,7 @@ use Intervention\Image\Image;
 /**
  * @property string $filt
  */
-class Filter extends BaseManipulator
+class Filter extends Manipulator
 {
     /**
      * Perform filter image manipulation.

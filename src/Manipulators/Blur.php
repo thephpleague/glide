@@ -7,7 +7,7 @@ use Intervention\Image\Image;
 /**
  * @property string $blur
  */
-class Blur extends BaseManipulator
+class Blur extends Manipulator
 {
     /**
      * Perform blur image manipulation.

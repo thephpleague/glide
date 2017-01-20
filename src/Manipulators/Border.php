@@ -10,7 +10,7 @@ use League\Glide\Helpers\Dimension;
  * @property string $border
  * @property string $dpr
  */
-class Border extends BaseManipulator
+class Border extends Manipulator
 {
     /**
      * Perform border image manipulation.

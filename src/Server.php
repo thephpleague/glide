@@ -66,6 +66,12 @@ class Server
     protected $signKey;
 
     /**
+     * Response type.
+     * @var string
+     */
+    protected $responseType = 'httpfoundation';
+
+    /**
      * Default image manipulations.
      * @var array
      */
@@ -117,8 +123,8 @@ class Server
     public function setManipulators(array $manipulators)
     {
         foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof Manipulators\ManipulatorInterface)) {
-                throw new InvalidArgumentException('Not a valid manipulator.');
+            if (!is_a($manipulator, Manipulators\ManipulatorInterface::class)) {
+                throw new InvalidArgumentException('Not a valid manipulator: '.get_class($manipulator));
             }
         }
 
@@ -148,6 +154,10 @@ class Server
             );
         }
 
+        if (!is_a($source, FilesystemInterface::class)) {
+            throw new InvalidArgumentException('A valid "source" file system is required.');
+        }
+
         $this->source = $source;
 
         return $this;
@@ -160,26 +170,6 @@ class Server
     public function getSource()
     {
         return $this->source;
-    }
-
-    /**
-     * Set the sign key.
-     * @param string $signKey The sign key.
-     */
-    public function setSignKey($signKey)
-    {
-        $this->signKey = $signKey;
-
-        return $this;
-    }
-
-    /**
-     * Get the sign key.
-     * @return string The sign key.
-     */
-    public function getSignKey()
-    {
-        return $this->signKey;
     }
 
     /**
@@ -254,6 +244,10 @@ class Server
             );
         }
 
+        if (!is_a($cache, FilesystemInterface::class)) {
+            throw new InvalidArgumentException('A valid "cache" file system is required.');
+        }
+
         $this->cache = $cache;
 
         return $this;
@@ -286,6 +280,50 @@ class Server
     public function getCacheFolder()
     {
         return $this->cacheFolder;
+    }
+
+    /**
+     * Set the sign key.
+     * @param string $signKey The sign key.
+     */
+    public function setSignKey($signKey)
+    {
+        $this->signKey = $signKey;
+
+        return $this;
+    }
+
+    /**
+     * Get the sign key.
+     * @return string The sign key.
+     */
+    public function getSignKey()
+    {
+        return $this->signKey;
+    }
+
+    /**
+     * Set the response type.
+     * @param string $responseType The response type.
+     */
+    public function setResponseType($responseType)
+    {
+        if (!in_array($responseType, ['httpfoundation', 'psr7'], true)) {
+            throw new InvalidArgumentException('Not a valid response type: '.$responseType);
+        }
+
+        $this->responseType = $responseType;
+
+        return $this;
+    }
+
+    /**
+     * Get the response type.
+     * @return string The response type.
+     */
+    public function getResponseType()
+    {
+        return $this->responseType;
     }
 
     /**
@@ -364,32 +402,34 @@ class Server
     }
 
     /**
-     * Create configured server.
-     * @param  array  $config Configuration parameters.
+     * Create a configured server.
+     * @param  array  $config The configuration parameters.
      * @return Server Configured server.
      */
     public static function create(array $config = [])
     {
+        $manipulators = [
+            new Manipulators\Orientation(),
+            new Manipulators\Crop(),
+            new Manipulators\Size($config['max_image_size'] ?? null),
+            new Manipulators\Brightness(),
+            new Manipulators\Contrast(),
+            new Manipulators\Gamma(),
+            new Manipulators\Sharpen(),
+            new Manipulators\Filter(),
+            new Manipulators\Blur(),
+            new Manipulators\Pixelate(),
+            new Manipulators\Watermark($config['watermarks'] ?? null, $config['watermarks_folder'] ?? null),
+            new Manipulators\Background(),
+            new Manipulators\Border(),
+            new Manipulators\Encode(),
+        ];
+
         $server = new self(
             new ImageManager(['driver' => $config['driver'] ?? 'gd']),
-            [
-                new Manipulators\Orientation(),
-                new Manipulators\Crop(),
-                new Manipulators\Size($config['max_image_size'] ?? null),
-                new Manipulators\Brightness(),
-                new Manipulators\Contrast(),
-                new Manipulators\Gamma(),
-                new Manipulators\Sharpen(),
-                new Manipulators\Filter(),
-                new Manipulators\Blur(),
-                new Manipulators\Pixelate(),
-                new Manipulators\Watermark($config['watermarks'] ?? null, $config['watermarks_folder'] ?? null),
-                new Manipulators\Background(),
-                new Manipulators\Border(),
-                new Manipulators\Encode(),
-            ],
-            $config['source'],
-            $config['cache']
+            $manipulators,
+            $config['source'] ?? null,
+            $config['cache'] ?? null
         );
 
         unset(

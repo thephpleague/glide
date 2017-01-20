@@ -10,7 +10,7 @@ use Intervention\Image\Image;
  * @property string $h
  * @property string $w
  */
-class Size extends BaseManipulator
+class Size extends Manipulator
 {
     /**
      * Maximum image size in pixels.
