@@ -264,9 +264,8 @@ class Image
     }
 
     /**
-     * Generate and return image response.
-     * @param  Request $request Optional request.
-     * @return mixed   Image response.
+     * Generate and return an image response.
+     * @return mixed The image response.
      */
     public function response(...$arguments)
     {
@@ -278,6 +277,11 @@ class Image
         }
     }
 
+    /**
+     * Generate and return an HttpFoundation image response.
+     * @param  Request          $request Optional request.
+     * @return StreamedResponse The HttpFoundation image response.
+     */
     public function httpFoundation(Request $request = null)
     {
         $this->generate();
@@ -313,6 +317,10 @@ class Image
         return $response;
     }
 
+    /**
+     * Generate and return a PSR-7 image response.
+     * @return Psr7Response The PSR-7 image response.
+     */
     public function psr7()
     {
         $this->generate();
