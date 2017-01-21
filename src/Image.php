@@ -4,7 +4,8 @@ namespace League\Glide;
 
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use League\Flysystem\FileExistsException;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse as HttpFoundationResponse;
 
 class Image
 {
@@ -150,7 +151,7 @@ class Image
     public function validateSignature($signature)
     {
         if ($this->signature() !== $signature) {
-            throw new Exceptions\SignatureException('Not a valid signature.');
+            throw new Exceptions\SignatureException('Not a valid image signature.');
         }
 
         return $this;
@@ -162,16 +163,12 @@ class Image
      */
     public function signature()
     {
-        if (!$this->server->getSignKey()) {
-            throw new InvalidArgumentException('A signature sign key has not been set.');
-        }
-
         $attributes = $this->attributes();
 
         unset($attributes['s']);
         ksort($attributes);
 
-        return hash_hmac('sha256', ltrim($this->path, '/').'?'.http_build_query($attributes), $this->server->getSignKey());
+        return hash_hmac('sha256', ltrim($this->path, '/').'?'.http_build_query($attributes), $this->server->getKey());
     }
 
     /**
@@ -258,9 +255,9 @@ class Image
     /**
      * Generate and output image.
      */
-    public function output(Request $request = null)
+    public function output()
     {
-        $this->httpFoundationResponse($request)->send();
+        $this->httpFoundationResponse()->send();
     }
 
     /**
@@ -279,14 +276,14 @@ class Image
 
     /**
      * Generate and return an HttpFoundation image response.
-     * @param  Request          $request Optional request.
-     * @return StreamedResponse The HttpFoundation image response.
+     * @param  HttpFoundationRequest  $request Optional request.
+     * @return HttpFoundationResponse The HttpFoundation image response.
      */
-    public function httpFoundation(Request $request = null)
+    public function httpFoundation(HttpFoundationRequest $request = null)
     {
         $this->generate();
 
-        $response = new StreamedResponse();
+        $response = new HttpFoundationResponse();
         $response->headers->set('Content-Type', $this->server->getCache()->getMimetype($this->cachePath()));
         $response->headers->set('Content-Length', $this->server->getCache()->getSize($this->cachePath()));
         $response->setPublic();

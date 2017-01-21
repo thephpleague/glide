@@ -7,7 +7,8 @@ use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Http\Message\RequestInterface as Psr7Request;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 class Server
 {
@@ -63,7 +64,7 @@ class Server
      * Sign key.
      * @var string
      */
-    protected $signKey;
+    protected $key;
 
     /**
      * Response type.
@@ -85,8 +86,11 @@ class Server
 
     /**
      * Create server.
-     * @param ImageManager $imageManager Intervention image manager.
-     * @param array        $manipulators Collection of manipulators.
+     * @param ImageManager               $imageManager Intervention image manager.
+     * @param array                      $manipulators Collection of manipulators.
+     * @param FilesystemInterface|string $source       Source file system.
+     * @param FilesystemInterface|string $source       Cache file system.
+     * @param string                     $key          Sign key.
      */
     public function __construct(ImageManager $imageManager, array $manipulators, $source, $cache)
     {
@@ -284,11 +288,11 @@ class Server
 
     /**
      * Set the sign key.
-     * @param string $signKey The sign key.
+     * @param string $key The sign key.
      */
-    public function setSignKey($signKey)
+    public function setKey($key)
     {
-        $this->signKey = $signKey;
+        $this->key = $key;
 
         return $this;
     }
@@ -297,9 +301,9 @@ class Server
      * Get the sign key.
      * @return string The sign key.
      */
-    public function getSignKey()
+    public function getKey()
     {
-        return $this->signKey;
+        return $this->key;
     }
 
     /**
@@ -379,13 +383,24 @@ class Server
 
     /**
      * Create Image from a request.
-     * @param  Request $request The request.
-     * @return Image   The image.
+     * @param  HttpFoundationRequest|Psr7Request $request The request.
+     * @return Image                             The image.
      */
-    public function fromRequest(Request $request = null)
+    public function fromRequest($request = null)
     {
-        $request = $request ?: Request::createFromGlobals();
-        $path = array_filter(explode('/', $request->getPathInfo()));
+        $request = $request ?? HttpFoundationRequest::createFromGlobals();
+
+        if (is_a($request, HttpFoundationRequest::class)) {
+            $path = $request->getPathInfo();
+            $attributes = $request->query->all();
+        } elseif (is_a($request, Psr7Request::class)) {
+            $path = $request->getUri()->getPath();
+            $attributes = $request->getQueryParams();
+        } else {
+            throw new InvalidArgumentException('Not a valid request.');
+        }
+
+        $path = array_filter(explode('/', $path));
         $filename = array_pop($path);
         $signature = array_pop($path);
         $path = implode('/', $path);
@@ -395,7 +410,7 @@ class Server
             $path = substr($path, strlen($baseUrl));
         }
 
-        $image = new Image($this, $path, $request->query->all());
+        $image = new Image($this, $path, $attributes);
         $image->validateSignature($signature);
 
         return $image;
