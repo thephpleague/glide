@@ -359,4 +359,13 @@ class Image
 
         return $this;
     }
+
+    /**
+     * Get the image url.
+     * @return string The image url.
+     */
+    public function __toString()
+    {
+        return $this->url();
+    }
 }
