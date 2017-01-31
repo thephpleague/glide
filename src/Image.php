@@ -96,13 +96,28 @@ class Image
     }
 
     /**
-     * Delete cached images.
+     * Delete the source image and cached images.
+     * @return bool Whether the delete succeeded.
+     */
+    public function delete()
+    {
+        if (!$this->deleteCache()) {
+            return false;
+        }
+
+        return $this->server->getSource()->delete(
+            $this->sourcePath()
+        );
+    }
+
+    /**
+     * Delete the cached images.
      * @return bool Whether the delete succeeded.
      */
     public function deleteCache()
     {
         return $this->server->getCache()->deleteDir(
-            $this->cacheFolder ? $this->cacheFolder.'/'.$this->path : $this->path
+            $this->server->getCacheFolder() ? $this->server->getCacheFolder().'/'.$this->path : $this->path
         );
     }
 
