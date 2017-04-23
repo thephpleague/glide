@@ -523,7 +523,7 @@ class Server
         try {
             $write = $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, $this->getAllParams($params))
+                $this->api->run($source, $this->getAllParams($params))
             );
 
             if ($write === false) {
