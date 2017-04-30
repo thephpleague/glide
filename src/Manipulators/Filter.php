@@ -24,6 +24,10 @@ class Filter extends BaseManipulator
             return $this->runSepiaFilter($image);
         }
 
+        if ($this->filt === 'invert') {
+            return $this->runInvertFilter($image);
+        }
+
         return $image;
     }
 
@@ -52,5 +56,15 @@ class Filter extends BaseManipulator
         $image->contrast(10);
 
         return $image;
+    }
+
+    /**
+     * Perform invert manipulation.
+     * @param  Image $image The source image.
+     * @return Image The manipulated image.
+     */
+    public function runInvertFilter(Image $image)
+    {
+        return $image->invert();
     }
 }

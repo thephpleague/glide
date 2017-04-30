@@ -29,7 +29,7 @@ Applies a pixelation effect to the image. Use values between `0` and `1000`.
 
 ## Filter `filt`
 
-Applies a filter effect to the image. Accepts `greyscale` or `sepia`.
+Applies a filter effect to the image. Accepts `greyscale`, `sepia` or `invert`.
 
 ~~~ html
 <img src="kayaks.jpg?w=500&filt=sepia>
