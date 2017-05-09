@@ -205,11 +205,24 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
     }
 
+    public function testGetCachePathWithExtensionAndPjpgFmParam()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
+    }
+
     public function testGetCachePathWithExtensionAndFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'gif']);
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
+    }
+
+    public function testGetCachePathWithExtensionAndPjpgFmFromDefaults()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+        $this->server->setDefaults(['fm' => 'pjpg']);
+        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithExtensionAndFmFromPreset()
@@ -221,6 +234,17 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         ]]);
 
         $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
+    }
+
+    public function testGetCachePathWithExtensionAndPjpgFmFromPreset()
+    {
+        $this->server->setCacheWithFileExtensions(true);
+
+        $this->server->setPresets(['pjpg' => [
+            'fm' => 'pjpg',
+        ]]);
+
+        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
     }
 
     public function testCacheFileExists()
