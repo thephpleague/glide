@@ -40,7 +40,7 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->jpg)->mime);
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->png)->mime);
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->gif)->mime);
-	    $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->webp)->mime);
+        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->webp)->mime);
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->jpg)->mime);
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->png)->mime);
         $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->gif)->mime);
@@ -48,15 +48,15 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->jpg)->mime);
         $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->png)->mime);
         $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->gif)->mime);
-	    $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->webp)->mime);
+        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->webp)->mime);
         $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->jpg)->mime);
         $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->png)->mime);
         $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->gif)->mime);
-	    $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->webp)->mime);
+        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->webp)->mime);
 	    $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->jpg)->mime);
 	    $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->png)->mime);
 	    $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->gif)->mime);
-		$this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->webp)->mime);
+        $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->webp)->mime);
     }
 
     public function testGetFormat()
@@ -66,14 +66,14 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
             $mock->shouldReceive('mime')->andReturn('image/png')->once();
             $mock->shouldReceive('mime')->andReturn('image/gif')->once();
             $mock->shouldReceive('mime')->andReturn('image/bmp')->once();
-	        $mock->shouldReceive('mime')->andReturn('image/webp')->once();
+            $mock->shouldReceive('mime')->andReturn('image/webp')->once();
             $mock->shouldReceive('mime')->andReturn('image/jpeg')->twice();
         });
 
         $this->assertSame('jpg', $this->manipulator->setParams(['fm' => 'jpg'])->getFormat($image));
         $this->assertSame('png', $this->manipulator->setParams(['fm' => 'png'])->getFormat($image));
         $this->assertSame('gif', $this->manipulator->setParams(['fm' => 'gif'])->getFormat($image));
-	    $this->assertSame('webp', $this->manipulator->setParams(['fm' => 'webp'])->getFormat($image));
+        $this->assertSame('webp', $this->manipulator->setParams(['fm' => 'webp'])->getFormat($image));
         $this->assertSame('jpg', $this->manipulator->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('png', $this->manipulator->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('gif', $this->manipulator->setParams(['fm' => null])->getFormat($image));
