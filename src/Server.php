@@ -517,6 +517,8 @@ class Server
         $tmp = tempnam(sys_get_temp_dir(), 'Glide');
 
         if (file_put_contents($tmp, $source) === false) {
+            unlink($tmp);
+            
             throw new FilesystemException(
                 'Unable to write temp file for `'.$sourcePath.'`.'
             );
@@ -529,6 +531,8 @@ class Server
             );
 
             if ($write === false) {
+                unlink($tmp);
+                
                 throw new FilesystemException(
                     'Could not write the image `'.$cachedPath.'`.'
                 );
