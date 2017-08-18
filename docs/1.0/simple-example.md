@@ -42,4 +42,4 @@ $server->outputImage('users/1.jpg', ['w' => 300, 'h' => 400]);
 $server->outputImage($path, $_GET);
 ~~~
 
-<p class="message-notice">While the <code>outputImage()</code> method works okay, the <code>getImageResponse()</code> method is recommended. This allows your application to handle the outputting of the manipulated images. This approach does requires a little more configuration. See <a href="config/responses/">responses</a> for more info.</p>
+<p class="message-notice">While the <code>outputImage()</code> method works okay, the <code>getImageResponse()</code> method is recommended. This allows your application to handle the outputting of the manipulated images. This approach does require a little more configuration. See <a href="config/responses/">responses</a> for more info.</p>
