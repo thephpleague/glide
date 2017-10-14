@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class BlurTest extends \PHPUnit_Framework_TestCase
+class BlurTest extends TestCase
 {
     private $manipulator;
 

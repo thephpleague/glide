@@ -29,7 +29,7 @@
     "require-dev": {
         "mockery/mockery": "~0.9",
         "phpunit/php-token-stream": "^1.4",
-        "phpunit/phpunit": "~4.4"
+        "phpunit/phpunit": "^4.8.35"
     },
     "autoload": {
         "psr-4": {

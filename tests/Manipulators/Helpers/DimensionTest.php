@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators\Helpers;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class DimensionTest extends \PHPUnit_Framework_TestCase
+class DimensionTest extends TestCase
 {
     private $image;
 

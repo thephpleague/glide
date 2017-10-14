@@ -3,8 +3,9 @@
 namespace League\Glide\Urls;
 
 use League\Glide\Signatures\Signature;
+use PHPUnit\Framework\TestCase;
 
-class UrlBuilderTest extends \PHPUnit_Framework_TestCase
+class UrlBuilderTest extends TestCase
 {
     public function testCreateInstance()
     {

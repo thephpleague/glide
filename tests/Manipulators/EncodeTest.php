@@ -4,8 +4,9 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\ImageManager;
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class EncodeTest extends \PHPUnit_Framework_TestCase
+class EncodeTest extends TestCase
 {
     private $manipulator;
     private $jpg;

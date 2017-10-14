@@ -2,7 +2,9 @@
 
 namespace League\Glide\Signatures;
 
-class SignatureTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SignatureTest extends TestCase
 {
     private $httpSignature;
 

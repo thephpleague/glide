@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class BrightnessTest extends \PHPUnit_Framework_TestCase
+class BrightnessTest extends TestCase
 {
     private $manipulator;
 

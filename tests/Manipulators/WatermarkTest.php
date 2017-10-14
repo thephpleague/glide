@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class WatermarkTest extends \PHPUnit_Framework_TestCase
+class WatermarkTest extends TestCase
 {
     private $manipulator;
 

@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class CropTest extends \PHPUnit_Framework_TestCase
+class CropTest extends TestCase
 {
     private $manipulator;
 

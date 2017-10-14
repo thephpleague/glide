@@ -3,8 +3,9 @@
 namespace League\Glide;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class ServerFactoryTest extends \PHPUnit_Framework_TestCase
+class ServerFactoryTest extends TestCase
 {
     public function testCreateServerFactory()
     {

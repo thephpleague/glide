@@ -3,8 +3,9 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class GammaTest extends \PHPUnit_Framework_TestCase
+class GammaTest extends TestCase
 {
     private $manipulator;
 
