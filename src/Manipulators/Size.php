@@ -305,7 +305,7 @@ class Size extends BaseManipulator
         list($resize_width, $resize_height) = $this->resolveCropResizeDimensions($image, $width, $height);
 
         $image->resize($resize_width, $resize_height, function ($constraint) {
-            $constraint->aspectRatio();
+            //$constraint->aspectRatio();
         });
 
         list($offset_x, $offset_y) = $this->resolveCropOffset($image, $width, $height);
