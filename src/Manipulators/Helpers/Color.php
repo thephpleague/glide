@@ -111,7 +111,10 @@ class Color
      */
     public function formatted()
     {
-        return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$this->alpha.')';
+        // Make sure the alpha float is correctly formatted
+        $alpha_str = number_format($this->alpha, 2, '.', ',');
+
+        return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$alpha_str.')';
     }
 
     /**
