@@ -113,8 +113,8 @@ class Color
     {
         // Make sure the alpha float is correctly formatted
         $formatted = number_format($this->alpha, 2, '.', ',');
-		$zero_trimmed = rtrim($formatted, '0');
-		$alpha_str = rtrim($zero_trimmed, '.');
+        $zero_trimmed = rtrim($formatted, '0');
+        $alpha_str = rtrim($zero_trimmed, '.');
 
         return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$alpha_str.')';
     }
