@@ -45,4 +45,12 @@ class ColorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('rgba(255, 255, 255, 0)', $color->formatted());
     }
+
+    public function testAlphaFloat()
+    {
+        $color = new Color('55CCCCCC');
+
+        $this->assertSame('rgba(204, 204, 204, 0.55)', $color->formatted());
+    }
+
 }
