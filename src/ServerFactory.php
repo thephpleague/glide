@@ -16,6 +16,7 @@ use League\Glide\Manipulators\Contrast;
 use League\Glide\Manipulators\Crop;
 use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\Filter;
+use League\Glide\Manipulators\Flip;
 use League\Glide\Manipulators\Gamma;
 use League\Glide\Manipulators\Orientation;
 use League\Glide\Manipulators\Pixelate;
@@ -225,6 +226,7 @@ class ServerFactory
             new Gamma(),
             new Sharpen(),
             new Filter(),
+            new Flip(),
             new Blur(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),

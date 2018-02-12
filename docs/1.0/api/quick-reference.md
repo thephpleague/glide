@@ -8,6 +8,7 @@ title: Quick reference
 Name    | Function         | Description |
 ------- | ---------------- | ----------- | ----
 Orientation | `or` | Rotates the image. | [info](api/orientation/#orientation-or)
+Flip | `flip` | Flip the image. | [info](api/orientation/#flip-flip)
 Crop | `crop` | Crops the image to specific dimensions. | [info](api/crop/#crop-crop)
 Width | `w` | Sets the width of the image, in pixels. | [info](api/size/#width-w)
 Height | `h` | Sets the height of the image, in pixels. | [info](api/size//#height-h)
