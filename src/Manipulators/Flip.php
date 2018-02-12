@@ -17,6 +17,10 @@ class Flip extends BaseManipulator
     public function run(Image $image)
     {
         if ($flip = $this->getFlip()) {
+            if ($flip === 'all') {
+                return $image->flip('h')->flip('v');
+            }
+
             return $image->flip($flip);
         }
 
@@ -29,7 +33,7 @@ class Flip extends BaseManipulator
      */
     public function getFlip()
     {
-        if (in_array($this->flip, ['h', 'v'], true)) {
+        if (in_array($this->flip, ['h', 'v', 'all'], true)) {
             return $this->flip;
         }
     }
