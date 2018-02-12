@@ -34,6 +34,7 @@
     Image API:
         Quick reference: '/1.0/api/quick-reference/'
         Orientation: '/1.0/api/orientation/'
+        Flip: '/1.0/api/flip/'
         Crop: '/1.0/api/crop/'
         Size: '/1.0/api/size/'
         Pixel density: '/1.0/api/pixel-density/'
