@@ -5,7 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 
 /**
- * @property string $or
+ * @property string $flip
  */
 class Flip extends BaseManipulator
 {
