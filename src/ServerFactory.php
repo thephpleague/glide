@@ -218,6 +218,7 @@ class ServerFactory
     public function getManipulators()
     {
         return [
+            new Flip(),
             new Orientation(),
             new Crop(),
             new Size($this->getMaxImageSize()),
@@ -226,7 +227,6 @@ class ServerFactory
             new Gamma(),
             new Sharpen(),
             new Filter(),
-            new Flip(),
             new Blur(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
