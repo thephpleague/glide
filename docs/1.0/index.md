@@ -6,8 +6,8 @@ title: Introduction
 
 # Introduction
 
-[![Author](http://img.shields.io/badge/author-@reinink-blue.svg?style=flat-square)](https://twitter.com/reinink)
-[![Source Code](http://img.shields.io/badge/github-thephpleague/glide-blue.svg?style=flat-square)](https://github.com/thephpleague/glide)
+[![Author](https://img.shields.io/badge/author-@reinink-blue.svg?style=flat-square)](https://twitter.com/reinink)
+[![Source Code](https://img.shields.io/badge/github-thephpleague/glide-blue.svg?style=flat-square)](https://github.com/thephpleague/glide)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/glide.svg?style=flat-square)](https://github.com/thephpleague/glide/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/glide/blob/master/LICENSE)<br>
 [![Build Status](https://img.shields.io/travis/thephpleague/glide/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/glide)
