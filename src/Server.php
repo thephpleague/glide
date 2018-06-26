@@ -514,7 +514,7 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+        $tmp = @tempnam(sys_get_temp_dir(), 'Glide');
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
