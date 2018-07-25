@@ -537,9 +537,9 @@ class Server
             // This edge case occurs when the target already exists
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
+        } finally {
+            unlink($tmp);
         }
-
-        unlink($tmp);
 
         return $cachedPath;
     }
