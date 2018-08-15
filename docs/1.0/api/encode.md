@@ -7,7 +7,7 @@ title: Encode
 
 ## Quality `q`
 
-Defines the quality of the image. Use values between `0` and `100`. Defaults to `90`. Only relevant if the format is set to `jpg`.
+Defines the quality of the image. Use values between `0` and `100`. Defaults to `90`. Only relevant if the format is set to `jpg` or `pjpg`.
 
 ~~~ html
 <img src="kayaks.jpg?w=500&q=25">
