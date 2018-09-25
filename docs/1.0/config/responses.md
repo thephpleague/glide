@@ -42,3 +42,7 @@ interface ResponseFactoryInterface
     public function create(FilesystemInterface $cache, $path);
 }
 ~~~
+
+## Using PSR-17 response factories
+
+[PSR-17](https://www.php-fig.org/psr/psr-17/) describes a common standard for factories that create PSR-7 compliant objects. The base package provides the `Psr17ResponseFactory` wrapper as a convenient way to use any PSR-17 compatible `ResponseFactoryInterface` with Glide. 
