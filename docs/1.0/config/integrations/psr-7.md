@@ -32,3 +32,19 @@ However, for simplicity, Glide provides a vendor specific PSR-7 adapters to make
 
 - [Slim](/1.0/config/integrations/slim/)
 - [Zend](/1.0/config/integrations/zend/)
+
+## Using a PSR-17 ResponseFactory
+[PSR-17](https://www.php-fig.org/psr/psr-17/) describes a common standard for factories that create PSR-7 compliant objects.  
+
+The following example uses the [Zend Diactoros](https://github.com/http-interop/http-factory-diactoros) factory, but any PSR-17 compatible package will work.
+~~~ php
+<?php
+
+use League\Glide\ServerFactory;
+use League\Glide\Responses\Psr17ResponseFactory;
+use Http\Factory\Diactoros\ResponseFactory;
+
+$server = ServerFactory::create([
+    'response' => new Psr17ResponseFactory(new ResponseFactory()),
+]);
+~~~
