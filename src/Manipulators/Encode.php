@@ -46,8 +46,12 @@ class Encode extends BaseManipulator
             'jpg' => 'image/jpeg',
             'pjpg' => 'image/jpeg',
             'png' => 'image/png',
-            'webp' => 'image/webp',
         ];
+
+        // PHP 5.* may not be compiled with WebP support, so check first.
+        if (function_exists('imagecreatefromwebp')) {
+            $allowed['webp'] = 'image/webp';
+        }
 
         if (array_key_exists($this->fm, $allowed)) {
             return $this->fm;
