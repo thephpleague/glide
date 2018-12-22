@@ -18,7 +18,7 @@ Defines the quality of the image. Use values between `0` and `100`. Defaults to 
 
 ## Format `fm`
 
-Encodes the image to a specific format. Accepts `jpg`, `pjpg` (progressive jpeg), `png` or `gif`. Defaults to `jpg`.
+Encodes the image to a specific format. Accepts `jpg`, `pjpg` (progressive jpeg), `png`, `gif` or `webp`. Defaults to `jpg`.
 
 ~~~ html
 <img src="kayaks.jpg?w=500&fm=gif">
