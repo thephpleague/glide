@@ -112,7 +112,7 @@ class Size extends BaseManipulator
             return $this->fit;
         }
 
-        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3})?)*$/', $this->fit)) {
+        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $this->fit)) {
             return 'crop';
         }
 
@@ -374,35 +374,35 @@ class Size extends BaseManipulator
     public function getCrop()
     {
         $cropMethods = [
-            'crop-top-left' => [0, 0, 1],
-            'crop-top' => [50, 0, 1],
-            'crop-top-right' => [100, 0, 1],
-            'crop-left' => [0, 50, 1],
-            'crop-center' => [50, 50, 1],
-            'crop-right' => [100, 50, 1],
-            'crop-bottom-left' => [0, 100, 1],
-            'crop-bottom' => [50, 100, 1],
-            'crop-bottom-right' => [100, 100, 1],
+            'crop-top-left' => [0, 0, 1.0],
+            'crop-top' => [50, 0, 1.0],
+            'crop-top-right' => [100, 0, 1.0],
+            'crop-left' => [0, 50, 1.0],
+            'crop-center' => [50, 50, 1.0],
+            'crop-right' => [100, 50, 1.0],
+            'crop-bottom-left' => [0, 100, 1.0],
+            'crop-bottom' => [50, 100, 1.0],
+            'crop-bottom-right' => [100, 100, 1.0],
         ];
 
         if (array_key_exists($this->fit, $cropMethods)) {
             return $cropMethods[$this->fit];
         }
 
-        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}))*$/', $this->fit, $matches)) {
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $this->fit, $matches)) {
             $matches[3] = $matches[3] ?? 1;
 
             if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {
-                return [50, 50, 1];
+                return [50, 50, 1.0];
             }
 
             return [
                 (int) $matches[1],
                 (int) $matches[2],
-                (int) $matches[3],
+                (float) $matches[3],
             ];
         }
 
-        return [50, 50, 1];
+        return [50, 50, 1.0];
     }
 }
