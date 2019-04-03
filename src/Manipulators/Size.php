@@ -390,7 +390,7 @@ class Size extends BaseManipulator
         }
 
         if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $this->fit, $matches)) {
-            $matches[3] = $matches[3] ?? 1;
+            $matches[3] = isset($matches[3]) ? $matches[3] : 1;
 
             if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {
                 return [50, 50, 1.0];
