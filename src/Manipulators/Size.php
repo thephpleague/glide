@@ -112,7 +112,7 @@ class Size extends BaseManipulator
             return $this->fit;
         }
 
-        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3})*$/', $this->fit)) {
+        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $this->fit)) {
             return 'crop';
         }
 
@@ -304,7 +304,9 @@ class Size extends BaseManipulator
     {
         list($resize_width, $resize_height) = $this->resolveCropResizeDimensions($image, $width, $height);
 
-        $image->resize($resize_width, $resize_height, function ($constraint) {
+        $zoom = $this->getCrop()[2];
+
+        $image->resize($resize_width * $zoom, $resize_height * $zoom, function ($constraint) {
             $constraint->aspectRatio();
         });
 
@@ -366,38 +368,41 @@ class Size extends BaseManipulator
     }
 
     /**
-     * Resolve crop.
+     * Resolve crop with zoom.
      * @return integer[] The resolved crop.
      */
     public function getCrop()
     {
         $cropMethods = [
-            'crop-top-left' => [0, 0],
-            'crop-top' => [50, 0],
-            'crop-top-right' => [100, 0],
-            'crop-left' => [0, 50],
-            'crop-center' => [50, 50],
-            'crop-right' => [100, 50],
-            'crop-bottom-left' => [0, 100],
-            'crop-bottom' => [50, 100],
-            'crop-bottom-right' => [100, 100],
+            'crop-top-left' => [0, 0, 1.0],
+            'crop-top' => [50, 0, 1.0],
+            'crop-top-right' => [100, 0, 1.0],
+            'crop-left' => [0, 50, 1.0],
+            'crop-center' => [50, 50, 1.0],
+            'crop-right' => [100, 50, 1.0],
+            'crop-bottom-left' => [0, 100, 1.0],
+            'crop-bottom' => [50, 100, 1.0],
+            'crop-bottom-right' => [100, 100, 1.0],
         ];
 
         if (array_key_exists($this->fit, $cropMethods)) {
             return $cropMethods[$this->fit];
         }
 
-        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})*$/', $this->fit, $matches)) {
-            if ($matches[1] > 100 or $matches[2] > 100) {
-                return [50, 50];
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $this->fit, $matches)) {
+            $matches[3] = isset($matches[3]) ? $matches[3] : 1;
+
+            if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {
+                return [50, 50, 1.0];
             }
 
             return [
                 (int) $matches[1],
                 (int) $matches[2],
+                (float) $matches[3],
             ];
         }
 
-        return [50, 50];
+        return [50, 50, 1.0];
     }
 }
