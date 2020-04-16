@@ -56,7 +56,7 @@ class Border extends BaseManipulator
         $method = $this->getMethod(isset($values[2]) ? $values[2] : null);
 
         if ($width) {
-            return [$width, $color, $method];
+            return [round($width), $color, $method];
         }
     }
 
