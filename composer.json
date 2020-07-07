@@ -27,7 +27,7 @@
         "psr/http-message": "^1.0"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9",
+        "mockery/mockery": "^1.2",
         "phpunit/phpunit": "^8.5",
         "phpunit/php-token-stream": "^3.1"
     },
