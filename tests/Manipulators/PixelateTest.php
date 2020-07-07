@@ -3,17 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class PixelateTest extends \PHPUnit_Framework_TestCase
+class PixelateTest extends TestCase
 {
     private $manipulator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manipulator = new Pixelate();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

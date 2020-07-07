@@ -3,8 +3,9 @@
 namespace League\Glide\Urls;
 
 use League\Glide\Signatures\Signature;
+use PHPUnit\Framework\TestCase;
 
-class UrlBuilderTest extends \PHPUnit_Framework_TestCase
+class UrlBuilderTest extends TestCase
 {
     public function testCreateInstance()
     {
@@ -63,7 +64,8 @@ class UrlBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInvalidUrl()
     {
-        $this->setExpectedException('\InvalidArgumentException', 'Not a valid path.');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Not a valid path.');
 
         $urlBuilder = new UrlBuilder(':80');
         $urlBuilder->getUrl('image.jpg');

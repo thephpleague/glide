@@ -3,17 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class FlipTest extends \PHPUnit_Framework_TestCase
+class FlipTest extends TestCase
 {
     private $manipulator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manipulator = new Flip();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

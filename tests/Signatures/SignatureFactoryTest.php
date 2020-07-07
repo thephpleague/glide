@@ -2,7 +2,9 @@
 
 namespace League\Glide\Signatures;
 
-class SignatureFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SignatureFactoryTest extends TestCase
 {
     public function testCreate()
     {

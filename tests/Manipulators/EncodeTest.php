@@ -4,8 +4,9 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\ImageManager;
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class EncodeTest extends \PHPUnit_Framework_TestCase
+class EncodeTest extends TestCase
 {
     private $manipulator;
     private $jpg;
@@ -14,7 +15,7 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
     private $tif;
     private $webp;
 
-    public function setUp()
+    public function setUp(): void
     {
         $manager = new ImageManager();
         $this->jpg = $manager->canvas(100, 100)->encode('jpg');
@@ -28,7 +29,7 @@ class EncodeTest extends \PHPUnit_Framework_TestCase
         $this->manipulator = new Encode();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
