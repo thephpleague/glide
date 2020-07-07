@@ -3,7 +3,6 @@
 namespace League\Glide;
 
 use InvalidArgumentException;
-use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
 use Mockery;
@@ -187,45 +186,66 @@ class ServerTest extends TestCase
     public function testGetCachePathWithPrefix()
     {
         $this->server->setCachePathPrefix('img/');
-        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals(
+            'img/image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->getCachePath('image.jpg', [])
+        );
     }
 
     public function testGetCachePathWithSourcePrefix()
     {
         $this->server->setSourcePathPrefix('img/');
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->getCachePath('image.jpg', [])
+        );
     }
 
     public function testGetCachePathWithExtension()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg',
+            $this->server->getCachePath('image.jpg', [])
+        );
     }
 
     public function testGetCachePathWithExtensionAndFmParam()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
+        $this->assertEquals(
+            'image.jpg/eb6091e07fb06219634a3c82afb88239.gif',
+            $this->server->getCachePath('image.jpg', ['fm' => 'gif'])
+        );
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmParam()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
+        $this->assertEquals(
+            'image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg',
+            $this->server->getCachePath('image.jpg', ['fm' => 'pjpg'])
+        );
     }
 
     public function testGetCachePathWithExtensionAndFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'gif']);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals(
+            'image.jpg/eb6091e07fb06219634a3c82afb88239.gif',
+            $this->server->getCachePath('image.jpg', [])
+        );
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'pjpg']);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals(
+            'image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg',
+            $this->server->getCachePath('image.jpg', [])
+        );
     }
 
     public function testGetCachePathWithExtensionAndFmFromPreset()
@@ -236,7 +256,10 @@ class ServerTest extends TestCase
             'fm' => 'gif',
         ]]);
 
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
+        $this->assertEquals(
+            'image.jpg/eb6091e07fb06219634a3c82afb88239.gif',
+            $this->server->getCachePath('image.jpg', ['p' => 'gif'])
+        );
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmFromPreset()
@@ -247,7 +270,10 @@ class ServerTest extends TestCase
             'fm' => 'pjpg',
         ]]);
 
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
+        $this->assertEquals(
+            'image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg',
+            $this->server->getCachePath('image.jpg', ['p' => 'pjpg'])
+        );
     }
 
     public function testCacheFileExists()
@@ -271,7 +297,9 @@ class ServerTest extends TestCase
     public function testDeleteCacheWithGroupCacheInFoldersDisabled()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
+        $this->expectExceptionMessage(
+            'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
+        );
 
         $this->server->setGroupCacheInFolders(false);
 
@@ -371,9 +399,12 @@ class ServerTest extends TestCase
 
     public function testGetImageResponse()
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
-            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
-        }));
+        $this->server->setResponseFactory(Mockery::mock(
+            'League\Glide\Responses\ResponseFactoryInterface',
+            function ($mock) {
+                $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+            }
+        ));
 
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
@@ -541,7 +572,9 @@ class ServerTest extends TestCase
 
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(false)->once();
-            $mock->shouldReceive('write')->andThrow(new \League\Flysystem\FileExistsException('75094881e9fd2b93063d6a5cb083091c'));
+            $mock->shouldReceive('write')->andThrow(
+                new \League\Flysystem\FileExistsException('75094881e9fd2b93063d6a5cb083091c')
+            );
         }));
 
         $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {

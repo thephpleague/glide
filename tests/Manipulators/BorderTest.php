@@ -111,7 +111,10 @@ class BorderTest extends TestCase
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
             $mock->shouldReceive('resize')->with(80, 80)->andReturn($mock)->once();
-            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvas')
+                ->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')
+                ->andReturn($mock)
+                ->once();
         });
 
         $border = new Border();
@@ -123,7 +126,10 @@ class BorderTest extends TestCase
     public function testRunExpand()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvas')
+                ->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')
+                ->andReturn($mock)
+                ->once();
         });
 
         $border = new Border();

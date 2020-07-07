@@ -7,22 +7,22 @@ class Color
     /**
      * 3 digit color code expression.
      */
-    const SHORT_RGB = '/^[0-9a-f]{3}$/i';
+    public const SHORT_RGB = '/^[0-9a-f]{3}$/i';
 
     /**
      * 4 digit color code expression.
      */
-    const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
+    public const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
 
     /**
      * 6 digit color code expression.
      */
-    const LONG_RGB = '/^[0-9a-f]{6}$/i';
+    public const LONG_RGB = '/^[0-9a-f]{6}$/i';
 
     /**
      * 8 digit color code expression.
      */
-    const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
+    public const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
 
     /**
      * The red value.
@@ -62,13 +62,13 @@ class Color
             }
 
             if (preg_match(self::SHORT_RGB, $value)) {
-                $rgba = $this->parseHex($value.$value);
+                $rgba = $this->parseHex($value . $value);
                 $alpha = 1;
                 break;
             }
 
             if (preg_match(self::SHORT_ARGB, $value)) {
-                $rgba = $this->parseHex(substr($value, 1).substr($value, 1));
+                $rgba = $this->parseHex(substr($value, 1) . substr($value, 1));
                 $alpha = substr($value, 0, 1) / 10;
                 break;
             }
@@ -111,7 +111,7 @@ class Color
      */
     public function formatted()
     {
-        return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$this->alpha.')';
+        return 'rgba(' . $this->red . ', ' . $this->green . ', ' . $this->blue . ', ' . $this->alpha . ')';
     }
 
     /**

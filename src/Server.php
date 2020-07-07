@@ -137,7 +137,7 @@ class Server
     {
         $path = trim($path, '/');
         
-        $baseUrl = $this->baseUrl.'/';
+        $baseUrl = $this->baseUrl . '/';
 
         if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
             $path = trim(substr($path, strlen($baseUrl)), '/');
@@ -148,7 +148,7 @@ class Server
         }
 
         if ($this->sourcePathPrefix) {
-            $path = $this->sourcePathPrefix.'/'.$path;
+            $path = $this->sourcePathPrefix . '/' . $path;
         }
 
         return rawurldecode($path);
@@ -272,18 +272,18 @@ class Server
         unset($params['s'], $params['p']);
         ksort($params);
 
-        $md5 = md5($sourcePath.'?'.http_build_query($params));
+        $md5 = md5($sourcePath . '?' . http_build_query($params));
 
-        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        $cachedPath = $this->groupCacheInFolders ? $sourcePath . '/' . $md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+            $cachedPath = $this->cachePathPrefix . '/' . $cachedPath;
         }
         
         if ($this->cacheWithFileExtensions) {
             $ext = (isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
             $ext = ($ext === 'pjpg') ? 'jpg' : $ext;
-            $cachedPath .= '.'.$ext;
+            $cachedPath .= '.' . $ext;
         }
 
         return $cachedPath;
@@ -447,11 +447,11 @@ class Server
 
         if ($source === false) {
             throw new FilesystemException(
-                'Could not read the image `'.$path.'`.'
+                'Could not read the image `' . $path . '`.'
             );
         }
 
-        return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
+        return 'data:' . $this->cache->getMimetype($path) . ';base64,' . base64_encode($source);
     }
 
     /**
@@ -464,10 +464,10 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        header('Content-Type:'.$this->cache->getMimetype($path));
-        header('Content-Length:'.$this->cache->getSize($path));
-        header('Cache-Control:'.'max-age=31536000, public');
-        header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
+        header('Content-Type:' . $this->cache->getMimetype($path));
+        header('Content-Length:' . $this->cache->getSize($path));
+        header('Cache-Control:' . 'max-age=31536000, public');
+        header('Expires:' . date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT');
 
         $stream = $this->cache->readStream($path);
 
@@ -497,7 +497,7 @@ class Server
 
         if ($this->sourceFileExists($path) === false) {
             throw new FileNotFoundException(
-                'Could not find the image `'.$sourcePath.'`.'
+                'Could not find the image `' . $sourcePath . '`.'
             );
         }
 
@@ -507,7 +507,7 @@ class Server
 
         if ($source === false) {
             throw new FilesystemException(
-                'Could not read the image `'.$sourcePath.'`.'
+                'Could not read the image `' . $sourcePath . '`.'
             );
         }
 
@@ -518,7 +518,7 @@ class Server
 
         if (file_put_contents($tmp, $source) === false) {
             throw new FilesystemException(
-                'Unable to write temp file for `'.$sourcePath.'`.'
+                'Unable to write temp file for `' . $sourcePath . '`.'
             );
         }
 
@@ -530,7 +530,7 @@ class Server
 
             if ($write === false) {
                 throw new FilesystemException(
-                    'Could not write the image `'.$cachedPath.'`.'
+                    'Could not write the image `' . $cachedPath . '`.'
                 );
             }
         } catch (FileExistsException $exception) {
