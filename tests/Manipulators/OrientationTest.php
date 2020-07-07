@@ -3,17 +3,18 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class OrientationTest extends \PHPUnit_Framework_TestCase
+class OrientationTest extends TestCase
 {
     private $manipulator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manipulator = new Orientation();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

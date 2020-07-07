@@ -2,9 +2,11 @@
 
 namespace League\Glide;
 
+use InvalidArgumentException;
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class ServerFactoryTest extends \PHPUnit_Framework_TestCase
+class ServerFactoryTest extends TestCase
 {
     public function testCreateServerFactory()
     {
@@ -39,10 +41,8 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSourceWithNoneSet()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'A "source" file system must be set.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('A "source" file system must be set.');
 
         $server = new ServerFactory();
         $server->getSource();
@@ -74,10 +74,8 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCacheWithNoneSet()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'A "cache" file system must be set.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('A "cache" file system must be set.');
 
         $server = new ServerFactory();
         $server->getCache();
@@ -174,7 +172,7 @@ class ServerFactoryTest extends \PHPUnit_Framework_TestCase
         $server = new ServerFactory();
         $manipulators = $server->getManipulators();
 
-        $this->assertInternalType('array', $manipulators);
+        $this->assertIsArray($manipulators);
         $this->assertInstanceOf('League\Glide\Manipulators\ManipulatorInterface', $manipulators[0]);
     }
 

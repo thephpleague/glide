@@ -1,3 +1,5 @@
 build
 vendor
 docs/_site
+.phpunit.result.cache
+composer.lock

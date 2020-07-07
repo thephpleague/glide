@@ -3,12 +3,13 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class BorderTest extends \PHPUnit_Framework_TestCase
+class BorderTest extends TestCase
 {
     private $manipulator;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

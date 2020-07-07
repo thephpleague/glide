@@ -3,13 +3,14 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class SizeTest extends \PHPUnit_Framework_TestCase
+class SizeTest extends TestCase
 {
     private $manipulator;
     private $callback;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manipulator = new Size();
         $this->callback = Mockery::on(function () {
@@ -17,7 +18,7 @@ class SizeTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }

@@ -2,13 +2,18 @@
 
 namespace League\Glide;
 
+use InvalidArgumentException;
+use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
+use League\Glide\Filesystem\FileNotFoundException;
+use League\Glide\Filesystem\FilesystemException;
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ServerTest extends TestCase
 {
     private $server;
 
-    public function setUp()
+    public function setUp(): void
     {
         $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
 
@@ -29,7 +34,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
@@ -84,10 +89,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSourcePathWithMissingPath()
     {
-        $this->setExpectedException(
-            'League\Glide\Filesystem\FileNotFoundException',
-            'Image path missing.'
-        );
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage('Image path missing.');
 
         $this->server->getSourcePath('');
     }
@@ -267,10 +270,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testDeleteCacheWithGroupCacheInFoldersDisabled()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
 
         $this->server->setGroupCacheInFolders(false);
 
@@ -386,10 +387,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetImageResponseWithoutResponseFactory()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Unable to get image response, no response factory defined.'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to get image response, no response factory defined.');
 
         $this->server->getImageResponse('image.jpg', []);
     }
@@ -410,15 +409,13 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetImageAsBase64WithUnreadableSource()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage('Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
+
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true);
             $mock->shouldReceive('read')->andReturn(false)->once();
         }));
-
-        $this->setExpectedException(
-            'League\Glide\Filesystem\FilesystemException',
-            'Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.'
-        );
 
         $this->server->getImageAsBase64('image.jpg', []);
     }
@@ -482,10 +479,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testMakeImageFromSourceThatDoesNotExist()
     {
-        $this->setExpectedException(
-            'League\Glide\Filesystem\FileNotFoundException',
-            'Could not find the image `image.jpg`.'
-        );
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage('Could not find the image `image.jpg`.');
 
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(false)->once();
@@ -500,10 +495,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testMakeImageWithUnreadableSource()
     {
-        $this->setExpectedException(
-            'League\Glide\Filesystem\FilesystemException',
-            'Could not read the image `image.jpg`.'
-        );
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage('Could not read the image `image.jpg`.');
 
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true)->once();
@@ -519,10 +512,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testMakeImageWithUnwritableCache()
     {
-        $this->setExpectedException(
-            'League\Glide\Filesystem\FilesystemException',
-            'Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.'
-        );
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage('Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
 
         $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
             $mock->shouldReceive('has')->andReturn(true)->once();

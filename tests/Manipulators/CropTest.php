@@ -3,12 +3,13 @@
 namespace League\Glide\Manipulators;
 
 use Mockery;
+use PHPUnit\Framework\TestCase;
 
-class CropTest extends \PHPUnit_Framework_TestCase
+class CropTest extends TestCase
 {
     private $manipulator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->manipulator = new Crop();
         $this->image = Mockery::mock('Intervention\Image\Image', function ($mock) {
@@ -17,7 +18,7 @@ class CropTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
     }
