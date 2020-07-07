@@ -41,7 +41,8 @@ class Crop extends BaseManipulator
     {
         $coordinates = explode(',', $this->crop);
 
-        if (count($coordinates) !== 4 or
+        if (
+            count($coordinates) !== 4 or
             (!is_numeric($coordinates[0])) or
             (!is_numeric($coordinates[1])) or
             (!is_numeric($coordinates[2])) or
@@ -51,7 +52,8 @@ class Crop extends BaseManipulator
             ($coordinates[2] < 0) or
             ($coordinates[3] < 0) or
             ($coordinates[2] >= $image->width()) or
-            ($coordinates[3] >= $image->height())) {
+            ($coordinates[3] >= $image->height())
+        ) {
             return;
         }
 

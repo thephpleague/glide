@@ -47,7 +47,7 @@ class PsrResponseFactory implements ResponseFactoryInterface
         $contentType = $cache->getMimetype($path);
         $contentLength = (string) $cache->getSize($path);
         $cacheControl = 'max-age=31536000, public';
-        $expires = date_create('+1 years')->format('D, d M Y H:i:s').' GMT';
+        $expires = date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT';
 
         if ($contentType === false) {
             throw new FilesystemException('Unable to determine the image content type.');

@@ -53,12 +53,15 @@ class WatermarkTest extends TestCase
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
             $mock->shouldReceive('insert')->once();
-            $mock->shouldReceive('getDriver')->andReturn(Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
-                $mock->shouldReceive('init')->with('content')->andReturn(Mockery::mock('Intervention\Image\Image', function ($mock) {
-                    $mock->shouldReceive('width')->andReturn(0)->once();
-                    $mock->shouldReceive('resize')->once();
-                }))->once();
-            }))->once();
+            $mock->shouldReceive('getDriver')->andReturn(
+                Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
+                    $mock->shouldReceive('init')->with('content')
+                        ->andReturn(Mockery::mock('Intervention\Image\Image', function ($mock) {
+                            $mock->shouldReceive('width')->andReturn(0)->once();
+                            $mock->shouldReceive('resize')->once();
+                        }))->once();
+                })
+            )->once();
         });
 
         $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface', function ($watermarks) {
@@ -188,9 +191,15 @@ class WatermarkTest extends TestCase
         $this->assertSame('crop-left', $this->manipulator->setParams(['markfit' => 'crop-left'])->getFit());
         $this->assertSame('crop-center', $this->manipulator->setParams(['markfit' => 'crop-center'])->getFit());
         $this->assertSame('crop-right', $this->manipulator->setParams(['markfit' => 'crop-right'])->getFit());
-        $this->assertSame('crop-bottom-left', $this->manipulator->setParams(['markfit' => 'crop-bottom-left'])->getFit());
+        $this->assertSame(
+            'crop-bottom-left',
+            $this->manipulator->setParams(['markfit' => 'crop-bottom-left'])->getFit()
+        );
         $this->assertSame('crop-bottom', $this->manipulator->setParams(['markfit' => 'crop-bottom'])->getFit());
-        $this->assertSame('crop-bottom-right', $this->manipulator->setParams(['markfit' => 'crop-bottom-right'])->getFit());
+        $this->assertSame(
+            'crop-bottom-right',
+            $this->manipulator->setParams(['markfit' => 'crop-bottom-right'])->getFit()
+        );
         $this->assertSame(null, $this->manipulator->setParams(['markfit' => null])->getFit());
         $this->assertSame(null, $this->manipulator->setParams(['markfit' => 'invalid'])->getFit());
     }
