@@ -58,7 +58,7 @@ class WatermarkTest extends TestCase
                     $mock->shouldReceive('init')->with('content')
                         ->andReturn(Mockery::mock('Intervention\Image\Image', function ($mock) {
                             $mock->shouldReceive('width')->andReturn(0)->once();
-                            $mock->shouldReceive('resize')->once();
+                            $mock->shouldReceive('resize')->andReturn($mock)->once();
                         }))->once();
                 })
             )->once();

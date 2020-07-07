@@ -17,7 +17,7 @@ class Border extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         if ($border = $this->getBorder($image)) {
             list($width, $color, $method) = $border;
@@ -41,12 +41,12 @@ class Border extends BaseManipulator
     /**
      * Resolve border amount.
      * @param  Image  $image The source image.
-     * @return string The resolved border amount.
+     * @return array|null The resolved border amount.
      */
-    public function getBorder(Image $image)
+    public function getBorder(Image $image): ?array
     {
         if (!$this->border) {
-            return;
+            return null;
         }
 
         $values = explode(',', $this->border);
@@ -58,6 +58,8 @@ class Border extends BaseManipulator
         if ($width) {
             return [$width, $color, $method];
         }
+
+        return null;
     }
 
     /**
@@ -67,9 +69,9 @@ class Border extends BaseManipulator
      * @param  string $width The border width.
      * @return double The resolved border width.
      */
-    public function getWidth(Image $image, $dpr, $width)
+    public function getWidth(Image $image, float $dpr, string $width): float
     {
-        return (new Dimension($image, $dpr))->get($width);
+        return (float) (new Dimension($image, $dpr))->get($width);
     }
 
     /**
@@ -77,17 +79,17 @@ class Border extends BaseManipulator
      * @param  string $color The color.
      * @return string The formatted color.
      */
-    public function getColor($color)
+    public function getColor(string $color): string
     {
         return (new Color($color))->formatted();
     }
 
     /**
      * Resolve the border method.
-     * @param  string $method The raw border method.
-     * @return string The resolved border method.
+     * @param  string|null $method The raw border method.
+     * @return string|null The resolved border method.
      */
-    public function getMethod($method)
+    public function getMethod(?string $method): ?string
     {
         if (!in_array($method, ['expand', 'shrink', 'overlay'], true)) {
             return 'overlay';
@@ -100,7 +102,7 @@ class Border extends BaseManipulator
      * Resolve the device pixel ratio.
      * @return double The device pixel ratio.
      */
-    public function getDpr()
+    public function getDpr(): float
     {
         if (!is_numeric($this->dpr)) {
             return 1.0;
@@ -120,13 +122,13 @@ class Border extends BaseManipulator
      * @param  string $color The border color.
      * @return Image  The manipulated image.
      */
-    public function runOverlay(Image $image, $width, $color)
+    public function runOverlay(Image $image, float $width, string $color): Image
     {
         return $image->rectangle(
-            $width / 2,
-            $width / 2,
-            $image->width() - ($width / 2),
-            $image->height() - ($width / 2),
+            (int) round($width / 2),
+            (int) round($width / 2),
+            (int) round($image->width() - ($width / 2)),
+            (int) round($image->height() - ($width / 2)),
             function ($draw) use ($width, $color) {
                 $draw->border($width, $color);
             }
@@ -140,16 +142,16 @@ class Border extends BaseManipulator
      * @param  string $color The border color.
      * @return Image  The manipulated image.
      */
-    public function runShrink(Image $image, $width, $color)
+    public function runShrink(Image $image, float $width, string $color): Image
     {
         return $image
             ->resize(
-                $image->width() - ($width * 2),
-                $image->height() - ($width * 2)
+                (int) round($image->width() - ($width * 2)),
+                (int) round($image->height() - ($width * 2))
             )
             ->resizeCanvas(
-                $width * 2,
-                $width * 2,
+                (int) round($width * 2),
+                (int) round($width * 2),
                 'center',
                 true,
                 $color
@@ -163,11 +165,11 @@ class Border extends BaseManipulator
      * @param  string $color The border color.
      * @return Image  The manipulated image.
      */
-    public function runExpand(Image $image, $width, $color)
+    public function runExpand(Image $image, float $width, string $color): Image
     {
         return $image->resizeCanvas(
-            $width * 2,
-            $width * 2,
+            (int) round($width * 2),
+            (int) round($width * 2),
             'center',
             true,
             $color

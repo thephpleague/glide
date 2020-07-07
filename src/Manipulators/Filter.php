@@ -14,7 +14,7 @@ class Filter extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         if ($this->filt === 'greyscale') {
             return $this->runGreyscaleFilter($image);
@@ -32,7 +32,7 @@ class Filter extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function runGreyscaleFilter(Image $image)
+    public function runGreyscaleFilter(Image $image): Image
     {
         return $image->greyscale();
     }
@@ -42,7 +42,7 @@ class Filter extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function runSepiaFilter(Image $image)
+    public function runSepiaFilter(Image $image): Image
     {
         $image->greyscale();
         $image->brightness(-10);

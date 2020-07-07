@@ -34,6 +34,7 @@ class Api implements ApiInterface
     /**
      * Set the image manager.
      * @param ImageManager $imageManager Intervention image manager.
+     * @return void
      */
     public function setImageManager(ImageManager $imageManager)
     {
@@ -44,7 +45,7 @@ class Api implements ApiInterface
      * Get the image manager.
      * @return ImageManager Intervention image manager.
      */
-    public function getImageManager()
+    public function getImageManager(): ImageManager
     {
         return $this->imageManager;
     }
@@ -52,6 +53,7 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      * @param array $manipulators Collection of manipulators.
+     * @return void
      */
     public function setManipulators(array $manipulators)
     {
@@ -68,7 +70,7 @@ class Api implements ApiInterface
      * Get the manipulators.
      * @return array Collection of manipulators.
      */
-    public function getManipulators()
+    public function getManipulators(): array
     {
         return $this->manipulators;
     }
@@ -79,7 +81,7 @@ class Api implements ApiInterface
      * @param  array  $params The manipulation params.
      * @return string Manipulated image binary data.
      */
-    public function run($source, array $params)
+    public function run(string $source, array $params): string
     {
         $image = $this->imageManager->make($source);
 

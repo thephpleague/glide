@@ -10,5 +10,5 @@ interface ApiInterface
      * @param  array  $params The manipulation params.
      * @return string Manipulated image binary data.
      */
-    public function run($source, array $params);
+    public function run(string $source, array $params): string;
 }

@@ -52,7 +52,7 @@ class Color
      * Create color helper instance.
      * @param string $value The color value.
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
         do {
             if ($hex = $this->getHexFromColorName($value)) {
@@ -69,7 +69,7 @@ class Color
 
             if (preg_match(self::SHORT_ARGB, $value)) {
                 $rgba = $this->parseHex(substr($value, 1) . substr($value, 1));
-                $alpha = substr($value, 0, 1) / 10;
+                $alpha = (float) substr($value, 0, 1) / 10;
                 break;
             }
 
@@ -81,7 +81,7 @@ class Color
 
             if (preg_match(self::LONG_ARGB, $value)) {
                 $rgba = $this->parseHex(substr($value, 2));
-                $alpha = substr($value, 0, 2) / 100;
+                $alpha = (float) substr($value, 0, 2) / 100;
                 break;
             }
 
@@ -100,7 +100,7 @@ class Color
      * @param  string $hex The hex value.
      * @return array  The RGB values.
      */
-    public function parseHex($hex)
+    public function parseHex(string $hex): array
     {
         return array_map('hexdec', str_split($hex, 2));
     }
@@ -109,17 +109,17 @@ class Color
      * Format color for consumption.
      * @return string The formatted color.
      */
-    public function formatted()
+    public function formatted(): string
     {
         return 'rgba(' . $this->red . ', ' . $this->green . ', ' . $this->blue . ', ' . $this->alpha . ')';
     }
 
     /**
      * Get hex code by color name.
-     * @param  string $name The color name.
-     * @return string The hex code.
+     * @param string $name The color name.
+     * @return null|string The hex code.
      */
-    public function getHexFromColorName($name)
+    public function getHexFromColorName(string $name): ?string
     {
         $colors = [
             'aliceblue' => 'F0F8FF',
@@ -270,5 +270,7 @@ class Color
         if (array_key_exists($name, $colors)) {
             return $colors[$name];
         }
+
+        return null;
     }
 }

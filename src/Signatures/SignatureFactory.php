@@ -9,7 +9,7 @@ class SignatureFactory
      * @param  string    $signKey Secret key used to generate signature.
      * @return Signature The HttpSignature instance.
      */
-    public static function create($signKey)
+    public static function create(string $signKey): Signature
     {
         return new Signature($signKey);
     }
