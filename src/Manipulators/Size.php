@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
@@ -22,7 +24,7 @@ class Size extends BaseManipulator
      * Create Size instance.
      * @param integer|null $maxImageSize Maximum image size in pixels.
      */
-    public function __construct($maxImageSize = null)
+    public function __construct(?int $maxImageSize = null)
     {
         $this->maxImageSize = $maxImageSize;
     }
@@ -30,8 +32,9 @@ class Size extends BaseManipulator
     /**
      * Set the maximum image size.
      * @param integer|null Maximum image size in pixels.
+     * @return void
      */
-    public function setMaxImageSize($maxImageSize)
+    public function setMaxImageSize(?int $maxImageSize): void
     {
         $this->maxImageSize = $maxImageSize;
     }
@@ -40,7 +43,7 @@ class Size extends BaseManipulator
      * Get the maximum image size.
      * @return integer|null Maximum image size in pixels.
      */
-    public function getMaxImageSize()
+    public function getMaxImageSize(): ?int
     {
         return $this->maxImageSize;
     }
@@ -50,7 +53,7 @@ class Size extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         $width = $this->getWidth();
         $height = $this->getHeight();
@@ -72,14 +75,14 @@ class Size extends BaseManipulator
      * Resolve width.
      * @return integer|null The resolved width.
      */
-    public function getWidth()
+    public function getWidth(): ?int
     {
         if (!is_numeric($this->w)) {
-            return;
+            return null;
         }
 
         if ($this->w <= 0) {
-            return;
+            return null;
         }
 
         return (int) $this->w;
@@ -89,14 +92,14 @@ class Size extends BaseManipulator
      * Resolve height.
      * @return integer|null The resolved height.
      */
-    public function getHeight()
+    public function getHeight(): ?int
     {
         if (!is_numeric($this->h)) {
-            return;
+            return null;
         }
 
         if ($this->h <= 0) {
-            return;
+            return null;
         }
 
         return (int) $this->h;
@@ -106,7 +109,7 @@ class Size extends BaseManipulator
      * Resolve fit.
      * @return string The resolved fit.
      */
-    public function getFit()
+    public function getFit(): string
     {
         if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch'], true)) {
             return $this->fit;
@@ -114,7 +117,7 @@ class Size extends BaseManipulator
 
         // phpcs:ignore
         $regex = '/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/';
-        if (preg_match($regex, $this->fit)) {
+        if (preg_match($regex, (string) $this->fit)) {
             return 'crop';
         }
 
@@ -125,7 +128,7 @@ class Size extends BaseManipulator
      * Resolve the device pixel ratio.
      * @return double The device pixel ratio.
      */
-    public function getDpr()
+    public function getDpr(): float
     {
         if (!is_numeric($this->dpr)) {
             return 1.0;
@@ -145,7 +148,7 @@ class Size extends BaseManipulator
      * @param  integer|null $height The image height.
      * @return integer[]    The resolved width and height.
      */
-    public function resolveMissingDimensions(Image $image, $width, $height)
+    public function resolveMissingDimensions(Image $image, ?int $width, ?int $height): array
     {
         if (is_null($width) and is_null($height)) {
             $width = $image->width();
@@ -170,10 +173,10 @@ class Size extends BaseManipulator
      * Apply the device pixel ratio.
      * @param  integer   $width  The target image width.
      * @param  integer   $height The target image height.
-     * @param  integer   $dpr    The device pixel ratio.
+     * @param  double   $dpr    The device pixel ratio.
      * @return integer[] The modified width and height.
      */
-    public function applyDpr($width, $height, $dpr)
+    public function applyDpr(int $width, int $height, float $dpr): array
     {
         $width = $width * $dpr;
         $height = $height * $dpr;
@@ -190,7 +193,7 @@ class Size extends BaseManipulator
      * @param  integer   $height The image height.
      * @return integer[] The limited width and height.
      */
-    public function limitImageSize($width, $height)
+    public function limitImageSize(int $width, int $height): array
     {
         if ($this->maxImageSize !== null) {
             $imageSize = $width * $height;
@@ -215,7 +218,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runResize(Image $image, $fit, $width, $height)
+    public function runResize(Image $image, string $fit, int $width, int $height): Image
     {
         if ($fit === 'contain') {
             return $this->runContainResize($image, $width, $height);
@@ -247,7 +250,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runContainResize(Image $image, $width, $height)
+    public function runContainResize(Image $image, int $width, int $height): Image
     {
         return $image->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
@@ -261,7 +264,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runMaxResize(Image $image, $width, $height)
+    public function runMaxResize(Image $image, int $width, int $height): Image
     {
         return $image->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
@@ -276,7 +279,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runFillResize($image, $width, $height)
+    public function runFillResize(Image $image, int $width, int $height): Image
     {
         $image = $this->runMaxResize($image, $width, $height);
 
@@ -290,7 +293,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runStretchResize(Image $image, $width, $height)
+    public function runStretchResize(Image $image, int $width, int $height): Image
     {
         return $image->resize($width, $height);
     }
@@ -302,7 +305,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return Image   The manipulated image.
      */
-    public function runCropResize(Image $image, $width, $height)
+    public function runCropResize(Image $image, int $width, int $height): Image
     {
         list($resize_width, $resize_height) = $this->resolveCropResizeDimensions($image, $width, $height);
 
@@ -324,7 +327,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return array   The resize dimensions.
      */
-    public function resolveCropResizeDimensions(Image $image, $width, $height)
+    public function resolveCropResizeDimensions(Image $image, int $width, int $height): array
     {
         if ($height > $width * ($image->height() / $image->width())) {
             return [$height * ($image->width() / $image->height()), $height];
@@ -340,7 +343,7 @@ class Size extends BaseManipulator
      * @param  integer $height The height.
      * @return array   The crop offset.
      */
-    public function resolveCropOffset(Image $image, $width, $height)
+    public function resolveCropOffset(Image $image, int $width, int $height): array
     {
         list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
 
@@ -371,9 +374,9 @@ class Size extends BaseManipulator
 
     /**
      * Resolve crop with zoom.
-     * @return integer[] The resolved crop.
+     * @return (float|int)[] The resolved crop.
      */
-    public function getCrop()
+    public function getCrop(): array
     {
         $cropMethods = [
             'crop-top-left' => [0, 0, 1.0],
@@ -391,7 +394,7 @@ class Size extends BaseManipulator
             return $cropMethods[$this->fit];
         }
 
-        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $this->fit, $matches)) {
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', (string)$this->fit, $matches)) {
             $matches[3] = isset($matches[3]) ? $matches[3] : 1;
 
             if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
@@ -14,7 +16,7 @@ class Contrast extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         $contrast = $this->getContrast();
 
@@ -27,16 +29,16 @@ class Contrast extends BaseManipulator
 
     /**
      * Resolve contrast amount.
-     * @return string The resolved contrast amount.
+     * @return int|null The resolved contrast amount.
      */
-    public function getContrast()
+    public function getContrast(): ?int
     {
-        if (!preg_match('/^-*[0-9]+$/', $this->con)) {
-            return;
+        if (!preg_match('/^-*[0-9]+$/', (string) $this->con)) {
+            return null;
         }
 
         if ($this->con < -100 or $this->con > 100) {
-            return;
+            return null;
         }
 
         return (int) $this->con;

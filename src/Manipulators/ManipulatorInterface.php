@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
@@ -9,6 +11,7 @@ interface ManipulatorInterface
     /**
      * Set the manipulation params.
      * @param array $params The manipulation params.
+     * @return $this
      */
     public function setParams(array $params);
 
@@ -17,5 +20,5 @@ interface ManipulatorInterface
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image);
+    public function run(Image $image): Image;
 }

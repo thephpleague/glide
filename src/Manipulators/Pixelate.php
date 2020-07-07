@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
@@ -14,7 +16,7 @@ class Pixelate extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         $pixelate = $this->getPixelate();
 
@@ -27,16 +29,16 @@ class Pixelate extends BaseManipulator
 
     /**
      * Resolve pixelate amount.
-     * @return string The resolved pixelate amount.
+     * @return int|null The resolved pixelate amount.
      */
-    public function getPixelate()
+    public function getPixelate(): ?int
     {
         if (!is_numeric($this->pixel)) {
-            return;
+            return null;
         }
 
         if ($this->pixel < 0 or $this->pixel > 1000) {
-            return;
+            return null;
         }
 
         return (int) $this->pixel;

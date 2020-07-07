@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
@@ -15,7 +17,7 @@ class Encode extends BaseManipulator
      * @param  Image $image The source image.
      * @return Image The manipulated image.
      */
-    public function run(Image $image)
+    public function run(Image $image): Image
     {
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
@@ -39,7 +41,7 @@ class Encode extends BaseManipulator
      * @param  Image  $image The source image.
      * @return string The resolved format.
      */
-    public function getFormat(Image $image)
+    public function getFormat(Image $image): string
     {
         $allowed = [
             'gif' => 'image/gif',
@@ -62,9 +64,9 @@ class Encode extends BaseManipulator
 
     /**
      * Resolve quality.
-     * @return string The resolved quality.
+     * @return int The resolved quality.
      */
-    public function getQuality()
+    public function getQuality(): int
     {
         $default = 90;
 

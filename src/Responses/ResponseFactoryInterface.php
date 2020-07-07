@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Responses;
 
 use League\Flysystem\FilesystemInterface;
@@ -12,5 +14,5 @@ interface ResponseFactoryInterface
      * @param  string              $path  Cached file path.
      * @return mixed               The response object.
      */
-    public function create(FilesystemInterface $cache, $path);
+    public function create(FilesystemInterface $cache, string $path);
 }

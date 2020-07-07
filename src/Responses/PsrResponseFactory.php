@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Responses;
 
 use Closure;
@@ -38,14 +40,14 @@ class PsrResponseFactory implements ResponseFactoryInterface
      * @param  string              $path  Cached file path.
      * @return ResponseInterface   Response object.
      */
-    public function create(FilesystemInterface $cache, $path)
+    public function create(FilesystemInterface $cache, string $path)
     {
         $stream = $this->streamCallback->__invoke(
             $cache->readStream($path)
         );
 
         $contentType = $cache->getMimetype($path);
-        $contentLength = (string) $cache->getSize($path);
+        $contentLength = $cache->getSize($path);
         $cacheControl = 'max-age=31536000, public';
         $expires = date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT';
 
@@ -59,7 +61,7 @@ class PsrResponseFactory implements ResponseFactoryInterface
 
         return $this->response->withBody($stream)
             ->withHeader('Content-Type', $contentType)
-            ->withHeader('Content-Length', $contentLength)
+            ->withHeader('Content-Length', (string) $contentLength)
             ->withHeader('Cache-Control', $cacheControl)
             ->withHeader('Expires', $expires);
     }
