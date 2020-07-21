@@ -511,9 +511,13 @@ class Server
             );
         }
 
+        // HACK: WRITING TO DISK CAUSES I/O Issues and appears totally
+        // unnessary, GD can be initalized with a binary stream just fine.
+
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
+        /*
         $tmp = tempnam(sys_get_temp_dir(), 'Glide');
 
         if (file_put_contents($tmp, $source) === false) {
@@ -521,11 +525,13 @@ class Server
                 'Unable to write temp file for `'.$sourcePath.'`.'
             );
         }
+        */
 
         try {
             $write = $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, $this->getAllParams($params))
+                //$this->api->run($tmp, $this->getAllParams($params))
+                $this->api->run($source, $source)
             );
 
             if ($write === false) {
@@ -538,7 +544,7 @@ class Server
             // because it's currently be written to disk in another
             // request. It's best to just fail silently.
         } finally {
-            unlink($tmp);
+            //unlink($tmp);
         }
 
         return $cachedPath;
