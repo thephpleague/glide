@@ -3,7 +3,7 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
 
@@ -23,7 +23,7 @@ class Watermark extends BaseManipulator
 {
     /**
      * The watermarks file system.
-     * @var FilesystemInterface|null
+     * @var FilesystemOperator|null
      */
     protected $watermarks;
 
@@ -35,10 +35,10 @@ class Watermark extends BaseManipulator
 
     /**
      * Create Watermark instance.
-     * @param FilesystemInterface $watermarks The watermarks file system.
+     * @param FilesystemOperator $watermarks The watermarks file system.
      * @param string $watermarksPathPrefix
      */
-    public function __construct(?FilesystemInterface $watermarks = null, string $watermarksPathPrefix = '')
+    public function __construct(?FilesystemOperator $watermarks = null, string $watermarksPathPrefix = '')
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
@@ -46,19 +46,19 @@ class Watermark extends BaseManipulator
 
     /**
      * Set the watermarks file system.
-     * @param FilesystemInterface|null $watermarks The watermarks file system.
+     * @param FilesystemOperator|null $watermarks The watermarks file system.
      * @return void
      */
-    public function setWatermarks(?FilesystemInterface $watermarks = null)
+    public function setWatermarks(?FilesystemOperator $watermarks = null)
     {
         $this->watermarks = $watermarks;
     }
 
     /**
      * Get the watermarks file system.
-     * @return FilesystemInterface|null The watermarks file system.
+     * @return FilesystemOperator|null The watermarks file system.
      */
-    public function getWatermarks(): ?FilesystemInterface
+    public function getWatermarks(): ?FilesystemOperator
     {
         return $this->watermarks;
     }
@@ -146,12 +146,14 @@ class Watermark extends BaseManipulator
             $path = $this->watermarksPathPrefix . '/' . $path;
         }
 
-        if ($this->watermarks->has($path)) {
-            $source = $this->watermarks->read($path);
-
-            if ($source === false) {
+        if ($this->watermarks->fileExists($path)) {
+            try {
+                $source = $this->watermarks->read($path);
+            } catch (\League\Flysystem\FilesystemException $e) {
                 throw new FilesystemException(
-                    'Could not read the image `' . $path . '`.'
+                    'Could not read the image `' . $path . '`.',
+                    0,
+                    $e
                 );
             }
 

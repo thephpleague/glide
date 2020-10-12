@@ -3,7 +3,8 @@
 namespace League\Glide\Responses;
 
 use Closure;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemException as FSException;
+use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -34,28 +35,30 @@ class PsrResponseFactory implements ResponseFactoryInterface
 
     /**
      * Create response.
-     * @param  FilesystemInterface $cache Cache file system.
+     * @param  FilesystemOperator $cache Cache file system.
      * @param  string              $path  Cached file path.
      * @return ResponseInterface   Response object.
      */
-    public function create(FilesystemInterface $cache, string $path)
+    public function create(FilesystemOperator $cache, string $path)
     {
         $stream = $this->streamCallback->__invoke(
             $cache->readStream($path)
         );
 
-        $contentType = $cache->getMimetype($path);
-        $contentLength = $cache->getSize($path);
-        $cacheControl = 'max-age=31536000, public';
-        $expires = date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT';
-
-        if ($contentType === false) {
+        try {
+            $contentType = $cache->mimeType($path);
+        } catch (FSException $d) {
             throw new FilesystemException('Unable to determine the image content type.');
         }
 
-        if ($contentLength === false) {
+        try {
+            $contentLength = $cache->fileSize($path);
+        } catch (FSException $d) {
             throw new FilesystemException('Unable to determine the image content length.');
         }
+
+        $cacheControl = 'max-age=31536000, public';
+        $expires = date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT';
 
         return $this->response->withBody($stream)
             ->withHeader('Content-Type', $contentType)

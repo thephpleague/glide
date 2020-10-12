@@ -3,6 +3,7 @@
 namespace League\Glide;
 
 use InvalidArgumentException;
+use League\Flysystem\FilesystemOperator;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -16,8 +17,8 @@ class ServerFactoryTest extends TestCase
     public function testGetServer()
     {
         $server = new ServerFactory([
-            'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
-            'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'source' => Mockery::mock(FilesystemOperator::class),
+            'cache' => Mockery::mock(FilesystemOperator::class),
             'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
 
@@ -27,16 +28,16 @@ class ServerFactoryTest extends TestCase
     public function testGetSource()
     {
         $server = new ServerFactory([
-            'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'source' => Mockery::mock(FilesystemOperator::class),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getSource());
 
         $server = new ServerFactory([
             'source' => sys_get_temp_dir(),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getSource());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getSource());
     }
 
     public function testGetSourceWithNoneSet()
@@ -60,16 +61,16 @@ class ServerFactoryTest extends TestCase
     public function testGetCache()
     {
         $server = new ServerFactory([
-            'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'cache' => Mockery::mock(FilesystemOperator::class),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getCache());
 
         $server = new ServerFactory([
             'cache' => sys_get_temp_dir(),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getCache());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getCache());
     }
 
     public function testGetCacheWithNoneSet()
@@ -119,16 +120,16 @@ class ServerFactoryTest extends TestCase
     public function testGetWatermarks()
     {
         $server = new ServerFactory([
-            'watermarks' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'watermarks' => Mockery::mock(FilesystemOperator::class),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getWatermarks());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getWatermarks());
 
         $server = new ServerFactory([
             'watermarks' => sys_get_temp_dir(),
         ]);
 
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $server->getWatermarks());
+        $this->assertInstanceOf(FilesystemOperator::class, $server->getWatermarks());
     }
 
     public function testGetWatermarksPathPrefix()
@@ -241,8 +242,8 @@ class ServerFactoryTest extends TestCase
     public function testCreate()
     {
         $server = ServerFactory::create([
-            'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
-            'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
+            'source' => Mockery::mock(FilesystemOperator::class),
+            'cache' => Mockery::mock(FilesystemOperator::class),
             'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
 

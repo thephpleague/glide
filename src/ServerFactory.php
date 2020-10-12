@@ -4,9 +4,9 @@ namespace League\Glide;
 
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Glide\Api\Api;
 use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
@@ -68,9 +68,9 @@ class ServerFactory
 
     /**
      * Get source file system.
-     * @return FilesystemInterface Source file system.
+     * @return FilesystemOperator Source file system.
      */
-    public function getSource(): FilesystemInterface
+    public function getSource(): FilesystemOperator
     {
         if (!isset($this->config['source'])) {
             throw new InvalidArgumentException('A "source" file system must be set.');
@@ -78,7 +78,7 @@ class ServerFactory
 
         if (is_string($this->config['source'])) {
             return new Filesystem(
-                new Local($this->config['source'])
+                new LocalFilesystemAdapter($this->config['source'])
             );
         }
 
@@ -96,9 +96,9 @@ class ServerFactory
 
     /**
      * Get cache file system.
-     * @return FilesystemInterface Cache file system.
+     * @return FilesystemOperator Cache file system.
      */
-    public function getCache(): FilesystemInterface
+    public function getCache(): FilesystemOperator
     {
         if (!isset($this->config['cache'])) {
             throw new InvalidArgumentException('A "cache" file system must be set.');
@@ -106,7 +106,7 @@ class ServerFactory
 
         if (is_string($this->config['cache'])) {
             return new Filesystem(
-                new Local($this->config['cache'])
+                new LocalFilesystemAdapter($this->config['cache'])
             );
         }
 
@@ -150,9 +150,9 @@ class ServerFactory
 
     /**
      * Get watermarks file system.
-     * @return FilesystemInterface|null Watermarks file system.
+     * @return FilesystemOperator|null Watermarks file system.
      */
-    public function getWatermarks(): ?FilesystemInterface
+    public function getWatermarks(): ?FilesystemOperator
     {
         if (!isset($this->config['watermarks'])) {
             return null;
@@ -160,7 +160,7 @@ class ServerFactory
 
         if (is_string($this->config['watermarks'])) {
             return new Filesystem(
-                new Local($this->config['watermarks'])
+                new LocalFilesystemAdapter($this->config['watermarks'])
             );
         }
 

@@ -2,15 +2,15 @@
 
 namespace League\Glide\Responses;
 
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 
 interface ResponseFactoryInterface
 {
     /**
      * Create response.
-     * @param  FilesystemInterface $cache Cache file system.
+     * @param  FilesystemOperator $cache Cache file system.
      * @param  string              $path  Cached file path.
      * @return mixed               The response object.
      */
-    public function create(FilesystemInterface $cache, string $path);
+    public function create(FilesystemOperator $cache, string $path);
 }
