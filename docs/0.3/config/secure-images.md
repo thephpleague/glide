@@ -11,7 +11,7 @@ Add additional security to your Glide image server with HTTP signatures. By sign
 
 ## Configuration
 
-Start by configuring the Glide server to validate each request before you ouput the image. In the event that the validation fails, Glide will throw an `SignatureException` exception.
+Start by configuring the Glide server to validate each request before you output the image. In the event that the validation fails, Glide will throw an `SignatureException` exception.
 
 ~~~ php
 <?php
