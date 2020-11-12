@@ -108,7 +108,7 @@ class Size extends BaseManipulator
      */
     public function getFit()
     {
-        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch'], true)) {
+        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch', 'stretch-fill'], true)) {
             return $this->fit;
         }
 
@@ -231,6 +231,10 @@ class Size extends BaseManipulator
             return $this->runStretchResize($image, $width, $height);
         }
 
+        if ($fit === 'stretch-fill') {
+            return $this->runStretchFillResize($image, $width, $height);
+        }
+
         if ($fit === 'crop') {
             return $this->runCropResize($image, $width, $height);
         }
@@ -291,6 +295,21 @@ class Size extends BaseManipulator
     public function runStretchResize(Image $image, $width, $height)
     {
         return $image->resize($width, $height);
+    }
+
+    /**
+     * Perform stretch-fill resize image manipulation.
+     * @param  Image   $image  The source image.
+     * @param  integer $width  The width.
+     * @param  integer $height The height.
+     * @return Image   The manipulated image.
+     */
+    public function runStretchFillResize(Image $image, $width, $height)
+    {
+        $image = $image->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        return $image->resizeCanvas($width, $height, 'center');
     }
 
     /**
