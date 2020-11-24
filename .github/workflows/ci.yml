@@ -1,0 +1,69 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  testsuite:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['7.2', '7.4', '8.0']
+        composer-opts: ['']
+        include:
+          - php-version: '7.2'
+            composer-opts: '--prefer-lowest'
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: pcov
+
+    - name: Composer install
+      run: composer update ${{ matrix.composer-opts }}
+
+    - name: Run PHPUnit
+      run: |
+        if [[ ${{ matrix.php-version }} == '7.4' ]]; then
+          vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+        else
+          vendor/bin/phpunit
+        fi
+
+    - name: Code Coverage Report
+      if: matrix.php-version == '7.4'
+      run: |
+        wget https://scrutinizer-ci.com/ocular.phar
+        php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+  cs-stan:
+    name: Coding Standard & Static Analysis
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+        coverage: none
+        tools: psalm:~4.1.0
+
+    - name: Composer Install
+      run: composer install
+
+    - name: Run phpcs
+      run: vendor/bin/phpcs -p --standard=PSR12 ./src ./tests
+
+    - name: Run psalm
+      if: success() || failure()
+      run: psalm
