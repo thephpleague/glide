@@ -7,6 +7,8 @@ use InvalidArgumentException;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Glide\Api\Api;
 use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
@@ -67,8 +69,26 @@ class ServerFactory
     }
 
     /**
+     * Create local filesystem for Flysystem v1 or v2
+     * @param  string  $path Filesystem path
+     * @return FilesystemInterface|FilesystemOperator
+     */
+    private function createLocalFilesystem(string $path)
+    {
+        if(interface_exists(FilesystemInterface::class)) {
+            return new Filesystem(
+                new Local($path)
+            );
+        }
+
+        return new Filesystem(
+            new LocalFilesystemAdapter($path)
+        );
+    }
+
+    /**
      * Get source file system.
-     * @return FilesystemInterface Source file system.
+     * @return FilesystemInterface|FilesystemOperator Source file system.
      */
     public function getSource()
     {
@@ -77,9 +97,7 @@ class ServerFactory
         }
 
         if (is_string($this->config['source'])) {
-            return new Filesystem(
-                new Local($this->config['source'])
-            );
+            return $this->createLocalFilesystem($this->config['source']);
         }
 
         return $this->config['source'];
@@ -98,7 +116,7 @@ class ServerFactory
 
     /**
      * Get cache file system.
-     * @return FilesystemInterface Cache file system.
+     * @return FilesystemInterface|FilesystemOperator Cache file system.
      */
     public function getCache()
     {
@@ -107,9 +125,7 @@ class ServerFactory
         }
 
         if (is_string($this->config['cache'])) {
-            return new Filesystem(
-                new Local($this->config['cache'])
-            );
+            return $this->createLocalFilesystem($this->config['cache']);
         }
 
         return $this->config['cache'];
@@ -154,7 +170,7 @@ class ServerFactory
 
     /**
      * Get watermarks file system.
-     * @return FilesystemInterface|null Watermarks file system.
+     * @return FilesystemInterface|FilesystemOperator|null Watermarks file system.
      */
     public function getWatermarks()
     {
@@ -163,9 +179,7 @@ class ServerFactory
         }
 
         if (is_string($this->config['watermarks'])) {
-            return new Filesystem(
-                new Local($this->config['watermarks'])
-            );
+            return $this->createLocalFilesystem($this->config['watermarks']);
         }
 
         return $this->config['watermarks'];

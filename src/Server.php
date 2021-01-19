@@ -5,6 +5,8 @@ namespace League\Glide;
 use InvalidArgumentException;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\UnableToReadFile;
 use League\Glide\Api\ApiInterface;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
@@ -14,7 +16,7 @@ class Server
 {
     /**
      * Source file system.
-     * @var FilesystemInterface
+     * @var FilesystemInterface|FilesystemOperator
      */
     protected $source;
 
@@ -26,7 +28,7 @@ class Server
 
     /**
      * Cache file system.
-     * @var FilesystemInterface
+     * @var FilesystemInterface|FilesystemOperator
      */
     protected $cache;
 
@@ -80,11 +82,11 @@ class Server
 
     /**
      * Create Server instance.
-     * @param FilesystemInterface $source Source file system.
-     * @param FilesystemInterface $cache  Cache file system.
+     * @param FilesystemInterface|FilesystemOperator $source Source file system.
+     * @param FilesystemInterface|FilesystemOperator $cache  Cache file system.
      * @param ApiInterface        $api    Image manipulation API.
      */
-    public function __construct(FilesystemInterface $source, FilesystemInterface $cache, ApiInterface $api)
+    public function __construct($source, $cache, ApiInterface $api)
     {
         $this->setSource($source);
         $this->setCache($cache);
@@ -93,16 +95,16 @@ class Server
 
     /**
      * Set source file system.
-     * @param FilesystemInterface $source Source file system.
+     * @param FilesystemInterface|FilesystemOperator $source Source file system.
      */
-    public function setSource(FilesystemInterface $source)
+    public function setSource($source)
     {
         $this->source = $source;
     }
 
     /**
      * Get source file system.
-     * @return FilesystemInterface Source file system.
+     * @return FilesystemInterface|FilesystemOperator Source file system.
      */
     public function getSource()
     {
@@ -161,7 +163,11 @@ class Server
      */
     public function sourceFileExists($path)
     {
-        return $this->source->has($this->getSourcePath($path));
+        if($this->source instanceof FilesystemInterface) {
+            return $this->source->has($this->getSourcePath($path));
+        }
+
+        return $this->source->fileExists($this->getSourcePath($path));
     }
 
     /**
@@ -184,16 +190,16 @@ class Server
 
     /**
      * Set cache file system.
-     * @param FilesystemInterface $cache Cache file system.
+     * @param FilesystemInterface|FilesystemOperator $cache Cache file system.
      */
-    public function setCache(FilesystemInterface $cache)
+    public function setCache($cache)
     {
         $this->cache = $cache;
     }
 
     /**
      * Get cache file system.
-     * @return FilesystemInterface Cache file system.
+     * @return FilesystemInterface|FilesystemOperator Cache file system.
      */
     public function getCache()
     {
@@ -297,7 +303,13 @@ class Server
      */
     public function cacheFileExists($path, array $params)
     {
-        return $this->cache->has(
+        if($this->cache instanceof FilesystemInterface) {
+            return $this->cache->has(
+                $this->getCachePath($path, $params)
+            );
+        }
+
+        return $this->cache->fileExists(
             $this->getCachePath($path, $params)
         );
     }
@@ -315,7 +327,13 @@ class Server
             );
         }
 
-        return $this->cache->deleteDir(
+        if($this->cache instanceof FilesystemInterface) {
+            return $this->cache->deleteDir(
+                dirname($this->getCachePath($path))
+            );
+        }
+
+        return $this->cache->deleteDirectory(
             dirname($this->getCachePath($path))
         );
     }
@@ -443,7 +461,11 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        $source = $this->cache->read($path);
+        try {
+            $source = $this->cache->read($path);
+        }catch(UnableToReadFile $exception) {
+            $source = false;
+        }
 
         if ($source === false) {
             throw new FilesystemException(
@@ -451,7 +473,11 @@ class Server
             );
         }
 
-        return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
+        if($this->cache instanceof FilesystemInterface) {
+            return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
+        }
+
+        return 'data:'.$this->cache->mimeType($path).';base64,'.base64_encode($source);
     }
 
     /**
@@ -464,8 +490,13 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        header('Content-Type:'.$this->cache->getMimetype($path));
-        header('Content-Length:'.$this->cache->getSize($path));
+        if($this->cache instanceof FilesystemInterface) {
+            header('Content-Type:'.$this->cache->getMimetype($path));
+            header('Content-Length:'.$this->cache->getSize($path));
+        } else {
+            header('Content-Type:'.$this->cache->mimeType($path));
+            header('Content-Length:'.$this->cache->fileSize($path));
+        }
         header('Cache-Control:'.'max-age=31536000, public');
         header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
 
@@ -501,9 +532,13 @@ class Server
             );
         }
 
-        $source = $this->source->read(
-            $sourcePath
-        );
+        try {
+            $source = $this->source->read(
+                $sourcePath
+            );
+        } catch (UnableToReadFile $exception) {
+            $source = false;
+        }
 
         if ($source === false) {
             throw new FilesystemException(
