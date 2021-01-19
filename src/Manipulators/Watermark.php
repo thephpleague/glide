@@ -165,7 +165,7 @@ class Watermark extends BaseManipulator
 
                 return $image->getDriver()->init($source);
             }
-        }catch (V2FilesystemException $exception) {
+        } catch (V2FilesystemException $exception) {
             throw new FilesystemException(
                 'Could not read the image `'.$path.'`.'
             );

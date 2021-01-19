@@ -163,7 +163,7 @@ class Server
      */
     public function sourceFileExists($path)
     {
-        if($this->source instanceof FilesystemInterface) {
+        if ($this->source instanceof FilesystemInterface) {
             return $this->source->has($this->getSourcePath($path));
         }
 
@@ -303,7 +303,7 @@ class Server
      */
     public function cacheFileExists($path, array $params)
     {
-        if($this->cache instanceof FilesystemInterface) {
+        if ($this->cache instanceof FilesystemInterface) {
             return $this->cache->has(
                 $this->getCachePath($path, $params)
             );
@@ -327,7 +327,7 @@ class Server
             );
         }
 
-        if($this->cache instanceof FilesystemInterface) {
+        if ($this->cache instanceof FilesystemInterface) {
             return $this->cache->deleteDir(
                 dirname($this->getCachePath($path))
             );
@@ -473,7 +473,7 @@ class Server
             );
         }
 
-        if($this->cache instanceof FilesystemInterface) {
+        if ($this->cache instanceof FilesystemInterface) {
             return 'data:'.$this->cache->getMimetype($path).';base64,'.base64_encode($source);
         }
 
@@ -490,7 +490,7 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        if($this->cache instanceof FilesystemInterface) {
+        if ($this->cache instanceof FilesystemInterface) {
             header('Content-Type:'.$this->cache->getMimetype($path));
             header('Content-Length:'.$this->cache->getSize($path));
         } else {

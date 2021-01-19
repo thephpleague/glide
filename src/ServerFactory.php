@@ -75,7 +75,7 @@ class ServerFactory
      */
     private function createLocalFilesystem(string $path)
     {
-        if(interface_exists(FilesystemInterface::class)) {
+        if (interface_exists(FilesystemInterface::class)) {
             return new Filesystem(
                 new Local($path)
             );
