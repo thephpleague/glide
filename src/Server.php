@@ -463,7 +463,7 @@ class Server
 
         try {
             $source = $this->cache->read($path);
-        }catch(UnableToReadFile $exception) {
+        } catch (UnableToReadFile $exception) {
             $source = false;
         }
 
