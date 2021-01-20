@@ -563,18 +563,24 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        header('Content-Type:'.$this->cache->mimeType($path));
-        header('Content-Length:'.$this->cache->fileSize($path));
-        header('Cache-Control:'.'max-age=31536000, public');
-        header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
+        try {
+            header('Content-Type:'.$this->cache->mimeType($path));
+            header('Content-Length:'.$this->cache->fileSize($path));
+            header('Cache-Control:'.'max-age=31536000, public');
+            header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
 
-        $stream = $this->cache->readStream($path);
+            $stream = $this->cache->readStream($path);
 
-        if (0 !== ftell($stream)) {
-            rewind($stream);
+            if (0 !== ftell($stream)) {
+                rewind($stream);
+            }
+            fpassthru($stream);
+            fclose($stream);
+        } catch (FilesystemV2Exception $exception) {
+            throw new FilesystemException(
+                'Could not read the image `'.$path.'`.'
+            );
         }
-        fpassthru($stream);
-        fclose($stream);
     }
 
     /**
