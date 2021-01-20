@@ -392,7 +392,7 @@ class Server
             throw new InvalidArgumentException('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
         }
 
-        try{
+        try {
             $this->cache->deleteDirectory(
                 dirname($this->getCachePath($path))
             );
