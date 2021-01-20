@@ -3,6 +3,7 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
+use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
@@ -154,14 +155,16 @@ class Watermark extends BaseManipulator
             $path = $this->watermarksPathPrefix.'/'.$path;
         }
 
-        if ($this->watermarks->fileExists($path)) {
-            $source = $this->watermarks->read($path);
+        try {
+            if ($this->watermarks->fileExists($path)) {
+                $source = $this->watermarks->read($path);
 
-            if (false === $source) {
-                throw new FilesystemException('Could not read the image `'.$path.'`.');
+                return $image->getDriver()->init($source);
             }
-
-            return $image->getDriver()->init($source);
+        } catch (FilesystemV2Exception $exception) {
+            throw new FilesystemException(
+                'Could not read the image `'.$path.'`.'
+            );
         }
     }
 

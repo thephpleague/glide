@@ -190,7 +190,11 @@ class Server
      */
     public function sourceFileExists($path)
     {
-        return $this->source->fileExists($this->getSourcePath($path));
+        try {
+            return $this->source->fileExists($this->getSourcePath($path));
+        } catch (FilesystemV2Exception $exception) {
+            return false;
+        }
     }
 
     /**
@@ -366,9 +370,13 @@ class Server
      */
     public function cacheFileExists($path, array $params)
     {
-        return $this->cache->fileExists(
-            $this->getCachePath($path, $params)
-        );
+        try {
+            return $this->cache->fileExists(
+                $this->getCachePath($path, $params)
+            );
+        } catch (FilesystemV2Exception $exception) {
+            return false;
+        }
     }
 
     /**
@@ -532,13 +540,15 @@ class Server
     {
         $path = $this->makeImage($path, $params);
 
-        $source = $this->cache->read($path);
+        try {
+            $source = $this->cache->read($path);
 
-        if (false === $source) {
-            throw new FilesystemException('Could not read the image `'.$path.'`.');
+            return 'data:'.$this->cache->mimeType($path).';base64,'.base64_encode($source);
+        } catch (FilesystemV2Exception $exception) {
+            throw new FilesystemException(
+                'Could not read the image `'.$path.'`.'
+            );
         }
-
-        return 'data:'.$this->cache->mimeType($path).';base64,'.base64_encode($source);
     }
 
     /**
@@ -591,12 +601,14 @@ class Server
             throw new FileNotFoundException('Could not find the image `'.$sourcePath.'`.');
         }
 
-        $source = $this->source->read(
-            $sourcePath
-        );
-
-        if (false === $source) {
-            throw new FilesystemException('Could not read the image `'.$sourcePath.'`.');
+        try {
+            $source = $this->source->read(
+                $sourcePath
+            );
+        } catch (FilesystemV2Exception $exception) {
+            throw new FilesystemException(
+                'Could not read the image `'.$sourcePath.'`.'
+            );
         }
 
         // We need to write the image to the local disk before
