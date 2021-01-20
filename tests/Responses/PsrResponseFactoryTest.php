@@ -30,9 +30,9 @@ class PsrResponseFactoryTest extends TestCase
             return $stream;
         };
 
-        $cache = Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('getMimetype')->andReturn('image/jpeg');
-            $mock->shouldReceive('getSize')->andReturn(0);
+        $cache = Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+            $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
+            $mock->shouldReceive('fileSize')->andReturn(0);
             $mock->shouldReceive('readStream')->andReturn(
                 Mockery::mock('Psr\Http\Message\StreamInterface')
             );
