@@ -12,7 +12,9 @@ class Background extends BaseManipulator
 {
     /**
      * Perform background image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)

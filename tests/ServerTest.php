@@ -3,7 +3,6 @@
 namespace League\Glide;
 
 use InvalidArgumentException;
-use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
 use Mockery;

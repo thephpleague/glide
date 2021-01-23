@@ -11,14 +11,16 @@ class Orientation extends BaseManipulator
 {
     /**
      * Perform orientation image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
     {
         $orientation = $this->getOrientation();
 
-        if ($orientation === 'auto') {
+        if ('auto' === $orientation) {
             return $image->orientate();
         }
 
@@ -27,6 +29,7 @@ class Orientation extends BaseManipulator
 
     /**
      * Resolve orientation.
+     *
      * @return string The resolved orientation.
      */
     public function getOrientation()

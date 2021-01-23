@@ -9,24 +9,28 @@ class UrlBuilder
 {
     /**
      * The base URL.
+     *
      * @var string
      */
     protected $baseUrl;
 
     /**
      * Whether the base URL is a relative domain.
+     *
      * @var bool
      */
     protected $isRelativeDomain = false;
 
     /**
      * The HTTP signature used to sign URLs.
+     *
      * @var SignatureInterface
      */
     protected $signature;
 
     /**
      * Create UrlBuilder instance.
+     *
      * @param string                  $baseUrl   The base URL.
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
      */
@@ -38,11 +42,12 @@ class UrlBuilder
 
     /**
      * Set the base URL.
+     *
      * @param string $baseUrl The base URL.
      */
     public function setBaseUrl($baseUrl)
     {
-        if (substr($baseUrl, 0, 2) === '//') {
+        if ('//' === substr($baseUrl, 0, 2)) {
             $baseUrl = 'http:'.$baseUrl;
             $this->isRelativeDomain = true;
         }
@@ -52,6 +57,7 @@ class UrlBuilder
 
     /**
      * Set the HTTP signature.
+     *
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
      */
     public function setSignature(SignatureInterface $signature = null)
@@ -61,15 +67,17 @@ class UrlBuilder
 
     /**
      * Get the URL.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation parameters.
+     *
+     * @param string $path   The resource path.
+     * @param array  $params The manipulation parameters.
+     *
      * @return string The URL.
      */
     public function getUrl($path, array $params = [])
     {
         $parts = parse_url($this->baseUrl.'/'.trim($path, '/'));
 
-        if ($parts === false) {
+        if (false === $parts) {
             throw new InvalidArgumentException('Not a valid path.');
         }
 
@@ -84,8 +92,10 @@ class UrlBuilder
 
     /**
      * Build the URL.
-     * @param  array  $parts  The URL parts.
-     * @param  array  $params The manipulation parameters.
+     *
+     * @param array $parts  The URL parts.
+     * @param array $params The manipulation parameters.
+     *
      * @return string The built URL.
      */
     protected function buildUrl($parts, $params)
