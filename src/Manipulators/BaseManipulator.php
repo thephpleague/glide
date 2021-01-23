@@ -8,12 +8,14 @@ abstract class BaseManipulator implements ManipulatorInterface
 {
     /**
      * The manipulation params.
+     *
      * @var array
      */
     public $params = [];
 
     /**
      * Set the manipulation params.
+     *
      * @param array $params The manipulation params.
      */
     public function setParams(array $params)
@@ -25,7 +27,9 @@ abstract class BaseManipulator implements ManipulatorInterface
 
     /**
      * Get a specific manipulation param.
-     * @param  string $name The manipulation name.
+     *
+     * @param string $name The manipulation name.
+     *
      * @return string The manipulation value.
      */
     public function __get($name)
@@ -37,6 +41,7 @@ abstract class BaseManipulator implements ManipulatorInterface
 
     /**
      * Perform the image manipulation.
+     *
      * @return Image The manipulated image.
      */
     abstract public function run(Image $image);

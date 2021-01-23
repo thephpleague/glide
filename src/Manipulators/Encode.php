@@ -12,7 +12,9 @@ class Encode extends BaseManipulator
 {
     /**
      * Perform output image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
@@ -26,7 +28,7 @@ class Encode extends BaseManipulator
                            ->insert($image, 'top-left', 0, 0);
         }
 
-        if ($format === 'pjpg') {
+        if ('pjpg' === $format) {
             $image->interlace();
             $format = 'jpg';
         }
@@ -36,7 +38,9 @@ class Encode extends BaseManipulator
 
     /**
      * Resolve format.
-     * @param  Image  $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return string The resolved format.
      */
     public function getFormat(Image $image)
@@ -62,6 +66,7 @@ class Encode extends BaseManipulator
 
     /**
      * Resolve quality.
+     *
      * @return string The resolved quality.
      */
     public function getQuality()

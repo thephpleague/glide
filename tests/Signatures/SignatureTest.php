@@ -2,7 +2,6 @@
 
 namespace League\Glide\Signatures;
 
-use League\Glide\Signatures\SignatureException;
 use PHPUnit\Framework\TestCase;
 
 class SignatureTest extends TestCase

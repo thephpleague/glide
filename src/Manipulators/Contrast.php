@@ -11,14 +11,16 @@ class Contrast extends BaseManipulator
 {
     /**
      * Perform contrast image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
     {
         $contrast = $this->getContrast();
 
-        if ($contrast !== null) {
+        if (null !== $contrast) {
             $image->contrast($contrast);
         }
 
@@ -27,6 +29,7 @@ class Contrast extends BaseManipulator
 
     /**
      * Resolve contrast amount.
+     *
      * @return string The resolved contrast amount.
      */
     public function getContrast()

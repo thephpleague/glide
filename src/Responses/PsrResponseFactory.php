@@ -11,18 +11,21 @@ class PsrResponseFactory implements ResponseFactoryInterface
 {
     /**
      * Base response object.
+     *
      * @var ResponseInterface
      */
     protected $response;
 
     /**
      * Callback to create stream.
+     *
      * @var Closure
      */
     protected $streamCallback;
 
     /**
      * Create PsrResponseFactory instance.
+     *
      * @param ResponseInterface $response       Base response object.
      * @param Closure           $streamCallback Callback to create stream.
      */
@@ -34,9 +37,11 @@ class PsrResponseFactory implements ResponseFactoryInterface
 
     /**
      * Create response.
-     * @param  FilesystemInterface $cache Cache file system.
-     * @param  string              $path  Cached file path.
-     * @return ResponseInterface   Response object.
+     *
+     * @param FilesystemInterface $cache Cache file system.
+     * @param string              $path  Cached file path.
+     *
+     * @return ResponseInterface Response object.
      */
     public function create(FilesystemInterface $cache, $path)
     {
@@ -49,11 +54,11 @@ class PsrResponseFactory implements ResponseFactoryInterface
         $cacheControl = 'max-age=31536000, public';
         $expires = date_create('+1 years')->format('D, d M Y H:i:s').' GMT';
 
-        if ($contentType === false) {
+        if (false === $contentType) {
             throw new FilesystemException('Unable to determine the image content type.');
         }
 
-        if ($contentLength === false) {
+        if (false === $contentLength) {
             throw new FilesystemException('Unable to determine the image content length.');
         }
 

@@ -11,14 +11,16 @@ class Pixelate extends BaseManipulator
 {
     /**
      * Perform pixelate image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
     {
         $pixelate = $this->getPixelate();
 
-        if ($pixelate !== null) {
+        if (null !== $pixelate) {
             $image->pixelate($pixelate);
         }
 
@@ -27,6 +29,7 @@ class Pixelate extends BaseManipulator
 
     /**
      * Resolve pixelate amount.
+     *
      * @return string The resolved pixelate amount.
      */
     public function getPixelate()

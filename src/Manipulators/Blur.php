@@ -11,14 +11,16 @@ class Blur extends BaseManipulator
 {
     /**
      * Perform blur image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
     {
         $blur = $this->getBlur();
 
-        if ($blur !== null) {
+        if (null !== $blur) {
             $image->blur($blur);
         }
 
@@ -27,6 +29,7 @@ class Blur extends BaseManipulator
 
     /**
      * Resolve blur amount.
+     *
      * @return string The resolved blur amount.
      */
     public function getBlur()
