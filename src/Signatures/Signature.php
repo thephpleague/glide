@@ -6,12 +6,14 @@ class Signature implements SignatureInterface
 {
     /**
      * Secret key used to generate signature.
+     *
      * @var string
      */
     protected $signKey;
 
     /**
      * Create Signature instance.
+     *
      * @param string $signKey Secret key used to generate signature.
      */
     public function __construct($signKey)
@@ -21,9 +23,11 @@ class Signature implements SignatureInterface
 
     /**
      * Add an HTTP signature to manipulation parameters.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation parameters.
-     * @return array  The updated manipulation parameters.
+     *
+     * @param string $path   The resource path.
+     * @param array  $params The manipulation parameters.
+     *
+     * @return array The updated manipulation parameters.
      */
     public function addSignature($path, array $params)
     {
@@ -32,8 +36,10 @@ class Signature implements SignatureInterface
 
     /**
      * Validate a request signature.
-     * @param  string             $path   The resource path.
-     * @param  array              $params The manipulation params.
+     *
+     * @param string $path   The resource path.
+     * @param array  $params The manipulation params.
+     *
      * @throws SignatureException
      */
     public function validateRequest($path, array $params)
@@ -49,8 +55,10 @@ class Signature implements SignatureInterface
 
     /**
      * Generate an HTTP signature.
-     * @param  string $path   The resource path.
-     * @param  array  $params The manipulation parameters.
+     *
+     * @param string $path   The resource path.
+     * @param array  $params The manipulation parameters.
+     *
      * @return string The generated HTTP signature.
      */
     public function generateSignature($path, array $params)

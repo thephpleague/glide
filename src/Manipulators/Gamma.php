@@ -11,7 +11,9 @@ class Gamma extends BaseManipulator
 {
     /**
      * Perform gamma image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
@@ -27,6 +29,7 @@ class Gamma extends BaseManipulator
 
     /**
      * Resolve gamma amount.
+     *
      * @return string The resolved gamma amount.
      */
     public function getGamma()
@@ -39,6 +42,6 @@ class Gamma extends BaseManipulator
             return;
         }
 
-        return (double) $this->gam;
+        return (float) $this->gam;
     }
 }

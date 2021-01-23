@@ -11,13 +11,15 @@ class Flip extends BaseManipulator
 {
     /**
      * Perform flip image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
     {
         if ($flip = $this->getFlip()) {
-            if ($flip === 'both') {
+            if ('both' === $flip) {
                 return $image->flip('h')->flip('v');
             }
 
@@ -29,6 +31,7 @@ class Flip extends BaseManipulator
 
     /**
      * Resolve flip.
+     *
      * @return string The resolved flip.
      */
     public function getFlip()

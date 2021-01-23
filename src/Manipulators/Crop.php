@@ -11,7 +11,9 @@ class Crop extends BaseManipulator
 {
     /**
      * Perform crop image manipulation.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return Image The manipulated image.
      */
     public function run(Image $image)
@@ -34,14 +36,16 @@ class Crop extends BaseManipulator
 
     /**
      * Resolve coordinates.
-     * @param  Image $image The source image.
+     *
+     * @param Image $image The source image.
+     *
      * @return int[] The resolved coordinates.
      */
     public function getCoordinates(Image $image)
     {
         $coordinates = explode(',', $this->crop);
 
-        if (count($coordinates) !== 4 or
+        if (4 !== count($coordinates) or
             (!is_numeric($coordinates[0])) or
             (!is_numeric($coordinates[1])) or
             (!is_numeric($coordinates[2])) or
@@ -65,8 +69,10 @@ class Crop extends BaseManipulator
 
     /**
      * Limit coordinates to image boundaries.
-     * @param  Image $image       The source image.
-     * @param  int[] $coordinates The coordinates.
+     *
+     * @param Image $image       The source image.
+     * @param int[] $coordinates The coordinates.
+     *
      * @return int[] The limited coordinates.
      */
     public function limitToImageBoundaries(Image $image, array $coordinates)
