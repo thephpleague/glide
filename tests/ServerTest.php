@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use Hamcrest\Matchers;
 use InvalidArgumentException;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
@@ -139,6 +140,18 @@ class ServerTest extends TestCase
     public function testGetCachePathPrefix()
     {
         $this->assertEquals('', $this->server->getCachePathPrefix());
+    }
+
+    public function testSetInvalidTempDir()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->server->setTempDir('/invalid/path');
+    }
+
+    public function testSetGetTempDir()
+    {
+        $this->server->setTempDir(__DIR__);
+        $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $this->server->getTempDir());
     }
 
     public function testSetGroupCacheInFolders()
@@ -455,7 +468,32 @@ class ServerTest extends TestCase
         }));
 
         $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $mock->shouldReceive('run')->andReturn('content')->once();
+            $tmpDirPattern = Matchers::matchesPattern('~^'.sys_get_temp_dir().'.*~');
+            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
+        }));
+
+        $this->assertEquals(
+            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            $this->server->makeImage('image.jpg', [])
+        );
+    }
+
+    public function testMakeImageFromSourceWithCustomTmpDir()
+    {
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(true)->once();
+            $mock->shouldReceive('read')->andReturn('content')->once();
+        }));
+
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
+            $mock->shouldReceive('has')->andReturn(false)->once();
+            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+        }));
+
+        $this->server->setTempDir(__DIR__);
+        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+            $tmpDirPattern = Matchers::matchesPattern('~^'.__DIR__.'.*~');
+            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
         }));
 
         $this->assertEquals(

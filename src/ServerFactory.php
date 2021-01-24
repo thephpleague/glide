@@ -66,6 +66,10 @@ class ServerFactory
         $server->setBaseUrl($this->getBaseUrl());
         $server->setResponseFactory($this->getResponseFactory());
 
+        if ($this->getTempDir()) {
+            $server->setTempDir($this->getTempDir());
+        }
+
         return $server;
     }
 
@@ -130,6 +134,18 @@ class ServerFactory
     {
         if (isset($this->config['cache_path_prefix'])) {
             return $this->config['cache_path_prefix'];
+        }
+    }
+
+    /**
+     * Get temporary EXIF data directory.
+     *
+     * @return string
+     */
+    public function getTempDir()
+    {
+        if (isset($this->config['temp_dir'])) {
+            return $this->config['temp_dir'];
         }
     }
 

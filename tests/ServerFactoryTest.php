@@ -90,6 +90,15 @@ class ServerFactoryTest extends TestCase
         $this->assertSame('cache', $server->getCachePathPrefix());
     }
 
+    public function testGetTempDir()
+    {
+        $server = new ServerFactory([
+            'temp_dir' => __DIR__,
+        ]);
+
+        $this->assertSame(__DIR__, $server->getTempDir());
+    }
+
     public function testGetGroupCacheInFolders()
     {
         $server = new ServerFactory();
@@ -244,8 +253,10 @@ class ServerFactoryTest extends TestCase
             'source' => Mockery::mock('League\Flysystem\FilesystemInterface'),
             'cache' => Mockery::mock('League\Flysystem\FilesystemInterface'),
             'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
+            'temp_dir' => __DIR__,
         ]);
 
         $this->assertInstanceOf('League\Glide\Server', $server);
+        $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $server->getTempDir());
     }
 }

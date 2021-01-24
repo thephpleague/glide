@@ -41,6 +41,13 @@ class Server
     protected $cachePathPrefix;
 
     /**
+     * Temporary EXIF data directory.
+     *
+     * @var string
+     */
+    protected $tempDir;
+
+    /**
      * Whether to group cache in folders.
      *
      * @var bool
@@ -101,6 +108,7 @@ class Server
         $this->setSource($source);
         $this->setCache($cache);
         $this->setApi($api);
+        $this->tempDir = sys_get_temp_dir();
     }
 
     /**
@@ -243,6 +251,32 @@ class Server
     public function getCachePathPrefix()
     {
         return $this->cachePathPrefix;
+    }
+
+    /**
+     * Get temporary EXIF data directory.
+     *
+     * @return string
+     */
+    public function getTempDir()
+    {
+        return $this->tempDir;
+    }
+
+    /**
+     * Set temporary EXIF data directory. This directory must be a local path and exists on the filesystem.
+     *
+     * @param string $path
+     *
+     * @throws InvalidArgumentException
+     */
+    public function setTempDir($tempDir)
+    {
+        if (!$tempDir || !is_dir($tempDir)) {
+            throw new InvalidArgumentException(sprintf('Invalid temp dir provided: "%s" does not exist.', $tempDir));
+        }
+
+        $this->tempDir = rtrim($tempDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -562,7 +596,7 @@ class Server
         // We need to write the image to the local disk before
         // doing any manipulations. This is because EXIF data
         // can only be read from an actual file.
-        $tmp = tempnam(sys_get_temp_dir(), 'Glide');
+        $tmp = tempnam($this->tempDir, 'Glide');
 
         if (false === file_put_contents($tmp, $source)) {
             throw new FilesystemException('Unable to write temp file for `'.$sourcePath.'`.');
