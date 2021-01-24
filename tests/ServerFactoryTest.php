@@ -5,7 +5,6 @@ namespace League\Glide;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\TextUI\XmlConfiguration\Directory;
 
 class ServerFactoryTest extends TestCase
 {
