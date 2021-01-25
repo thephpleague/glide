@@ -481,13 +481,13 @@ class ServerTest extends TestCase
 
     public function testMakeImageFromSourceWithCustomTmpDir()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(true)->once();
+        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+            $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemInterface', function ($mock) {
-            $mock->shouldReceive('has')->andReturn(false)->once();
+        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+            $mock->shouldReceive('fileExists')->andReturn(false)->once();
             $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
