@@ -99,9 +99,9 @@ class Server
     /**
      * Create Server instance.
      *
-     * @param FilesystemOperator  $source Source file system.
-     * @param FilesystemOperator  $cache  Cache file system.
-     * @param ApiInterface        $api    Image manipulation API.
+     * @param FilesystemOperator $source Source file system.
+     * @param FilesystemOperator $cache  Cache file system.
+     * @param ApiInterface       $api    Image manipulation API.
      */
     public function __construct(FilesystemOperator $source, FilesystemOperator $cache, ApiInterface $api)
     {
@@ -545,9 +545,7 @@ class Server
 
             return 'data:'.$this->cache->mimeType($path).';base64,'.base64_encode($source);
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException(
-                'Could not read the image `'.$path.'`.'
-            );
+            throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
     }
 
@@ -577,9 +575,7 @@ class Server
             fpassthru($stream);
             fclose($stream);
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException(
-                'Could not read the image `'.$path.'`.'
-            );
+            throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
     }
 
@@ -612,9 +608,7 @@ class Server
                 $sourcePath
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException(
-                'Could not read the image `'.$sourcePath.'`.'
-            );
+            throw new FilesystemException('Could not read the image `'.$sourcePath.'`.');
         }
 
         // We need to write the image to the local disk before
@@ -632,9 +626,7 @@ class Server
                 $this->api->run($tmp, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException(
-                'Could not write the image `'.$cachedPath.'`.'
-            );
+            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
         } finally {
             unlink($tmp);
         }
