@@ -7,7 +7,7 @@ title: Responses
 
 In addition to generating manipulated images, Glide also helps with creating HTTP responses using the `getImageResponse()` method. This is recommended over the `outputImage()` method, since it allows your application to handle the actual output of the image.
 
-However, the type of response object needed depends on your application or framework. For example, you may want a [PSR-7](http://www.php-fig.org/psr/psr-7/) response object if your using the Slim framework. Or, if you're using Laravel or Symfony, you may want to use an [HttpFoundation](http://symfony.com/doc/current/components/http_foundation/introduction.html) object. To use the `getImageResponse()` method you must configure Glide to return the response you want.
+However, the type of response object needed depends on your application or framework. For example, you may want a [PSR-7](http://www.php-fig.org/psr/psr-7/) response object if you're using the Slim framework. Or, if you're using Laravel or Symfony, you may want to use an [HttpFoundation](http://symfony.com/doc/current/components/http_foundation/introduction.html) object. To use the `getImageResponse()` method you must configure Glide to return the response you want.
 
 ## Response integrations
 
