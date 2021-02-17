@@ -126,6 +126,16 @@ class SizeTest extends TestCase
         $this->assertSame([200, 100], $this->manipulator->resolveMissingDimensions($image, null, 100));
     }
 
+    public function testResolveMissingDimensionsWithOddDimensions()
+    {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(1024);
+            $mock->shouldReceive('height')->andReturn(553);
+        });
+
+        $this->assertSame([411, 222], $this->manipulator->resolveMissingDimensions($image, 411, null));
+    }
+
     public function testLimitImageSize()
     {
         $this->assertSame([1000, 1000], $this->manipulator->limitImageSize(1000, 1000));
