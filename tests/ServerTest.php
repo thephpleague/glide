@@ -151,7 +151,7 @@ class ServerTest extends TestCase
     public function testSetGetTempDir()
     {
         $this->server->setTempDir(__DIR__);
-        $this->assertSame(__DIR__ . DIRECTORY_SEPARATOR, $this->server->getTempDir());
+        $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $this->server->getTempDir());
     }
 
     public function testSetCachePathCallable()
@@ -179,7 +179,7 @@ class ServerTest extends TestCase
 
     public function testSetCachePathCallableIsBoundClosure()
     {
-        $server  = $this->server;
+        $server = $this->server;
         $phpUnit = $this;
         $this->server->setCachePathCallable(function () use ($phpUnit, $server) {
             $phpUnit::assertEquals($server, $this);
@@ -190,8 +190,8 @@ class ServerTest extends TestCase
 
     public function testSetCachePathCallableArgumentsAreSameAsGetCachePath()
     {
-        $phpUnit         = $this;
-        $pathArgument    = 'TEST';
+        $phpUnit = $this;
+        $pathArgument = 'TEST';
         $optionsArgument = [
             'TEST' => 'TEST',
         ];

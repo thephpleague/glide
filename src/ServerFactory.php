@@ -152,6 +152,7 @@ class ServerFactory
 
     /**
      * Get cache path callable.
+     *
      * @return callable|null Cache path callable.
      */
     public function getCachePathCallable()
