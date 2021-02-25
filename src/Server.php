@@ -95,6 +95,11 @@ class Server
      * @var array
      */
     protected $presets = [];
+    /**
+     * Custom cache path callable.
+     * @var callable|null
+     */
+    protected $cachePathCallable;
 
     /**
      * Create Server instance.
@@ -340,6 +345,24 @@ class Server
     }
 
     /**
+     * Set a custom cachePathCallable
+     * @param callable|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function setCachePathCallable($cachePathCallable)
+    {
+        $this->cachePathCallable = $cachePathCallable;
+    }
+
+    /**
+     * Gets the custom cachePathCallable
+     * @return callable|null The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function getCachePathCallable()
+    {
+        return $this->cachePathCallable;
+    }
+
+    /**
      * Get cache path.
      *
      * @param string $path   Image path.
@@ -349,6 +372,11 @@ class Server
      */
     public function getCachePath($path, array $params = [])
     {
+        $customCallable = $this->getCachePathCallable();
+        if (is_callable($customCallable)) {
+            $boundCallable = \Closure::bind($customCallable, $this, self::class);
+            return $boundCallable(...func_get_args());
+        }
         $sourcePath = $this->getSourcePath($path);
 
         if ($this->sourcePathPrefix) {
@@ -660,3 +688,4 @@ class Server
         return $cachedPath;
     }
 }
+

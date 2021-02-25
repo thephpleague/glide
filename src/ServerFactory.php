@@ -65,6 +65,7 @@ class ServerFactory
         $server->setPresets($this->getPresets());
         $server->setBaseUrl($this->getBaseUrl());
         $server->setResponseFactory($this->getResponseFactory());
+        $server->setCachePathCallable($this->getCachePathCallable());
 
         if ($this->getTempDir()) {
             $server->setTempDir($this->getTempDir());
@@ -146,6 +147,17 @@ class ServerFactory
     {
         if (isset($this->config['temp_dir'])) {
             return $this->config['temp_dir'];
+        }
+    }
+
+    /**
+     * Get cache path callable.
+     * @return callable|null Cache path callable.
+     */
+    public function getCachePathCallable()
+    {
+        if (isset($this->config['cache_path_callable'])) {
+            return $this->config['cache_path_callable'];
         }
     }
 
