@@ -13,7 +13,7 @@ Once your Glide [server](/1.0/config/setup/) is configured, there are a number o
 <?php
 
 // Set the source file system
-public function setSource(FilesystemInterface $source)
+public function setSource(FilesystemOperator $source)
 
 // Get the source file system
 public function getSource()
@@ -37,7 +37,7 @@ public function sourceFileExists($path)
 <?php
 
 // Set the cache file system
-public function setCache(FilesystemInterface $cache)
+public function setCache(FilesystemOperator $cache)
 
 // Get the cache file system
 public function getCache()

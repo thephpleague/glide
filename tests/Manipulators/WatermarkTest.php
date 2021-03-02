@@ -13,7 +13,7 @@ class WatermarkTest extends TestCase
     public function setUp(): void
     {
         $this->manipulator = new Watermark(
-            Mockery::mock('League\Flysystem\FilesystemInterface')
+            Mockery::mock('League\Flysystem\FilesystemOperator')
         );
     }
 
@@ -29,13 +29,13 @@ class WatermarkTest extends TestCase
 
     public function testSetWatermarks()
     {
-        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface'));
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->manipulator->getWatermarks());
+        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemOperator'));
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->manipulator->getWatermarks());
     }
 
     public function testGetWatermarks()
     {
-        $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $this->manipulator->getWatermarks());
+        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->manipulator->getWatermarks());
     }
 
     public function testSetWatermarksPathPrefix()
@@ -61,8 +61,8 @@ class WatermarkTest extends TestCase
             }))->once();
         });
 
-        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemInterface', function ($watermarks) {
-            $watermarks->shouldReceive('has')->with('image.jpg')->andReturn(true)->once();
+        $this->manipulator->setWatermarks(Mockery::mock('League\Flysystem\FilesystemOperator', function ($watermarks) {
+            $watermarks->shouldReceive('fileExists')->with('image.jpg')->andReturn(true)->once();
             $watermarks->shouldReceive('read')->with('image.jpg')->andReturn('content')->once();
         }));
 
@@ -85,7 +85,7 @@ class WatermarkTest extends TestCase
     public function testGetImage()
     {
         $this->manipulator->getWatermarks()
-            ->shouldReceive('has')
+            ->shouldReceive('fileExists')
                 ->with('watermarks/image.jpg')
                 ->andReturn(true)
                 ->once()
@@ -116,13 +116,13 @@ class WatermarkTest extends TestCase
         $this->expectExceptionMessage('Could not read the image `image.jpg`.');
 
         $this->manipulator->getWatermarks()
-            ->shouldReceive('has')
+            ->shouldReceive('fileExists')
                 ->with('image.jpg')
                 ->andReturn(true)
                 ->once()
             ->shouldReceive('read')
                 ->with('image.jpg')
-                ->andReturn(false)
+                ->andThrow('League\Flysystem\UnableToReadFile')
                 ->once();
 
         $image = Mockery::mock('Intervention\Image\Image');

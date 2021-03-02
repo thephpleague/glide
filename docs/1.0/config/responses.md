@@ -29,16 +29,16 @@ If your particular project doesn't use PSR-7 or HttpFoundation, or if you'd like
 
 namespace League\Glide\Responses;
 
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 
 interface ResponseFactoryInterface
 {
     /**
      * Create the response.
-     * @param  FilesystemInterface $cache The cache file system.
+     * @param  FilesystemOperator $cache The cache file system.
      * @param  string              $path  The cached file path.
      * @return mixed               The response object.
      */
-    public function create(FilesystemInterface $cache, $path);
+    public function create(FilesystemOperator $cache, $path);
 }
 ~~~

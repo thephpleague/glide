@@ -3,7 +3,7 @@
 namespace League\Glide\Responses;
 
 use Closure;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -38,19 +38,19 @@ class PsrResponseFactory implements ResponseFactoryInterface
     /**
      * Create response.
      *
-     * @param FilesystemInterface $cache Cache file system.
-     * @param string              $path  Cached file path.
+     * @param FilesystemOperator $cache Cache file system.
+     * @param string             $path  Cached file path.
      *
      * @return ResponseInterface Response object.
      */
-    public function create(FilesystemInterface $cache, $path)
+    public function create(FilesystemOperator $cache, $path)
     {
         $stream = $this->streamCallback->__invoke(
             $cache->readStream($path)
         );
 
-        $contentType = $cache->getMimetype($path);
-        $contentLength = (string) $cache->getSize($path);
+        $contentType = $cache->mimeType($path);
+        $contentLength = (string) $cache->fileSize($path);
         $cacheControl = 'max-age=31536000, public';
         $expires = date_create('+1 years')->format('D, d M Y H:i:s').' GMT';
 

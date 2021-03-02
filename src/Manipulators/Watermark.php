@@ -3,7 +3,8 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Image;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemException as FilesystemV2Exception;
+use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
 
@@ -24,7 +25,7 @@ class Watermark extends BaseManipulator
     /**
      * The watermarks file system.
      *
-     * @var FilesystemInterface|null
+     * @var FilesystemOperator|null
      */
     protected $watermarks;
 
@@ -38,9 +39,9 @@ class Watermark extends BaseManipulator
     /**
      * Create Watermark instance.
      *
-     * @param FilesystemInterface $watermarks The watermarks file system.
+     * @param FilesystemOperator $watermarks The watermarks file system.
      */
-    public function __construct(FilesystemInterface $watermarks = null, $watermarksPathPrefix = '')
+    public function __construct(FilesystemOperator $watermarks = null, $watermarksPathPrefix = '')
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
@@ -49,9 +50,9 @@ class Watermark extends BaseManipulator
     /**
      * Set the watermarks file system.
      *
-     * @param FilesystemInterface $watermarks The watermarks file system.
+     * @param FilesystemOperator $watermarks The watermarks file system.
      */
-    public function setWatermarks(FilesystemInterface $watermarks = null)
+    public function setWatermarks(FilesystemOperator $watermarks = null)
     {
         $this->watermarks = $watermarks;
     }
@@ -59,7 +60,7 @@ class Watermark extends BaseManipulator
     /**
      * Get the watermarks file system.
      *
-     * @return FilesystemInterface The watermarks file system.
+     * @return FilesystemOperator The watermarks file system.
      */
     public function getWatermarks()
     {
@@ -154,14 +155,14 @@ class Watermark extends BaseManipulator
             $path = $this->watermarksPathPrefix.'/'.$path;
         }
 
-        if ($this->watermarks->has($path)) {
-            $source = $this->watermarks->read($path);
+        try {
+            if ($this->watermarks->fileExists($path)) {
+                $source = $this->watermarks->read($path);
 
-            if (false === $source) {
-                throw new FilesystemException('Could not read the image `'.$path.'`.');
+                return $image->getDriver()->init($source);
             }
-
-            return $image->getDriver()->init($source);
+        } catch (FilesystemV2Exception $exception) {
+            throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
     }
 
