@@ -162,12 +162,14 @@ class Size extends BaseManipulator
             $height = $image->height();
         }
 
-        if (is_null($width)) {
-            $width = $height * ($image->width() / $image->height());
-        }
+        if (is_null($width) || is_null($height)) {
+            $size = (new \Intervention\Image\Size($image->width(), $image->height()))
+              ->resize($width, $height, function ($constraint) {
+                  $constraint->aspectRatio();
+              });
 
-        if (is_null($height)) {
-            $height = $width / ($image->width() / $image->height());
+            $width = $size->getWidth();
+            $height = $size->getHeight();
         }
 
         return [
