@@ -58,3 +58,17 @@ jobs:
               run: |
                   composer update --prefer-dist --no-interaction --no-ansi --no-progress
                   php vendor/bin/phpunit
+
+    psalm:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.4'
+                  extensions: gd
+                  tools: psalm:4.6
+            - name: psalm
+              run: |
+                  composer update --prefer-dist --no-interaction --no-ansi --no-progress
+                  psalm --output-format=github

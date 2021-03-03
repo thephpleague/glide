@@ -37,7 +37,7 @@ class Dimension
      *
      * @param string $value The dimension value.
      *
-     * @return float The resolved dimension.
+     * @return float|null The resolved dimension.
      */
     public function get($value)
     {
@@ -47,10 +47,10 @@ class Dimension
 
         if (preg_match('/^(\d{1,2}(?!\d)|100)(w|h)$/', $value, $matches)) {
             if ('h' === $matches[2]) {
-                return (float) $this->image->height() * ($matches[1] / 100);
+                return (float) $this->image->height() * ((float) $matches[1] / 100);
             }
 
-            return (float) $this->image->width() * ($matches[1] / 100);
+            return (float) $this->image->width() * ((float) $matches[1] / 100);
         }
     }
 }

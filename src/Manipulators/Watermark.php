@@ -51,6 +51,8 @@ class Watermark extends BaseManipulator
      * Set the watermarks file system.
      *
      * @param FilesystemOperator $watermarks The watermarks file system.
+     *
+     * @return void
      */
     public function setWatermarks(FilesystemOperator $watermarks = null)
     {
@@ -60,7 +62,7 @@ class Watermark extends BaseManipulator
     /**
      * Get the watermarks file system.
      *
-     * @return FilesystemOperator The watermarks file system.
+     * @return FilesystemOperator|null The watermarks file system.
      */
     public function getWatermarks()
     {
@@ -71,6 +73,8 @@ class Watermark extends BaseManipulator
      * Set the watermarks path prefix.
      *
      * @param string $watermarksPathPrefix The watermarks path prefix.
+     *
+     * @return void
      */
     public function setWatermarksPathPrefix($watermarksPathPrefix = '')
     {
@@ -202,7 +206,7 @@ class Watermark extends BaseManipulator
     /**
      * Get the fit.
      *
-     * @return string The fit.
+     * @return string|null The fit.
      */
     public function getFit()
     {

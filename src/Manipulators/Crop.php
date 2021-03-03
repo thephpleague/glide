@@ -39,7 +39,9 @@ class Crop extends BaseManipulator
      *
      * @param Image $image The source image.
      *
-     * @return int[] The resolved coordinates.
+     * @return int[]|null The resolved coordinates.
+     *
+     * @psalm-return array{0: int, 1: int, 2: int, 3: int}|null
      */
     public function getCoordinates(Image $image)
     {

@@ -38,6 +38,8 @@ class Api implements ApiInterface
      * Set the image manager.
      *
      * @param ImageManager $imageManager Intervention image manager.
+     *
+     * @return void
      */
     public function setImageManager(ImageManager $imageManager)
     {
@@ -58,6 +60,8 @@ class Api implements ApiInterface
      * Set the manipulators.
      *
      * @param array $manipulators Collection of manipulators.
+     *
+     * @return void
      */
     public function setManipulators(array $manipulators)
     {

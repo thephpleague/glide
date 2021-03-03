@@ -45,7 +45,9 @@ class Border extends BaseManipulator
      *
      * @param Image $image The source image.
      *
-     * @return string The resolved border amount.
+     * @return (float|string)[]|null The resolved border amount.
+     *
+     * @psalm-return array{0: float, 1: string, 2: string}|null
      */
     public function getBorder(Image $image)
     {
@@ -71,7 +73,7 @@ class Border extends BaseManipulator
      * @param float  $dpr   The device pixel ratio.
      * @param string $width The border width.
      *
-     * @return float The resolved border width.
+     * @return float|null The resolved border width.
      */
     public function getWidth(Image $image, $dpr, $width)
     {

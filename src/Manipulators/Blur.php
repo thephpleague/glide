@@ -30,7 +30,7 @@ class Blur extends BaseManipulator
     /**
      * Resolve blur amount.
      *
-     * @return string The resolved blur amount.
+     * @return int|null The resolved blur amount.
      */
     public function getBlur()
     {

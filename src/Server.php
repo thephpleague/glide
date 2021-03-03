@@ -115,6 +115,8 @@ class Server
      * Set source file system.
      *
      * @param FilesystemOperator $source Source file system.
+     *
+     * @return void
      */
     public function setSource(FilesystemOperator $source)
     {
@@ -135,6 +137,8 @@ class Server
      * Set source path prefix.
      *
      * @param string $sourcePathPrefix Source path prefix.
+     *
+     * @return void
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
@@ -201,6 +205,8 @@ class Server
      * Set base URL.
      *
      * @param string $baseUrl Base URL.
+     *
+     * @return void
      */
     public function setBaseUrl($baseUrl)
     {
@@ -221,6 +227,8 @@ class Server
      * Set cache file system.
      *
      * @param FilesystemOperator $cache Cache file system.
+     *
+     * @return void
      */
     public function setCache(FilesystemOperator $cache)
     {
@@ -241,6 +249,8 @@ class Server
      * Set cache path prefix.
      *
      * @param string $cachePathPrefix Cache path prefix.
+     *
+     * @return void
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
@@ -270,7 +280,9 @@ class Server
     /**
      * Set temporary EXIF data directory. This directory must be a local path and exists on the filesystem.
      *
-     * @param string $path
+     * @param string $tempDir
+     *
+     * @return void
      *
      * @throws InvalidArgumentException
      */
@@ -287,6 +299,8 @@ class Server
      * Set the group cache in folders setting.
      *
      * @param bool $groupCacheInFolders Whether to group cache in folders.
+     *
+     * @return void
      */
     public function setGroupCacheInFolders($groupCacheInFolders)
     {
@@ -307,6 +321,8 @@ class Server
      * Set the cache with file extensions setting.
      *
      * @param bool $cacheWithFileExtensions Whether to cache with file extensions.
+     *
+     * @return void
      */
     public function setCacheWithFileExtensions($cacheWithFileExtensions)
     {
@@ -407,6 +423,8 @@ class Server
      * Set image manipulation API.
      *
      * @param ApiInterface $api Image manipulation API.
+     *
+     * @return void
      */
     public function setApi(ApiInterface $api)
     {
@@ -427,6 +445,8 @@ class Server
      * Set default image manipulations.
      *
      * @param array $defaults Default image manipulations.
+     *
+     * @return void
      */
     public function setDefaults(array $defaults)
     {
@@ -447,6 +467,8 @@ class Server
      * Set preset image manipulations.
      *
      * @param array $presets Preset image manipulations.
+     *
+     * @return void
      */
     public function setPresets(array $presets)
     {
@@ -489,6 +511,8 @@ class Server
      * Set response factory.
      *
      * @param ResponseFactoryInterface|null $responseFactory Response factory.
+     *
+     * @return void
      */
     public function setResponseFactory(ResponseFactoryInterface $responseFactory = null)
     {
@@ -498,7 +522,7 @@ class Server
     /**
      * Get response factory.
      *
-     * @return ResponseFactoryInterface Response factory.
+     * @return ResponseFactoryInterface|null Response factory.
      */
     public function getResponseFactory()
     {
@@ -556,6 +580,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
     public function outputImage($path, array $params)
     {
