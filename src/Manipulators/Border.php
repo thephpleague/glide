@@ -138,10 +138,10 @@ class Border extends BaseManipulator
     public function runOverlay(Image $image, $width, $color)
     {
         return $image->rectangle(
-            $width / 2,
-            $width / 2,
-            $image->width() - ($width / 2),
-            $image->height() - ($width / 2),
+            (int) round($width / 2),
+            (int) round($width / 2),
+            (int) round($image->width() - ($width / 2)),
+            (int) round($image->height() - ($width / 2)),
             function ($draw) use ($width, $color) {
                 $draw->border($width, $color);
             }
@@ -161,12 +161,12 @@ class Border extends BaseManipulator
     {
         return $image
             ->resize(
-                $image->width() - ($width * 2),
-                $image->height() - ($width * 2)
+                (int) round($image->width() - ($width * 2)),
+                (int) round($image->height() - ($width * 2))
             )
             ->resizeCanvas(
-                $width * 2,
-                $width * 2,
+                (int) round($width * 2),
+                (int) round($width * 2),
                 'center',
                 true,
                 $color
@@ -185,8 +185,8 @@ class Border extends BaseManipulator
     public function runExpand(Image $image, $width, $color)
     {
         return $image->resizeCanvas(
-            $width * 2,
-            $width * 2,
+            (int) round($width * 2),
+            (int) round($width * 2),
             'center',
             true,
             $color

@@ -183,9 +183,9 @@ class Size extends BaseManipulator
     /**
      * Apply the device pixel ratio.
      *
-     * @param int $width  The target image width.
-     * @param int $height The target image height.
-     * @param int $dpr    The device pixel ratio.
+     * @param int   $width  The target image width.
+     * @param int   $height The target image height.
+     * @param float $dpr    The device pixel ratio.
      *
      * @return int[] The modified width and height.
      */
@@ -195,8 +195,8 @@ class Size extends BaseManipulator
         $height = $height * $dpr;
 
         return [
-            (int) $width,
-            (int) $height,
+            (int) round($width),
+            (int) round($height),
         ];
     }
 
