@@ -16,7 +16,7 @@ class Dimension
     /**
      * The device pixel ratio.
      *
-     * @var int
+     * @var float
      */
     protected $dpr;
 
@@ -24,7 +24,7 @@ class Dimension
      * Create dimension helper instance.
      *
      * @param Image $image The source image.
-     * @param int   $dpr   The device pixel ratio.
+     * @param float $dpr   The device pixel ratio.
      */
     public function __construct(Image $image, $dpr = 1)
     {
