@@ -44,6 +44,8 @@ class UrlBuilder
      * Set the base URL.
      *
      * @param string $baseUrl The base URL.
+     *
+     * @return void
      */
     public function setBaseUrl($baseUrl)
     {
@@ -59,6 +61,8 @@ class UrlBuilder
      * Set the HTTP signature.
      *
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
+     *
+     * @return void
      */
     public function setSignature(SignatureInterface $signature = null)
     {

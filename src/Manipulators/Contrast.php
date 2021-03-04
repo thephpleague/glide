@@ -30,7 +30,7 @@ class Contrast extends BaseManipulator
     /**
      * Resolve contrast amount.
      *
-     * @return string The resolved contrast amount.
+     * @return int|null The resolved contrast amount.
      */
     public function getContrast()
     {

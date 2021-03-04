@@ -30,7 +30,7 @@ class Pixelate extends BaseManipulator
     /**
      * Resolve pixelate amount.
      *
-     * @return string The resolved pixelate amount.
+     * @return int|null The resolved pixelate amount.
      */
     public function getPixelate()
     {

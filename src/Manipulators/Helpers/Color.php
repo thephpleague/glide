@@ -74,7 +74,7 @@ class Color
 
             if (preg_match(self::SHORT_ARGB, $value)) {
                 $rgba = $this->parseHex(substr($value, 1).substr($value, 1));
-                $alpha = substr($value, 0, 1) / 10;
+                $alpha = (float) substr($value, 0, 1) / 10;
                 break;
             }
 
@@ -86,7 +86,7 @@ class Color
 
             if (preg_match(self::LONG_ARGB, $value)) {
                 $rgba = $this->parseHex(substr($value, 2));
-                $alpha = substr($value, 0, 2) / 100;
+                $alpha = (float) substr($value, 0, 2) / 100;
                 break;
             }
 
@@ -127,7 +127,7 @@ class Color
      *
      * @param string $name The color name.
      *
-     * @return string The hex code.
+     * @return string|null The hex code.
      */
     public function getHexFromColorName($name)
     {

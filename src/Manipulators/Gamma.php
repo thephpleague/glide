@@ -30,7 +30,7 @@ class Gamma extends BaseManipulator
     /**
      * Resolve gamma amount.
      *
-     * @return string The resolved gamma amount.
+     * @return float|null The resolved gamma amount.
      */
     public function getGamma()
     {

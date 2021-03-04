@@ -5,6 +5,7 @@
 /.gitignore export-ignore
 /.php_cs.dist export-ignore
 /phpunit.xml.dist export-ignore
+/psalm.xml export-ignore
 /tests export-ignore
 /CHANGELOG.md export-ignore
 /CONTRIBUTING.md export-ignore

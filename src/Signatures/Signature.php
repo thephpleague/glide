@@ -41,6 +41,8 @@ class Signature implements SignatureInterface
      * @param array  $params The manipulation params.
      *
      * @throws SignatureException
+     *
+     * @return void
      */
     public function validateRequest($path, array $params)
     {

@@ -33,6 +33,8 @@ class Size extends BaseManipulator
      * Set the maximum image size.
      *
      * @param int|null Maximum image size in pixels.
+     *
+     * @return void
      */
     public function setMaxImageSize($maxImageSize)
     {
@@ -404,7 +406,9 @@ class Size extends BaseManipulator
     /**
      * Resolve crop with zoom.
      *
-     * @return int[] The resolved crop.
+     * @return (float|int)[] The resolved crop.
+     *
+     * @psalm-return array{0: int, 1: int, 2: float}
      */
     public function getCrop()
     {

@@ -30,7 +30,7 @@ class Sharpen extends BaseManipulator
     /**
      * Resolve sharpen amount.
      *
-     * @return string The resolved sharpen amount.
+     * @return int|null The resolved sharpen amount.
      */
     public function getSharpen()
     {

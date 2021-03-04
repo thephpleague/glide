@@ -30,7 +30,7 @@ class Brightness extends BaseManipulator
     /**
      * Resolve brightness amount.
      *
-     * @return string The resolved brightness amount.
+     * @return int|null The resolved brightness amount.
      */
     public function getBrightness()
     {

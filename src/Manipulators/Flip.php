@@ -32,7 +32,7 @@ class Flip extends BaseManipulator
     /**
      * Resolve flip.
      *
-     * @return string The resolved flip.
+     * @return string|null The resolved flip.
      */
     public function getFlip()
     {

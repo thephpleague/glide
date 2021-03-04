@@ -67,7 +67,7 @@ class Encode extends BaseManipulator
     /**
      * Resolve quality.
      *
-     * @return string The resolved quality.
+     * @return int The resolved quality.
      */
     public function getQuality()
     {
