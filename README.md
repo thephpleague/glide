@@ -2,8 +2,8 @@
 
 [![Latest Version](https://img.shields.io/github/release/thephpleague/glide.svg?style=flat-square)](https://github.com/thephpleague/glide/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/glide/blob/master/LICENSE)
-[![Build Status](https://img.shields.io/travis/thephpleague/glide/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/glide)
-[![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/glide.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/glide)
+[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/glide/glide/master?style=flat-square)](https://github.com/thephpleague/glide/actions/workflows/test.yaml?query=branch%3Amaster++)
+[![Code Coverage](https://img.shields.io/codecov/c/github/thephpleague/glide/master?style=flat-square)](https://app.codecov.io/gh/thephpleague/glide/)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/glide.svg?style=flat-square)](https://packagist.org/packages/league/glide)
 [![Source Code](http://img.shields.io/badge/source-thephpleague/glide-blue.svg?style=flat-square)](https://github.com/thephpleague/glide)
 [![Author](http://img.shields.io/badge/author-@reinink-blue.svg?style=flat-square)](https://twitter.com/reinink)
