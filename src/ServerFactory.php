@@ -157,9 +157,7 @@ class ServerFactory
      */
     public function getCachePathCallable()
     {
-        if (isset($this->config['cache_path_callable'])) {
-            return $this->config['cache_path_callable'];
-        }
+        return $this->config['cache_path_callable'] ?? null;
     }
 
     /**

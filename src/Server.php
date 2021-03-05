@@ -376,10 +376,10 @@ class Server
     public function getCachePath($path, array $params = [])
     {
         $customCallable = $this->getCachePathCallable();
-        if ($customCallable instanceof \Closure) {
+        if (null !== $customCallable) {
             $boundCallable = \Closure::bind($customCallable, $this, self::class);
 
-            return $boundCallable(...func_get_args());
+            return $boundCallable($path, $params);
         }
         $sourcePath = $this->getSourcePath($path);
 
