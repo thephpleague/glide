@@ -98,7 +98,7 @@ class Server
     /**
      * Custom cache path callable.
      *
-     * @var callable|null
+     * @var \Closure|null
      */
     protected $cachePathCallable;
 
@@ -348,9 +348,9 @@ class Server
     /**
      * Set a custom cachePathCallable.
      *
-     * @param callable|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
+     * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
      */
-    public function setCachePathCallable($cachePathCallable)
+    public function setCachePathCallable(?\Closure $cachePathCallable)
     {
         $this->cachePathCallable = $cachePathCallable;
     }
@@ -358,7 +358,7 @@ class Server
     /**
      * Gets the custom cachePathCallable.
      *
-     * @return callable|null The custom cache path callable. It receives the same arguments as @see getCachePath
+     * @return \Closure|null The custom cache path callable. It receives the same arguments as @see getCachePath
      */
     public function getCachePathCallable()
     {
@@ -376,7 +376,7 @@ class Server
     public function getCachePath($path, array $params = [])
     {
         $customCallable = $this->getCachePathCallable();
-        if (is_callable($customCallable)) {
+        if ($customCallable instanceof \Closure) {
             $boundCallable = \Closure::bind($customCallable, $this, self::class);
 
             return $boundCallable(...func_get_args());
