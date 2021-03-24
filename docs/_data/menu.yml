@@ -1,25 +1,33 @@
-'0.3':
-    Getting Started:
-        Introduction: '/0.3/'
-        Changelog: '/0.3/changelog/'
-        Installation: '/0.3/installation/'
-        Simple example: '/0.3/simple-example/'
-    Configuration:
-        The server: '/0.3/config/the-server/'
-        Basic usage: '/0.3/config/basic-usage/'
-        Source & cache: '/0.3/config/source-and-cache/'
-        Base URL: '/0.3/config/base-url/'
-        Image driver: '/0.3/config/image-driver/'
-        Secure images: '/0.3/config/secure-images/'
-        Max image size: '/0.3/config/max-image-size/'
-    Image API:
-        Size: '/0.3/api/size/'
-        Adjustments: '/0.3/api/adjustments/'
-        Effects: '/0.3/api/effects/'
-        Output: '/0.3/api/output/'
-'1.0':
+'2.0':
     Getting Started:
         Introduction: '/'
+        Changelog: '/2.0/changelog/'
+        Installation: '/2.0/installation/'
+        Simple example: '/2.0/simple-example/'
+    Configuration:
+        Setup: '/2.0/config/setup/'
+        Source & cache: '/2.0/config/source-and-cache/'
+        Security: '/2.0/config/security/'
+        Responses: '/2.0/config/responses/'
+        Image driver: '/2.0/config/image-driver/'
+        Defaults & presets: '/2.0/config/defaults-and-presets/'
+        Advanced usage: '/2.0/config/advanced-usage/'
+    Image API:
+        Quick reference: '/2.0/api/quick-reference/'
+        Orientation: '/2.0/api/orientation/'
+        Flip: '/2.0/api/flip/'
+        Crop: '/2.0/api/crop/'
+        Size: '/2.0/api/size/'
+        Pixel density: '/2.0/api/pixel-density/'
+        Adjustments: '/2.0/api/adjustments/'
+        Effects: '/2.0/api/effects/'
+        Watermarks: '/2.0/api/watermarks/'
+        Background: '/2.0/api/background/'
+        Border: '/2.0/api/border/'
+        Encode: '/2.0/api/encode/'
+'1.0':
+    Getting Started:
+        Introduction: /1.0/'
         Changelog: '/1.0/changelog/'
         Installation: '/1.0/installation/'
         Simple example: '/1.0/simple-example/'
@@ -44,3 +52,22 @@
         Background: '/1.0/api/background/'
         Border: '/1.0/api/border/'
         Encode: '/1.0/api/encode/'
+'0.3':
+    Getting Started:
+        Introduction: '/0.3/'
+        Changelog: '/0.3/changelog/'
+        Installation: '/0.3/installation/'
+        Simple example: '/0.3/simple-example/'
+    Configuration:
+        The server: '/0.3/config/the-server/'
+        Basic usage: '/0.3/config/basic-usage/'
+        Source & cache: '/0.3/config/source-and-cache/'
+        Base URL: '/0.3/config/base-url/'
+        Image driver: '/0.3/config/image-driver/'
+        Secure images: '/0.3/config/secure-images/'
+        Max image size: '/0.3/config/max-image-size/'
+    Image API:
+        Size: '/0.3/api/size/'
+        Adjustments: '/0.3/api/adjustments/'
+        Effects: '/0.3/api/effects/'
+        Output: '/0.3/api/output/'
