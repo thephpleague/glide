@@ -154,6 +154,57 @@ class ServerTest extends TestCase
         $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $this->server->getTempDir());
     }
 
+    public function testSetCachePathCallable()
+    {
+        $this->server->setCachePathCallable(null);
+        $this->assertEquals(null, $this->server->getCachePathCallable());
+    }
+
+    public function testGetCachePathCallable()
+    {
+        $this->assertEquals(null, $this->server->getCachePathCallable());
+    }
+
+    public function testCachePathCallableIsCalledOnGetCachePath()
+    {
+        $expected = 'TEST';
+        $callable = function () use ($expected) {
+            return $expected;
+        };
+
+        $this->server->setCachePathCallable($callable);
+
+        self::assertEquals($expected, $this->server->getCachePath(''));
+    }
+
+    public function testSetCachePathCallableIsBoundClosure()
+    {
+        $server = $this->server;
+        $phpUnit = $this;
+        $this->server->setCachePathCallable(function () use ($phpUnit, $server) {
+            $phpUnit::assertEquals($server, $this);
+        });
+
+        $this->server->getCachePath('');
+    }
+
+    public function testSetCachePathCallableArgumentsAreSameAsGetCachePath()
+    {
+        $phpUnit = $this;
+        $pathArgument = 'TEST';
+        $optionsArgument = [
+            'TEST' => 'TEST',
+        ];
+        $this->server->setCachePathCallable(function () use ($optionsArgument, $pathArgument, $phpUnit) {
+            $arguments = func_get_args();
+            $phpUnit::assertCount(2, $arguments);
+            $phpUnit::assertEquals($arguments[0], $pathArgument);
+            $phpUnit::assertEquals($arguments[1], $optionsArgument);
+        });
+
+        $this->server->getCachePath($pathArgument, $optionsArgument);
+    }
+
     public function testSetGroupCacheInFolders()
     {
         $this->server->setGroupCacheInFolders(false);
