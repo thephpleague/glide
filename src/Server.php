@@ -111,6 +111,17 @@ class Server
         $this->tempDir = sys_get_temp_dir();
     }
 
+    private function trimPrefix(string $prefix): string
+    {
+        if ('//' == substr($prefix, -2)) {
+            if (':' == substr(rtrim($prefix, '/'), -1)) {
+                return rtrim($prefix, '/') . '/';
+            }
+        }
+
+        return trim($prefix, '/');
+    }
+
     /**
      * Set source file system.
      *
@@ -142,7 +153,7 @@ class Server
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
-        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+        $this->sourcePathPrefix = $this->trimPrefix($sourcePathPrefix);
     }
 
     /**
@@ -254,7 +265,7 @@ class Server
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
-        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+        $this->cachePathPrefix = $this->trimPrefix($cachePathPrefix);
     }
 
     /**
