@@ -9,7 +9,7 @@ Glide makes it possible to access images stored in a variety of file systems. It
 
 ## Setup using Flysystem
 
-To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. See the Flysystem [website](http://flysystem.thephpleague.com/) for a complete list of available adapters.
+To set your source and cache locations, simply pass an instance of `League\Flysystem\Filesystem` for each. See the Flysystem [website](https://flysystem.thephpleague.com/) for a complete list of available adapters.
 
 ~~~ php
 <?php
@@ -88,7 +88,7 @@ With the base URL configured, the new image source paths will no longer include 
 
 ## Disabling the cache
 
-In some situations it may be desirable to disable the cache. For example, you may choose to use a tool like Varnish for caching instead. The best way to do this with Glide is to use an [in-memory adapter](http://flysystem.thephpleague.com/adapter/memory/) for Flysystem. This will prevent any cached images from being saved to your local disk.
+In some situations it may be desirable to disable the cache. For example, you may choose to use a tool like Varnish for caching instead. The best way to do this with Glide is to use an [in-memory adapter](https://flysystem.thephpleague.com/v2/docs/adapter/in-memory/) for Flysystem. This will prevent any cached images from being saved to your local disk.
 
 ## Grouping cache in folders
 
