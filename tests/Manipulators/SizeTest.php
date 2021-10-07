@@ -75,6 +75,7 @@ class SizeTest extends TestCase
     {
         $this->assertSame('contain', $this->manipulator->setParams(['fit' => 'contain'])->getFit());
         $this->assertSame('fill', $this->manipulator->setParams(['fit' => 'fill'])->getFit());
+        $this->assertSame('fillmax', $this->manipulator->setParams(['fit' => 'fillmax'])->getFit());
         $this->assertSame('max', $this->manipulator->setParams(['fit' => 'max'])->getFit());
         $this->assertSame('stretch', $this->manipulator->setParams(['fit' => 'stretch'])->getFit());
         $this->assertSame('crop', $this->manipulator->setParams(['fit' => 'crop'])->getFit());
