@@ -14,6 +14,7 @@ class EncodeTest extends TestCase
     private $gif;
     private $tif;
     private $webp;
+    private $avif;
 
     public function setUp(): void
     {
@@ -24,6 +25,10 @@ class EncodeTest extends TestCase
 
         if (function_exists('imagecreatefromwebp')) {
             $this->webp = $manager->canvas(100, 100)->encode('webp');
+        }
+
+        if (function_exists('imagecreatefromavif')) {
+            $this->avif = $manager->canvas(100, 100)->encode('avif');
         }
 
         $this->manipulator = new Encode();
@@ -64,6 +69,22 @@ class EncodeTest extends TestCase
             $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->gif)->mime);
             $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->webp)->mime);
         }
+
+        if (function_exists('imagecreatefromavif')) {
+            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->avif)->mime);
+            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->avif)->mime);
+            $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->avif)->mime);
+            $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->avif)->mime);
+            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->jpg)->mime);
+            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->png)->mime);
+            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->gif)->mime);
+            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->avif)->mime);
+        }
+
+        if (function_exists('imagecreatefromwebp') && function_exists('imagecreatefromavif')) {
+            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->avif)->mime);
+            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->webp)->mime);
+        }
     }
 
     public function testGetFormat()
@@ -77,6 +98,10 @@ class EncodeTest extends TestCase
 
             if (function_exists('imagecreatefromwebp')) {
                 $mock->shouldReceive('mime')->andReturn('image/webp')->once();
+            }
+            
+            if (function_exists('imagecreatefromavif')) {
+                $mock->shouldReceive('mime')->andReturn('image/avif')->once();
             }
         });
 
@@ -92,6 +117,10 @@ class EncodeTest extends TestCase
 
         if (function_exists('imagecreatefromwebp')) {
             $this->assertSame('webp', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+        }
+
+        if (function_exists('imagecreatefromavif')) {
+            $this->assertSame('avif', $this->manipulator->setParams(['fm' => null])->getFormat($image));
         }
     }
 
