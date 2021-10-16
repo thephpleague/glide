@@ -20,45 +20,43 @@ jobs:
                   wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.4/php-cs-fixer.phar -q
                   php php-cs-fixer.phar fix --dry-run --diff
 
-    tests-php-7-2-lowest:
+    tests:
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['7.4', '8.0', '8.1']
+                prefer-lowest: ['']
+                include:
+                    - php-version: '7.2'
+                      prefer-lowest: 'prefer-lowest'
         steps:
             - uses: actions/checkout@master
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '7.2'
-                  extensions: gd
-            - name: PHPUnit
-              run: |
-                  composer update --prefer-dist --no-interaction --no-ansi --no-progress --prefer-lowest
-                  php vendor/bin/phpunit
 
-    tests-php-7-4:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
             - uses: shivammathur/setup-php@v2
               with:
-                  php-version: '7.4'
+                  php-version: ${{ matrix.php-version }}
                   extensions: gd
-            - name: PHPUnit
-              run: |
-                  composer update --prefer-dist --no-interaction --no-ansi --no-progress
-                  php vendor/bin/phpunit
+                  coverage: pcov
 
-    tests-php-8-0:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@master
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '8.0'
-                  extensions: gd
+            - name: Composer
+              run: |
+                  if ${{ matrix.prefer-lowest == 'prefer-lowest' }}; then
+                      composer update --no-interaction --no-ansi --no-progress --prefer-lowest
+                  else
+                      composer update --no-interaction --no-ansi --no-progress
+                  fi
+
             - name: PHPUnit
               run: |
-                  composer update --prefer-dist --no-interaction --no-ansi --no-progress
-                  php vendor/bin/phpunit --coverage-clover=coverage.xml
+                  if [[ ${{ matrix.php-version }} == '8.1' ]]; then
+                      vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+                  else
+                      vendor/bin/phpunit
+                  fi
+
             - name: Code Coverage Report
+              if: matrix.php-version == '8.1'
               uses: codecov/codecov-action@v1
 
     psalm:
