@@ -98,7 +98,6 @@ class EncodeTest extends TestCase
             if (function_exists('imagecreatefromwebp')) {
                 $mock->shouldReceive('mime')->andReturn('image/webp')->once();
             }
-            
             if (function_exists('imagecreatefromavif')) {
                 $mock->shouldReceive('mime')->andReturn('image/avif')->once();
             }
