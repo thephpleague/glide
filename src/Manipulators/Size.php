@@ -312,9 +312,7 @@ class Size extends BaseManipulator
      */
     public function runFillResize($image, $width, $height)
     {
-        $image = $image->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-        });
+        $image = $this->runMaxResize($image, $width, $height);
 
         return $image->resizeCanvas($width, $height, 'center');
     }
@@ -330,7 +328,9 @@ class Size extends BaseManipulator
      */
     public function runFillMaxResize($image, $width, $height)
     {
-        $image = $this->runMaxResize($image, $width, $height);
+        $image = $image->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
 
         return $image->resizeCanvas($width, $height, 'center');
     }
