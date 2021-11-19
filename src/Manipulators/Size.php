@@ -123,7 +123,7 @@ class Size extends BaseManipulator
             return 'contain';
         }
 
-        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch', 'fillmax'], true)) {
+        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch', 'fill-max'], true)) {
             return $this->fit;
         }
 
@@ -249,7 +249,7 @@ class Size extends BaseManipulator
             return $this->runFillResize($image, $width, $height);
         }
 
-        if ('fillmax' === $fit) {
+        if ('fill-max' === $fit) {
             return $this->runFillMaxResize($image, $width, $height);
         }
 
@@ -318,7 +318,7 @@ class Size extends BaseManipulator
     }
 
     /**
-     * Perform fillmax resize image manipulation.
+     * Perform fill-max resize image manipulation.
      *
      * @param Image $image  The source image.
      * @param int   $width  The width.
@@ -326,7 +326,7 @@ class Size extends BaseManipulator
      *
      * @return Image The manipulated image.
      */
-    public function runFillMaxResize($image, $width, $height)
+    public function runFillMaxResize(Image $image, $width, $height)
     {
         $image = $image->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
