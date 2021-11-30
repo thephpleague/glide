@@ -115,7 +115,7 @@ class Server
     {
         if ('//' == substr($prefix, -2)) {
             if (':' == substr(rtrim($prefix, '/'), -1)) {
-                return rtrim($prefix, '/') . '/';
+                return rtrim($prefix, '/').'/';
             }
         }
 
@@ -124,7 +124,7 @@ class Server
 
     private function purgePath(string $path): string
     {
-        if (strpos($path, '://') === false) {
+        if (false === strpos($path, '://')) {
             return $path;
         }
 
@@ -381,7 +381,7 @@ class Server
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
 
-        if (strpos($sourcePath, '://') !== false) {
+        if (false !== strpos($sourcePath, '://')) {
             $sourcePath = explode('://', $sourcePath, 2)[1] ?? '';
         }
         $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
