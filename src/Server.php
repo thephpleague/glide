@@ -122,6 +122,15 @@ class Server
         return trim($prefix, '/');
     }
 
+    private function purgePath(string $path): string
+    {
+        if (strpos($path, '://') === false) {
+            return $path;
+        }
+
+        return explode('://', $path, 2)[1] ?? '';
+    }
+
     /**
      * Set source file system.
      *
@@ -153,7 +162,7 @@ class Server
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
-        $this->sourcePathPrefix = $this->trimPrefix($sourcePathPrefix);
+        $this->sourcePathPrefix = $this->trimPrefix($sourcePathPrefix ?? '');
     }
 
     /**
@@ -265,7 +274,7 @@ class Server
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
-        $this->cachePathPrefix = $this->trimPrefix($cachePathPrefix);
+        $this->cachePathPrefix = $this->trimPrefix($cachePathPrefix ?? '');
     }
 
     /**
@@ -372,10 +381,13 @@ class Server
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
 
+        if (strpos($sourcePath, '://') !== false) {
+            $sourcePath = explode('://', $sourcePath, 2)[1] ?? '';
+        }
         $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+            $cachedPath = $this->cachePathPrefix.'/'.$this->purgePath($cachedPath);
         }
 
         if ($this->cacheWithFileExtensions) {

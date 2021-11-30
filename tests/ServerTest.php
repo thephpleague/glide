@@ -296,6 +296,17 @@ class ServerTest extends TestCase
         $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
     }
 
+    public function testGetCachePathWithMount()
+    {
+        $this->assertEquals('image.jpg/76226a1044d9a55855dbb51f98eacc67', $this->server->getCachePath('file://image.jpg', []));
+    }
+
+    public function testGetCachePathWithMountAndCachePrefix()
+    {
+        $this->server->setCachePathPrefix('cache://');
+        $this->assertEquals('cache://image.jpg/76226a1044d9a55855dbb51f98eacc67', $this->server->getCachePath('file://image.jpg', []));
+    }
+
     public function testCacheFileExists()
     {
         $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
