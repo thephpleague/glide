@@ -5,7 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 
 /**
- * @property string $bri
+ * @property string|null $bri
  */
 class Brightness extends BaseManipulator
 {
@@ -34,6 +34,10 @@ class Brightness extends BaseManipulator
      */
     public function getBrightness()
     {
+        if (null === $this->bri) {
+            return;
+        }
+
         if (!preg_match('/^-*[0-9]+$/', $this->bri)) {
             return;
         }

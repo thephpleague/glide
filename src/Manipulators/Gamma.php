@@ -5,7 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 
 /**
- * @property string $gam
+ * @property string|null $gam
  */
 class Gamma extends BaseManipulator
 {
@@ -34,6 +34,10 @@ class Gamma extends BaseManipulator
      */
     public function getGamma()
     {
+        if (null === $this->gam) {
+            return;
+        }
+
         if (!preg_match('/^[0-9]\.*[0-9]*$/', $this->gam)) {
             return;
         }
