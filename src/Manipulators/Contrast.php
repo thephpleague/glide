@@ -34,11 +34,7 @@ class Contrast extends BaseManipulator
      */
     public function getContrast()
     {
-        if (null === $this->con) {
-            return;
-        }
-
-        if (!preg_match('/^-*[0-9]+$/', $this->con)) {
+        if (null === $this->con || !preg_match('/^-*[0-9]+$/', $this->con)) {
             return;
         }
 
