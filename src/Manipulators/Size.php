@@ -5,10 +5,10 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 
 /**
- * @property string $dpr
- * @property string $fit
- * @property string $h
- * @property string $w
+ * @property string      $dpr
+ * @property string|null $fit
+ * @property string      $h
+ * @property string      $w
  */
 class Size extends BaseManipulator
 {
@@ -119,6 +119,10 @@ class Size extends BaseManipulator
      */
     public function getFit()
     {
+        if (null === $this->fit) {
+            return 'contain';
+        }
+
         if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch'], true)) {
             return $this->fit;
         }
@@ -423,6 +427,10 @@ class Size extends BaseManipulator
             'crop-bottom' => [50, 100, 1.0],
             'crop-bottom-right' => [100, 100, 1.0],
         ];
+
+        if (null === $this->fit) {
+            return [50, 50, 1.0];
+        }
 
         if (array_key_exists($this->fit, $cropMethods)) {
             return $cropMethods[$this->fit];
