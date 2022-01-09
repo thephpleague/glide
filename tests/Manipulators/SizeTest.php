@@ -168,6 +168,11 @@ class SizeTest extends TestCase
 
         $this->assertInstanceOf(
             'Intervention\Image\Image',
+            $this->manipulator->runResize($image, 'fill-max', 100, 100)
+        );
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
             $this->manipulator->runResize($image, 'max', 100, 100)
         );
 
