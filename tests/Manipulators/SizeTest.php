@@ -148,8 +148,8 @@ class SizeTest extends TestCase
     public function testRunResize()
     {
         $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('width')->andReturn(100)->times(5);
-            $mock->shouldReceive('height')->andReturn(100)->times(5);
+            $mock->shouldReceive('width')->andReturn(100)->times(4);
+            $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->times(5);
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
