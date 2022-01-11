@@ -153,7 +153,7 @@ class SizeTest extends TestCase
             $mock->shouldReceive('crop')->andReturn($mock)->once();
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->times(5);
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
-            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'center')->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'center')->andReturn($mock)->times(2);
         });
 
         $this->assertInstanceOf(
