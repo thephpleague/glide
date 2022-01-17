@@ -25,7 +25,7 @@ Glide is a wonderfully easy on-demand image manipulation library written in PHP.
 - Works with many different file systems, thanks to the [Flysystem](http://flysystem.thephpleague.com/) library.
 - Powered by the battle tested [Intervention Image](http://image.intervention.io/) image handling and manipulation library.
 - Framework-agnostic, will work with any project.
-- Composer ready and PSR-2 compliant.
+- Composer ready and PSR-12 compliant.
 
 ## Documentation
 

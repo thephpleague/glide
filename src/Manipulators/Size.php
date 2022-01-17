@@ -127,6 +127,7 @@ class Size extends BaseManipulator
             return $this->fit;
         }
 
+        // phpcs:ignore
         if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $this->fit)) {
             return 'crop';
         }

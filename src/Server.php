@@ -168,7 +168,7 @@ class Server
     {
         $path = trim($path, '/');
 
-        $baseUrl = $this->baseUrl.'/';
+        $baseUrl = $this->baseUrl . '/';
 
         if (substr($path, 0, strlen($baseUrl)) === $baseUrl) {
             $path = trim(substr($path, strlen($baseUrl)), '/');
@@ -179,7 +179,7 @@ class Server
         }
 
         if ($this->sourcePathPrefix) {
-            $path = $this->sourcePathPrefix.'/'.$path;
+            $path = $this->sourcePathPrefix . '/' . $path;
         }
 
         return rawurldecode($path);
@@ -292,7 +292,7 @@ class Server
             throw new InvalidArgumentException(sprintf('Invalid temp dir provided: "%s" does not exist.', $tempDir));
         }
 
-        $this->tempDir = rtrim($tempDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $this->tempDir = rtrim($tempDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -359,18 +359,18 @@ class Server
         unset($params['s'], $params['p']);
         ksort($params);
 
-        $md5 = md5($sourcePath.'?'.http_build_query($params));
+        $md5 = md5($sourcePath . '?' . http_build_query($params));
 
-        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        $cachedPath = $this->groupCacheInFolders ? $sourcePath . '/' . $md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+            $cachedPath = $this->cachePathPrefix . '/' . $cachedPath;
         }
 
         if ($this->cacheWithFileExtensions) {
             $ext = (isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
             $ext = ('pjpg' === $ext) ? 'jpg' : $ext;
-            $cachedPath .= '.'.$ext;
+            $cachedPath .= '.' . $ext;
         }
 
         return $cachedPath;
@@ -405,7 +405,9 @@ class Server
     public function deleteCache($path)
     {
         if (!$this->groupCacheInFolders) {
-            throw new InvalidArgumentException('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
+            throw new InvalidArgumentException(
+                'Deleting cached image manipulations is not possible when grouping cache into folders is disabled.'
+            );
         }
 
         try {
@@ -567,9 +569,9 @@ class Server
         try {
             $source = $this->cache->read($path);
 
-            return 'data:'.$this->cache->mimeType($path).';base64,'.base64_encode($source);
+            return 'data:' . $this->cache->mimeType($path) . ';base64,' . base64_encode($source);
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not read the image `'.$path.'`.');
+            throw new FilesystemException('Could not read the image `' . $path . '`.');
         }
     }
 
@@ -588,10 +590,10 @@ class Server
         $path = $this->makeImage($path, $params);
 
         try {
-            header('Content-Type:'.$this->cache->mimeType($path));
-            header('Content-Length:'.$this->cache->fileSize($path));
-            header('Cache-Control:'.'max-age=31536000, public');
-            header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
+            header('Content-Type:' . $this->cache->mimeType($path));
+            header('Content-Length:' . $this->cache->fileSize($path));
+            header('Cache-Control:' . 'max-age=31536000, public');
+            header('Expires:' . date_create('+1 years')->format('D, d M Y H:i:s') . ' GMT');
 
             $stream = $this->cache->readStream($path);
 
@@ -601,7 +603,7 @@ class Server
             fpassthru($stream);
             fclose($stream);
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not read the image `'.$path.'`.');
+            throw new FilesystemException('Could not read the image `' . $path . '`.');
         }
     }
 
@@ -626,7 +628,7 @@ class Server
         }
 
         if (false === $this->sourceFileExists($path)) {
-            throw new FileNotFoundException('Could not find the image `'.$sourcePath.'`.');
+            throw new FileNotFoundException('Could not find the image `' . $sourcePath . '`.');
         }
 
         try {
@@ -634,7 +636,7 @@ class Server
                 $sourcePath
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not read the image `'.$sourcePath.'`.');
+            throw new FilesystemException('Could not read the image `' . $sourcePath . '`.');
         }
 
         // We need to write the image to the local disk before
@@ -643,7 +645,7 @@ class Server
         $tmp = tempnam($this->tempDir, 'Glide');
 
         if (false === file_put_contents($tmp, $source)) {
-            throw new FilesystemException('Unable to write temp file for `'.$sourcePath.'`.');
+            throw new FilesystemException('Unable to write temp file for `' . $sourcePath . '`.');
         }
 
         try {
@@ -652,7 +654,7 @@ class Server
                 $this->api->run($tmp, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
+            throw new FilesystemException('Could not write the image `' . $cachedPath . '`.');
         } finally {
             unlink($tmp);
         }

@@ -156,7 +156,7 @@ class Watermark extends BaseManipulator
         $path = $this->mark;
 
         if ($this->watermarksPathPrefix) {
-            $path = $this->watermarksPathPrefix.'/'.$path;
+            $path = $this->watermarksPathPrefix . '/' . $path;
         }
 
         try {
@@ -166,7 +166,7 @@ class Watermark extends BaseManipulator
                 return $image->getDriver()->init($source);
             }
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not read the image `'.$path.'`.');
+            throw new FilesystemException('Could not read the image `' . $path . '`.');
         }
     }
 
