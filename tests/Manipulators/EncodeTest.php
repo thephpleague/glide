@@ -132,4 +132,28 @@ class EncodeTest extends TestCase
         $this->assertSame(90, $this->manipulator->setParams(['q' => '-1'])->getQuality());
         $this->assertSame(90, $this->manipulator->setParams(['q' => '101'])->getQuality());
     }
+
+    /**
+     * Test functions that require the imagick extension.
+     *
+     * @return void
+     */
+    public function testWithImagick()
+    {
+        if (!extension_loaded('imagick')) {
+            $this->markTestSkipped(
+                'The imagick extension is not available.'
+            );
+        }
+        $manager = new ImageManager(['driver' => 'imagick']);
+        //These need to be recreated with the imagick driver selected in the manager
+        $this->jpg = $manager->canvas(100, 100)->encode('jpg');
+        $this->png = $manager->canvas(100, 100)->encode('png');
+        $this->gif = $manager->canvas(100, 100)->encode('gif');
+        $this->tif = $manager->canvas(100, 100)->encode('tiff');
+
+        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->jpg)->mime);
+        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->png)->mime);
+        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->gif)->mime);
+    }
 }
