@@ -36,7 +36,7 @@ jobs:
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php-version }}
-                  extensions: gd
+                  extensions: gd, imagick
                   coverage: pcov
 
             - name: Composer
@@ -66,7 +66,7 @@ jobs:
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
-                  extensions: gd
+                  extensions: gd, imagick
                   tools: vimeo/psalm:4.15
             - name: psalm
               run: |
