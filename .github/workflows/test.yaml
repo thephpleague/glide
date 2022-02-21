@@ -14,7 +14,7 @@ jobs:
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
-                  extensions: gd imagick
+                  extensions: gd, imagick
             - name: php-cs-fixer
               run: |
                   wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.4/php-cs-fixer.phar -q
