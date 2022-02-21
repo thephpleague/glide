@@ -65,10 +65,10 @@ class Encode extends BaseManipulator
     {
         return [
             'avif' => 'image/avif',
-            'gif'  => 'image/gif',
-            'jpg'  => 'image/jpeg',
+            'gif' => 'image/gif',
+            'jpg' => 'image/jpeg',
             'pjpg' => 'image/jpeg',
-            'png'  => 'image/png',
+            'png' => 'image/png',
             'webp' => 'image/webp',
             'tiff' => 'image/tiff',
         ];
