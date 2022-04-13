@@ -86,7 +86,7 @@ Sets how far the watermark is away from edges of the image. Basically a shortcut
 
 ## Position `markpos`
 
-Sets where the watermark is positioned. Accepts `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`. Default is `center`.
+Sets where the watermark is positioned. Accepts `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`. Default is `bottom-right`.
 
 ~~~ html
 <img src="kayaks.jpg?mark=logo.png&markpos=top-left">
