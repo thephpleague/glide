@@ -5,7 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Image;
 
 /**
- * @property string $con
+ * @property string|null $con
  */
 class Contrast extends BaseManipulator
 {
@@ -34,7 +34,7 @@ class Contrast extends BaseManipulator
      */
     public function getContrast()
     {
-        if (!preg_match('/^-*[0-9]+$/', $this->con)) {
+        if (null === $this->con || !preg_match('/^-*[0-9]+$/', $this->con)) {
             return;
         }
 
