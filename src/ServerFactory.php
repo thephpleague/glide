@@ -57,13 +57,13 @@ class ServerFactory
             $this->getApi()
         );
 
-        $server->setSourcePathPrefix($this->getSourcePathPrefix());
-        $server->setCachePathPrefix($this->getCachePathPrefix());
+        $server->setSourcePathPrefix($this->getSourcePathPrefix() ?: '');
+        $server->setCachePathPrefix($this->getCachePathPrefix() ?: '');
         $server->setGroupCacheInFolders($this->getGroupCacheInFolders());
         $server->setCacheWithFileExtensions($this->getCacheWithFileExtensions());
         $server->setDefaults($this->getDefaults());
         $server->setPresets($this->getPresets());
-        $server->setBaseUrl($this->getBaseUrl());
+        $server->setBaseUrl($this->getBaseUrl() ?: '');
         $server->setResponseFactory($this->getResponseFactory());
 
         if ($this->getTempDir()) {
@@ -259,7 +259,7 @@ class ServerFactory
             new Flip(),
             new Blur(),
             new Pixelate(),
-            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix()),
+            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?: ''),
             new Background(),
             new Border(),
             new Encode(),

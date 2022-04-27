@@ -43,6 +43,10 @@ class Crop extends BaseManipulator
      */
     public function getCoordinates(Image $image)
     {
+        if (null === $this->crop) {
+            return;
+        }
+
         $coordinates = explode(',', $this->crop);
 
         if (4 !== count($coordinates) or

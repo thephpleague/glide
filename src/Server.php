@@ -138,7 +138,7 @@ class Server
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
-        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+        $this->sourcePathPrefix = trim((string) $sourcePathPrefix, '/');
     }
 
     /**
@@ -200,7 +200,7 @@ class Server
      */
     public function setBaseUrl($baseUrl)
     {
-        $this->baseUrl = trim($baseUrl, '/');
+        $this->baseUrl = trim((string) $baseUrl, '/');
     }
 
     /**
@@ -240,7 +240,7 @@ class Server
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
-        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+        $this->cachePathPrefix = trim((string) $cachePathPrefix, '/');
     }
 
     /**
