@@ -111,7 +111,14 @@ class Server
         $this->tempDir = sys_get_temp_dir();
     }
 
-    private function trimPrefix(string $prefix): string
+    /**
+     * Trim path separator from prefix to prevent multiple combined separator.
+     *
+     * @param string $prefix
+     *
+     * @return string
+     */
+    private function trimPrefixPathSeparator(string $prefix): string
     {
         if ('//' == substr($prefix, -2)) {
             if (':' == substr(rtrim($prefix, '/'), -1)) {
@@ -122,7 +129,14 @@ class Server
         return trim($prefix, '/');
     }
 
-    private function purgePath(string $path): string
+    /**
+     * Remove filesystem identifier if present.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function removeFilesystemIdentifier(string $path): string
     {
         if (false === strpos($path, '://')) {
             return $path;
@@ -162,7 +176,7 @@ class Server
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
-        $this->sourcePathPrefix = $this->trimPrefix($sourcePathPrefix ?? '');
+        $this->sourcePathPrefix = $this->trimPrefixPathSeparator($sourcePathPrefix ?? '');
     }
 
     /**
@@ -274,7 +288,7 @@ class Server
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
-        $this->cachePathPrefix = $this->trimPrefix($cachePathPrefix ?? '');
+        $this->cachePathPrefix = $this->trimPrefixPathSeparator($cachePathPrefix ?? '');
     }
 
     /**
@@ -387,7 +401,7 @@ class Server
         $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$this->purgePath($cachedPath);
+            $cachedPath = $this->cachePathPrefix.'/'.$this->removeFilesystemIdentifier($cachedPath);
         }
 
         if ($this->cacheWithFileExtensions) {
