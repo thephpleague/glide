@@ -13,7 +13,7 @@ Adds a watermark to the image. Must be a path to an image in the watermarks file
 <img src="kayaks.jpg?mark=logo.png">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)
 
 ### Configuring the watermarks file system
 
@@ -92,7 +92,7 @@ Sets where the watermark is positioned. Accepts `top-left`, `top`, `top-right`, 
 <img src="kayaks.jpg?mark=logo.png&markpos=top-left">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)
 
 ## Alpha `markalpha`
 
@@ -102,4 +102,4 @@ Sets the opacity of the watermark. Use values between `0` and `100`, where `100`
 <img src="kayaks.jpg?mark=logo.png&markalpha=50">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)
