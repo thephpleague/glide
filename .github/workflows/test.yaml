@@ -8,9 +8,9 @@ on:
 
 jobs:
     coding-style:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
@@ -21,17 +21,17 @@ jobs:
                   php php-cs-fixer.phar fix --dry-run --diff
 
     tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         strategy:
             fail-fast: false
             matrix:
-                php-version: ['7.4', '8.0', '8.1']
+                php-version: ['7.4', '8.0', '8.1', '8.2']
                 prefer-lowest: ['']
                 include:
                     - php-version: '7.2'
                       prefer-lowest: 'prefer-lowest'
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - uses: shivammathur/setup-php@v2
               with:
@@ -57,12 +57,12 @@ jobs:
 
             - name: Code Coverage Report
               if: matrix.php-version == '8.0'
-              uses: codecov/codecov-action@v2
+              uses: codecov/codecov-action@v3
 
     psalm:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - uses: shivammathur/setup-php@v2
               with:
                   php-version: '7.4'
