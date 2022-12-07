@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="dev-master@">
+  <file src="src/ServerFactory.php">
+    <UndefinedClass occurrences="3">
+      <code>Filesystem</code>
+      <code>Filesystem</code>
+      <code>Filesystem</code>
+    </UndefinedClass>
+  </file>
+</files>
