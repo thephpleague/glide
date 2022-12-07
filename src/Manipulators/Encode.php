@@ -45,7 +45,25 @@ class Encode extends BaseManipulator
      */
     public function getFormat(Image $image)
     {
-        $allowed = [
+        if (array_key_exists($this->fm, static::allowedFormats())) {
+            return $this->fm;
+        }
+
+        if ($format = array_search($image->mime(), static::allowedFormats(), true)) {
+            return $format;
+        }
+
+        return 'jpg';
+    }
+
+    /**
+     * Get a list of supported image formats and MIME types.
+     *
+     * @return array<string,string>
+     */
+    public static function allowedFormats()
+    {
+        return [
             'avif' => 'image/avif',
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
@@ -54,16 +72,6 @@ class Encode extends BaseManipulator
             'webp' => 'image/webp',
             'tiff' => 'image/tiff',
         ];
-
-        if (array_key_exists($this->fm, $allowed)) {
-            return $this->fm;
-        }
-
-        if ($format = array_search($image->mime(), $allowed, true)) {
-            return $format;
-        }
-
-        return 'jpg';
     }
 
     /**
