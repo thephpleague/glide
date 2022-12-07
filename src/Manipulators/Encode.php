@@ -45,15 +45,11 @@ class Encode extends BaseManipulator
      */
     public function getFormat(Image $image)
     {
-        if (array_key_exists($this->fm, static::allowedFormats())) {
+        if (array_key_exists($this->fm, static::supportedFormats())) {
             return $this->fm;
         }
 
-        if ($format = array_search($image->mime(), static::allowedFormats(), true)) {
-            return $format;
-        }
-
-        return 'jpg';
+        return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**
@@ -61,7 +57,7 @@ class Encode extends BaseManipulator
      *
      * @return array<string,string>
      */
-    public static function allowedFormats()
+    public static function supportedFormats()
     {
         return [
             'avif' => 'image/avif',
