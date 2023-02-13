@@ -10,7 +10,7 @@ title: Effects
 Adds a blur effect to the image. Use values between `0` and `100`.
 
 ~~~ html
-<img src="kayaks.jpg?w=500&blur=5>
+<img src="kayaks.jpg?w=500&blur=5">
 ~~~
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&blur=5)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&blur=5)
@@ -22,7 +22,7 @@ Adds a blur effect to the image. Use values between `0` and `100`.
 Applies a pixelation effect to the image. Use values between `0` and `1000`.
 
 ~~~ html
-<img src="kayaks.jpg?w=500&pixel=5>
+<img src="kayaks.jpg?w=500&pixel=5">
 ~~~
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&pixel=5)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&pixel=5)
@@ -32,7 +32,7 @@ Applies a pixelation effect to the image. Use values between `0` and `1000`.
 Applies a filter effect to the image. Accepts `greyscale` or `sepia`.
 
 ~~~ html
-<img src="kayaks.jpg?w=500&filt=sepia>
+<img src="kayaks.jpg?w=500&filt=sepia">
 ~~~
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&filt=sepia)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&filt=sepia)
