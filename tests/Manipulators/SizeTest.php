@@ -249,4 +249,51 @@ class SizeTest extends TestCase
             $this->manipulator->runCropResize($image, 100, 100, 'center')
         );
     }
+
+    public function testResizeDoesNotRunWhenNoParamsAreSet()
+    {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100)->twice();
+            $mock->shouldReceive('height')->andReturn(100)->twice();
+            $mock->shouldReceive('resize')->never();
+        });
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run($image)
+        );
+    }
+
+    public function testResizeDoesNotRunWhenSettingFitCropToCenterWithNoZoom()
+    {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100)->twice();
+            $mock->shouldReceive('height')->andReturn(100)->twice();
+            $mock->shouldReceive('resize')->never();
+        });
+
+        $this->manipulator->setParams(['fit' => 'crop-50-50-1']);
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run($image)
+        );
+    }
+
+    public function testResizeDoesRunWhenDimensionsAreTheSameAndTheCropZoomIsNotDefaultOne()
+    {
+        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100);
+            $mock->shouldReceive('height')->andReturn(100);
+            $mock->shouldReceive('resize')->once();
+            $mock->shouldReceive('crop')->once()->andReturn($mock);
+        });
+
+        $this->manipulator->setParams(['fit' => 'crop-50-50-3.2']);
+
+        $this->assertInstanceOf(
+            'Intervention\Image\Image',
+            $this->manipulator->run($image)
+        );
+    }
 }
