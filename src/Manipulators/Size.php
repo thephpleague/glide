@@ -69,7 +69,7 @@ class Size extends BaseManipulator
         list($width, $height) = $this->applyDpr($width, $height, $dpr);
         list($width, $height) = $this->limitImageSize($width, $height);
 
-        if ((int) $width !== (int) $image->width() or (int) $height !== (int) $image->height()) {
+        if ((int) $width !== (int) $image->width() || (int) $height !== (int) $image->height() || 1.0 !== $this->getCrop()[2]) {
             $image = $this->runResize($image, $fit, (int) $width, (int) $height);
         }
 
