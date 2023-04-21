@@ -112,6 +112,40 @@ class Server
     }
 
     /**
+     * Trim path separator from prefix to prevent multiple combined separator.
+     *
+     * @param string $prefix
+     *
+     * @return string
+     */
+    private function trimPrefixPathSeparator(string $prefix): string
+    {
+        if ('//' == substr($prefix, -2)) {
+            if (':' == substr(rtrim($prefix, '/'), -1)) {
+                return rtrim($prefix, '/').'/';
+            }
+        }
+
+        return trim($prefix, '/');
+    }
+
+    /**
+     * Remove filesystem identifier if present.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function removeFilesystemIdentifier(string $path): string
+    {
+        if (false === strpos($path, '://')) {
+            return $path;
+        }
+
+        return explode('://', $path, 2)[1] ?? '';
+    }
+
+    /**
      * Set source file system.
      *
      * @param FilesystemOperator $source Source file system.
@@ -142,7 +176,7 @@ class Server
      */
     public function setSourcePathPrefix($sourcePathPrefix)
     {
-        $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
+        $this->sourcePathPrefix = $this->trimPrefixPathSeparator($sourcePathPrefix ?? '');
     }
 
     /**
@@ -254,7 +288,7 @@ class Server
      */
     public function setCachePathPrefix($cachePathPrefix)
     {
-        $this->cachePathPrefix = trim($cachePathPrefix, '/');
+        $this->cachePathPrefix = $this->trimPrefixPathSeparator($cachePathPrefix ?? '');
     }
 
     /**
@@ -361,10 +395,13 @@ class Server
 
         $md5 = md5($sourcePath.'?'.http_build_query($params));
 
+        if (false !== strpos($sourcePath, '://')) {
+            $sourcePath = explode('://', $sourcePath, 2)[1] ?? '';
+        }
         $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
 
         if ($this->cachePathPrefix) {
-            $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
+            $cachedPath = $this->cachePathPrefix.'/'.$this->removeFilesystemIdentifier($cachedPath);
         }
 
         if ($this->cacheWithFileExtensions) {
