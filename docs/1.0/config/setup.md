@@ -19,9 +19,8 @@ $server = League\Glide\ServerFactory::create([
     'source_path_prefix' =>      // Source filesystem path prefix
     'cache' =>                   // Cache filesystem
     'cache_path_prefix' =>       // Cache filesystem path prefix
-    'temp_dir' =>                // Temporary directory where cache EXIF data should be stored 
+    'temp_dir' =>                // Temporary directory where cache EXIF data should be stored
                                  // (defaults to sys_get_temp_dir())
-    'cache_path_callable' =>     // Custom cache path callable
     'group_cache_in_folders' =>  // Whether to group cached images in folders
     'watermarks' =>              // Watermarks filesystem
     'watermarks_path_prefix' =>  // Watermarks filesystem path prefix
