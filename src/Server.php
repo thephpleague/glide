@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use Closure;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
@@ -95,6 +96,7 @@ class Server
      * @var array
      */
     protected $presets = [];
+
     /**
      * Custom cache path callable.
      *
@@ -350,7 +352,7 @@ class Server
      *
      * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
      */
-    public function setCachePathCallable(?\Closure $cachePathCallable)
+    public function setCachePathCallable(?Closure $cachePathCallable)
     {
         $this->cachePathCallable = $cachePathCallable;
     }
@@ -377,10 +379,11 @@ class Server
     {
         $customCallable = $this->getCachePathCallable();
         if (null !== $customCallable) {
-            $boundCallable = \Closure::bind($customCallable, $this, self::class);
+            $boundCallable = Closure::bind($customCallable, $this, static::class);
 
             return $boundCallable($path, $params);
         }
+
         $sourcePath = $this->getSourcePath($path);
 
         if ($this->sourcePathPrefix) {
