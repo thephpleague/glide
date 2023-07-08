@@ -23,6 +23,7 @@ $server = League\Glide\ServerFactory::create([
                                     // (defaults to sys_get_temp_dir())
     'group_cache_in_folders' =>     // Whether to group cached images in folders
     'cache_with_file_extensions' => // Whether to include file extension in cache filename. Default `false`.
+    'cache_path_callable' =>        // Custom cache path callable
     'watermarks' =>                 // Watermarks filesystem
     'watermarks_path_prefix' =>     // Watermarks filesystem path prefix
     'driver' =>                     // Image driver (gd or imagick)
