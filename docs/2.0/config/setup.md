@@ -15,21 +15,23 @@ The easiest way to configure the `Server` is using the supplied factory.
 <?php
 
 $server = League\Glide\ServerFactory::create([
-    'source' =>                  // Source filesystem
-    'source_path_prefix' =>      // Source filesystem path prefix
-    'cache' =>                   // Cache filesystem
-    'cache_path_prefix' =>       // Cache filesystem path prefix
-    'temp_dir' =>                // Temporary directory where cache EXIF data should be stored 
-                                 // (defaults to sys_get_temp_dir())
-    'group_cache_in_folders' =>  // Whether to group cached images in folders
-    'watermarks' =>              // Watermarks filesystem
-    'watermarks_path_prefix' =>  // Watermarks filesystem path prefix
-    'driver' =>                  // Image driver (gd or imagick)
-    'max_image_size' =>          // Image size limit
-    'defaults' =>                // Default image manipulations
-    'presets' =>                 // Preset image manipulations
-    'base_url' =>                // Base URL of the images
-    'response' =>                // Response factory
+    'source' =>                     // Source filesystem
+    'source_path_prefix' =>         // Source filesystem path prefix
+    'cache' =>                      // Cache filesystem
+    'cache_path_prefix' =>          // Cache filesystem path prefix
+    'temp_dir' =>                   // Temporary directory where cache EXIF data should be stored
+                                    // (defaults to sys_get_temp_dir())
+    'group_cache_in_folders' =>     // Whether to group cached images in folders
+    'cache_with_file_extensions' => // Whether to include file extension in cache filename. Default `false`.
+    'cache_path_callable' =>        // Custom cache path callable
+    'watermarks' =>                 // Watermarks filesystem
+    'watermarks_path_prefix' =>     // Watermarks filesystem path prefix
+    'driver' =>                     // Image driver (gd or imagick)
+    'max_image_size' =>             // Image size limit
+    'defaults' =>                   // Default image manipulations
+    'presets' =>                    // Preset image manipulations
+    'base_url' =>                   // Base URL of the images
+    'response' =>                   // Response factory
 ]);
 ~~~
 

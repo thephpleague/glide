@@ -4,8 +4,10 @@
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.php_cs.dist export-ignore
+/docs export-ignore
 /phpunit.xml.dist export-ignore
 /psalm.xml export-ignore
+/psalm-baseline.xml export-ignore
 /tests export-ignore
 /CHANGELOG.md export-ignore
 /CONTRIBUTING.md export-ignore

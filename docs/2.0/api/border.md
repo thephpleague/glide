@@ -13,7 +13,7 @@ Add a border to the image. Required format: `width,color,method`.
 <img src="kayaks.jpg?w=500&border=10,5000,overlay">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&border=10,5000,overlay)](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&border=10,5000,overlay)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,5000,overlay)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,5000,overlay)
 
 ### Width
 
@@ -35,4 +35,4 @@ Sets how the border will be displayed. Available options:
 <img src="kayaks.jpg?w=500&border=10,FFCC33,expand">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&border=10,FFCC33,expand)](https://glide.herokuapp.com/2.0/kayaks.jpg?w=500&border=10,FFCC33,expand)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,FFCC33,expand)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&border=10,FFCC33,expand)

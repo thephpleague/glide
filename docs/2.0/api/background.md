@@ -13,4 +13,4 @@ Sets the background color of the image. See [colors](api/colors/) for more infor
 <img src="logo.png?w=400&bg=black">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/2.0/logo.png?w=400&bg=black)](https://glide.herokuapp.com/2.0/logo.png?w=500&bg=black)
+[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/logo.png?w=400&bg=black)](https://glide.herokuapp.com/1.0/logo.png?w=500&bg=black)

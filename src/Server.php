@@ -2,6 +2,7 @@
 
 namespace League\Glide;
 
+use Closure;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
@@ -95,6 +96,13 @@ class Server
      * @var array
      */
     protected $presets = [];
+
+    /**
+     * Custom cache path callable.
+     *
+     * @var \Closure|null
+     */
+    protected $cachePathCallable;
 
     /**
      * Create Server instance.
@@ -340,6 +348,26 @@ class Server
     }
 
     /**
+     * Set a custom cachePathCallable.
+     *
+     * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function setCachePathCallable(?Closure $cachePathCallable)
+    {
+        $this->cachePathCallable = $cachePathCallable;
+    }
+
+    /**
+     * Gets the custom cachePathCallable.
+     *
+     * @return \Closure|null The custom cache path callable. It receives the same arguments as @see getCachePath
+     */
+    public function getCachePathCallable()
+    {
+        return $this->cachePathCallable;
+    }
+
+    /**
      * Get cache path.
      *
      * @param string $path   Image path.
@@ -349,6 +377,13 @@ class Server
      */
     public function getCachePath($path, array $params = [])
     {
+        $customCallable = $this->getCachePathCallable();
+        if (null !== $customCallable) {
+            $boundCallable = Closure::bind($customCallable, $this, static::class);
+
+            return $boundCallable($path, $params);
+        }
+
         $sourcePath = $this->getSourcePath($path);
 
         if ($this->sourcePathPrefix) {
@@ -359,9 +394,11 @@ class Server
         unset($params['s'], $params['p']);
         ksort($params);
 
-        $md5 = md5($sourcePath.'?'.http_build_query($params));
+        $cachedPath = md5($sourcePath.'?'.http_build_query($params));
 
-        $cachedPath = $this->groupCacheInFolders ? $sourcePath.'/'.$md5 : $md5;
+        if ($this->groupCacheInFolders) {
+            $cachedPath = $sourcePath.'/'.$cachedPath;
+        }
 
         if ($this->cachePathPrefix) {
             $cachedPath = $this->cachePathPrefix.'/'.$cachedPath;
