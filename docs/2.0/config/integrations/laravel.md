@@ -61,7 +61,7 @@ class ImageController extends Controller
             'base_url' => 'img',
         ]);
 
-        return $server->getImageResponse($path, request()->all());
+        return $server->getImageResponse($path, request()->except(['expires', 'signature']));
     }
 }
 ~~~
