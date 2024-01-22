@@ -13,11 +13,11 @@ class Encode extends BaseManipulator
     /**
      * Perform output image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
@@ -39,11 +39,11 @@ class Encode extends BaseManipulator
     /**
      * Resolve format.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
      * @return string The resolved format.
      */
-    public function getFormat(Image $image)
+    public function getFormat(ImageInterface $image)
     {
         if (array_key_exists($this->fm, static::supportedFormats())) {
             return $this->fm;

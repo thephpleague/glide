@@ -2,7 +2,9 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Encoders\MediaTypeEncoder;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -18,17 +20,17 @@ class EncodeTest extends TestCase
 
     public function setUp(): void
     {
-        $manager = new ImageManager();
-        $this->jpg = $manager->canvas(100, 100)->encode('jpg');
-        $this->png = $manager->canvas(100, 100)->encode('png');
-        $this->gif = $manager->canvas(100, 100)->encode('gif');
+        $manager = ImageManager::gd();
+        $this->jpg = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'));
+        $this->png = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'));
+        $this->gif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'));
 
         if (function_exists('imagecreatefromwebp')) {
-            $this->webp = $manager->canvas(100, 100)->encode('webp');
+            $this->webp = $manager->create(100, 100)->encode(new MediaTypeEncoder('webp'));
         }
 
         if (function_exists('imagecreatefromavif')) {
-            $this->avif = $manager->canvas(100, 100)->encode('avif');
+            $this->avif = $manager->create(100, 100)->encode(new MediaTypeEncoder('avif'));
         }
 
         $this->manipulator = new Encode();
@@ -88,7 +90,7 @@ class EncodeTest extends TestCase
 
     public function testGetFormat()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('mime')->andReturn('image/jpeg')->once();
             $mock->shouldReceive('mime')->andReturn('image/png')->once();
             $mock->shouldReceive('mime')->andReturn('image/gif')->once();
@@ -145,12 +147,12 @@ class EncodeTest extends TestCase
                 'The imagick extension is not available.'
             );
         }
-        $manager = new ImageManager(['driver' => 'imagick']);
+        $manager = ImageManager::imagick();
         //These need to be recreated with the imagick driver selected in the manager
-        $this->jpg = $manager->canvas(100, 100)->encode('jpg');
-        $this->png = $manager->canvas(100, 100)->encode('png');
-        $this->gif = $manager->canvas(100, 100)->encode('gif');
-        $this->tif = $manager->canvas(100, 100)->encode('tiff');
+        $this->jpg = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'));
+        $this->png = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'));
+        $this->gif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'));
+        $this->tif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/tiff'));
 
         $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->jpg)->mime);
         $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->png)->mime);
