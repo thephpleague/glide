@@ -2,6 +2,8 @@
 
 namespace League\Glide\Api;
 
+use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\ImageInterface;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +14,7 @@ class ApiTest extends TestCase
 
     public function setUp(): void
     {
-        $this->api = new Api(Mockery::mock('Intervention\Image\ImageManager'), []);
+        $this->api = new Api(ImageManager::gd(), []);
     }
 
     public function tearDown(): void
@@ -27,13 +29,13 @@ class ApiTest extends TestCase
 
     public function testSetImageManager()
     {
-        $this->api->setImageManager(Mockery::mock('Intervention\Image\ImageManager'));
-        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+        $this->api->setImageManager(ImageManager::gd());
+        $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
     public function testGetImageManager()
     {
-        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+        $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
     public function testSetManipulators()
@@ -58,13 +60,11 @@ class ApiTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('getEncoded')->andReturn('encoded');
         });
 
-        $manager = Mockery::mock('Intervention\Image\ImageManager', function ($mock) use ($image) {
-            $mock->shouldReceive('make')->andReturn($image);
-        });
+        $manager = ImageManager::gd();
 
         $manipulator = Mockery::mock('League\Glide\Manipulators\ManipulatorInterface', function ($mock) use ($image) {
             $mock->shouldReceive('setParams')->with([]);

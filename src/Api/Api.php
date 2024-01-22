@@ -94,7 +94,7 @@ class Api implements ApiInterface
      */
     public function run($source, array $params)
     {
-        $image = $this->imageManager->make($source);
+        $image = $this->imageManager->read($source);
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);
