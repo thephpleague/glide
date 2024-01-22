@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Filesystem\FilesystemException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -51,10 +52,10 @@ class WatermarkTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('insert')->once();
             $mock->shouldReceive('getDriver')->andReturn(Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
-                $mock->shouldReceive('init')->with('content')->andReturn(Mockery::mock('Intervention\Image\Interfaces\ImageInterface', function ($mock) {
+                $mock->shouldReceive('init')->with('content')->andReturn(Mockery::mock(ImageInterface::class, function ($mock) {
                     $mock->shouldReceive('width')->andReturn(0)->once();
                     $mock->shouldReceive('resize')->once();
                 }))->once();
@@ -74,7 +75,7 @@ class WatermarkTest extends TestCase
         ]);
 
         $this->assertInstanceOf(
-            'Intervention\Image\Interfaces\ImageInterface',
+            ImageInterface::class,
             $this->manipulator->run($image)
         );
     }
@@ -99,10 +100,10 @@ class WatermarkTest extends TestCase
         $driver = Mockery::mock('Intervention\Image\AbstractDriver');
         $driver->shouldReceive('init')
                ->with('content')
-               ->andReturn(Mockery::mock('Intervention\Image\Interfaces\ImageInterface'))
+               ->andReturn(Mockery::mock(ImageInterface::class))
                ->once();
 
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
         $image->shouldReceive('getDriver')
               ->andReturn($driver)
               ->once();
@@ -125,21 +126,21 @@ class WatermarkTest extends TestCase
                 ->andThrow('League\Flysystem\UnableToReadFile')
                 ->once();
 
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
 
         $this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image);
     }
 
     public function testGetImageWithoutMarkParam()
     {
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
 
         $this->assertNull($this->manipulator->getImage($image));
     }
 
     public function testGetImageWithEmptyMarkParam()
     {
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
 
         $this->assertNull($this->manipulator->setParams(['mark' => ''])->getImage($image));
     }
@@ -148,14 +149,14 @@ class WatermarkTest extends TestCase
     {
         $this->manipulator->setWatermarks(null);
 
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
 
         $this->assertNull($this->manipulator->setParams(['mark' => 'image.jpg'])->getImage($image));
     }
 
     public function testGetDimension()
     {
-        $image = Mockery::mock('Intervention\Image\Interfaces\ImageInterface');
+        $image = Mockery::mock(ImageInterface::class);
         $image->shouldReceive('width')->andReturn(2000);
         $image->shouldReceive('height')->andReturn(1000);
 

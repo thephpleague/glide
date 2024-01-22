@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -41,14 +42,14 @@ class SizeTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn('200')->twice();
             $mock->shouldReceive('height')->andReturn('200')->once();
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['w' => 100])->run($image)
         );
     }
@@ -117,7 +118,7 @@ class SizeTest extends TestCase
 
     public function testResolveMissingDimensions()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(400);
             $mock->shouldReceive('height')->andReturn(200);
         });
@@ -129,7 +130,7 @@ class SizeTest extends TestCase
 
     public function testResolveMissingDimensionsWithOddDimensions()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(1024);
             $mock->shouldReceive('height')->andReturn(553);
         });
@@ -147,7 +148,7 @@ class SizeTest extends TestCase
 
     public function testRunResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
@@ -157,93 +158,93 @@ class SizeTest extends TestCase
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'contain', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'fill', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'fill-max', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'max', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'stretch', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'crop', 100, 100)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'invalid', 100, 100)
         );
     }
 
     public function testRunContainResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runContainResize($image, 100, 100)
         );
     }
 
     public function testRunFillResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
             $mock->shouldReceive('resizeCanvas')->with(100, 100, 'center')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runFillResize($image, 100, 100)
         );
     }
 
     public function testRunMaxResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runMaxResize($image, 100, 100)
         );
     }
 
     public function testRunStretchResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runStretchResize($image, 100, 100)
         );
     }
 
     public function testRunCropResize()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
@@ -251,28 +252,28 @@ class SizeTest extends TestCase
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runCropResize($image, 100, 100, 'center')
         );
     }
 
     public function testResizeDoesNotRunWhenNoParamsAreSet()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->twice();
             $mock->shouldReceive('height')->andReturn(100)->twice();
             $mock->shouldReceive('resize')->never();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->run($image)
         );
     }
 
     public function testResizeDoesNotRunWhenSettingFitCropToCenterWithNoZoom()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->twice();
             $mock->shouldReceive('height')->andReturn(100)->twice();
             $mock->shouldReceive('resize')->never();
@@ -281,14 +282,14 @@ class SizeTest extends TestCase
         $this->manipulator->setParams(['fit' => 'crop-50-50-1']);
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->run($image)
         );
     }
 
     public function testResizeDoesRunWhenDimensionsAreTheSameAndTheCropZoomIsNotDefaultOne()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
             $mock->shouldReceive('resize')->once();
@@ -298,7 +299,7 @@ class SizeTest extends TestCase
         $this->manipulator->setParams(['fit' => 'crop-50-50-3.2']);
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->run($image)
         );
     }

@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Geometry\Rectangle;
 use Intervention\Image\Interfaces\ImageInterface;
 
 /**
@@ -169,13 +170,13 @@ class Size extends BaseManipulator
         }
 
         if (is_null($width) || is_null($height)) {
-            $size = (new \Intervention\Image\Size($image->width(), $image->height()))
+            $size = (new Rectangle($image->width(), $image->height()))
               ->resize($width, $height, function ($constraint) {
                   $constraint->aspectRatio();
               });
 
-            $width = $size->getWidth();
-            $height = $size->getHeight();
+            $width = $size->width();
+            $height = $size->width();
         }
 
         return [
