@@ -12,11 +12,11 @@ class Brightness extends BaseManipulator
     /**
      * Perform brightness image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $brightness = $this->getBrightness();
 
