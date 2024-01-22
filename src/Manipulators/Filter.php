@@ -12,11 +12,11 @@ class Filter extends BaseManipulator
     /**
      * Perform filter image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         if ('greyscale' === $this->filt) {
             return $this->runGreyscaleFilter($image);
@@ -32,11 +32,11 @@ class Filter extends BaseManipulator
     /**
      * Perform greyscale manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runGreyscaleFilter(Image $image)
+    public function runGreyscaleFilter(ImageInterface $image): ImageInterface
     {
         return $image->greyscale();
     }
@@ -44,11 +44,11 @@ class Filter extends BaseManipulator
     /**
      * Perform sepia manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runSepiaFilter(Image $image)
+    public function runSepiaFilter(ImageInterface $image): ImageInterface
     {
         $image->greyscale();
         $image->brightness(-10);

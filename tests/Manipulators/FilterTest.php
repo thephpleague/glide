@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +27,7 @@ class FilterTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->twice()->andReturn($mock)
                  ->shouldReceive('brightness')->with(-10)->twice()->andReturn($mock)
                  ->shouldReceive('contrast')->with(10)->twice()->andReturn($mock)
@@ -34,36 +35,36 @@ class FilterTest extends TestCase
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['filt' => 'greyscale'])->run($image)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['filt' => 'sepia'])->run($image)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams([])->run($image)
         );
     }
 
     public function testRunGreyscaleFilter()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runGreyscaleFilter($image)
         );
     }
 
     public function testRunSepiaFilter()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->once()->andReturn($mock)
                  ->shouldReceive('brightness')->with(-10)->twice()->andReturn($mock)
                  ->shouldReceive('contrast')->with(10)->twice()->andReturn($mock)
@@ -71,7 +72,7 @@ class FilterTest extends TestCase
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->runSepiaFilter($image)
         );
     }
