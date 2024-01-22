@@ -16,7 +16,9 @@ jobs:
                   php-version: '8.3'
                   extensions: gd, imagick
             - name: php-cs-fixer
-              run: vendor/bin/php-cs-fixer fix --dry-run --diff
+              run: |
+                  composer update --no-interaction --no-ansi --no-progress
+                  vendor/bin/php-cs-fixer fix --dry-run --diff
 
     tests:
         runs-on: ubuntu-22.04
