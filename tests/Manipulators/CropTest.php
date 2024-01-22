@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 class CropTest extends TestCase
 {
     private $manipulator;
+    private $image;
 
     public function setUp(): void
     {

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
 {
-    private $output;
+    private $api;
 
     public function setUp(): void
     {
