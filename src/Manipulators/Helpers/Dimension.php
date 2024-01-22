@@ -52,5 +52,7 @@ class Dimension
 
             return (float) $this->image->width() * ((float) $matches[1] / 100);
         }
+
+        return null;
     }
 }
