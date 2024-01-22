@@ -16,9 +16,7 @@ jobs:
                   php-version: '8.3'
                   extensions: gd, imagick
             - name: php-cs-fixer
-              run: |
-                  wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.4/php-cs-fixer.phar -q
-                  php php-cs-fixer.phar fix --dry-run --diff
+              run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
     tests:
         runs-on: ubuntu-22.04
