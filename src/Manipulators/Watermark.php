@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
@@ -94,11 +94,11 @@ class Watermark extends BaseManipulator
     /**
      * Perform watermark image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         if ($watermark = $this->getImage($image)) {
             $markw = $this->getDimension($image, 'markw');
@@ -135,22 +135,22 @@ class Watermark extends BaseManipulator
     /**
      * Get the watermark image.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image|null The watermark image.
+     * @return ImageInterface|null The watermark image.
      */
-    public function getImage(Image $image)
+    public function getImage(ImageInterface $image): ?ImageInterface
     {
         if (is_null($this->watermarks)) {
-            return;
+            return null;
         }
 
         if (!is_string($this->mark)) {
-            return;
+            return null;
         }
 
         if ('' === $this->mark) {
-            return;
+            return null;
         }
 
         $path = $this->mark;
@@ -173,12 +173,12 @@ class Watermark extends BaseManipulator
     /**
      * Get a dimension.
      *
-     * @param Image  $image The source image.
+     * @param ImageInterface  $image The source image.
      * @param string $field The requested field.
      *
      * @return float|null The dimension.
      */
-    public function getDimension(Image $image, $field)
+    public function getDimension(ImageInterface $image, $field)
     {
         if ($this->{$field}) {
             return (new Dimension($image, $this->getDpr()))->get($this->{$field});

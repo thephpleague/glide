@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Manipulators\Helpers\Color;
 
 /**
