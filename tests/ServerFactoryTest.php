@@ -156,7 +156,7 @@ class ServerFactoryTest extends TestCase
         $this->assertInstanceOf('League\Glide\Api\Api', $server->getApi());
     }
 
-    public function testGetImageManager()
+    public function testGetImageManagerWithImagick()
     {
         $server = new ServerFactory([
             'driver' => 'imagick',
@@ -164,7 +164,16 @@ class ServerFactoryTest extends TestCase
         $imageManager = $server->getImageManager();
 
         $this->assertInstanceOf('Intervention\Image\ImageManager', $imageManager);
-        $this->assertSame('imagick', $imageManager->config['driver']);
+    }
+
+    public function testGetImageManagerWithGd()
+    {
+        $server = new ServerFactory([
+            'driver' => 'gd',
+        ]);
+        $imageManager = $server->getImageManager();
+
+        $this->assertInstanceOf('Intervention\Image\ImageManager', $imageManager);
     }
 
     public function testGetImageManagerWithNoneSet()
@@ -173,7 +182,6 @@ class ServerFactoryTest extends TestCase
         $imageManager = $server->getImageManager();
 
         $this->assertInstanceOf('Intervention\Image\ImageManager', $imageManager);
-        $this->assertSame('gd', $imageManager->config['driver']);
     }
 
     public function testGetManipulators()

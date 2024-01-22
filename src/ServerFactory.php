@@ -2,6 +2,8 @@
 
 namespace League\Glide;
 
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
@@ -246,9 +248,15 @@ class ServerFactory
             $driver = $this->config['driver'];
         }
 
-        return new ImageManager([
-            'driver' => $driver,
-        ]);
+        if ($driver === 'gd') {
+            $manager = ImageManager::gd();
+        } else if ($driver === 'imagick') {
+            $manager = ImageManager::imagick();
+        } else {
+            $manager = ImageManager::withDriver($driver);
+        }
+
+        return $manager;
     }
 
     /**
