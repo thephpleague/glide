@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -26,18 +27,18 @@ class FlipTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('flip')->andReturn($mock)->with('h')->once();
             $mock->shouldReceive('flip')->andReturn($mock)->with('v')->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['flip' => 'h'])->run($image)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['flip' => 'v'])->run($image)
         );
     }
