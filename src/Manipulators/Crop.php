@@ -12,11 +12,11 @@ class Crop extends BaseManipulator
     /**
      * Perform crop image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $coordinates = $this->getCoordinates($image);
 
@@ -37,16 +37,16 @@ class Crop extends BaseManipulator
     /**
      * Resolve coordinates.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
      * @return int[]|null The resolved coordinates.
      *
      * @psalm-return array{0: int, 1: int, 2: int, 3: int}|null
      */
-    public function getCoordinates(Image $image)
+    public function getCoordinates(ImageInterface $image): ?array
     {
         if (null === $this->crop) {
-            return;
+            return null;
         }
 
         $coordinates = explode(',', $this->crop);
@@ -62,7 +62,7 @@ class Crop extends BaseManipulator
             ($coordinates[3] < 0) or
             ($coordinates[2] >= $image->width()) or
             ($coordinates[3] >= $image->height())) {
-            return;
+            return null;
         }
 
         return [
@@ -76,12 +76,12 @@ class Crop extends BaseManipulator
     /**
      * Limit coordinates to image boundaries.
      *
-     * @param Image $image       The source image.
+     * @param ImageInterface $image       The source image.
      * @param int[] $coordinates The coordinates.
      *
      * @return int[] The limited coordinates.
      */
-    public function limitToImageBoundaries(Image $image, array $coordinates)
+    public function limitToImageBoundaries(ImageInterface $image, array $coordinates): array
     {
         if ($coordinates[0] > ($image->width() - $coordinates[2])) {
             $coordinates[0] = $image->width() - $coordinates[2];
