@@ -19,9 +19,10 @@ class Orientation extends BaseManipulator
     public function run(ImageInterface $image): ImageInterface
     {
         $orientation = $this->getOrientation();
+        $originalOrientation = $image->exif('Orientation');
 
-        if ('auto' === $orientation && $image->exif('Orientation')) {
-            switch ($image->exif('Orientation')) {
+        if ('auto' === $orientation && is_numeric($originalOrientation)) {
+            switch ($originalOrientation) {
                 case 2:
                     $image->flip();
                     break;
