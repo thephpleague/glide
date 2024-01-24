@@ -20,16 +20,26 @@ class EncodeTest extends TestCase
     public function setUp(): void
     {
         $manager = ImageManager::gd();
-        $this->jpg = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'));
-        $this->png = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'));
-        $this->gif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'));
+        $this->jpg = $manager->read(
+            $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'))->toFilePointer()
+        );
+        $this->png = $manager->read(
+            $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'))->toFilePointer()
+        );
+        $this->gif = $manager->read(
+            $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'))->toFilePointer()
+        );
 
         if (function_exists('imagecreatefromwebp')) {
-            $this->webp = $manager->create(100, 100)->encode(new MediaTypeEncoder('webp'));
+            $this->webp = $manager->read(
+                $manager->create(100, 100)->encode(new MediaTypeEncoder('image/webp'))->toFilePointer()
+            );
         }
 
         if (function_exists('imagecreatefromavif')) {
-            $this->avif = $manager->create(100, 100)->encode(new MediaTypeEncoder('avif'));
+            $this->avif = $manager->read(
+                $manager->create(100, 100)->encode(new MediaTypeEncoder('image/avif'))->toFilePointer()
+            );
         }
 
         $this->manipulator = new Encode();
@@ -47,60 +57,61 @@ class EncodeTest extends TestCase
 
     public function testRun()
     {
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->jpg)->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->png)->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->gif)->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->jpg)->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->png)->mime);
-        $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->gif)->mime);
-        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->jpg)->mime);
-        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->png)->mime);
-        $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->gif)->mime);
-        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->jpg)->mime);
-        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->png)->mime);
-        $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->gif)->mime);
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'jpg'])->run($this->jpg)));
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'jpg'])->run($this->png)));
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'jpg'])->run($this->gif)));
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'pjpg'])->run($this->jpg)));
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'pjpg'])->run($this->png)));
+        $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'pjpg'])->run($this->gif)));
+        $this->assertSame('image/png', $this->getMime($this->manipulator->setParams(['fm' => 'png'])->run($this->jpg)));
+        $this->assertSame('image/png', $this->getMime($this->manipulator->setParams(['fm' => 'png'])->run($this->png)));
+        $this->assertSame('image/png', $this->getMime($this->manipulator->setParams(['fm' => 'png'])->run($this->gif)));
+        $this->assertSame('image/gif', $this->getMime($this->manipulator->setParams(['fm' => 'gif'])->run($this->jpg)));
+        $this->assertSame('image/gif', $this->getMime($this->manipulator->setParams(['fm' => 'gif'])->run($this->png)));
+        $this->assertSame('image/gif', $this->getMime($this->manipulator->setParams(['fm' => 'gif'])->run($this->gif)));
 
         if (function_exists('imagecreatefromwebp')) {
-            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->webp)->mime);
-            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->webp)->mime);
-            $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->webp)->mime);
-            $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->webp)->mime);
-            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->jpg)->mime);
-            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->png)->mime);
-            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->gif)->mime);
-            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->webp)->mime);
+            $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'jpg'])->run($this->webp)));
+            $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'pjpg'])->run($this->webp)));
+            $this->assertSame('image/png', $this->getMime($this->manipulator->setParams(['fm' => 'png'])->run($this->webp)));
+            $this->assertSame('image/gif', $this->getMime($this->manipulator->setParams(['fm' => 'gif'])->run($this->webp)));
+            $this->assertSame('image/webp', $this->getMime($this->manipulator->setParams(['fm' => 'webp'])->run($this->jpg)));
+            $this->assertSame('image/webp', $this->getMime($this->manipulator->setParams(['fm' => 'webp'])->run($this->png)));
+            $this->assertSame('image/webp', $this->getMime($this->manipulator->setParams(['fm' => 'webp'])->run($this->gif)));
+            $this->assertSame('image/webp', $this->getMime($this->manipulator->setParams(['fm' => 'webp'])->run($this->webp)));
         }
         if (function_exists('imagecreatefromavif')) {
-            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'jpg'])->run($this->avif)->mime);
-            $this->assertSame('image/jpeg', $this->manipulator->setParams(['fm' => 'pjpg'])->run($this->avif)->mime);
-            $this->assertSame('image/png', $this->manipulator->setParams(['fm' => 'png'])->run($this->avif)->mime);
-            $this->assertSame('image/gif', $this->manipulator->setParams(['fm' => 'gif'])->run($this->avif)->mime);
-            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->jpg)->mime);
-            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->png)->mime);
-            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->gif)->mime);
-            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->avif)->mime);
+            $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'jpg'])->run($this->avif)));
+            $this->assertSame('image/jpeg', $this->getMime($this->manipulator->setParams(['fm' => 'pjpg'])->run($this->avif)));
+            $this->assertSame('image/png', $this->getMime($this->manipulator->setParams(['fm' => 'png'])->run($this->avif)));
+            $this->assertSame('image/gif', $this->getMime($this->manipulator->setParams(['fm' => 'gif'])->run($this->avif)));
+            $this->assertSame('image/avif', $this->getMime($this->manipulator->setParams(['fm' => 'avif'])->run($this->jpg)));
+            $this->assertSame('image/avif', $this->getMime($this->manipulator->setParams(['fm' => 'avif'])->run($this->png)));
+            $this->assertSame('image/avif', $this->getMime($this->manipulator->setParams(['fm' => 'avif'])->run($this->gif)));
+            $this->assertSame('image/avif', $this->getMime($this->manipulator->setParams(['fm' => 'avif'])->run($this->avif)));
         }
 
         if (function_exists('imagecreatefromwebp') && function_exists('imagecreatefromavif')) {
-            $this->assertSame('image/webp', $this->manipulator->setParams(['fm' => 'webp'])->run($this->avif)->mime);
-            $this->assertSame('image/avif', $this->manipulator->setParams(['fm' => 'avif'])->run($this->webp)->mime);
+            $this->assertSame('image/webp', $this->getMime($this->manipulator->setParams(['fm' => 'webp'])->run($this->avif)));
+            $this->assertSame('image/avif', $this->getMime($this->manipulator->setParams(['fm' => 'avif'])->run($this->webp)));
         }
     }
 
     public function testGetFormat()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('mime')->andReturn('image/jpeg')->once();
-            $mock->shouldReceive('mime')->andReturn('image/png')->once();
-            $mock->shouldReceive('mime')->andReturn('image/gif')->once();
-            $mock->shouldReceive('mime')->andReturn('image/bmp')->once();
-            $mock->shouldReceive('mime')->andReturn('image/jpeg')->twice();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/jpeg']))->once();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/png']))->once();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/gif']))->once();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/bmp']))->once();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/jpeg']))->twice();
 
             if (function_exists('imagecreatefromwebp')) {
-                $mock->shouldReceive('mime')->andReturn('image/webp')->once();
+                $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/webp']))->once();
             }
+
             if (function_exists('imagecreatefromavif')) {
-                $mock->shouldReceive('mime')->andReturn('image/avif')->once();
+                $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/avif']))->once();
             }
         });
 
@@ -148,13 +159,18 @@ class EncodeTest extends TestCase
         }
         $manager = ImageManager::imagick();
         // These need to be recreated with the imagick driver selected in the manager
-        $this->jpg = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'));
-        $this->png = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'));
-        $this->gif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'));
-        $this->tif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/tiff'));
+        $this->jpg = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'))->toFilePointer());
+        $this->png = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'))->toFilePointer());
+        $this->gif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'))->toFilePointer());
+        $this->tif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/tiff'))->toFilePointer());
 
-        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->jpg)->mime);
-        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->png)->mime);
-        $this->assertSame('image/tiff', $this->manipulator->setParams(['fm' => 'tiff'])->run($this->gif)->mime);
+        $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->jpg)));
+        $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->png)));
+        $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->gif)));
+    }
+
+    public function getMime(ImageInterface $image)
+    {
+        return $image->origin()->mediaType();
     }
 }
