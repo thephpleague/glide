@@ -2,11 +2,10 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-
 
 /**
  * @property string $fm
@@ -38,11 +37,11 @@ class Encode extends BaseManipulator
             $i = $image->core()->native();
             if ($driver instanceof ImagickDriver) {
                 $i->setInterlaceScheme(3); // 3 = Imagick::INTERLACE_PLANE constant
-            } else if ($driver instanceof GdDriver) {
+            } elseif ($driver instanceof GdDriver) {
                 imageinterlace($i, true);
             }
 
-            if ($format === 'pjpg') {
+            if ('pjpg' === $format) {
                 $format = 'jpg';
             }
         }
