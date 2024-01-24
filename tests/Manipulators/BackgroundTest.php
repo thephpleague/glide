@@ -25,6 +25,8 @@ class BackgroundTest extends TestCase
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => 'image/jpeg']))->once();
+
             $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
                 $mock->shouldReceive('createImage')->with(100, 100)->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
                     $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
