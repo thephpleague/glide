@@ -126,7 +126,7 @@ class Watermark extends BaseManipulator
                 $watermark->opacity($markalpha);
             }
 
-            $image->insert($watermark, $markpos, intval($markx), intval($marky));
+            $image->place($watermark, $markpos, intval($markx), intval($marky));
         }
 
         return $image;
@@ -163,7 +163,7 @@ class Watermark extends BaseManipulator
             if ($this->watermarks->fileExists($path)) {
                 $source = $this->watermarks->read($path);
 
-                return $image->getDriver()->init($source);
+                return $image->driver()->handleInput($source);
             }
         } catch (FilesystemV2Exception $exception) {
             throw new FilesystemException('Could not read the image `'.$path.'`.');

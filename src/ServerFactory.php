@@ -2,8 +2,6 @@
 
 namespace League\Glide;
 
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;

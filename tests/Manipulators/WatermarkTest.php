@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Filesystem\FilesystemException;
 use Mockery;
@@ -53,9 +54,9 @@ class WatermarkTest extends TestCase
     public function testRun()
     {
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('insert')->once();
-            $mock->shouldReceive('getDriver')->andReturn(Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
-                $mock->shouldReceive('init')->with('content')->andReturn(Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('place')->once();
+            $mock->shouldReceive('driver')->andReturn(Mockery::mock(DriverInterface::class, function ($mock) {
+                $mock->shouldReceive('handleInput')->with('content')->andReturn(Mockery::mock(ImageInterface::class, function ($mock) {
                     $mock->shouldReceive('width')->andReturn(0)->once();
                     $mock->shouldReceive('resize')->once();
                 }))->once();
@@ -97,14 +98,14 @@ class WatermarkTest extends TestCase
 
         $this->manipulator->setWatermarksPathPrefix('watermarks');
 
-        $driver = Mockery::mock('Intervention\Image\AbstractDriver');
-        $driver->shouldReceive('init')
+        $driver = Mockery::mock(DriverInterface::class);
+        $driver->shouldReceive('handleInput')
                ->with('content')
                ->andReturn(Mockery::mock(ImageInterface::class))
                ->once();
 
         $image = Mockery::mock(ImageInterface::class);
-        $image->shouldReceive('getDriver')
+        $image->shouldReceive('driver')
               ->andReturn($driver)
               ->once();
 
