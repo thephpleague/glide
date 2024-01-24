@@ -2,7 +2,12 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+
 
 /**
  * @property string $fm
@@ -21,19 +26,31 @@ class Encode extends BaseManipulator
     {
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
+        $driver = $image->driver();
 
         if (in_array($format, ['jpg', 'pjpg'], true)) {
-            $image = $image->getDriver()
-                           ->newImage($image->width(), $image->height(), '#fff')
-                           ->insert($image, 'top-left', 0, 0);
+            $image = (new ImageManager($driver))
+                ->create($image->width(), $image->height())
+                ->fill('ffffff')
+                ->place($image, 'top-left', 0, 0);
         }
 
-        if ('pjpg' === $format) {
-            $image->interlace();
-            $format = 'jpg';
+        if (in_array($format, ['png', 'pjpg'], true)) {
+            $i = $image->core()->native();
+            if ($driver instanceof ImagickDriver) {
+                $i->setInterlaceScheme(3); // 3 = Imagick::INTERLACE_PLANE constant
+            } else if ($driver instanceof GdDriver) {
+                imageinterlace($i, true);
+            }
+
+            if ($format === 'pjpg') {
+                $format = 'jpg';
+            }
         }
 
-        return $image->encode($format, $quality);
+        return (new ImageManager($driver))->read(
+            $image->encodeByExtension($format, $quality)->toDataUri()
+        );
     }
 
     /**
@@ -49,7 +66,7 @@ class Encode extends BaseManipulator
             return $this->fm;
         }
 
-        return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
+        return array_search($image->encode(new AutoEncoder())->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**
