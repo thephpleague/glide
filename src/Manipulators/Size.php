@@ -171,12 +171,10 @@ class Size extends BaseManipulator
 
         if (is_null($width) || is_null($height)) {
             $size = (new Rectangle($image->width(), $image->height()))
-              ->resize($width, $height, function ($constraint) {
-                  $constraint->aspectRatio();
-              });
+                ->resize($width, $height);
 
             $width = $size->width();
-            $height = $size->width();
+            $height = $size->height();
         }
 
         return [
