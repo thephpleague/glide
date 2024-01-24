@@ -45,7 +45,7 @@ class SizeTest extends TestCase
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn('200')->twice();
             $mock->shouldReceive('height')->andReturn('200')->once();
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -152,9 +152,9 @@ class SizeTest extends TestCase
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->times(5);
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->times(5);
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
-            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'center')->andReturn($mock)->times(2);
+            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'ffffff', 'center')->andReturn($mock)->times(2);
         });
 
         $this->assertInstanceOf(
@@ -196,7 +196,7 @@ class SizeTest extends TestCase
     public function testRunContainResize()
     {
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -208,8 +208,8 @@ class SizeTest extends TestCase
     public function testRunFillResize()
     {
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
-            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'center')->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvas')->with(100, 100, 'ffffff', 'center')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -221,7 +221,7 @@ class SizeTest extends TestCase
     public function testRunMaxResize()
     {
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -247,7 +247,7 @@ class SizeTest extends TestCase
         $image = Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
-            $mock->shouldReceive('resize')->with(100, 100, $this->callback)->andReturn($mock)->once();
+            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
             $mock->shouldReceive('crop')->with(100, 100, 0, 0)->andReturn($mock)->once();
         });
 

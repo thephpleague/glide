@@ -171,7 +171,7 @@ class Size extends BaseManipulator
 
         if (is_null($width) || is_null($height)) {
             $size = (new Rectangle($image->width(), $image->height()))
-                ->resize($width, $height);
+                ->scale($width, $height);
 
             $width = $size->width();
             $height = $size->height();
@@ -278,9 +278,7 @@ class Size extends BaseManipulator
      */
     public function runContainResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        return $image->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-        });
+        return $image->resize($width, $height);
     }
 
     /**
@@ -294,10 +292,7 @@ class Size extends BaseManipulator
      */
     public function runMaxResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        return $image->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
+        return $image->resize($width, $height);
     }
 
     /**
@@ -313,7 +308,7 @@ class Size extends BaseManipulator
     {
         $image = $this->runMaxResize($image, $width, $height);
 
-        return $image->resizeCanvas($width, $height, 'center');
+        return $image->resizeCanvas($width, $height, 'ffffff', 'center');
     }
 
     /**
@@ -327,11 +322,9 @@ class Size extends BaseManipulator
      */
     public function runFillMaxResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        $image = $image->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-        });
+        $image = $image->resize($width, $height);
 
-        return $image->resizeCanvas($width, $height, 'center');
+        return $image->resizeCanvas($width, $height, 'ffffff', 'center');
     }
 
     /**
@@ -363,9 +356,7 @@ class Size extends BaseManipulator
 
         $zoom = $this->getCrop()[2];
 
-        $image->resize($resize_width * $zoom, $resize_height * $zoom, function ($constraint) {
-            $constraint->aspectRatio();
-        });
+        $image->resize($resize_width * $zoom, $resize_height * $zoom);
 
         list($offset_x, $offset_y) = $this->resolveCropOffset($image, $width, $height);
 
