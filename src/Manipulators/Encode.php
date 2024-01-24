@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Encoders\AutoEncoder;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
@@ -49,7 +48,7 @@ class Encode extends BaseManipulator
         }
 
         return (new ImageManager($driver))->read(
-            $image->encodeByExtension($format, $quality)->toDataUri()
+            $image->encodeByExtension($format, $quality)->toFilePointer()
         );
     }
 
@@ -66,7 +65,7 @@ class Encode extends BaseManipulator
             return $this->fm;
         }
 
-        return array_search($image->encode(new AutoEncoder())->mediaType(), static::supportedFormats(), true) ?: 'jpg';
+        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**
