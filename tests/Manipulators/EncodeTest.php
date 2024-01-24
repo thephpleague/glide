@@ -5,7 +5,6 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Encoders\MediaTypeEncoder;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class EncodeTest extends TestCase
@@ -38,7 +37,7 @@ class EncodeTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -90,7 +89,7 @@ class EncodeTest extends TestCase
 
     public function testGetFormat()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('mime')->andReturn('image/jpeg')->once();
             $mock->shouldReceive('mime')->andReturn('image/png')->once();
             $mock->shouldReceive('mime')->andReturn('image/gif')->once();
@@ -148,7 +147,7 @@ class EncodeTest extends TestCase
             );
         }
         $manager = ImageManager::imagick();
-        //These need to be recreated with the imagick driver selected in the manager
+        // These need to be recreated with the imagick driver selected in the manager
         $this->jpg = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'));
         $this->png = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'));
         $this->gif = $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'));

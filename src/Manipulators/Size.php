@@ -157,8 +157,8 @@ class Size extends BaseManipulator
      * Resolve missing image dimensions.
      *
      * @param ImageInterface $image  The source image.
-     * @param int|null $width  The image width.
-     * @param int|null $height The image height.
+     * @param int|null       $width  The image width.
+     * @param int|null       $height The image height.
      *
      * @return int[] The resolved width and height.
      */
@@ -232,9 +232,9 @@ class Size extends BaseManipulator
      * Perform resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param string $fit    The fit.
-     * @param int    $width  The width.
-     * @param int    $height The height.
+     * @param string         $fit    The fit.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -271,8 +271,8 @@ class Size extends BaseManipulator
      * Perform contain resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -285,8 +285,8 @@ class Size extends BaseManipulator
      * Perform max resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -299,8 +299,8 @@ class Size extends BaseManipulator
      * Perform fill resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -315,8 +315,8 @@ class Size extends BaseManipulator
      * Perform fill-max resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -331,8 +331,8 @@ class Size extends BaseManipulator
      * Perform stretch resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -345,8 +345,8 @@ class Size extends BaseManipulator
      * Perform crop resize image manipulation.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -367,8 +367,8 @@ class Size extends BaseManipulator
      * Resolve the crop resize dimensions.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return array The resize dimensions.
      */
@@ -385,8 +385,8 @@ class Size extends BaseManipulator
      * Resolve the crop offset.
      *
      * @param ImageInterface $image  The source image.
-     * @param int   $width  The width.
-     * @param int   $height The height.
+     * @param int            $width  The width.
+     * @param int            $height The height.
      *
      * @return array The crop offset.
      */

@@ -3,7 +3,6 @@
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
-use InvalidArgumentException;
 use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface
@@ -67,7 +66,7 @@ class Api implements ApiInterface
     {
         foreach ($manipulators as $manipulator) {
             if (!($manipulator instanceof ManipulatorInterface)) {
-                throw new InvalidArgumentException('Not a valid manipulator.');
+                throw new \InvalidArgumentException('Not a valid manipulator.');
             }
         }
 

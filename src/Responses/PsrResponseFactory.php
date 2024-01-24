@@ -2,7 +2,6 @@
 
 namespace League\Glide\Responses;
 
-use Closure;
 use League\Flysystem\FilesystemOperator;
 use Psr\Http\Message\ResponseInterface;
 
@@ -18,7 +17,7 @@ class PsrResponseFactory implements ResponseFactoryInterface
     /**
      * Callback to create stream.
      *
-     * @var Closure
+     * @var \Closure
      */
     protected $streamCallback;
 
@@ -26,9 +25,9 @@ class PsrResponseFactory implements ResponseFactoryInterface
      * Create PsrResponseFactory instance.
      *
      * @param ResponseInterface $response       Base response object.
-     * @param Closure           $streamCallback Callback to create stream.
+     * @param \Closure          $streamCallback Callback to create stream.
      */
-    public function __construct(ResponseInterface $response, Closure $streamCallback)
+    public function __construct(ResponseInterface $response, \Closure $streamCallback)
     {
         $this->response = $response;
         $this->streamCallback = $streamCallback;

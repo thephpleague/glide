@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class SizeTest extends TestCase
@@ -14,14 +13,14 @@ class SizeTest extends TestCase
     public function setUp(): void
     {
         $this->manipulator = new Size();
-        $this->callback = Mockery::on(function () {
+        $this->callback = \Mockery::on(function () {
             return true;
         });
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -42,7 +41,7 @@ class SizeTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn('200')->twice();
             $mock->shouldReceive('height')->andReturn('200')->once();
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
@@ -118,7 +117,7 @@ class SizeTest extends TestCase
 
     public function testResolveMissingDimensions()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(400);
             $mock->shouldReceive('height')->andReturn(200);
         });
@@ -130,7 +129,7 @@ class SizeTest extends TestCase
 
     public function testResolveMissingDimensionsWithOddDimensions()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(1024);
             $mock->shouldReceive('height')->andReturn(553);
         });
@@ -148,7 +147,7 @@ class SizeTest extends TestCase
 
     public function testRunResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
@@ -195,7 +194,7 @@ class SizeTest extends TestCase
 
     public function testRunContainResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
@@ -207,7 +206,7 @@ class SizeTest extends TestCase
 
     public function testRunFillResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
             $mock->shouldReceive('resizeCanvas')->with(100, 100, 'ffffff', 'center')->andReturn($mock)->once();
         });
@@ -220,7 +219,7 @@ class SizeTest extends TestCase
 
     public function testRunMaxResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
@@ -232,7 +231,7 @@ class SizeTest extends TestCase
 
     public function testRunStretchResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
         });
 
@@ -244,7 +243,7 @@ class SizeTest extends TestCase
 
     public function testRunCropResize()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
@@ -259,7 +258,7 @@ class SizeTest extends TestCase
 
     public function testResizeDoesNotRunWhenNoParamsAreSet()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->twice();
             $mock->shouldReceive('height')->andReturn(100)->twice();
             $mock->shouldReceive('resize')->never();
@@ -273,7 +272,7 @@ class SizeTest extends TestCase
 
     public function testResizeDoesNotRunWhenSettingFitCropToCenterWithNoZoom()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->twice();
             $mock->shouldReceive('height')->andReturn(100)->twice();
             $mock->shouldReceive('resize')->never();
@@ -289,7 +288,7 @@ class SizeTest extends TestCase
 
     public function testResizeDoesRunWhenDimensionsAreTheSameAndTheCropZoomIsNotDefaultOne()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
             $mock->shouldReceive('resize')->once();

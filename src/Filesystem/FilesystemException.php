@@ -2,8 +2,6 @@
 
 namespace League\Glide\Filesystem;
 
-use Exception;
-
-class FilesystemException extends Exception
+class FilesystemException extends \Exception
 {
 }

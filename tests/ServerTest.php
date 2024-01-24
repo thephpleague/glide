@@ -3,10 +3,8 @@
 namespace League\Glide;
 
 use Hamcrest\Matchers;
-use InvalidArgumentException;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class ServerTest extends TestCase
@@ -15,9 +13,9 @@ class ServerTest extends TestCase
 
     public function setUp(): void
     {
-        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+        $response = \Mockery::mock('Psr\Http\Message\ResponseInterface');
 
-        $responseFactory = Mockery::mock('League\Glide\Responses\ResponseFactoryInterface');
+        $responseFactory = \Mockery::mock('League\Glide\Responses\ResponseFactoryInterface');
         $responseFactory
             ->shouldReceive('create')
             ->andReturn($response)
@@ -27,16 +25,16 @@ class ServerTest extends TestCase
             });
 
         $this->server = new Server(
-            Mockery::mock('League\Flysystem\FilesystemOperator'),
-            Mockery::mock('League\Flysystem\FilesystemOperator'),
-            Mockery::mock('League\Glide\Api\ApiInterface'),
+            \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            \Mockery::mock('League\Glide\Api\ApiInterface'),
             $responseFactory
         );
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -46,7 +44,7 @@ class ServerTest extends TestCase
 
     public function testSetSource()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator'));
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator'));
         $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getSource());
     }
 
@@ -102,7 +100,7 @@ class ServerTest extends TestCase
 
     public function testSourceFileExists()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->with('image.jpg')->andReturn(true)->once();
         }));
 
@@ -122,7 +120,7 @@ class ServerTest extends TestCase
 
     public function testSetCache()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator'));
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator'));
         $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getCache());
     }
 
@@ -315,7 +313,7 @@ class ServerTest extends TestCase
 
     public function testCacheFileExists()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
         }));
 
@@ -324,7 +322,7 @@ class ServerTest extends TestCase
 
     public function testDeleteCache()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('deleteDirectory')->with('image.jpg')->andReturn(true)->once();
         }));
 
@@ -333,7 +331,7 @@ class ServerTest extends TestCase
 
     public function testDeleteCacheWithGroupCacheInFoldersDisabled()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
 
         $this->server->setGroupCacheInFolders(false);
@@ -343,7 +341,7 @@ class ServerTest extends TestCase
 
     public function testSetApi()
     {
-        $api = Mockery::mock('League\Glide\Api\ApiInterface');
+        $api = \Mockery::mock('League\Glide\Api\ApiInterface');
         $this->server->setApi($api);
         $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
     }
@@ -419,7 +417,7 @@ class ServerTest extends TestCase
 
     public function testSetResponseFactory()
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'));
+        $this->server->setResponseFactory(\Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'));
 
         $this->assertInstanceOf(
             'League\Glide\Responses\ResponseFactoryInterface',
@@ -434,11 +432,11 @@ class ServerTest extends TestCase
 
     public function testGetImageResponse()
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
-            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+        $this->server->setResponseFactory(\Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
+            $mock->shouldReceive('create')->andReturn(\Mockery::mock('Psr\Http\Message\ResponseInterface'));
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
         }));
 
@@ -450,7 +448,7 @@ class ServerTest extends TestCase
 
     public function testGetImageResponseWithoutResponseFactory()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to get image response, no response factory defined.');
 
         $this->server->getImageResponse('image.jpg', []);
@@ -458,7 +456,7 @@ class ServerTest extends TestCase
 
     public function testGetImageAsBase64()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('read')->andReturn('content')->once();
@@ -475,7 +473,7 @@ class ServerTest extends TestCase
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage('Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('read')->andThrow('League\Flysystem\UnableToReadFile')->once();
@@ -489,7 +487,7 @@ class ServerTest extends TestCase
      */
     public function testOutputImage()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('fileSize')->andReturn(0);
@@ -509,17 +507,17 @@ class ServerTest extends TestCase
 
     public function testMakeImageFromSource()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
             $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+        $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $tmpDirPattern = Matchers::matchesPattern('~^'.sys_get_temp_dir().'.*~');
             $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
         }));
@@ -532,18 +530,18 @@ class ServerTest extends TestCase
 
     public function testMakeImageFromSourceWithCustomTmpDir()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
             $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
         }));
 
         $this->server->setTempDir(__DIR__);
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+        $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $tmpDirPattern = Matchers::matchesPattern('~^'.__DIR__.'.*~');
             $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
         }));
@@ -556,7 +554,7 @@ class ServerTest extends TestCase
 
     public function testMakeImageFromCache()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
         }));
 
@@ -571,11 +569,11 @@ class ServerTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('Could not find the image `image.jpg`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
         }));
 
@@ -587,12 +585,12 @@ class ServerTest extends TestCase
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage('Could not read the image `image.jpg`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andThrow('League\Flysystem\UnableToReadFile')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andThrow('League\Flysystem\UnableToCheckFileExistence')->once();
         }));
 
@@ -604,17 +602,17 @@ class ServerTest extends TestCase
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage('Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andThrow('League\Flysystem\UnableToCheckFileExistence')->once();
             $mock->shouldReceive('write')->andThrow('League\Flysystem\UnableToWriteFile')->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+        $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 

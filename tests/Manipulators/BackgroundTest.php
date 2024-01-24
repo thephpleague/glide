@@ -4,7 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class BackgroundTest extends TestCase
@@ -13,7 +12,7 @@ class BackgroundTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -23,12 +22,12 @@ class BackgroundTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
-            $mock->shouldReceive('driver')->andReturn(Mockery::mock(DriverInterface::class, function ($mock) {
-                $mock->shouldReceive('createImage')->with(100, 100)->andReturn(Mockery::mock(ImageInterface::class, function ($mock) {
-                    $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
+                $mock->shouldReceive('createImage')->with(100, 100)->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
+                    $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
                         $mock->shouldReceive('place')->andReturn($mock)->once();
                     }))->once();
                 }))->once();

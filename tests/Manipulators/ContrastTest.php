@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class ContrastTest extends TestCase
@@ -17,7 +16,7 @@ class ContrastTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -27,7 +26,7 @@ class ContrastTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('contrast')->with('50')->once();
         });
 

@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class FilterTest extends TestCase
@@ -17,7 +16,7 @@ class FilterTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -27,7 +26,7 @@ class FilterTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->twice()->andReturn($mock)
                  ->shouldReceive('brightness')->with(-10)->twice()->andReturn($mock)
                  ->shouldReceive('contrast')->with(10)->twice()->andReturn($mock)
@@ -52,7 +51,7 @@ class FilterTest extends TestCase
 
     public function testRunGreyscaleFilter()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->andReturn($mock)->once();
         });
 
@@ -64,7 +63,7 @@ class FilterTest extends TestCase
 
     public function testRunSepiaFilter()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('greyscale')->once()->andReturn($mock)
                  ->shouldReceive('brightness')->with(-10)->twice()->andReturn($mock)
                  ->shouldReceive('contrast')->with(10)->twice()->andReturn($mock)

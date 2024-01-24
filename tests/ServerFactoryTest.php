@@ -2,8 +2,6 @@
 
 namespace League\Glide;
 
-use InvalidArgumentException;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class ServerFactoryTest extends TestCase
@@ -16,9 +14,9 @@ class ServerFactoryTest extends TestCase
     public function testGetServer()
     {
         $server = new ServerFactory([
-            'source' => Mockery::mock('League\Flysystem\FilesystemOperator'),
-            'cache' => Mockery::mock('League\Flysystem\FilesystemOperator'),
-            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
+            'source' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'cache' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'response' => \Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
 
         $this->assertInstanceOf('League\Glide\Server', $server->getServer());
@@ -27,7 +25,7 @@ class ServerFactoryTest extends TestCase
     public function testGetSource()
     {
         $server = new ServerFactory([
-            'source' => Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'source' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $server->getSource());
@@ -41,7 +39,7 @@ class ServerFactoryTest extends TestCase
 
     public function testGetSourceWithNoneSet()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A "source" file system must be set.');
 
         $server = new ServerFactory();
@@ -60,7 +58,7 @@ class ServerFactoryTest extends TestCase
     public function testGetCache()
     {
         $server = new ServerFactory([
-            'cache' => Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'cache' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $server->getCache());
@@ -74,7 +72,7 @@ class ServerFactoryTest extends TestCase
 
     public function testGetCacheWithNoneSet()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('A "cache" file system must be set.');
 
         $server = new ServerFactory();
@@ -128,7 +126,7 @@ class ServerFactoryTest extends TestCase
     public function testGetWatermarks()
     {
         $server = new ServerFactory([
-            'watermarks' => Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'watermarks' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
         ]);
 
         $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $server->getWatermarks());
@@ -242,7 +240,7 @@ class ServerFactoryTest extends TestCase
     public function testGetResponseFactory()
     {
         $server = new ServerFactory([
-            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
+            'response' => \Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
         ]);
 
         $this->assertInstanceOf('League\Glide\Responses\ResponseFactoryInterface', $server->getResponseFactory());
@@ -258,9 +256,9 @@ class ServerFactoryTest extends TestCase
     public function testCreate()
     {
         $server = ServerFactory::create([
-            'source' => Mockery::mock('League\Flysystem\FilesystemOperator'),
-            'cache' => Mockery::mock('League\Flysystem\FilesystemOperator'),
-            'response' => Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
+            'source' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'cache' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
+            'response' => \Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
             'temp_dir' => __DIR__,
         ]);
 
