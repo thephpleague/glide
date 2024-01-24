@@ -20,8 +20,32 @@ class Orientation extends BaseManipulator
     {
         $orientation = $this->getOrientation();
 
-        if ('auto' === $orientation) {
-            return $image->orientate();
+        if ('auto' === $orientation && $image->exif('Orientation')) {
+            switch ($image->exif('Orientation')) {
+                case 2:
+                    $image->flip();
+                    break;
+                case 3:
+                    $image->rotate(180);
+                    break;
+                case 4:
+                    $image->rotate(180)->flip();
+                    break;
+                case 5:
+                    $image->rotate(270)->flip();
+                    break;
+                case 6:
+                    $image->rotate(270);
+                    break;
+                case 7:
+                    $image->rotate(90)->flip();
+                    break;
+                case 8:
+                    $image->rotate(90);
+                    break;
+            }
+
+            return $image;
         }
 
         return $image->rotate((float) $orientation);
