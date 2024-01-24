@@ -26,9 +26,10 @@ class Background extends BaseManipulator
         $color = (new Color($this->bg))->formatted();
 
         if ($color) {
-            $new = $image->getDriver()->newImage($image->width(), $image->height(), $color);
-            $new->mime = $image->mime;
-            $image = $new->insert($image, 'top-left', 0, 0);
+            $new = $image->driver()->createImage($image->width(), $image->height())->fill($color);
+            // TODO: Find a way to communicate the mime
+            // $new->mime = $image->mime;
+            $image = $new->place($image, 'top-left', 0, 0);
         }
 
         return $image;
