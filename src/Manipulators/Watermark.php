@@ -173,8 +173,8 @@ class Watermark extends BaseManipulator
     /**
      * Get a dimension.
      *
-     * @param ImageInterface  $image The source image.
-     * @param string $field The requested field.
+     * @param ImageInterface $image The source image.
+     * @param string         $field The requested field.
      *
      * @return float|null The dimension.
      */

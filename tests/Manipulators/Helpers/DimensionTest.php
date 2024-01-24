@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators\Helpers;
 
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class DimensionTest extends TestCase
@@ -12,12 +11,12 @@ class DimensionTest extends TestCase
 
     public function setUp(): void
     {
-        $this->image = Mockery::mock(ImageInterface::class);
+        $this->image = \Mockery::mock(ImageInterface::class);
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testPixels()

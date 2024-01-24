@@ -71,9 +71,9 @@ class Border extends BaseManipulator
     /**
      * Get border width.
      *
-     * @param ImageInterface  $image The source image.
-     * @param float  $dpr   The device pixel ratio.
-     * @param string $width The border width.
+     * @param ImageInterface $image The source image.
+     * @param float          $dpr   The device pixel ratio.
+     * @param string         $width The border width.
      *
      * @return float|null The resolved border width.
      */
@@ -131,9 +131,9 @@ class Border extends BaseManipulator
     /**
      * Run the overlay border method.
      *
-     * @param ImageInterface  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -153,9 +153,9 @@ class Border extends BaseManipulator
     /**
      * Run the shrink border method.
      *
-     * @param ImageInterface  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
      * @return ImageInterface The manipulated image.
      */
@@ -178,9 +178,9 @@ class Border extends BaseManipulator
     /**
      * Run the expand border method.
      *
-     * @param ImageInterface  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
      * @return ImageInterface The manipulated image.
      */

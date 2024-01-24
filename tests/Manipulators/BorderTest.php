@@ -3,7 +3,6 @@
 namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class BorderTest extends TestCase
@@ -12,7 +11,7 @@ class BorderTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -22,7 +21,7 @@ class BorderTest extends TestCase
 
     public function testGetBorder()
     {
-        $image = Mockery::mock(ImageInterface::class);
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -36,7 +35,7 @@ class BorderTest extends TestCase
 
     public function testGetInvalidBorder()
     {
-        $image = Mockery::mock(ImageInterface::class);
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -47,7 +46,7 @@ class BorderTest extends TestCase
 
     public function testGetWidth()
     {
-        $image = Mockery::mock(ImageInterface::class);
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -83,7 +82,7 @@ class BorderTest extends TestCase
 
     public function testRunWithNoBorder()
     {
-        $image = Mockery::mock(ImageInterface::class);
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -92,10 +91,10 @@ class BorderTest extends TestCase
 
     public function testRunOverlay()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
-            $mock->shouldReceive('rectangle')->with(5, 5, 95, 95, Mockery::on(function ($closure) {
+            $mock->shouldReceive('rectangle')->with(5, 5, 95, 95, \Mockery::on(function ($closure) {
                 return true;
             }))->andReturn($mock)->once();
         });
@@ -108,7 +107,7 @@ class BorderTest extends TestCase
 
     public function testRunShrink()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
             $mock->shouldReceive('resize')->with(80, 80)->andReturn($mock)->once();
@@ -123,7 +122,7 @@ class BorderTest extends TestCase
 
     public function testRunExpand()
     {
-        $image = Mockery::mock(ImageInterface::class, function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
         });
 

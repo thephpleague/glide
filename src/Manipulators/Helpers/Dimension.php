@@ -24,7 +24,7 @@ class Dimension
      * Create dimension helper instance.
      *
      * @param ImageInterface $image The source image.
-     * @param float $dpr   The device pixel ratio.
+     * @param float          $dpr   The device pixel ratio.
      */
     public function __construct(ImageInterface $image, $dpr = 1)
     {
