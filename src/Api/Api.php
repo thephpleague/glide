@@ -3,6 +3,7 @@
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
+use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface
@@ -17,7 +18,7 @@ class Api implements ApiInterface
     /**
      * Collection of manipulators.
      *
-     * @var array
+     * @var ManipulatorInterface[]
      */
     protected $manipulators;
 
@@ -58,7 +59,7 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      *
-     * @param array $manipulators Collection of manipulators.
+     * @param ManipulatorInterface[] $manipulators Collection of manipulators.
      *
      * @return void
      */
@@ -101,6 +102,37 @@ class Api implements ApiInterface
             $image = $manipulator->run($image);
         }
 
-        return $image->getEncoded();
+        $encode = new Encode();
+        $encode->setParams($params);
+
+        switch ($encode->fm) {
+            case 'avif':
+                $encodedImage = $image->toAvif($encode->getQuality());
+                break;
+
+            case 'gif':
+                $encodedImage = $image->toGif($encode->getQuality());
+                break;
+
+            case 'png':
+                $encodedImage = $image->toPng($encode->getQuality());
+                break;
+
+            case 'webp':
+                $encodedImage = $image->toWebp($encode->getQuality());
+                break;
+
+            case 'tiff':
+                $encodedImage = $image->toTiff($encode->getQuality());
+                break;
+
+            case 'jpg':
+            case 'pjpg':
+            default:
+                $encodedImage = $image->toJpeg($encode->getQuality());
+                break;
+        }
+
+        return $encodedImage->toString();
     }
 }

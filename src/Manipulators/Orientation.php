@@ -21,7 +21,8 @@ class Orientation extends BaseManipulator
         $orientation = $this->getOrientation();
 
         if ('auto' === $orientation) {
-            return $image->orientate();
+            // TODO: orientate() has been removed
+            // return $image->orientate();
         }
 
         return $image->rotate((float) $orientation);

@@ -19,17 +19,22 @@ class Encode extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
+        // TODO: Encoding was moved to Api::run()
+        return $image;
+
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
 
         if (in_array($format, ['jpg', 'pjpg'], true)) {
-            $image = $image->getDriver()
-                           ->newImage($image->width(), $image->height(), '#fff')
-                           ->insert($image, 'top-left', 0, 0);
+            $image = $image->driver()
+                           ->createImage($image->width(), $image->height())
+                           ->fill('#fff')
+                           ->place($image, 'top-left', 0, 0);
         }
 
         if ('pjpg' === $format) {
-            $image->interlace();
+            // TODO: interlace() was removed
+            // $image->interlace();
             $format = 'jpg';
         }
 
@@ -49,7 +54,9 @@ class Encode extends BaseManipulator
             return $this->fm;
         }
 
-        return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
+        // TODO: Image::mime() was removed
+        // return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
+        return 'jpg';
     }
 
     /**
