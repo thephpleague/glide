@@ -3,7 +3,6 @@
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
-use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface

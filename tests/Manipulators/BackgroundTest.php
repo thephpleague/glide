@@ -30,9 +30,9 @@ class BackgroundTest extends TestCase
             $mock->shouldReceive('height')->andReturn(100)->once();
             $mock->shouldReceive('origin')->andReturn($originMock)->once();
 
-            $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) use ($originMock) {
-                $mock->shouldReceive('createImage')->with(100, 100)->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) use ($originMock) {
-                    $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) use ($originMock) {
+            $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
+                $mock->shouldReceive('createImage')->with(100, 100)->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
+                    $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
                         $mock->shouldReceive('setOrigin')->withArgs(function ($arg1) {
                             return $arg1 instanceof Origin;
                         })->andReturn($mock)->once();
