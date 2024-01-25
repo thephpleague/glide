@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Geometry\Factories\RectangleFactory;
 use Intervention\Image\Interfaces\ImageInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -95,6 +96,13 @@ class BorderTest extends TestCase
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
             $mock->shouldReceive('drawRectangle')->with(5, 5, \Mockery::on(function ($closure) {
+                $mock2 = \Mockery::mock(RectangleFactory::class, function ($mock2) {
+                    $mock2->shouldReceive('size')->once();
+                    $mock2->shouldReceive('border')->once();
+                });
+
+                $closure($mock2);
+
                 return true;
             }))->andReturn($mock)->once();
         });
