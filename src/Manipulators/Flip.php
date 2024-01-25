@@ -23,11 +23,11 @@ class Flip extends BaseManipulator
                 return $image->flip()->flop();
             }
 
-            if ('h' === $flip) {
+            if ('v' === $flip) {
                 return $image->flip();
             }
 
-            if ('v' === $flip) {
+            if ('h' === $flip) {
                 return $image->flop();
             }
         }
