@@ -122,11 +122,7 @@ class Watermark extends BaseManipulator
             ]);
             $watermark = $size->run($watermark);
 
-            if ($markalpha < 100) {
-                $watermark->opacity($markalpha);
-            }
-
-            $image->place($watermark, $markpos, intval($markx), intval($marky));
+            $image->place($watermark, $markpos, intval($markx), intval($marky), $markalpha);
         }
 
         return $image;
