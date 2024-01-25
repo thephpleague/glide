@@ -20,10 +20,16 @@ class Flip extends BaseManipulator
     {
         if ($flip = $this->getFlip()) {
             if ('both' === $flip) {
-                return $image->flip('h')->flip('v');
+                return $image->flip()->flop();
             }
 
-            return $image->flip($flip);
+            if ('h' === $flip) {
+                return $image->flip();
+            }
+
+            if ('v' === $flip) {
+                return $image->flop();
+            }
         }
 
         return $image;
