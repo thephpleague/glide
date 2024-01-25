@@ -165,7 +165,7 @@ class Watermark extends BaseManipulator
             throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
 
-        if (! $mark instanceof ImageInterface) {
+        if (!$mark instanceof ImageInterface) {
             return null;
         }
 
