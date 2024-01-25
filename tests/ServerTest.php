@@ -514,12 +514,12 @@ class ServerTest extends TestCase
 
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+            $mock->shouldReceive('write')->withArgs(['image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content'])->once();
         }));
 
         $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $tmpDirPattern = Matchers::matchesPattern('~^'.sys_get_temp_dir().'.*~');
-            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
+            $tmpDirPattern = Matchers::matchesPattern('~\/?'.sys_get_temp_dir().'.*~');
+            $mock->shouldReceive('run')->withArgs([$tmpDirPattern, []])->andReturn('content')->once();
         }));
 
         $this->assertEquals(

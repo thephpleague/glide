@@ -2,6 +2,9 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 
 /**
@@ -19,26 +22,33 @@ class Encode extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        // TODO: Encoding was moved to Api::run()
-        return $image;
-
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
+        $driver = $image->driver();
 
         if (in_array($format, ['jpg', 'pjpg'], true)) {
-            $image = $image->driver()
-                           ->createImage($image->width(), $image->height())
-                           ->fill('#fff')
-                           ->place($image, 'top-left', 0, 0);
+            $image = (new ImageManager($driver))
+                ->create($image->width(), $image->height())
+                ->fill('ffffff')
+                ->place($image, 'top-left', 0, 0);
         }
 
-        if ('pjpg' === $format) {
-            // TODO: interlace() was removed
-            // $image->interlace();
-            $format = 'jpg';
+        if (in_array($format, ['png', 'pjpg'], true)) {
+            $i = $image->core()->native();
+            if ($driver instanceof ImagickDriver) {
+                $i->setInterlaceScheme(3); // 3 = Imagick::INTERLACE_PLANE constant
+            } elseif ($driver instanceof GdDriver) {
+                imageinterlace($i, true);
+            }
+
+            if ('pjpg' === $format) {
+                $format = 'jpg';
+            }
         }
 
-        return $image->encode($format, $quality);
+        return (new ImageManager($driver))->read(
+            $image->encodeByExtension($format, $quality)->toFilePointer()
+        );
     }
 
     /**
@@ -54,9 +64,7 @@ class Encode extends BaseManipulator
             return $this->fm;
         }
 
-        // TODO: Image::mime() was removed
-        // return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
-        return 'jpg';
+        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**

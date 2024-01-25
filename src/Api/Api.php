@@ -102,37 +102,6 @@ class Api implements ApiInterface
             $image = $manipulator->run($image);
         }
 
-        $encode = new Encode();
-        $encode->setParams($params);
-
-        switch ($encode->fm) {
-            case 'avif':
-                $encodedImage = $image->toAvif($encode->getQuality());
-                break;
-
-            case 'gif':
-                $encodedImage = $image->toGif($encode->getQuality());
-                break;
-
-            case 'png':
-                $encodedImage = $image->toPng($encode->getQuality());
-                break;
-
-            case 'webp':
-                $encodedImage = $image->toWebp($encode->getQuality());
-                break;
-
-            case 'tiff':
-                $encodedImage = $image->toTiff($encode->getQuality());
-                break;
-
-            case 'jpg':
-            case 'pjpg':
-            default:
-                $encodedImage = $image->toJpeg($encode->getQuality());
-                break;
-        }
-
-        return $encodedImage->toString();
+        return $image->encodeByMediaType()->toString();
     }
 }

@@ -2,7 +2,9 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Origin;
 use League\Glide\Manipulators\Helpers\Color;
 
 /**
@@ -26,10 +28,14 @@ class Background extends BaseManipulator
         $color = (new Color($this->bg))->formatted();
 
         if ($color) {
-            $new = $image->driver()->createImage($image->width(), $image->height())->fill($color);
-            // TODO: Find a way to communicate the mime
-            // $new->mime = $image->mime;
-            $image = $new->place($image, 'top-left', 0, 0);
+            $new = $image->driver()->createImage($image->width(), $image->height())
+                ->fill($color)
+                ->place($image, 'top-left', 0, 0)
+                ->setOrigin(
+                    new Origin($image->origin()->mediaType())
+                );
+
+            $image = $new;
         }
 
         return $image;
