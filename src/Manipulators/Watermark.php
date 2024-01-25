@@ -159,11 +159,17 @@ class Watermark extends BaseManipulator
             if ($this->watermarks->fileExists($path)) {
                 $source = $this->watermarks->read($path);
 
-                return $image->driver()->handleInput($source);
+                $mark = $image->driver()->handleInput($source);
             }
         } catch (FilesystemV2Exception $exception) {
             throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
+
+        if (! $mark instanceof ImageInterface) {
+            return null;
+        }
+
+        return $mark;
     }
 
     /**
