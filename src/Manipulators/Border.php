@@ -148,7 +148,7 @@ class Border extends BaseManipulator
                     (int) round($image->width() - $width),
                     (int) round($image->height() - $width),
                 );
-                $rectangle->border($color, $width);
+                $rectangle->border($color, intval($width));
             }
         );
     }
