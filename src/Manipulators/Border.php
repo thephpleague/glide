@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Geometry\Factories\RectangleFactory;
 use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Manipulators\Helpers\Color;
 use League\Glide\Manipulators\Helpers\Dimension;
@@ -139,13 +140,15 @@ class Border extends BaseManipulator
      */
     public function runOverlay(ImageInterface $image, $width, $color): ImageInterface
     {
-        return $image->rectangle(
+        return $image->drawRectangle(
             (int) round($width / 2),
             (int) round($width / 2),
-            (int) round($image->width() - ($width / 2)),
-            (int) round($image->height() - ($width / 2)),
-            function ($draw) use ($width, $color) {
-                $draw->border($width, $color);
+            function (RectangleFactory $rectangle) use ($image, $width, $color) {
+                $rectangle->size(
+                    (int) round($image->width() - $width),
+                    (int) round($image->height() - $width),
+                );
+                $rectangle->border($color, $width);
             }
         );
     }
@@ -166,12 +169,11 @@ class Border extends BaseManipulator
                 (int) round($image->width() - ($width * 2)),
                 (int) round($image->height() - ($width * 2))
             )
-            ->resizeCanvas(
+            ->resizeCanvasRelative(
                 (int) round($width * 2),
                 (int) round($width * 2),
+                $color,
                 'center',
-                true,
-                $color
             );
     }
 
@@ -186,12 +188,11 @@ class Border extends BaseManipulator
      */
     public function runExpand(ImageInterface $image, $width, $color): ImageInterface
     {
-        return $image->resizeCanvas(
+        return $image->resizeCanvasRelative(
             (int) round($width * 2),
             (int) round($width * 2),
+            $color,
             'center',
-            true,
-            $color
         );
     }
 }
