@@ -352,7 +352,7 @@ class Size extends BaseManipulator
 
         $zoom = $this->getCrop()[2];
 
-        $image->scale((int) ($resize_width * $zoom), (int) ($resize_height * $zoom));
+        $image->scale((int) round($resize_width * $zoom), (int) round($resize_height * $zoom));
 
         list($offset_x, $offset_y) = $this->resolveCropOffset($image, $width, $height);
 
