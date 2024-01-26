@@ -278,8 +278,7 @@ class ServerFactory
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?: ''),
             new Background(),
             new Border(),
-            // TODO: Encoding was moved to Api::run()
-            // new Encode(),
+            new Encode(),
         ];
     }
 
