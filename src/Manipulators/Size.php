@@ -278,7 +278,7 @@ class Size extends BaseManipulator
      */
     public function runContainResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        return $image->resize($width, $height);
+        return $image->scale($width, $height);
     }
 
     /**

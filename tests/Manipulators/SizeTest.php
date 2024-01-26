@@ -8,14 +8,10 @@ use PHPUnit\Framework\TestCase;
 class SizeTest extends TestCase
 {
     private $manipulator;
-    private $callback;
 
     public function setUp(): void
     {
         $this->manipulator = new Size();
-        $this->callback = \Mockery::on(function () {
-            return true;
-        });
     }
 
     public function tearDown(): void
@@ -44,7 +40,7 @@ class SizeTest extends TestCase
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn('200')->twice();
             $mock->shouldReceive('height')->andReturn('200')->once();
-            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
+            $mock->shouldReceive('scale')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -152,7 +148,7 @@ class SizeTest extends TestCase
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('crop')->andReturn($mock)->once();
             $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->times(5);
-            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
+            $mock->shouldReceive('scale')->with(100, 100)->andReturn($mock)->once();
             $mock->shouldReceive('resizeCanvas')->with(100, 100, 'ffffff', 'center')->andReturn($mock)->times(2);
         });
 
@@ -195,7 +191,7 @@ class SizeTest extends TestCase
     public function testRunContainResize()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('resize')->with(100, 100)->andReturn($mock)->once();
+            $mock->shouldReceive('scale')->with(100, 100)->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(

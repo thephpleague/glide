@@ -57,7 +57,7 @@ class WatermarkTest extends TestCase
             $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
                 $mock->shouldReceive('handleInput')->with('content')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
                     $mock->shouldReceive('width')->andReturn(0)->once();
-                    $mock->shouldReceive('resize')->once();
+                    $mock->shouldReceive('scale')->once();
                 }))->once();
             }))->once();
         });
