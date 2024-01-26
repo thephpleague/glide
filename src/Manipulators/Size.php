@@ -292,7 +292,7 @@ class Size extends BaseManipulator
      */
     public function runMaxResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        return $image->resize($width, $height);
+        return $image->scaleDown($width, $height);
     }
 
     /**
