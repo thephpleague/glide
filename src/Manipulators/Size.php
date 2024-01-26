@@ -306,9 +306,7 @@ class Size extends BaseManipulator
      */
     public function runFillResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        $image = $this->runMaxResize($image, $width, $height);
-
-        return $image->resizeCanvas($width, $height, 'ffffff', 'center');
+        return $image->pad($width, $height);
     }
 
     /**
@@ -322,9 +320,7 @@ class Size extends BaseManipulator
      */
     public function runFillMaxResize(ImageInterface $image, $width, $height): ImageInterface
     {
-        $image = $image->scale($width, $height);
-
-        return $image->resizeCanvas($width, $height, 'ffffff', 'center');
+        return $image->contain($width, $height);
     }
 
     /**
