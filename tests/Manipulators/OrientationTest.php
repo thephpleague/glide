@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Mockery;
+use Intervention\Image\Interfaces\ImageInterface;
 use PHPUnit\Framework\TestCase;
 
 class OrientationTest extends TestCase
@@ -16,7 +16,7 @@ class OrientationTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -26,18 +26,20 @@ class OrientationTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('orientate')->andReturn($mock)->once();
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('exif')->withArgs(['Orientation'])->andReturn(null)->twice();
+
+            $mock->shouldReceive('rotate')->andReturn($mock)->with('0')->once();
             $mock->shouldReceive('rotate')->andReturn($mock)->with('90')->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['or' => 'auto'])->run($image)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['or' => '90'])->run($image)
         );
     }

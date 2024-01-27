@@ -3,7 +3,6 @@
 namespace League\Glide;
 
 use Intervention\Image\ImageManager;
-use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\Local\LocalFilesystemAdapter;
@@ -82,7 +81,7 @@ class ServerFactory
     public function getSource()
     {
         if (!isset($this->config['source'])) {
-            throw new InvalidArgumentException('A "source" file system must be set.');
+            throw new \InvalidArgumentException('A "source" file system must be set.');
         }
 
         if (is_string($this->config['source'])) {
@@ -114,7 +113,7 @@ class ServerFactory
     public function getCache()
     {
         if (!isset($this->config['cache'])) {
-            throw new InvalidArgumentException('A "cache" file system must be set.');
+            throw new \InvalidArgumentException('A "cache" file system must be set.');
         }
 
         if (is_string($this->config['cache'])) {
@@ -246,9 +245,15 @@ class ServerFactory
             $driver = $this->config['driver'];
         }
 
-        return new ImageManager([
-            'driver' => $driver,
-        ]);
+        if ('gd' === $driver) {
+            $manager = ImageManager::gd();
+        } elseif ('imagick' === $driver) {
+            $manager = ImageManager::imagick();
+        } else {
+            $manager = ImageManager::withDriver($driver);
+        }
+
+        return $manager;
     }
 
     /**

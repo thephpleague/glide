@@ -3,7 +3,6 @@
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
-use InvalidArgumentException;
 use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface
@@ -18,7 +17,7 @@ class Api implements ApiInterface
     /**
      * Collection of manipulators.
      *
-     * @var array
+     * @var ManipulatorInterface[]
      */
     protected $manipulators;
 
@@ -59,7 +58,7 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      *
-     * @param array $manipulators Collection of manipulators.
+     * @param ManipulatorInterface[] $manipulators Collection of manipulators.
      *
      * @return void
      */
@@ -67,7 +66,7 @@ class Api implements ApiInterface
     {
         foreach ($manipulators as $manipulator) {
             if (!($manipulator instanceof ManipulatorInterface)) {
-                throw new InvalidArgumentException('Not a valid manipulator.');
+                throw new \InvalidArgumentException('Not a valid manipulator.');
             }
         }
 
@@ -94,7 +93,7 @@ class Api implements ApiInterface
      */
     public function run($source, array $params)
     {
-        $image = $this->imageManager->make($source);
+        $image = $this->imageManager->read($source);
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);
@@ -102,6 +101,6 @@ class Api implements ApiInterface
             $image = $manipulator->run($image);
         }
 
-        return $image->getEncoded();
+        return $image->encodeByMediaType()->toString();
     }
 }

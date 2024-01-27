@@ -2,8 +2,6 @@
 
 namespace League\Glide;
 
-use Closure;
-use InvalidArgumentException;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Api\ApiInterface;
@@ -292,12 +290,12 @@ class Server
      *
      * @return void
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function setTempDir($tempDir)
     {
         if (!$tempDir || !is_dir($tempDir)) {
-            throw new InvalidArgumentException(sprintf('Invalid temp dir provided: "%s" does not exist.', $tempDir));
+            throw new \InvalidArgumentException(sprintf('Invalid temp dir provided: "%s" does not exist.', $tempDir));
         }
 
         $this->tempDir = rtrim($tempDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
@@ -352,7 +350,7 @@ class Server
      *
      * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
      */
-    public function setCachePathCallable(?Closure $cachePathCallable)
+    public function setCachePathCallable(?\Closure $cachePathCallable)
     {
         $this->cachePathCallable = $cachePathCallable;
     }
@@ -379,7 +377,7 @@ class Server
     {
         $customCallable = $this->getCachePathCallable();
         if (null !== $customCallable) {
-            $boundCallable = Closure::bind($customCallable, $this, static::class);
+            $boundCallable = \Closure::bind($customCallable, $this, static::class);
 
             return $boundCallable($path, $params);
         }
@@ -442,7 +440,7 @@ class Server
     public function deleteCache($path)
     {
         if (!$this->groupCacheInFolders) {
-            throw new InvalidArgumentException('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
+            throw new \InvalidArgumentException('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
         }
 
         try {
@@ -574,12 +572,12 @@ class Server
      *
      * @return mixed Image response.
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function getImageResponse($path, array $params)
     {
         if (is_null($this->responseFactory)) {
-            throw new InvalidArgumentException('Unable to get image response, no response factory defined.');
+            throw new \InvalidArgumentException('Unable to get image response, no response factory defined.');
         }
 
         $path = $this->makeImage($path, $params);
@@ -616,9 +614,9 @@ class Server
      * @param string $path   Image path.
      * @param array  $params Image manipulation params.
      *
-     * @throws InvalidArgumentException
-     *
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function outputImage($path, array $params)
     {
@@ -627,7 +625,7 @@ class Server
         try {
             header('Content-Type:'.$this->cache->mimeType($path));
             header('Content-Length:'.$this->cache->fileSize($path));
-            header('Cache-Control:'.'max-age=31536000, public');
+            header('Cache-Control:max-age=31536000, public');
             header('Expires:'.date_create('+1 years')->format('D, d M Y H:i:s').' GMT');
 
             $stream = $this->cache->readStream($path);

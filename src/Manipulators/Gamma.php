@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
 /**
  * @property string|null $gam
@@ -12,11 +12,11 @@ class Gamma extends BaseManipulator
     /**
      * Perform gamma image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $gamma = $this->getGamma();
 

@@ -2,7 +2,8 @@
 
 namespace League\Glide\Manipulators;
 
-use Mockery;
+use Intervention\Image\Geometry\Factories\RectangleFactory;
+use Intervention\Image\Interfaces\ImageInterface;
 use PHPUnit\Framework\TestCase;
 
 class BorderTest extends TestCase
@@ -11,7 +12,7 @@ class BorderTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -21,7 +22,7 @@ class BorderTest extends TestCase
 
     public function testGetBorder()
     {
-        $image = Mockery::mock('Intervention\Image\Image');
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -35,7 +36,7 @@ class BorderTest extends TestCase
 
     public function testGetInvalidBorder()
     {
-        $image = Mockery::mock('Intervention\Image\Image');
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -46,7 +47,7 @@ class BorderTest extends TestCase
 
     public function testGetWidth()
     {
-        $image = Mockery::mock('Intervention\Image\Image');
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
@@ -82,19 +83,26 @@ class BorderTest extends TestCase
 
     public function testRunWithNoBorder()
     {
-        $image = Mockery::mock('Intervention\Image\Image');
+        $image = \Mockery::mock(ImageInterface::class);
 
         $border = new Border();
 
-        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->run($image));
     }
 
     public function testRunOverlay()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
-            $mock->shouldReceive('rectangle')->with(5, 5, 95, 95, Mockery::on(function ($closure) {
+            $mock->shouldReceive('drawRectangle')->with(5, 5, \Mockery::on(function ($closure) {
+                $mock2 = \Mockery::mock(RectangleFactory::class, function ($mock2) {
+                    $mock2->shouldReceive('size')->once();
+                    $mock2->shouldReceive('border')->once();
+                });
+
+                $closure($mock2);
+
                 return true;
             }))->andReturn($mock)->once();
         });
@@ -102,33 +110,33 @@ class BorderTest extends TestCase
         $border = new Border();
         $border->setParams(['border' => '10,5000,overlay']);
 
-        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->run($image));
     }
 
     public function testRunShrink()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
             $mock->shouldReceive('resize')->with(80, 80)->andReturn($mock)->once();
-            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+            $mock->shouldReceive('resizeCanvasRelative')->with(20, 20, 'rgba(0, 0, 0, 0.5)', 'center')->andReturn($mock)->once();
         });
 
         $border = new Border();
         $border->setParams(['border' => '10,5000,shrink']);
 
-        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->run($image));
     }
 
     public function testRunExpand()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('resizeCanvas')->with(20, 20, 'center', true, 'rgba(0, 0, 0, 0.5)')->andReturn($mock)->once();
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('resizeCanvasRelative')->with(20, 20, 'rgba(0, 0, 0, 0.5)', 'center')->andReturn($mock)->once();
         });
 
         $border = new Border();
         $border->setParams(['border' => '10,5000,expand']);
 
-        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->run($image));
     }
 }

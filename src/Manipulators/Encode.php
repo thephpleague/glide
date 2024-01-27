@@ -2,7 +2,10 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\ImageInterface;
 
 /**
  * @property string $fm
@@ -13,43 +16,55 @@ class Encode extends BaseManipulator
     /**
      * Perform output image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
+        $driver = $image->driver();
 
         if (in_array($format, ['jpg', 'pjpg'], true)) {
-            $image = $image->getDriver()
-                           ->newImage($image->width(), $image->height(), '#fff')
-                           ->insert($image, 'top-left', 0, 0);
+            $image = (new ImageManager($driver))
+                ->create($image->width(), $image->height())
+                ->fill('ffffff')
+                ->place($image, 'top-left', 0, 0);
         }
 
-        if ('pjpg' === $format) {
-            $image->interlace();
-            $format = 'jpg';
+        if (in_array($format, ['png', 'pjpg'], true)) {
+            $i = $image->core()->native();
+            if ($driver instanceof ImagickDriver) {
+                $i->setInterlaceScheme(3); // 3 = Imagick::INTERLACE_PLANE constant
+            } elseif ($driver instanceof GdDriver) {
+                imageinterlace($i, true);
+            }
+
+            if ('pjpg' === $format) {
+                $format = 'jpg';
+            }
         }
 
-        return $image->encode($format, $quality);
+        return (new ImageManager($driver))->read(
+            $image->encodeByExtension($format, $quality)->toFilePointer()
+        );
     }
 
     /**
      * Resolve format.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
      * @return string The resolved format.
      */
-    public function getFormat(Image $image)
+    public function getFormat(ImageInterface $image)
     {
         if (array_key_exists($this->fm, static::supportedFormats())) {
             return $this->fm;
         }
 
-        return array_search($image->mime(), static::supportedFormats(), true) ?: 'jpg';
+        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**

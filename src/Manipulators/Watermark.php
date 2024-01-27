@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
@@ -94,11 +94,11 @@ class Watermark extends BaseManipulator
     /**
      * Perform watermark image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         if ($watermark = $this->getImage($image)) {
             $markw = $this->getDimension($image, 'markw');
@@ -122,11 +122,7 @@ class Watermark extends BaseManipulator
             ]);
             $watermark = $size->run($watermark);
 
-            if ($markalpha < 100) {
-                $watermark->opacity($markalpha);
-            }
-
-            $image->insert($watermark, $markpos, intval($markx), intval($marky));
+            $image->place($watermark, $markpos, intval($markx), intval($marky), $markalpha);
         }
 
         return $image;
@@ -135,22 +131,22 @@ class Watermark extends BaseManipulator
     /**
      * Get the watermark image.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image|null The watermark image.
+     * @return ImageInterface|null The watermark image.
      */
-    public function getImage(Image $image)
+    public function getImage(ImageInterface $image): ?ImageInterface
     {
         if (is_null($this->watermarks)) {
-            return;
+            return null;
         }
 
         if (!is_string($this->mark)) {
-            return;
+            return null;
         }
 
         if ('' === $this->mark) {
-            return;
+            return null;
         }
 
         $path = $this->mark;
@@ -163,22 +159,28 @@ class Watermark extends BaseManipulator
             if ($this->watermarks->fileExists($path)) {
                 $source = $this->watermarks->read($path);
 
-                return $image->getDriver()->init($source);
+                $mark = $image->driver()->handleInput($source);
             }
         } catch (FilesystemV2Exception $exception) {
             throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
+
+        if (!$mark instanceof ImageInterface) {
+            return null;
+        }
+
+        return $mark;
     }
 
     /**
      * Get a dimension.
      *
-     * @param Image  $image The source image.
-     * @param string $field The requested field.
+     * @param ImageInterface $image The source image.
+     * @param string         $field The requested field.
      *
      * @return float|null The dimension.
      */
-    public function getDimension(Image $image, $field)
+    public function getDimension(ImageInterface $image, $field)
     {
         if ($this->{$field}) {
             return (new Dimension($image, $this->getDpr()))->get($this->{$field});

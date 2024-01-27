@@ -2,7 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
 abstract class BaseManipulator implements ManipulatorInterface
 {
@@ -44,7 +44,7 @@ abstract class BaseManipulator implements ManipulatorInterface
     /**
      * Perform the image manipulation.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    abstract public function run(Image $image);
+    abstract public function run(ImageInterface $image): ImageInterface;
 }

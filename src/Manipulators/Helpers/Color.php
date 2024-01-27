@@ -7,22 +7,22 @@ class Color
     /**
      * 3 digit color code expression.
      */
-    const SHORT_RGB = '/^[0-9a-f]{3}$/i';
+    public const SHORT_RGB = '/^[0-9a-f]{3}$/i';
 
     /**
      * 4 digit color code expression.
      */
-    const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
+    public const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
 
     /**
      * 6 digit color code expression.
      */
-    const LONG_RGB = '/^[0-9a-f]{6}$/i';
+    public const LONG_RGB = '/^[0-9a-f]{6}$/i';
 
     /**
      * 8 digit color code expression.
      */
-    const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
+    public const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
 
     /**
      * The red value.

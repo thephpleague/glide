@@ -2,7 +2,8 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Geometry\Factories\RectangleFactory;
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Manipulators\Helpers\Color;
 use League\Glide\Manipulators\Helpers\Dimension;
 
@@ -15,11 +16,11 @@ class Border extends BaseManipulator
     /**
      * Perform border image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         if ($border = $this->getBorder($image)) {
             list($width, $color, $method) = $border;
@@ -43,39 +44,41 @@ class Border extends BaseManipulator
     /**
      * Resolve border amount.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
      * @return (float|string)[]|null The resolved border amount.
      *
      * @psalm-return array{0: float, 1: string, 2: string}|null
      */
-    public function getBorder(Image $image)
+    public function getBorder(ImageInterface $image): ?array
     {
         if (!$this->border) {
-            return;
+            return null;
         }
 
         $values = explode(',', $this->border);
 
         $width = $this->getWidth($image, $this->getDpr(), isset($values[0]) ? $values[0] : null);
-        $color = $this->getColor(isset($values[1]) ? $values[1] : null);
-        $method = $this->getMethod(isset($values[2]) ? $values[2] : null);
+        $color = $this->getColor(isset($values[1]) ? $values[1] : 'ffffff');
+        $method = $this->getMethod(isset($values[2]) ? $values[2] : 'overlay');
 
         if ($width) {
             return [$width, $color, $method];
         }
+
+        return null;
     }
 
     /**
      * Get border width.
      *
-     * @param Image  $image The source image.
-     * @param float  $dpr   The device pixel ratio.
-     * @param string $width The border width.
+     * @param ImageInterface $image The source image.
+     * @param float          $dpr   The device pixel ratio.
+     * @param string         $width The border width.
      *
      * @return float|null The resolved border width.
      */
-    public function getWidth(Image $image, $dpr, $width)
+    public function getWidth(ImageInterface $image, $dpr, $width): ?float
     {
         return (new Dimension($image, $dpr))->get($width);
     }
@@ -87,7 +90,7 @@ class Border extends BaseManipulator
      *
      * @return string The formatted color.
      */
-    public function getColor($color)
+    public function getColor(string $color)
     {
         return (new Color($color))->formatted();
     }
@@ -99,7 +102,7 @@ class Border extends BaseManipulator
      *
      * @return string The resolved border method.
      */
-    public function getMethod($method)
+    public function getMethod(string $method)
     {
         if (!in_array($method, ['expand', 'shrink', 'overlay'], true)) {
             return 'overlay';
@@ -129,21 +132,23 @@ class Border extends BaseManipulator
     /**
      * Run the overlay border method.
      *
-     * @param Image  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runOverlay(Image $image, $width, $color)
+    public function runOverlay(ImageInterface $image, $width, $color): ImageInterface
     {
-        return $image->rectangle(
+        return $image->drawRectangle(
             (int) round($width / 2),
             (int) round($width / 2),
-            (int) round($image->width() - ($width / 2)),
-            (int) round($image->height() - ($width / 2)),
-            function ($draw) use ($width, $color) {
-                $draw->border($width, $color);
+            function (RectangleFactory $rectangle) use ($image, $width, $color) {
+                $rectangle->size(
+                    (int) round($image->width() - $width),
+                    (int) round($image->height() - $width),
+                );
+                $rectangle->border($color, intval($width));
             }
         );
     }
@@ -151,45 +156,43 @@ class Border extends BaseManipulator
     /**
      * Run the shrink border method.
      *
-     * @param Image  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runShrink(Image $image, $width, $color)
+    public function runShrink(ImageInterface $image, $width, $color): ImageInterface
     {
         return $image
             ->resize(
                 (int) round($image->width() - ($width * 2)),
                 (int) round($image->height() - ($width * 2))
             )
-            ->resizeCanvas(
+            ->resizeCanvasRelative(
                 (int) round($width * 2),
                 (int) round($width * 2),
+                $color,
                 'center',
-                true,
-                $color
             );
     }
 
     /**
      * Run the expand border method.
      *
-     * @param Image  $image The source image.
-     * @param float  $width The border width.
-     * @param string $color The border color.
+     * @param ImageInterface $image The source image.
+     * @param float          $width The border width.
+     * @param string         $color The border color.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runExpand(Image $image, $width, $color)
+    public function runExpand(ImageInterface $image, $width, $color): ImageInterface
     {
-        return $image->resizeCanvas(
+        return $image->resizeCanvasRelative(
             (int) round($width * 2),
             (int) round($width * 2),
+            $color,
             'center',
-            true,
-            $color
         );
     }
 }
