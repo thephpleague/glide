@@ -181,6 +181,8 @@ class ServerTest extends TestCase
         $phpUnit = $this;
         $this->server->setCachePathCallable(function () use ($phpUnit, $server) {
             $phpUnit::assertEquals($server, $this);
+
+            return '';
         });
 
         $this->server->getCachePath('');
@@ -198,6 +200,8 @@ class ServerTest extends TestCase
             $phpUnit::assertCount(2, $arguments);
             $phpUnit::assertEquals($arguments[0], $pathArgument);
             $phpUnit::assertEquals($arguments[1], $optionsArgument);
+
+            return '';
         });
 
         $this->server->getCachePath($pathArgument, $optionsArgument);

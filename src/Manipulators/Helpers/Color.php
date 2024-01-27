@@ -26,41 +26,34 @@ class Color
 
     /**
      * The red value.
-     *
-     * @var int
      */
-    protected $red;
+    protected int $red;
 
     /**
      * The green value.
-     *
-     * @var int
      */
-    protected $green;
+    protected int $green;
 
     /**
      * The blue value.
-     *
-     * @var int
      */
-    protected $blue;
+    protected int $blue;
 
     /**
      * The alpha value.
-     *
-     * @var int|float
      */
-    protected $alpha;
+    protected int|float $alpha;
 
     /**
      * Create color helper instance.
      *
      * @param string $value The color value.
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
         do {
-            if ($hex = $this->getHexFromColorName($value)) {
+            $hex = $this->getHexFromColorName($value);
+            if (null !== $hex) {
                 $rgba = $this->parseHex($hex);
                 $alpha = 1;
                 break;
@@ -107,7 +100,7 @@ class Color
      *
      * @return array The RGB values.
      */
-    public function parseHex($hex)
+    public function parseHex(string $hex): array
     {
         return array_map('hexdec', str_split($hex, 2));
     }
@@ -129,7 +122,7 @@ class Color
      *
      * @return string|null The hex code.
      */
-    public function getHexFromColorName($name)
+    public function getHexFromColorName(string $name): ?string
     {
         $colors = [
             'aliceblue' => 'F0F8FF',
@@ -280,5 +273,7 @@ class Color
         if (array_key_exists($name, $colors)) {
             return $colors[$name];
         }
+
+        return null;
     }
 }

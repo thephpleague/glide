@@ -28,10 +28,8 @@ class ServerFactory
 {
     /**
      * Configuration parameters.
-     *
-     * @var array
      */
-    protected $config;
+    protected array $config = [];
 
     /**
      * Create ServerFactory instance.
@@ -48,7 +46,7 @@ class ServerFactory
      *
      * @return Server Configured Glide server.
      */
-    public function getServer()
+    public function getServer(): Server
     {
         $server = new Server(
             $this->getSource(),
@@ -56,18 +54,19 @@ class ServerFactory
             $this->getApi()
         );
 
-        $server->setSourcePathPrefix($this->getSourcePathPrefix() ?: '');
-        $server->setCachePathPrefix($this->getCachePathPrefix() ?: '');
+        $server->setSourcePathPrefix($this->getSourcePathPrefix() ?? '');
+        $server->setCachePathPrefix($this->getCachePathPrefix() ?? '');
         $server->setGroupCacheInFolders($this->getGroupCacheInFolders());
         $server->setCacheWithFileExtensions($this->getCacheWithFileExtensions());
         $server->setDefaults($this->getDefaults());
         $server->setPresets($this->getPresets());
-        $server->setBaseUrl($this->getBaseUrl() ?: '');
+        $server->setBaseUrl($this->getBaseUrl() ?? '');
         $server->setResponseFactory($this->getResponseFactory());
         $server->setCachePathCallable($this->getCachePathCallable());
 
-        if ($this->getTempDir()) {
-            $server->setTempDir($this->getTempDir());
+        $tempDir = $this->getTempDir();
+        if (null !== $tempDir) {
+            $server->setTempDir($tempDir);
         }
 
         return $server;
@@ -78,7 +77,7 @@ class ServerFactory
      *
      * @return FilesystemOperator Source file system.
      */
-    public function getSource()
+    public function getSource(): FilesystemOperator
     {
         if (!isset($this->config['source'])) {
             throw new \InvalidArgumentException('A "source" file system must be set.');
@@ -98,11 +97,13 @@ class ServerFactory
      *
      * @return string|null Source path prefix.
      */
-    public function getSourcePathPrefix()
+    public function getSourcePathPrefix(): ?string
     {
         if (isset($this->config['source_path_prefix'])) {
             return $this->config['source_path_prefix'];
         }
+
+        return null;
     }
 
     /**
@@ -110,7 +111,7 @@ class ServerFactory
      *
      * @return FilesystemOperator Cache file system.
      */
-    public function getCache()
+    public function getCache(): FilesystemOperator
     {
         if (!isset($this->config['cache'])) {
             throw new \InvalidArgumentException('A "cache" file system must be set.');
@@ -130,23 +131,25 @@ class ServerFactory
      *
      * @return string|null Cache path prefix.
      */
-    public function getCachePathPrefix()
+    public function getCachePathPrefix(): ?string
     {
         if (isset($this->config['cache_path_prefix'])) {
             return $this->config['cache_path_prefix'];
         }
+
+        return null;
     }
 
     /**
      * Get temporary EXIF data directory.
-     *
-     * @return string
      */
-    public function getTempDir()
+    public function getTempDir(): ?string
     {
         if (isset($this->config['temp_dir'])) {
             return $this->config['temp_dir'];
         }
+
+        return null;
     }
 
     /**
@@ -154,7 +157,7 @@ class ServerFactory
      *
      * @return \Closure|null Cache path callable.
      */
-    public function getCachePathCallable()
+    public function getCachePathCallable(): ?\Closure
     {
         return $this->config['cache_path_callable'] ?? null;
     }
@@ -164,7 +167,7 @@ class ServerFactory
      *
      * @return bool Whether to group cache in folders.
      */
-    public function getGroupCacheInFolders()
+    public function getGroupCacheInFolders(): bool
     {
         if (isset($this->config['group_cache_in_folders'])) {
             return $this->config['group_cache_in_folders'];
@@ -178,7 +181,7 @@ class ServerFactory
      *
      * @return bool Whether to cache with file extensions.
      */
-    public function getCacheWithFileExtensions()
+    public function getCacheWithFileExtensions(): bool
     {
         if (isset($this->config['cache_with_file_extensions'])) {
             return $this->config['cache_with_file_extensions'];
@@ -192,10 +195,10 @@ class ServerFactory
      *
      * @return FilesystemOperator|null Watermarks file system.
      */
-    public function getWatermarks()
+    public function getWatermarks(): ?FilesystemOperator
     {
         if (!isset($this->config['watermarks'])) {
-            return;
+            return null;
         }
 
         if (is_string($this->config['watermarks'])) {
@@ -212,11 +215,13 @@ class ServerFactory
      *
      * @return string|null Watermarks path prefix.
      */
-    public function getWatermarksPathPrefix()
+    public function getWatermarksPathPrefix(): ?string
     {
         if (isset($this->config['watermarks_path_prefix'])) {
             return $this->config['watermarks_path_prefix'];
         }
+
+        return null;
     }
 
     /**
@@ -224,7 +229,7 @@ class ServerFactory
      *
      * @return Api Image manipulation API.
      */
-    public function getApi()
+    public function getApi(): Api
     {
         return new Api(
             $this->getImageManager(),
@@ -237,7 +242,7 @@ class ServerFactory
      *
      * @return ImageManager Intervention image manager.
      */
-    public function getImageManager()
+    public function getImageManager(): ImageManager
     {
         $driver = 'gd';
 
@@ -261,7 +266,7 @@ class ServerFactory
      *
      * @return array Image manipulators.
      */
-    public function getManipulators()
+    public function getManipulators(): array
     {
         return [
             new Orientation(),
@@ -275,7 +280,7 @@ class ServerFactory
             new Flip(),
             new Blur(),
             new Pixelate(),
-            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?: ''),
+            new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?? ''),
             new Background(),
             new Border(),
             new Encode(),
@@ -287,11 +292,13 @@ class ServerFactory
      *
      * @return int|null Maximum image size.
      */
-    public function getMaxImageSize()
+    public function getMaxImageSize(): ?int
     {
         if (isset($this->config['max_image_size'])) {
             return $this->config['max_image_size'];
         }
+
+        return null;
     }
 
     /**
@@ -299,7 +306,7 @@ class ServerFactory
      *
      * @return array Default image manipulations.
      */
-    public function getDefaults()
+    public function getDefaults(): array
     {
         if (isset($this->config['defaults'])) {
             return $this->config['defaults'];
@@ -313,7 +320,7 @@ class ServerFactory
      *
      * @return array Preset image manipulations.
      */
-    public function getPresets()
+    public function getPresets(): array
     {
         if (isset($this->config['presets'])) {
             return $this->config['presets'];
@@ -327,11 +334,13 @@ class ServerFactory
      *
      * @return string|null Base URL.
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): ?string
     {
         if (isset($this->config['base_url'])) {
             return $this->config['base_url'];
         }
+
+        return null;
     }
 
     /**
@@ -339,11 +348,13 @@ class ServerFactory
      *
      * @return ResponseFactoryInterface|null Response factory.
      */
-    public function getResponseFactory()
+    public function getResponseFactory(): ?ResponseFactoryInterface
     {
         if (isset($this->config['response'])) {
             return $this->config['response'];
         }
+
+        return null;
     }
 
     /**
@@ -353,7 +364,7 @@ class ServerFactory
      *
      * @return Server Configured server.
      */
-    public static function create(array $config = [])
+    public static function create(array $config = []): Server
     {
         return (new self($config))->getServer();
     }

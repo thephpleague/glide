@@ -18,7 +18,8 @@ class Flip extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        if ($flip = $this->getFlip()) {
+        $flip = $this->getFlip();
+        if (null !== $flip) {
             if ('both' === $flip) {
                 return $image->flip()->flop();
             }
@@ -40,10 +41,12 @@ class Flip extends BaseManipulator
      *
      * @return string|null The resolved flip.
      */
-    public function getFlip()
+    public function getFlip(): ?string
     {
         if (in_array($this->flip, ['h', 'v', 'both'], true)) {
             return $this->flip;
         }
+
+        return null;
     }
 }

@@ -57,7 +57,7 @@ class Orientation extends BaseManipulator
      *
      * @return string The resolved orientation.
      */
-    public function getOrientation()
+    public function getOrientation(): string
     {
         if (in_array($this->or, ['auto', '0', '90', '180', '270'], true)) {
             return $this->or;
