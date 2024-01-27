@@ -32,14 +32,14 @@ class Brightness extends BaseManipulator
      *
      * @return int|null The resolved brightness amount.
      */
-    public function getBrightness()
+    public function getBrightness(): ?int
     {
         if (null === $this->bri || !preg_match('/^-*[0-9]+$/', $this->bri)) {
-            return;
+            return null;
         }
 
         if ($this->bri < -100 or $this->bri > 100) {
-            return;
+            return null;
         }
 
         return (int) $this->bri;

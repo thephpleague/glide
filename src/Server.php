@@ -13,94 +13,68 @@ class Server
 {
     /**
      * Source file system.
-     *
-     * @var FilesystemOperator
      */
-    protected $source;
+    protected FilesystemOperator $source;
 
     /**
      * Source path prefix.
-     *
-     * @var string
      */
-    protected $sourcePathPrefix;
+    protected string $sourcePathPrefix = '';
 
     /**
      * Cache file system.
-     *
-     * @var FilesystemOperator
      */
-    protected $cache;
+    protected FilesystemOperator $cache;
 
     /**
      * Cache path prefix.
-     *
-     * @var string
      */
-    protected $cachePathPrefix;
+    protected string $cachePathPrefix = '';
 
     /**
      * Temporary EXIF data directory.
-     *
-     * @var string
      */
-    protected $tempDir;
+    protected string $tempDir;
 
     /**
      * Whether to group cache in folders.
-     *
-     * @var bool
      */
-    protected $groupCacheInFolders = true;
+    protected bool $groupCacheInFolders = true;
 
     /**
      * Whether to cache with file extensions.
-     *
-     * @var bool
      */
-    protected $cacheWithFileExtensions = false;
+    protected bool $cacheWithFileExtensions = false;
 
     /**
      * Image manipulation API.
-     *
-     * @var ApiInterface
      */
-    protected $api;
+    protected ApiInterface $api;
 
     /**
      * Response factory.
-     *
-     * @var ResponseFactoryInterface|null
      */
-    protected $responseFactory;
+    protected ?ResponseFactoryInterface $responseFactory = null;
 
     /**
      * Base URL.
-     *
-     * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl = '';
 
     /**
      * Default image manipulations.
-     *
-     * @var array
      */
-    protected $defaults = [];
+    protected array $defaults = [];
 
     /**
      * Preset image manipulations.
-     *
-     * @var array
      */
-    protected $presets = [];
+    protected array $presets = [];
 
     /**
      * Custom cache path callable.
-     *
-     * @var \Closure|null
      */
-    protected $cachePathCallable;
+    protected ?\Closure $cachePathCallable = null;
 
     /**
      * Create Server instance.
@@ -121,10 +95,8 @@ class Server
      * Set source file system.
      *
      * @param FilesystemOperator $source Source file system.
-     *
-     * @return void
      */
-    public function setSource(FilesystemOperator $source)
+    public function setSource(FilesystemOperator $source): void
     {
         $this->source = $source;
     }
@@ -134,7 +106,7 @@ class Server
      *
      * @return FilesystemOperator Source file system.
      */
-    public function getSource()
+    public function getSource(): FilesystemOperator
     {
         return $this->source;
     }
@@ -143,10 +115,8 @@ class Server
      * Set source path prefix.
      *
      * @param string $sourcePathPrefix Source path prefix.
-     *
-     * @return void
      */
-    public function setSourcePathPrefix($sourcePathPrefix)
+    public function setSourcePathPrefix(string $sourcePathPrefix): void
     {
         $this->sourcePathPrefix = trim($sourcePathPrefix, '/');
     }
@@ -156,7 +126,7 @@ class Server
      *
      * @return string Source path prefix.
      */
-    public function getSourcePathPrefix()
+    public function getSourcePathPrefix(): string
     {
         return $this->sourcePathPrefix;
     }
@@ -170,7 +140,7 @@ class Server
      *
      * @throws FileNotFoundException
      */
-    public function getSourcePath($path)
+    public function getSourcePath(string $path): string
     {
         $path = trim($path, '/');
 
@@ -198,7 +168,7 @@ class Server
      *
      * @return bool Whether the source file exists.
      */
-    public function sourceFileExists($path)
+    public function sourceFileExists(string $path): bool
     {
         try {
             return $this->source->fileExists($this->getSourcePath($path));
@@ -211,10 +181,8 @@ class Server
      * Set base URL.
      *
      * @param string $baseUrl Base URL.
-     *
-     * @return void
      */
-    public function setBaseUrl($baseUrl)
+    public function setBaseUrl(string $baseUrl): void
     {
         $this->baseUrl = trim($baseUrl, '/');
     }
@@ -224,7 +192,7 @@ class Server
      *
      * @return string Base URL.
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }
@@ -233,10 +201,8 @@ class Server
      * Set cache file system.
      *
      * @param FilesystemOperator $cache Cache file system.
-     *
-     * @return void
      */
-    public function setCache(FilesystemOperator $cache)
+    public function setCache(FilesystemOperator $cache): void
     {
         $this->cache = $cache;
     }
@@ -246,7 +212,7 @@ class Server
      *
      * @return FilesystemOperator Cache file system.
      */
-    public function getCache()
+    public function getCache(): FilesystemOperator
     {
         return $this->cache;
     }
@@ -255,10 +221,8 @@ class Server
      * Set cache path prefix.
      *
      * @param string $cachePathPrefix Cache path prefix.
-     *
-     * @return void
      */
-    public function setCachePathPrefix($cachePathPrefix)
+    public function setCachePathPrefix(string $cachePathPrefix): void
     {
         $this->cachePathPrefix = trim($cachePathPrefix, '/');
     }
@@ -268,17 +232,15 @@ class Server
      *
      * @return string Cache path prefix.
      */
-    public function getCachePathPrefix()
+    public function getCachePathPrefix(): string
     {
         return $this->cachePathPrefix;
     }
 
     /**
      * Get temporary EXIF data directory.
-     *
-     * @return string
      */
-    public function getTempDir()
+    public function getTempDir(): string
     {
         return $this->tempDir;
     }
@@ -286,13 +248,9 @@ class Server
     /**
      * Set temporary EXIF data directory. This directory must be a local path and exists on the filesystem.
      *
-     * @param string $tempDir
-     *
-     * @return void
-     *
      * @throws \InvalidArgumentException
      */
-    public function setTempDir($tempDir)
+    public function setTempDir(string $tempDir): void
     {
         if (!$tempDir || !is_dir($tempDir)) {
             throw new \InvalidArgumentException(sprintf('Invalid temp dir provided: "%s" does not exist.', $tempDir));
@@ -305,10 +263,8 @@ class Server
      * Set the group cache in folders setting.
      *
      * @param bool $groupCacheInFolders Whether to group cache in folders.
-     *
-     * @return void
      */
-    public function setGroupCacheInFolders($groupCacheInFolders)
+    public function setGroupCacheInFolders(bool $groupCacheInFolders): void
     {
         $this->groupCacheInFolders = $groupCacheInFolders;
     }
@@ -318,7 +274,7 @@ class Server
      *
      * @return bool Whether to group cache in folders.
      */
-    public function getGroupCacheInFolders()
+    public function getGroupCacheInFolders(): bool
     {
         return $this->groupCacheInFolders;
     }
@@ -327,10 +283,8 @@ class Server
      * Set the cache with file extensions setting.
      *
      * @param bool $cacheWithFileExtensions Whether to cache with file extensions.
-     *
-     * @return void
      */
-    public function setCacheWithFileExtensions($cacheWithFileExtensions)
+    public function setCacheWithFileExtensions(bool $cacheWithFileExtensions): void
     {
         $this->cacheWithFileExtensions = $cacheWithFileExtensions;
     }
@@ -340,7 +294,7 @@ class Server
      *
      * @return bool Whether to cache with file extensions.
      */
-    public function getCacheWithFileExtensions()
+    public function getCacheWithFileExtensions(): bool
     {
         return $this->cacheWithFileExtensions;
     }
@@ -350,7 +304,7 @@ class Server
      *
      * @param \Closure|null $cachePathCallable The custom cache path callable. It receives the same arguments as @see getCachePath
      */
-    public function setCachePathCallable(?\Closure $cachePathCallable)
+    public function setCachePathCallable(?\Closure $cachePathCallable): void
     {
         $this->cachePathCallable = $cachePathCallable;
     }
@@ -360,7 +314,7 @@ class Server
      *
      * @return \Closure|null The custom cache path callable. It receives the same arguments as @see getCachePath
      */
-    public function getCachePathCallable()
+    public function getCachePathCallable(): ?\Closure
     {
         return $this->cachePathCallable;
     }
@@ -373,7 +327,7 @@ class Server
      *
      * @return string Cache path.
      */
-    public function getCachePath($path, array $params = [])
+    public function getCachePath(string $path, array $params = []): string
     {
         $customCallable = $this->getCachePathCallable();
         if (null !== $customCallable) {
@@ -423,7 +377,7 @@ class Server
      *
      * @return bool Whether the cache file exists.
      */
-    public function cacheFileExists($path, array $params)
+    public function cacheFileExists(string $path, array $params): bool
     {
         try {
             return $this->cache->fileExists(
@@ -441,7 +395,7 @@ class Server
      *
      * @return bool Whether the delete succeeded.
      */
-    public function deleteCache($path)
+    public function deleteCache(string $path): bool
     {
         if (!$this->groupCacheInFolders) {
             throw new \InvalidArgumentException('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
@@ -462,10 +416,8 @@ class Server
      * Set image manipulation API.
      *
      * @param ApiInterface $api Image manipulation API.
-     *
-     * @return void
      */
-    public function setApi(ApiInterface $api)
+    public function setApi(ApiInterface $api): void
     {
         $this->api = $api;
     }
@@ -475,7 +427,7 @@ class Server
      *
      * @return ApiInterface Image manipulation API.
      */
-    public function getApi()
+    public function getApi(): ApiInterface
     {
         return $this->api;
     }
@@ -484,10 +436,8 @@ class Server
      * Set default image manipulations.
      *
      * @param array $defaults Default image manipulations.
-     *
-     * @return void
      */
-    public function setDefaults(array $defaults)
+    public function setDefaults(array $defaults): void
     {
         $this->defaults = $defaults;
     }
@@ -497,7 +447,7 @@ class Server
      *
      * @return array Default image manipulations.
      */
-    public function getDefaults()
+    public function getDefaults(): array
     {
         return $this->defaults;
     }
@@ -506,10 +456,8 @@ class Server
      * Set preset image manipulations.
      *
      * @param array $presets Preset image manipulations.
-     *
-     * @return void
      */
-    public function setPresets(array $presets)
+    public function setPresets(array $presets): void
     {
         $this->presets = $presets;
     }
@@ -519,7 +467,7 @@ class Server
      *
      * @return array Preset image manipulations.
      */
-    public function getPresets()
+    public function getPresets(): array
     {
         return $this->presets;
     }
@@ -531,7 +479,7 @@ class Server
      *
      * @return array All image manipulation params.
      */
-    public function getAllParams(array $params)
+    public function getAllParams(array $params): array
     {
         $all = $this->defaults;
 
@@ -549,11 +497,9 @@ class Server
     /**
      * Set response factory.
      *
-     * @param ResponseFactoryInterface|null $responseFactory Response factory.
-     *
-     * @return void
+     * @param ?ResponseFactoryInterface $responseFactory Response factory.
      */
-    public function setResponseFactory(ResponseFactoryInterface $responseFactory = null)
+    public function setResponseFactory(?ResponseFactoryInterface $responseFactory = null): void
     {
         $this->responseFactory = $responseFactory;
     }
@@ -563,7 +509,7 @@ class Server
      *
      * @return ResponseFactoryInterface|null Response factory.
      */
-    public function getResponseFactory()
+    public function getResponseFactory(): ?ResponseFactoryInterface
     {
         return $this->responseFactory;
     }
@@ -578,7 +524,7 @@ class Server
      *
      * @throws \InvalidArgumentException
      */
-    public function getImageResponse($path, array $params)
+    public function getImageResponse(string $path, array $params): mixed
     {
         if (is_null($this->responseFactory)) {
             throw new \InvalidArgumentException('Unable to get image response, no response factory defined.');
@@ -599,7 +545,7 @@ class Server
      *
      * @throws FilesystemException
      */
-    public function getImageAsBase64($path, array $params)
+    public function getImageAsBase64(string $path, array $params): string
     {
         $path = $this->makeImage($path, $params);
 
@@ -618,11 +564,9 @@ class Server
      * @param string $path   Image path.
      * @param array  $params Image manipulation params.
      *
-     * @return void
-     *
      * @throws \InvalidArgumentException
      */
-    public function outputImage($path, array $params)
+    public function outputImage(string $path, array $params): void
     {
         $path = $this->makeImage($path, $params);
 
@@ -655,7 +599,7 @@ class Server
      * @throws FileNotFoundException
      * @throws FilesystemException
      */
-    public function makeImage($path, array $params)
+    public function makeImage(string $path, array $params): string
     {
         $sourcePath = $this->getSourcePath($path);
         $cachedPath = $this->getCachePath($path, $params);

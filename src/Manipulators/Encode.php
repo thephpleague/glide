@@ -58,12 +58,13 @@ class Encode extends BaseManipulator
      *
      * @return string The resolved format.
      */
-    public function getFormat(ImageInterface $image)
+    public function getFormat(ImageInterface $image): string
     {
         if (array_key_exists($this->fm, static::supportedFormats())) {
             return $this->fm;
         }
 
+        /** @psalm-suppress RiskyTruthyFalsyComparison */
         return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
@@ -72,7 +73,7 @@ class Encode extends BaseManipulator
      *
      * @return array<string,string>
      */
-    public static function supportedFormats()
+    public static function supportedFormats(): array
     {
         return [
             'avif' => 'image/avif',
@@ -90,15 +91,13 @@ class Encode extends BaseManipulator
      *
      * @return int The resolved quality.
      */
-    public function getQuality()
+    public function getQuality(): int
     {
         $default = 90;
 
-        if (!is_numeric($this->q)) {
-            return $default;
-        }
-
-        if ($this->q < 0 or $this->q > 100) {
+        if (!is_numeric($this->q)
+            or $this->q < 0 or $this->q > 100
+        ) {
             return $default;
         }
 

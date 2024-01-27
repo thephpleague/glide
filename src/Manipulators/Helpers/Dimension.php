@@ -8,17 +8,13 @@ class Dimension
 {
     /**
      * The source image.
-     *
-     * @var ImageInterface
      */
-    protected $image;
+    protected ImageInterface $image;
 
     /**
      * The device pixel ratio.
-     *
-     * @var float
      */
-    protected $dpr;
+    protected float $dpr;
 
     /**
      * Create dimension helper instance.
@@ -26,7 +22,7 @@ class Dimension
      * @param ImageInterface $image The source image.
      * @param float          $dpr   The device pixel ratio.
      */
-    public function __construct(ImageInterface $image, $dpr = 1)
+    public function __construct(ImageInterface $image, float $dpr = 1)
     {
         $this->image = $image;
         $this->dpr = $dpr;
@@ -39,7 +35,7 @@ class Dimension
      *
      * @return float|null The resolved dimension.
      */
-    public function get($value)
+    public function get(string $value): ?float
     {
         if (is_numeric($value) and $value > 0) {
             return (float) $value * $this->dpr;

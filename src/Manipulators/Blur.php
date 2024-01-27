@@ -32,14 +32,14 @@ class Blur extends BaseManipulator
      *
      * @return int|null The resolved blur amount.
      */
-    public function getBlur()
+    public function getBlur(): ?int
     {
         if (!is_numeric($this->blur)) {
-            return;
+            return null;
         }
 
         if ($this->blur < 0 or $this->blur > 100) {
-            return;
+            return null;
         }
 
         return (int) $this->blur;

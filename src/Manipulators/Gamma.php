@@ -20,7 +20,7 @@ class Gamma extends BaseManipulator
     {
         $gamma = $this->getGamma();
 
-        if ($gamma) {
+        if (null !== $gamma) {
             $image->gamma($gamma);
         }
 
@@ -32,14 +32,14 @@ class Gamma extends BaseManipulator
      *
      * @return float|null The resolved gamma amount.
      */
-    public function getGamma()
+    public function getGamma(): ?float
     {
         if (null === $this->gam || !preg_match('/^[0-9]\.*[0-9]*$/', $this->gam)) {
-            return;
+            return null;
         }
 
         if ($this->gam < 0.1 or $this->gam > 9.99) {
-            return;
+            return null;
         }
 
         return (float) $this->gam;

@@ -32,14 +32,14 @@ class Sharpen extends BaseManipulator
      *
      * @return int|null The resolved sharpen amount.
      */
-    public function getSharpen()
+    public function getSharpen(): ?int
     {
         if (!is_numeric($this->sharp)) {
-            return;
+            return null;
         }
 
         if ($this->sharp < 0 or $this->sharp > 100) {
-            return;
+            return null;
         }
 
         return (int) $this->sharp;

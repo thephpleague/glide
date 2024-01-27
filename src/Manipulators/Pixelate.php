@@ -32,14 +32,14 @@ class Pixelate extends BaseManipulator
      *
      * @return int|null The resolved pixelate amount.
      */
-    public function getPixelate()
+    public function getPixelate(): ?int
     {
         if (!is_numeric($this->pixel)) {
-            return;
+            return null;
         }
 
         if ($this->pixel < 0 or $this->pixel > 1000) {
-            return;
+            return null;
         }
 
         return (int) $this->pixel;
