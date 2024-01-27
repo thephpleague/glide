@@ -378,6 +378,9 @@ class Server
         $customCallable = $this->getCachePathCallable();
         if (null !== $customCallable) {
             $boundCallable = \Closure::bind($customCallable, $this, static::class);
+            if (null === $boundCallable) {
+                throw new \UnexpectedValueException('Invalid cache path callable');
+            }
 
             return $boundCallable($path, $params);
         }
@@ -403,6 +406,7 @@ class Server
         }
 
         if ($this->cacheWithFileExtensions) {
+            /** @psalm-suppress PossiblyUndefinedArrayOffset */
             $ext = (isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
             $ext = ('pjpg' === $ext) ? 'jpg' : $ext;
             $cachedPath .= '.'.$ext;

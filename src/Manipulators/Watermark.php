@@ -155,6 +155,7 @@ class Watermark extends BaseManipulator
             $path = $this->watermarksPathPrefix.'/'.$path;
         }
 
+        $mark = null;
         try {
             if ($this->watermarks->fileExists($path)) {
                 $source = $this->watermarks->read($path);

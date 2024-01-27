@@ -23,7 +23,7 @@ class UrlBuilder
     /**
      * The HTTP signature used to sign URLs.
      *
-     * @var SignatureInterface
+     * @var SignatureInterface|null
      */
     protected $signature;
 
@@ -84,6 +84,7 @@ class UrlBuilder
             throw new \InvalidArgumentException('Not a valid path.');
         }
 
+        /** @psalm-suppress PossiblyNullArgument, PossiblyUndefinedArrayOffset */
         $parts['path'] = '/'.trim($parts['path'], '/');
 
         if ($this->signature) {

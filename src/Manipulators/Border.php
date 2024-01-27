@@ -58,7 +58,7 @@ class Border extends BaseManipulator
 
         $values = explode(',', $this->border);
 
-        $width = $this->getWidth($image, $this->getDpr(), isset($values[0]) ? $values[0] : null);
+        $width = $this->getWidth($image, $this->getDpr(), $values[0]);
         $color = $this->getColor(isset($values[1]) ? $values[1] : 'ffffff');
         $method = $this->getMethod(isset($values[2]) ? $values[2] : 'overlay');
 
