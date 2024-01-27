@@ -4,7 +4,7 @@ on:
     pull_request: ~
     push:
         branches:
-            - upgrade-to-glide-3
+            - 3.x
 
 jobs:
     coding-style:
