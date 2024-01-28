@@ -83,6 +83,7 @@ class Encode extends BaseManipulator
             'png' => 'image/png',
             'webp' => 'image/webp',
             'tiff' => 'image/tiff',
+            'heic' => 'image/heic',
         ];
     }
 

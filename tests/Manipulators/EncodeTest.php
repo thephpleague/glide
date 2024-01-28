@@ -16,6 +16,7 @@ class EncodeTest extends TestCase
     private $tif;
     private $webp;
     private $avif;
+    private $heic;
 
     public function setUp(): void
     {
@@ -162,14 +163,32 @@ class EncodeTest extends TestCase
         $this->jpg = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'))->toFilePointer());
         $this->png = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'))->toFilePointer());
         $this->gif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'))->toFilePointer());
+        $this->heic = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/heic'))->toFilePointer());
         $this->tif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/tiff'))->toFilePointer());
 
         $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->jpg)));
         $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->png)));
         $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->gif)));
+        $this->assertSame('image/tiff', $this->getMime($this->manipulator->setParams(['fm' => 'tiff'])->run($this->heic)));
     }
 
-    public function getMime(ImageInterface $image)
+    public function testSupportedFormats()
+    {
+        $expected = [
+            'avif' => 'image/avif',
+            'gif' => 'image/gif',
+            'jpg' => 'image/jpeg',
+            'pjpg' => 'image/jpeg',
+            'png' => 'image/png',
+            'webp' => 'image/webp',
+            'tiff' => 'image/tiff',
+            'heic' => 'image/heic',
+        ];
+
+        $this->assertSame($expected, Encode::supportedFormats());
+    }
+
+    protected function getMime(ImageInterface $image)
     {
         return $image->origin()->mediaType();
     }
