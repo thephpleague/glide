@@ -3,5 +3,6 @@ vendor
 docs/_site
 .php-cs-fixer.cache
 .phpunit.result.cache
+.phpunit.cache
 composer.lock
 .history
