@@ -1,3 +1,30 @@
+'3.0':
+    Getting Started:
+        Introduction: '/'
+        Changelog: '/3.0/changelog/'
+        Installation: '/3.0/installation/'
+        Simple example: '/3.0/simple-example/'
+    Configuration:
+        Setup: '/3.0/config/setup/'
+        Source & cache: '/3.0/config/source-and-cache/'
+        Security: '/3.0/config/security/'
+        Responses: '/3.0/config/responses/'
+        Image driver: '/3.0/config/image-driver/'
+        Defaults & presets: '/3.0/config/defaults-and-presets/'
+        Advanced usage: '/3.0/config/advanced-usage/'
+    Image API:
+        Quick reference: '/3.0/api/quick-reference/'
+        Orientation: '/3.0/api/orientation/'
+        Flip: '/3.0/api/flip/'
+        Crop: '/3.0/api/crop/'
+        Size: '/3.0/api/size/'
+        Pixel density: '/3.0/api/pixel-density/'
+        Adjustments: '/3.0/api/adjustments/'
+        Effects: '/3.0/api/effects/'
+        Watermarks: '/3.0/api/watermarks/'
+        Background: '/3.0/api/background/'
+        Border: '/3.0/api/border/'
+        Encode: '/3.0/api/encode/'
 '2.0':
     Getting Started:
         Introduction: '/'
