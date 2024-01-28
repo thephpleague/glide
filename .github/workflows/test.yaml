@@ -50,7 +50,7 @@ jobs:
             - name: PHPUnit
               run: |
                   if [[ ${{ matrix.php-version }} == '8.3' ]]; then
-                      vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+                      vendor/bin/phpunit --display-incomplete --display-skipped --coverage-clover=coverage.xml
                   else
                       vendor/bin/phpunit
                   fi
