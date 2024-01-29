@@ -8,18 +8,6 @@ use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
 
-/**
- * @property string $dpr
- * @property string $mark
- * @property string $markfit
- * @property string $markh
- * @property string $markpad
- * @property string $markpos
- * @property string $markw
- * @property string $markx
- * @property string $marky
- * @property string $markalpha
- */
 class Watermark extends BaseManipulator
 {
     /**
@@ -133,9 +121,9 @@ class Watermark extends BaseManipulator
             return null;
         }
 
-        $path = $this->mark;
+        $path = (string) $this->getParam('mark');
 
-        if (!$path) {
+        if ('' === $path) {
             return null;
         }
 
@@ -171,8 +159,10 @@ class Watermark extends BaseManipulator
      */
     public function getDimension(ImageInterface $image, string $field): ?float
     {
-        if ($this->{$field}) {
-            return (new Dimension($image, $this->getDpr()))->get($this->{$field});
+        $dim = $this->getParam($field);
+
+        if ($dim) {
+            return (new Dimension($image, $this->getDpr()))->get((string) $dim);
         }
 
         return null;
@@ -185,15 +175,17 @@ class Watermark extends BaseManipulator
      */
     public function getDpr(): float
     {
-        if (!is_numeric($this->dpr)) {
+        $dpr = $this->getParam('dpr');
+
+        if (!is_numeric($dpr)) {
             return 1.0;
         }
 
-        if ($this->dpr < 0 or $this->dpr > 8) {
+        if ($dpr < 0 or $dpr > 8) {
             return 1.0;
         }
 
-        return (float) $this->dpr;
+        return (float) $dpr;
     }
 
     /**
@@ -219,8 +211,10 @@ class Watermark extends BaseManipulator
             'crop-bottom-right',
         ];
 
-        if (in_array($this->markfit, $fitMethods, true)) {
-            return $this->markfit;
+        $markfit = $this->getParam('markfit');
+
+        if (in_array($markfit, $fitMethods, true)) {
+            return $markfit;
         }
 
         return null;
@@ -245,8 +239,10 @@ class Watermark extends BaseManipulator
             'bottom-right',
         ];
 
-        if (in_array($this->markpos, $positions, true)) {
-            return $this->markpos;
+        $markpos = $this->getParam('markpos');
+
+        if (in_array($markpos, $positions, true)) {
+            return $markpos;
         }
 
         return 'bottom-right';
@@ -259,14 +255,16 @@ class Watermark extends BaseManipulator
      */
     public function getAlpha(): int
     {
-        if (!is_numeric($this->markalpha)) {
+        $markalpha = $this->getParam('markalpha');
+
+        if (!is_numeric($markalpha)) {
             return 100;
         }
 
-        if ($this->markalpha < 0 or $this->markalpha > 100) {
+        if ($markalpha < 0 or $markalpha > 100) {
             return 100;
         }
 
-        return (int) $this->markalpha;
+        return (int) $markalpha;
     }
 }

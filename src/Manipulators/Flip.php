@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $flip
- */
 class Flip extends BaseManipulator
 {
     /**
@@ -43,8 +40,10 @@ class Flip extends BaseManipulator
      */
     public function getFlip(): ?string
     {
-        if (in_array($this->flip, ['h', 'v', 'both'], true)) {
-            return $this->flip;
+        $flip = $this->getParam('flip');
+
+        if (in_array($flip, ['h', 'v', 'both'], true)) {
+            return $flip;
         }
 
         return null;

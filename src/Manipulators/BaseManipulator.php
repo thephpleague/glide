@@ -9,7 +9,7 @@ abstract class BaseManipulator implements ManipulatorInterface
     /**
      * The manipulation params.
      */
-    public array $params = [];
+    protected array $params = [];
 
     /**
      * Set the manipulation params.
@@ -27,16 +27,14 @@ abstract class BaseManipulator implements ManipulatorInterface
 
     /**
      * Get a specific manipulation param.
-     *
-     * @param string $name The manipulation name.
-     *
-     * @return mixed The manipulation value.
      */
-    public function __get($name)
+    public function getParam(string $name): mixed
     {
         if (array_key_exists($name, $this->params)) {
             return $this->params[$name];
         }
+
+        return null;
     }
 
     /**

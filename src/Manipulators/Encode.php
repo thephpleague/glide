@@ -7,10 +7,6 @@ use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $fm
- * @property string $q
- */
 class Encode extends BaseManipulator
 {
     /**
@@ -60,8 +56,10 @@ class Encode extends BaseManipulator
      */
     public function getFormat(ImageInterface $image): string
     {
-        if (array_key_exists($this->fm, static::supportedFormats())) {
-            return $this->fm;
+        $fm = (string) $this->getParam('fm');
+
+        if ($fm && array_key_exists($fm, static::supportedFormats())) {
+            return $fm;
         }
 
         /** @psalm-suppress RiskyTruthyFalsyComparison */
@@ -95,13 +93,14 @@ class Encode extends BaseManipulator
     public function getQuality(): int
     {
         $default = 90;
+        $q = $this->getParam('q');
 
-        if (!is_numeric($this->q)
-            or $this->q < 0 or $this->q > 100
+        if (!is_numeric($q)
+            or $q < 0 or $q > 100
         ) {
             return $default;
         }
 
-        return (int) $this->q;
+        return (int) $q;
     }
 }

@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $crop
- */
 class Crop extends BaseManipulator
 {
     /**
@@ -45,11 +42,13 @@ class Crop extends BaseManipulator
      */
     public function getCoordinates(ImageInterface $image): ?array
     {
-        if (null === $this->crop) {
+        $crop = (string) $this->getParam('crop');
+
+        if ('' === $crop) {
             return null;
         }
 
-        $coordinates = explode(',', $this->crop);
+        $coordinates = explode(',', $crop);
 
         if (4 !== count($coordinates)
             or (!is_numeric($coordinates[0]))

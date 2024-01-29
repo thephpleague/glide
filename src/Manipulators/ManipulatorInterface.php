@@ -16,6 +16,11 @@ interface ManipulatorInterface
     public function setParams(array $params);
 
     /**
+     * Get a specific manipulation param.
+     */
+    public function getParam(string $name): mixed;
+
+    /**
      * Perform the image manipulation.
      *
      * @param ImageInterface $image The source image.

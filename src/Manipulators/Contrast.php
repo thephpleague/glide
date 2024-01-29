@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $con
- */
 class Contrast extends BaseManipulator
 {
     /**
@@ -34,14 +31,16 @@ class Contrast extends BaseManipulator
      */
     public function getContrast(): ?int
     {
-        if (null === $this->con || !preg_match('/^-*[0-9]+$/', $this->con)) {
+        $con = (string) $this->getParam('con');
+
+        if ('' === $con
+            or !preg_match('/^-*[0-9]+$/', $con)
+            or $con < -100
+            or $con > 100
+        ) {
             return null;
         }
 
-        if ($this->con < -100 or $this->con > 100) {
-            return null;
-        }
-
-        return (int) $this->con;
+        return (int) $con;
     }
 }

@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $filt
- */
 class Filter extends BaseManipulator
 {
     /**
@@ -18,15 +15,11 @@ class Filter extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        if ('greyscale' === $this->filt) {
-            return $this->runGreyscaleFilter($image);
-        }
-
-        if ('sepia' === $this->filt) {
-            return $this->runSepiaFilter($image);
-        }
-
-        return $image;
+        return match ($this->getParam('filt')) {
+            'greyscale' => $this->runGreyscaleFilter($image),
+            'sepia' => $this->runSepiaFilter($image),
+            default => $image,
+        };
     }
 
     /**

@@ -5,12 +5,6 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Geometry\Rectangle;
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string      $dpr
- * @property string|null $fit
- * @property string      $h
- * @property string      $w
- */
 class Size extends BaseManipulator
 {
     /**
@@ -80,15 +74,9 @@ class Size extends BaseManipulator
      */
     public function getWidth(): ?int
     {
-        if (!is_numeric($this->w)) {
-            return null;
-        }
+        $w = (int) $this->getParam('w');
 
-        if ($this->w <= 0) {
-            return null;
-        }
-
-        return (int) $this->w;
+        return $w <= 0 ? null : $w;
     }
 
     /**
@@ -98,15 +86,9 @@ class Size extends BaseManipulator
      */
     public function getHeight(): ?int
     {
-        if (!is_numeric($this->h)) {
-            return null;
-        }
+        $h = (int) $this->getParam('h');
 
-        if ($this->h <= 0) {
-            return null;
-        }
-
-        return (int) $this->h;
+        return $h <= 0 ? null : $h;
     }
 
     /**
@@ -116,15 +98,13 @@ class Size extends BaseManipulator
      */
     public function getFit(): string
     {
-        if (null === $this->fit) {
-            return 'contain';
+        $fit = (string) $this->getParam('fit');
+
+        if (in_array($fit, ['contain', 'fill', 'max', 'stretch', 'fill-max'], true)) {
+            return $fit;
         }
 
-        if (in_array($this->fit, ['contain', 'fill', 'max', 'stretch', 'fill-max'], true)) {
-            return $this->fit;
-        }
-
-        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $this->fit)) {
+        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $fit)) {
             return 'crop';
         }
 
@@ -138,15 +118,17 @@ class Size extends BaseManipulator
      */
     public function getDpr(): float
     {
-        if (!is_numeric($this->dpr)) {
+        $dpr = $this->getParam('dpr');
+
+        if (!is_numeric($dpr)) {
             return 1.0;
         }
 
-        if ($this->dpr < 0 or $this->dpr > 8) {
+        if ($dpr < 0 or $dpr > 8) {
             return 1.0;
         }
 
-        return (float) $this->dpr;
+        return (float) $dpr;
     }
 
     /**
@@ -432,15 +414,17 @@ class Size extends BaseManipulator
             'crop-bottom-right' => [100, 100, 1.0],
         ];
 
-        if (null === $this->fit) {
+        $fit = (string) $this->getParam('fit');
+
+        if ('' === $fit) {
             return [50, 50, 1.0];
         }
 
-        if (array_key_exists($this->fit, $cropMethods)) {
-            return $cropMethods[$this->fit];
+        if (array_key_exists($fit, $cropMethods)) {
+            return $cropMethods[$fit];
         }
 
-        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $this->fit, $matches)) {
+        if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $fit, $matches)) {
             $matches[3] = isset($matches[3]) ? $matches[3] : 1;
 
             if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {

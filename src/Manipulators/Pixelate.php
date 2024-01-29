@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $pixel
- */
 class Pixelate extends BaseManipulator
 {
     /**
@@ -34,14 +31,15 @@ class Pixelate extends BaseManipulator
      */
     public function getPixelate(): ?int
     {
-        if (!is_numeric($this->pixel)) {
+        $pixel = $this->getParam('pixel');
+
+        if (!is_numeric($pixel)
+            || $pixel < 0
+            || $pixel > 1000
+        ) {
             return null;
         }
 
-        if ($this->pixel < 0 or $this->pixel > 1000) {
-            return null;
-        }
-
-        return (int) $this->pixel;
+        return (int) $pixel;
     }
 }
