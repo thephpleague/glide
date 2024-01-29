@@ -124,7 +124,7 @@ class Size extends BaseManipulator
             return 1.0;
         }
 
-        if ($dpr < 0 or $dpr > 8) {
+        if ($dpr < 0 || $dpr > 8) {
             return 1.0;
         }
 
@@ -427,7 +427,7 @@ class Size extends BaseManipulator
         if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $fit, $matches)) {
             $matches[3] = isset($matches[3]) ? $matches[3] : 1;
 
-            if ($matches[1] > 100 or $matches[2] > 100 or $matches[3] > 100) {
+            if ($matches[1] > 100 || $matches[2] > 100 || $matches[3] > 100) {
                 return [50, 50, 1.0];
             }
 

@@ -34,9 +34,9 @@ class Contrast extends BaseManipulator
         $con = (string) $this->getParam('con');
 
         if ('' === $con
-            or !preg_match('/^-*[0-9]+$/', $con)
-            or $con < -100
-            or $con > 100
+            || !preg_match('/^-*[0-9]+$/', $con)
+            || $con < -100
+            || $con > 100
         ) {
             return null;
         }

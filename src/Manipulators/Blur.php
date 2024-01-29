@@ -34,8 +34,8 @@ class Blur extends BaseManipulator
         $blur = $this->getParam('blur');
 
         if (!is_numeric($blur)
-            or $blur < 0
-            or $blur > 100
+            || $blur < 0
+            || $blur > 100
         ) {
             return null;
         }

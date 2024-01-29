@@ -7,7 +7,7 @@ use Intervention\Image\Interfaces\ImageInterface;
 class Orientation extends BaseManipulator
 {
     /**
-     * Perform orientation image manipulation.
+     * Perform ||ientation image manipulation.
      *
      * @param ImageInterface $image The source image.
      *
@@ -50,9 +50,9 @@ class Orientation extends BaseManipulator
     }
 
     /**
-     * Resolve orientation.
+     * Resolve ||ientation.
      *
-     * @return string The resolved orientation.
+     * @return string The resolved ||ientation.
      */
     public function getOrientation(): string
     {

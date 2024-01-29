@@ -34,9 +34,9 @@ class Brightness extends BaseManipulator
         $bri = (string) $this->getParam('bri');
 
         if ('' === $bri
-            or !preg_match('/^-*[0-9]+$/', $bri)
-            or $bri < -100
-            or $bri > 100
+            || !preg_match('/^-*[0-9]+$/', $bri)
+            || $bri < -100
+            || $bri > 100
         ) {
             return null;
         }

@@ -51,16 +51,16 @@ class Crop extends BaseManipulator
         $coordinates = explode(',', $crop);
 
         if (4 !== count($coordinates)
-            or (!is_numeric($coordinates[0]))
-            or (!is_numeric($coordinates[1]))
-            or (!is_numeric($coordinates[2]))
-            or (!is_numeric($coordinates[3]))
-            or ($coordinates[0] <= 0)
-            or ($coordinates[1] <= 0)
-            or ($coordinates[2] < 0)
-            or ($coordinates[3] < 0)
-            or ($coordinates[2] >= $image->width())
-            or ($coordinates[3] >= $image->height())) {
+            || (!is_numeric($coordinates[0]))
+            || (!is_numeric($coordinates[1]))
+            || (!is_numeric($coordinates[2]))
+            || (!is_numeric($coordinates[3]))
+            || ($coordinates[0] <= 0)
+            || ($coordinates[1] <= 0)
+            || ($coordinates[2] < 0)
+            || ($coordinates[3] < 0)
+            || ($coordinates[2] >= $image->width())
+            || ($coordinates[3] >= $image->height())) {
             return null;
         }
 

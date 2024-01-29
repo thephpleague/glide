@@ -181,7 +181,7 @@ class Watermark extends BaseManipulator
             return 1.0;
         }
 
-        if ($dpr < 0 or $dpr > 8) {
+        if ($dpr < 0 || $dpr > 8) {
             return 1.0;
         }
 
@@ -261,7 +261,7 @@ class Watermark extends BaseManipulator
             return 100;
         }
 
-        if ($markalpha < 0 or $markalpha > 100) {
+        if ($markalpha < 0 || $markalpha > 100) {
             return 100;
         }
 

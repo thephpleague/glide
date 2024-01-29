@@ -96,7 +96,8 @@ class Encode extends BaseManipulator
         $q = $this->getParam('q');
 
         if (!is_numeric($q)
-            or $q < 0 or $q > 100
+            || $q < 0
+            || $q > 100
         ) {
             return $default;
         }
