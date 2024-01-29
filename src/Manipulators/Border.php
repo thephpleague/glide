@@ -7,10 +7,6 @@ use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Manipulators\Helpers\Color;
 use League\Glide\Manipulators\Helpers\Dimension;
 
-/**
- * @property string $border
- * @property string $dpr
- */
 class Border extends BaseManipulator
 {
     /**
@@ -52,11 +48,12 @@ class Border extends BaseManipulator
      */
     public function getBorder(ImageInterface $image): ?array
     {
-        if (!$this->border) {
+        $border = (string) $this->getParam('border');
+        if ('' === $border) {
             return null;
         }
 
-        $values = explode(',', $this->border);
+        $values = explode(',', $border);
 
         $width = $this->getWidth($image, $this->getDpr(), $values[0]);
         $color = $this->getColor(isset($values[1]) ? $values[1] : 'ffffff');
@@ -118,15 +115,16 @@ class Border extends BaseManipulator
      */
     public function getDpr(): float
     {
-        if (!is_numeric($this->dpr)) {
+        $dpr = $this->getParam('dpr');
+
+        if (!is_numeric($dpr)
+            || $dpr < 0
+            || $dpr > 8
+        ) {
             return 1.0;
         }
 
-        if ($this->dpr < 0 or $this->dpr > 8) {
-            return 1.0;
-        }
-
-        return (float) $this->dpr;
+        return (float) $dpr;
     }
 
     /**

@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $blur
- */
 class Blur extends BaseManipulator
 {
     /**
@@ -34,14 +31,15 @@ class Blur extends BaseManipulator
      */
     public function getBlur(): ?int
     {
-        if (!is_numeric($this->blur)) {
+        $blur = $this->getParam('blur');
+
+        if (!is_numeric($blur)
+            or $blur < 0
+            or $blur > 100
+        ) {
             return null;
         }
 
-        if ($this->blur < 0 or $this->blur > 100) {
-            return null;
-        }
-
-        return (int) $this->blur;
+        return (int) $blur;
     }
 }

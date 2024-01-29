@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $or
- */
 class Orientation extends BaseManipulator
 {
     /**
@@ -59,8 +56,10 @@ class Orientation extends BaseManipulator
      */
     public function getOrientation(): string
     {
-        if (in_array($this->or, ['auto', '0', '90', '180', '270'], true)) {
-            return $this->or;
+        $or = $this->getParam('or');
+
+        if (in_array($or, ['auto', '0', '90', '180', '270'], true)) {
+            return $or;
         }
 
         return 'auto';

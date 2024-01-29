@@ -6,9 +6,6 @@ use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Origin;
 use League\Glide\Manipulators\Helpers\Color;
 
-/**
- * @property string|null $bg
- */
 class Background extends BaseManipulator
 {
     /**
@@ -20,11 +17,13 @@ class Background extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        if (is_null($this->bg)) {
+        $bg = (string) $this->getParam('bg');
+
+        if ('' === $bg) {
             return $image;
         }
 
-        $color = (new Color($this->bg))->formatted();
+        $color = (new Color($bg))->formatted();
 
         if ($color) {
             $new = $image->driver()->createImage($image->width(), $image->height())

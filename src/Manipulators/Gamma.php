@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $gam
- */
 class Gamma extends BaseManipulator
 {
     /**
@@ -34,14 +31,16 @@ class Gamma extends BaseManipulator
      */
     public function getGamma(): ?float
     {
-        if (null === $this->gam || !preg_match('/^[0-9]\.*[0-9]*$/', $this->gam)) {
+        $gam = (string) $this->getParam('gam');
+
+        if ('' === $gam
+            || !preg_match('/^[0-9]\.*[0-9]*$/', $gam)
+            || $gam < 0.1
+            || $gam > 9.99
+        ) {
             return null;
         }
 
-        if ($this->gam < 0.1 or $this->gam > 9.99) {
-            return null;
-        }
-
-        return (float) $this->gam;
+        return (float) $gam;
     }
 }

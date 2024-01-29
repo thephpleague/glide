@@ -4,9 +4,6 @@ namespace League\Glide\Manipulators;
 
 use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $sharp
- */
 class Sharpen extends BaseManipulator
 {
     /**
@@ -34,14 +31,15 @@ class Sharpen extends BaseManipulator
      */
     public function getSharpen(): ?int
     {
-        if (!is_numeric($this->sharp)) {
+        $sharp = $this->getParam('sharp');
+
+        if (!is_numeric($sharp)
+            || $sharp < 0
+            || $sharp > 100
+        ) {
             return null;
         }
 
-        if ($this->sharp < 0 or $this->sharp > 100) {
-            return null;
-        }
-
-        return (int) $this->sharp;
+        return (int) $sharp;
     }
 }
