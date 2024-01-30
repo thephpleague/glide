@@ -25,17 +25,11 @@ class Background extends BaseManipulator
 
         $color = (new Color($bg))->formatted();
 
-        if ($color) {
-            $new = $image->driver()->createImage($image->width(), $image->height())
-                ->fill($color)
-                ->place($image, 'top-left', 0, 0)
-                ->setOrigin(
-                    new Origin($image->origin()->mediaType())
-                );
-
-            $image = $new;
-        }
-
-        return $image;
+        return $image->driver()->createImage($image->width(), $image->height())
+            ->fill($color)
+            ->place($image, 'top-left', 0, 0)
+            ->setOrigin(
+                new Origin($image->origin()->mediaType())
+            );
     }
 }

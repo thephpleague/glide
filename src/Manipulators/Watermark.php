@@ -80,32 +80,34 @@ class Watermark extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        if ($watermark = $this->getImage($image)) {
-            $markw = $this->getDimension($image, 'markw');
-            $markh = $this->getDimension($image, 'markh');
-            $markx = $this->getDimension($image, 'markx');
-            $marky = $this->getDimension($image, 'marky');
-            $markpad = $this->getDimension($image, 'markpad');
-            $markfit = $this->getFit();
-            $markpos = $this->getPosition();
-            $markalpha = $this->getAlpha();
+        $watermark = $this->getImage($image);
 
-            if (null !== $markpad) {
-                $markx = $marky = $markpad;
-            }
-
-            $size = new Size();
-            $size->setParams([
-                'w' => $markw,
-                'h' => $markh,
-                'fit' => $markfit,
-            ]);
-            $watermark = $size->run($watermark);
-
-            $image->place($watermark, $markpos, intval($markx), intval($marky), $markalpha);
+        if (null === $watermark) {
+            return $image;
         }
 
-        return $image;
+        $markw = $this->getDimension($image, 'markw');
+        $markh = $this->getDimension($image, 'markh');
+        $markx = $this->getDimension($image, 'markx');
+        $marky = $this->getDimension($image, 'marky');
+        $markpad = $this->getDimension($image, 'markpad');
+        $markfit = $this->getFit();
+        $markpos = $this->getPosition();
+        $markalpha = $this->getAlpha();
+
+        if (null !== $markpad) {
+            $markx = $marky = $markpad;
+        }
+
+        $size = new Size();
+        $size->setParams([
+            'w' => $markw,
+            'h' => $markh,
+            'fit' => $markfit,
+        ]);
+        $watermark = $size->run($watermark);
+
+        return $image->place($watermark, $markpos, intval($markx), intval($marky), $markalpha);
     }
 
     /**
@@ -117,7 +119,7 @@ class Watermark extends BaseManipulator
      */
     public function getImage(ImageInterface $image): ?ImageInterface
     {
-        if (is_null($this->watermarks)) {
+        if (null === $this->watermarks) {
             return null;
         }
 

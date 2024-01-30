@@ -43,12 +43,12 @@ class Filter extends BaseManipulator
      */
     public function runSepiaFilter(ImageInterface $image): ImageInterface
     {
-        $image->greyscale();
-        $image->brightness(-10);
-        $image->contrast(10);
-        $image->colorize(38, 27, 12);
-        $image->brightness(-10);
-        $image->contrast(10);
+        $image->greyscale()
+            ->brightness(-10)
+            ->contrast(10)
+            ->colorize(38, 27, 12)
+            ->brightness(-10)
+            ->contrast(10);
 
         return $image;
     }

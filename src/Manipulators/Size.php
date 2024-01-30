@@ -56,9 +56,9 @@ class Size extends BaseManipulator
         $fit = $this->getFit();
         $dpr = $this->getDpr();
 
-        list($width, $height) = $this->resolveMissingDimensions($image, $width, $height);
-        list($width, $height) = $this->applyDpr($width, $height, $dpr);
-        list($width, $height) = $this->limitImageSize($width, $height);
+        [$width, $height] = $this->resolveMissingDimensions($image, $width, $height);
+        [$width, $height] = $this->applyDpr($width, $height, $dpr);
+        [$width, $height] = $this->limitImageSize($width, $height);
 
         if ($width !== $image->width() || $height !== $image->height() || 1.0 !== $this->getCrop()[2]) {
             $image = $this->runResize($image, $fit, $width, $height);
@@ -326,13 +326,13 @@ class Size extends BaseManipulator
      */
     public function runCropResize(ImageInterface $image, int $width, int $height): ImageInterface
     {
-        list($resize_width, $resize_height) = $this->resolveCropResizeDimensions($image, $width, $height);
+        [$resize_width, $resize_height] = $this->resolveCropResizeDimensions($image, $width, $height);
 
         $zoom = $this->getCrop()[2];
 
         $image->scale((int) round($resize_width * $zoom), (int) round($resize_height * $zoom));
 
-        list($offset_x, $offset_y) = $this->resolveCropOffset($image, $width, $height);
+        [$offset_x, $offset_y] = $this->resolveCropOffset($image, $width, $height);
 
         return $image->crop($width, $height, $offset_x, $offset_y);
     }
@@ -366,7 +366,7 @@ class Size extends BaseManipulator
      */
     public function resolveCropOffset(ImageInterface $image, int $width, int $height): array
     {
-        list($offset_percentage_x, $offset_percentage_y) = $this->getCrop();
+        [$offset_percentage_x, $offset_percentage_y] = $this->getCrop();
 
         $offset_x = (int) (($image->width() * $offset_percentage_x / 100) - ($width / 2));
         $offset_y = (int) (($image->height() * $offset_percentage_y / 100) - ($height / 2));

@@ -16,18 +16,14 @@ class Flip extends BaseManipulator
     public function run(ImageInterface $image): ImageInterface
     {
         $flip = $this->getFlip();
+
         if (null !== $flip) {
-            if ('both' === $flip) {
-                return $image->flip()->flop();
-            }
-
-            if ('v' === $flip) {
-                return $image->flip();
-            }
-
-            if ('h' === $flip) {
-                return $image->flop();
-            }
+            return match ($flip) {
+                'both' => $image->flip()->flop(),
+                'v' => $image->flip(),
+                'h' => $image->flop(),
+                default => $image,
+            };
         }
 
         return $image;

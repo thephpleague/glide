@@ -18,20 +18,12 @@ class Border extends BaseManipulator
      */
     public function run(ImageInterface $image): ImageInterface
     {
-        if ($border = $this->getBorder($image)) {
-            list($width, $color, $method) = $border;
+        $border = $this->getBorder($image);
 
-            if ('overlay' === $method) {
-                return $this->runOverlay($image, $width, $color);
-            }
+        if ($border) {
+            [$width, $color, $method] = $border;
 
-            if ('shrink' === $method) {
-                return $this->runShrink($image, $width, $color);
-            }
-
-            if ('expand' === $method) {
-                return $this->runExpand($image, $width, $color);
-            }
+            return $this->{'run'.$method}($image, $width, $color);
         }
 
         return $image;
@@ -101,11 +93,11 @@ class Border extends BaseManipulator
      */
     public function getMethod(string $method): string
     {
-        if (!in_array($method, ['expand', 'shrink', 'overlay'], true)) {
-            return 'overlay';
-        }
-
-        return $method;
+        return match ($method) {
+            'expand' => 'expand',
+            'shrink' => 'shrink',
+            default => 'overlay',
+        };
     }
 
     /**
