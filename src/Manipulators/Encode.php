@@ -5,6 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 
 class Encode extends BaseManipulator
@@ -21,30 +22,23 @@ class Encode extends BaseManipulator
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
         $driver = $image->driver();
+        $interlace = false;
 
-        if (in_array($format, ['jpg', 'pjpg'], true)) {
-            $image = (new ImageManager($driver))
-                ->create($image->width(), $image->height())
-                ->fill('ffffff')
-                ->place($image, 'top-left', 0, 0);
+        if ('pjpg' === $format) {
+            $interlace = true;
+
+            $format = 'jpg';
         }
 
-        if (in_array($format, ['png', 'pjpg'], true)) {
-            $i = $image->core()->native();
-            if ($driver instanceof ImagickDriver) {
-                $i->setInterlaceScheme(3); // 3 = Imagick::INTERLACE_PLANE constant
-            } elseif ($driver instanceof GdDriver) {
-                imageinterlace($i, true);
-            }
-
-            if ('pjpg' === $format) {
-                $format = 'jpg';
-            }
-        }
-
-        return (new ImageManager($driver))->read(
-            $image->encodeByExtension($format, $quality)->toFilePointer()
+        $image = (new ImageManager($driver))->read(
+            $image->encodeByExtension($format, $quality)->toString()
         );
+
+        if ($interlace) {
+            $image = $this->interlace($image, $driver);
+        }
+
+        return $image;
     }
 
     /**
@@ -103,5 +97,18 @@ class Encode extends BaseManipulator
         }
 
         return (int) $q;
+    }
+
+    protected function interlace(ImageInterface $image, DriverInterface $driver): ImageInterface
+    {
+        $img = $image->core()->native();
+
+        if ($driver instanceof ImagickDriver) {
+            $img->setInterlaceScheme(\Imagick::INTERLACE_PLANE);
+        } elseif ($driver instanceof GdDriver) {
+            imageinterlace($img, true);
+        }
+
+        return $image;
     }
 }
