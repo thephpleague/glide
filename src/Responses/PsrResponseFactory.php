@@ -9,17 +9,13 @@ class PsrResponseFactory implements ResponseFactoryInterface
 {
     /**
      * Base response object.
-     *
-     * @var ResponseInterface
      */
-    protected $response;
+    protected ResponseInterface $response;
 
     /**
      * Callback to create stream.
-     *
-     * @var \Closure
      */
-    protected $streamCallback;
+    protected \Closure $streamCallback;
 
     /**
      * Create PsrResponseFactory instance.

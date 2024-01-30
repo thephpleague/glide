@@ -27,9 +27,8 @@ class OrientationTest extends TestCase
     public function testRun()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('exif')->withArgs(['Orientation'])->andReturn(null)->twice();
+            $mock->shouldReceive('exif')->withArgs(['Orientation'])->andReturn(null)->once();
 
-            $mock->shouldReceive('rotate')->andReturn($mock)->with('0')->once();
             $mock->shouldReceive('rotate')->andReturn($mock)->with('90')->once();
         });
 
