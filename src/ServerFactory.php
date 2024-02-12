@@ -99,11 +99,7 @@ class ServerFactory
      */
     public function getSourcePathPrefix(): ?string
     {
-        if (isset($this->config['source_path_prefix'])) {
-            return $this->config['source_path_prefix'];
-        }
-
-        return null;
+        return $this->config['source_path_prefix'] ?? null;
     }
 
     /**
@@ -133,11 +129,7 @@ class ServerFactory
      */
     public function getCachePathPrefix(): ?string
     {
-        if (isset($this->config['cache_path_prefix'])) {
-            return $this->config['cache_path_prefix'];
-        }
-
-        return null;
+        return $this->config['cache_path_prefix'] ?? null;
     }
 
     /**
@@ -145,11 +137,7 @@ class ServerFactory
      */
     public function getTempDir(): ?string
     {
-        if (isset($this->config['temp_dir'])) {
-            return $this->config['temp_dir'];
-        }
-
-        return null;
+        return $this->config['temp_dir'] ?? null;
     }
 
     /**
@@ -169,11 +157,7 @@ class ServerFactory
      */
     public function getGroupCacheInFolders(): bool
     {
-        if (isset($this->config['group_cache_in_folders'])) {
-            return $this->config['group_cache_in_folders'];
-        }
-
-        return true;
+        return $this->config['group_cache_in_folders'] ?? true;
     }
 
     /**
@@ -183,11 +167,7 @@ class ServerFactory
      */
     public function getCacheWithFileExtensions(): bool
     {
-        if (isset($this->config['cache_with_file_extensions'])) {
-            return $this->config['cache_with_file_extensions'];
-        }
-
-        return false;
+        return $this->config['cache_with_file_extensions'] ?? false;
     }
 
     /**
@@ -217,11 +197,7 @@ class ServerFactory
      */
     public function getWatermarksPathPrefix(): ?string
     {
-        if (isset($this->config['watermarks_path_prefix'])) {
-            return $this->config['watermarks_path_prefix'];
-        }
-
-        return null;
+        return $this->config['watermarks_path_prefix'] ?? null;
     }
 
     /**
@@ -250,15 +226,11 @@ class ServerFactory
             $driver = $this->config['driver'];
         }
 
-        if ('gd' === $driver) {
-            $manager = ImageManager::gd();
-        } elseif ('imagick' === $driver) {
-            $manager = ImageManager::imagick();
-        } else {
-            $manager = ImageManager::withDriver($driver);
-        }
-
-        return $manager;
+        return match ($driver) {
+            'gd' => ImageManager::gd(),
+            'imagick' => ImageManager::imagick(),
+            default => ImageManager::withDriver($driver),
+        };
     }
 
     /**
@@ -294,11 +266,7 @@ class ServerFactory
      */
     public function getMaxImageSize(): ?int
     {
-        if (isset($this->config['max_image_size'])) {
-            return $this->config['max_image_size'];
-        }
-
-        return null;
+        return $this->config['max_image_size'] ?? null;
     }
 
     /**
@@ -308,11 +276,7 @@ class ServerFactory
      */
     public function getDefaults(): array
     {
-        if (isset($this->config['defaults'])) {
-            return $this->config['defaults'];
-        }
-
-        return [];
+        return $this->config['defaults'] ?? [];
     }
 
     /**
@@ -322,11 +286,7 @@ class ServerFactory
      */
     public function getPresets(): array
     {
-        if (isset($this->config['presets'])) {
-            return $this->config['presets'];
-        }
-
-        return [];
+        return $this->config['presets'] ?? [];
     }
 
     /**
@@ -336,11 +296,7 @@ class ServerFactory
      */
     public function getBaseUrl(): ?string
     {
-        if (isset($this->config['base_url'])) {
-            return $this->config['base_url'];
-        }
-
-        return null;
+        return $this->config['base_url'] ?? null;
     }
 
     /**
@@ -350,11 +306,7 @@ class ServerFactory
      */
     public function getResponseFactory(): ?ResponseFactoryInterface
     {
-        if (isset($this->config['response'])) {
-            return $this->config['response'];
-        }
-
-        return null;
+        return $this->config['response'] ?? null;
     }
 
     /**

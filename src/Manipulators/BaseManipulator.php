@@ -30,11 +30,9 @@ abstract class BaseManipulator implements ManipulatorInterface
      */
     public function getParam(string $name): mixed
     {
-        if (array_key_exists($name, $this->params)) {
-            return $this->params[$name];
-        }
-
-        return null;
+        return array_key_exists($name, $this->params)
+            ? $this->params[$name]
+            : null;
     }
 
     /**
