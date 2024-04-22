@@ -2,11 +2,10 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Interfaces\DriverInterface;
+use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\FileExtension;
+use Intervention\Image\MediaType;
 
 class Encode extends BaseManipulator
 {
@@ -15,30 +14,40 @@ class Encode extends BaseManipulator
      *
      * @param ImageInterface $image The source image.
      *
-     * @return ImageInterface The manipulated image.
+     * @return EncodedImageInterface The encoded image.
      */
-    public function run(ImageInterface $image): ImageInterface
+    public function run(ImageInterface $image): EncodedImageInterface
     {
         $format = $this->getFormat($image);
         $quality = $this->getQuality();
-        $driver = $image->driver();
-        $interlace = false;
+        $shouldInterlace = filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN);
 
         if ('pjpg' === $format) {
-            $interlace = true;
-
-            $format = 'jpg';
+            $shouldInterlace = true;
+            $format = FileExtension::JPG->value;
         }
 
-        $image = (new ImageManager($driver))->read(
-            $image->encodeByExtension($format, quality: $quality)->toString()
-        );
-
-        if ($interlace) {
-            $image = $this->interlace($image, $driver);
+        $encoderOptions = ['extension' => $format];
+        switch ($format) {
+            case FileExtension::AVIF->value:
+            case FileExtension::HEIC->value:
+            case FileExtension::AVIF->value:
+            case FileExtension::TIFF->value:
+            case FileExtension::AVIF->value:
+            case FileExtension::JPG->value:
+            case FileExtension::WEBP->value:
+                $encoderOptions['quality'] = $quality;
+            case FileExtension::JPG->value:
+                $encoderOptions['progressive'] = $shouldInterlace;
+                break;
+            case FileExtension::GIF->value:
+            case FileExtension::PNG->value:
+                $encoderOptions['interlaced'] = $shouldInterlace;
+                break;
+            default:
         }
 
-        return $image;
+        return $image->encodeByExtension(...$encoderOptions);
     }
 
     /**
@@ -57,7 +66,7 @@ class Encode extends BaseManipulator
         }
 
         /** @psalm-suppress RiskyTruthyFalsyComparison */
-        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
+        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: FileExtension::JPG->value;
     }
 
     /**
@@ -68,14 +77,15 @@ class Encode extends BaseManipulator
     public static function supportedFormats(): array
     {
         return [
-            'avif' => 'image/avif',
-            'gif' => 'image/gif',
-            'jpg' => 'image/jpeg',
-            'pjpg' => 'image/jpeg',
-            'png' => 'image/png',
-            'webp' => 'image/webp',
-            'tiff' => 'image/tiff',
-            'heic' => 'image/heic',
+            FileExtension::AVIF->value => MediaType::IMAGE_AVIF->value,
+            FileExtension::GIF->value => MediaType::IMAGE_GIF->value,
+            FileExtension::JPEG->value => MediaType::IMAGE_JPEG->value,
+            FileExtension::JPG->value => MediaType::IMAGE_JPEG->value,
+            'pjpg' => MediaType::IMAGE_JPEG->value,
+            FileExtension::PNG->value => MediaType::IMAGE_PNG->value,
+            FileExtension::WEBP->value => MediaType::IMAGE_WEBP->value,
+            FileExtension::TIF->value => MediaType::IMAGE_TIFF->value,
+            FileExtension::HEIC->value => MediaType::IMAGE_HEIC->value,
         ];
     }
 
@@ -89,7 +99,8 @@ class Encode extends BaseManipulator
         $default = 90;
         $q = $this->getParam('q');
 
-        if (!is_numeric($q)
+        if (
+            !is_numeric($q)
             || $q < 0
             || $q > 100
         ) {
@@ -97,18 +108,5 @@ class Encode extends BaseManipulator
         }
 
         return (int) $q;
-    }
-
-    protected function interlace(ImageInterface $image, DriverInterface $driver): ImageInterface
-    {
-        $img = $image->core()->native();
-
-        if ($driver instanceof ImagickDriver) {
-            $img->setInterlaceScheme(\Imagick::INTERLACE_PLANE);
-        } elseif ($driver instanceof GdDriver) {
-            imageinterlace($img, true);
-        }
-
-        return $image;
     }
 }

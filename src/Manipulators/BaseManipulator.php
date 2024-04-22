@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 
 abstract class BaseManipulator implements ManipulatorInterface
@@ -40,5 +41,5 @@ abstract class BaseManipulator implements ManipulatorInterface
      *
      * @return ImageInterface The manipulated image.
      */
-    abstract public function run(ImageInterface $image): ImageInterface;
+    abstract public function run(ImageInterface $image): ImageInterface | EncodedImageInterface;
 }

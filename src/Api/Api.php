@@ -3,6 +3,7 @@
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
+use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface
@@ -91,10 +92,13 @@ class Api implements ApiInterface
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);
-
             $image = $manipulator->run($image);
         }
 
-        return $image->encodeByMediaType()->toString();
+        $encoder = new Encode();
+        $encoder->setParams($params);
+        $encoded = $encoder->run($image);
+
+        return $encoded->toString();
     }
 }

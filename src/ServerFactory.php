@@ -255,7 +255,6 @@ class ServerFactory
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?? ''),
             new Background(),
             new Border(),
-            new Encode(),
         ];
     }
 
