@@ -39,7 +39,7 @@ abstract class BaseManipulator implements ManipulatorInterface
     /**
      * Perform the image manipulation.
      *
-     * @return ImageInterface The manipulated image.
+     * @return ImageInterface|EncodedImageInterface The manipulated image.
      */
     abstract public function run(ImageInterface $image): ImageInterface|EncodedImageInterface;
 }

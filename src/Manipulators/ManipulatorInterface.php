@@ -26,7 +26,7 @@ interface ManipulatorInterface
      *
      * @param ImageInterface $image The source image.
      *
-     * @return ImageInterface The manipulated image.
+     * @return ImageInterface|EncodedImageInterface The manipulated image.
      */
     public function run(ImageInterface $image): ImageInterface|EncodedImageInterface;
 }
