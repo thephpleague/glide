@@ -2,10 +2,8 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\FileExtension;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\MediaType;
 
 class Encode extends BaseManipulator
 {
@@ -24,23 +22,23 @@ class Encode extends BaseManipulator
 
         if ('pjpg' === $format) {
             $shouldInterlace = true;
-            $format = FileExtension::JPG->value;
+            $format = 'jpg';
         }
 
         $encoderOptions = ['extension' => $format];
         switch ($format) {
-            case FileExtension::AVIF->value:
-            case FileExtension::HEIC->value:
-            case FileExtension::TIFF->value:
-            case FileExtension::JPG->value:
-            case FileExtension::WEBP->value:
+            case 'avif':
+            case 'heic':
+            case 'tiff':
+            case 'jpg':
+            case 'webp':
                 $encoderOptions['quality'] = $quality;
                 // no break
-            case FileExtension::JPG->value:
+            case 'jpg':
                 $encoderOptions['progressive'] = $shouldInterlace;
                 break;
-            case FileExtension::GIF->value:
-            case FileExtension::PNG->value:
+            case 'gif':
+            case 'png':
                 $encoderOptions['interlaced'] = $shouldInterlace;
                 break;
             default:
@@ -65,7 +63,7 @@ class Encode extends BaseManipulator
         }
 
         /** @psalm-suppress RiskyTruthyFalsyComparison */
-        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: FileExtension::JPG->value;
+        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
     }
 
     /**
@@ -76,15 +74,14 @@ class Encode extends BaseManipulator
     public static function supportedFormats(): array
     {
         return [
-            FileExtension::AVIF->value => MediaType::IMAGE_AVIF->value,
-            FileExtension::GIF->value => MediaType::IMAGE_GIF->value,
-            FileExtension::JPEG->value => MediaType::IMAGE_JPEG->value,
-            FileExtension::JPG->value => MediaType::IMAGE_JPEG->value,
-            'pjpg' => MediaType::IMAGE_JPEG->value,
-            FileExtension::PNG->value => MediaType::IMAGE_PNG->value,
-            FileExtension::WEBP->value => MediaType::IMAGE_WEBP->value,
-            FileExtension::TIF->value => MediaType::IMAGE_TIFF->value,
-            FileExtension::HEIC->value => MediaType::IMAGE_HEIC->value,
+            'avif' => 'image/avif',
+            'gif' => 'image/gif',
+            'jpg' => 'image/jpeg',
+            'pjpg' => 'image/jpeg',
+            'png' => 'image/png',
+            'webp' => 'image/webp',
+            'tiff' => 'image/tiff',
+            'heic' => 'image/heic',
         ];
     }
 
