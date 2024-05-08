@@ -2,6 +2,7 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\EncodedImage;
 use Intervention\Image\Encoders\MediaTypeEncoder;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -123,6 +124,7 @@ class EncodeTest extends TestCase
         $this->assertSame('png', $this->manipulator->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('gif', $this->manipulator->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('jpg', $this->manipulator->setParams(['fm' => null])->getFormat($image));
+
         $this->assertSame('jpg', $this->manipulator->setParams(['fm' => ''])->getFormat($image));
         $this->assertSame('jpg', $this->manipulator->setParams(['fm' => 'invalid'])->getFormat($image));
 
@@ -188,8 +190,8 @@ class EncodeTest extends TestCase
         $this->assertSame($expected, Encode::supportedFormats());
     }
 
-    protected function getMime(ImageInterface $image)
+    protected function getMime(EncodedImage $image)
     {
-        return $image->origin()->mediaType();
+        return $image->mediaType();
     }
 }
