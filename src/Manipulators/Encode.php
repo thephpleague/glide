@@ -31,9 +31,7 @@ class Encode extends BaseManipulator
         switch ($format) {
             case FileExtension::AVIF->value:
             case FileExtension::HEIC->value:
-            case FileExtension::AVIF->value:
             case FileExtension::TIFF->value:
-            case FileExtension::AVIF->value:
             case FileExtension::JPG->value:
             case FileExtension::WEBP->value:
                 $encoderOptions['quality'] = $quality;
