@@ -30,11 +30,11 @@ class Encode extends BaseManipulator
             case 'avif':
             case 'heic':
             case 'tiff':
-            case 'jpg':
             case 'webp':
                 $encoderOptions['quality'] = $quality;
-                // no break
+                break;
             case 'jpg':
+                $encoderOptions['quality'] = $quality;
                 $encoderOptions['progressive'] = $shouldInterlace;
                 break;
             case 'gif':
