@@ -2,9 +2,9 @@
 
 namespace League\Glide\Manipulators;
 
+use Intervention\Image\FileExtension;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\FileExtension;
 use Intervention\Image\MediaType;
 
 class Encode extends BaseManipulator
@@ -37,6 +37,7 @@ class Encode extends BaseManipulator
             case FileExtension::JPG->value:
             case FileExtension::WEBP->value:
                 $encoderOptions['quality'] = $quality;
+                // no break
             case FileExtension::JPG->value:
                 $encoderOptions['progressive'] = $shouldInterlace;
                 break;
