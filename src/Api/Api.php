@@ -92,11 +92,13 @@ class Api implements ApiInterface
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);
+            /** @var \Intervention\Image\Interfaces\ImageInterface */
             $image = $manipulator->run($image);
         }
 
         $encoder = new Encode();
         $encoder->setParams($params);
+        /** @var \Intervention\Image\Interfaces\EncodedImageInterface */
         $encoded = $encoder->run($image);
 
         return $encoded->toString();
