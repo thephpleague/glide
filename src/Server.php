@@ -349,7 +349,7 @@ class Server
         unset($params['s'], $params['p']);
         ksort($params);
 
-        $cachedPath = md5($sourcePath.'?'.http_build_query($params));
+        $cachedPath = hash('xxh3', $sourcePath.'?'.http_build_query($params));
 
         if ($this->groupCacheInFolders) {
             $cachedPath = $sourcePath.'/'.$cachedPath;
