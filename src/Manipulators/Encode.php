@@ -31,7 +31,7 @@ class Encode extends BaseManipulator
         }
 
         $image = (new ImageManager($driver))->read(
-            $image->encodeByExtension($format, $quality)->toString()
+            $image->encodeByExtension($format, quality: $quality)->toString()
         );
 
         if ($interlace) {
