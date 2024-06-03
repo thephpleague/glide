@@ -2,7 +2,6 @@
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 
 interface ManipulatorInterface
@@ -26,7 +25,7 @@ interface ManipulatorInterface
      *
      * @param ImageInterface $image The source image.
      *
-     * @return ImageInterface|EncodedImageInterface The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(ImageInterface $image): ImageInterface|EncodedImageInterface;
+    public function run(ImageInterface $image): ImageInterface;
 }
