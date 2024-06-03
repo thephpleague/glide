@@ -2,15 +2,14 @@
 
 namespace League\Glide\Api;
 
-use Exception;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 
 /**
  * Encoder Api class to convert a given image to a specific format.
  */
-class Encode {
-
+class Encode
+{
     /**
      * The manipulation params.
      */
@@ -24,6 +23,20 @@ class Encode {
     public function __construct(array $params = [])
     {
         $this->params = $params;
+    }
+
+    /**
+     * Set the manipulation params.
+     *
+     * @param array $params The manipulation params.
+     *
+     * @return $this
+     */
+    public function setParams(array $params)
+    {
+        $this->params = $params;
+
+        return $this;
     }
 
     /**
@@ -71,7 +84,7 @@ class Encode {
                 $encoderOptions['interlaced'] = $shouldInterlace;
                 break;
             default:
-                throw new Exception("Invalid format provided: {$format}");
+                throw new \Exception("Invalid format provided: {$format}");
         }
 
         return $image->encodeByExtension(...$encoderOptions);
