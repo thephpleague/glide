@@ -146,7 +146,13 @@ class EncodeTest extends TestCase
 
     public function testGetFormat(): void
     {
-        $image = \Mockery::mock(ImageInterface::class, function (Mock $mock) {
+        /**
+         * @psalm-suppress MissingClosureParamType
+         */
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            /*
+             * @var Mock $mock
+             */
             $this->assertMediaType($mock, 'image/jpeg')->once();
             $this->assertMediaType($mock, 'image/png')->once();
             $this->assertMediaType($mock, 'image/gif')->once();
@@ -240,12 +246,16 @@ class EncodeTest extends TestCase
 
     /**
      * Creates an assertion to check media type.
-     */
-    /**
+     *
+     * @param Mock   $mock
+     * @param string $mediaType
      * @psalm-suppress MoreSpecificReturnType
      */
-    protected function assertMediaType(Mock $mock, string $mediaType): Mockery\Expectation
+    protected function assertMediaType($mock, $mediaType): Mockery\CompositeExpectation
     {
+        /*
+         * @var Mock $mock
+         */
         /**
          * @psalm-suppress LessSpecificReturnStatement, UndefinedMagicMethod
          */
