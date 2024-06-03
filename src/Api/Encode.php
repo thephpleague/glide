@@ -1,12 +1,41 @@
 <?php
 
-namespace League\Glide\Manipulators;
+namespace League\Glide\Api;
 
+use Exception;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 
-class Encode extends BaseManipulator
-{
+/**
+ * Encoder Api class to convert a given image to a specific format.
+ */
+class Encode {
+
+    /**
+     * The manipulation params.
+     */
+    private $params;
+
+    /**
+     * Class constructor.
+     *
+     * @param array $params the manipulator params
+     */
+    public function __construct(array $params = [])
+    {
+        $this->params = $params;
+    }
+
+    /**
+     * Get a specific manipulation param.
+     */
+    public function getParam(string $name): mixed
+    {
+        return array_key_exists($name, $this->params)
+            ? $this->params[$name]
+            : null;
+    }
+
     /**
      * Perform output image manipulation.
      *
@@ -42,6 +71,7 @@ class Encode extends BaseManipulator
                 $encoderOptions['interlaced'] = $shouldInterlace;
                 break;
             default:
+                throw new Exception("Invalid format provided: {$format}");
         }
 
         return $image->encodeByExtension(...$encoderOptions);
