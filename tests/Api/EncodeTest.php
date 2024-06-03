@@ -249,6 +249,7 @@ class EncodeTest extends TestCase
      *
      * @param Mock   $mock
      * @param string $mediaType
+     *
      * @psalm-suppress MoreSpecificReturnType
      */
     protected function assertMediaType($mock, $mediaType): Mockery\CompositeExpectation
