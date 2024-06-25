@@ -689,7 +689,7 @@ class Server
                 $this->api->run($tmp, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
+            throw new FilesystemException('Could not write the image `'.$cachedPath.'`. ' . $exception->getMessage());
         } finally {
             unlink($tmp);
         }
