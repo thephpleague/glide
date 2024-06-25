@@ -61,7 +61,11 @@ class ApiTest extends TestCase
     public function testRun()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('encodeByMediaType')->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('\Intervention\Image\Origin', function ($mock) {
+                $mock->shouldReceive('mediaType')->andReturn('image/png');
+            }));
+
+            $mock->shouldReceive('encodeByExtension')->with('png')->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
                 $mock->shouldReceive('toString')->andReturn('encoded');
             }));
         });

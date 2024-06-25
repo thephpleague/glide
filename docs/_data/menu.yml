@@ -25,6 +25,7 @@
         Background: '/3.0/api/background/'
         Border: '/3.0/api/border/'
         Encode: '/3.0/api/encode/'
+        Progressive & Interlaced: '/3.0/api/progressive-interlaced/'
 '2.0':
     Getting Started:
         Introduction: '/'
