@@ -234,7 +234,7 @@ class ServerTest extends TestCase
     public function testGetCachePath()
     {
         $this->assertEquals(
-            'image.jpg/e863e008b6f09807c3b0aa3805bc9c63',
+            'image.jpg/382a458ecb704818',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }
@@ -244,7 +244,7 @@ class ServerTest extends TestCase
         $this->server->setGroupCacheInFolders(false);
 
         $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
+            '382a458ecb704818',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }
@@ -252,45 +252,45 @@ class ServerTest extends TestCase
     public function testGetCachePathWithPrefix()
     {
         $this->server->setCachePathPrefix('img/');
-        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('img/image.jpg/a2c14b0b5cf0e5a5', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithSourcePrefix()
     {
         $this->server->setSourcePathPrefix('img/');
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/a2c14b0b5cf0e5a5', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithExtension()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/a2c14b0b5cf0e5a5.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithExtensionAndFmParam()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmParam()
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
     }
 
     public function testGetCachePathWithExtensionAndFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'gif']);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmFromDefaults()
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'pjpg']);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
     public function testGetCachePathWithExtensionAndFmFromPreset()
@@ -301,7 +301,7 @@ class ServerTest extends TestCase
             'fm' => 'gif',
         ]]);
 
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
     }
 
     public function testGetCachePathWithExtensionAndPjpgFmFromPreset()
@@ -312,13 +312,13 @@ class ServerTest extends TestCase
             'fm' => 'pjpg',
         ]]);
 
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
     }
 
     public function testCacheFileExists()
     {
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
-            $mock->shouldReceive('fileExists')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
+            $mock->shouldReceive('fileExists')->with('image.jpg/a2c14b0b5cf0e5a5')->andReturn(true)->once();
         }));
 
         $this->assertTrue($this->server->cacheFileExists('image.jpg', []));
@@ -475,7 +475,7 @@ class ServerTest extends TestCase
     public function testGetImageAsBase64WithUnreadableSource()
     {
         $this->expectException(FilesystemException::class);
-        $this->expectExceptionMessage('Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
+        $this->expectExceptionMessage('Could not read the image `image.jpg/a2c14b0b5cf0e5a5`.');
 
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
@@ -518,7 +518,7 @@ class ServerTest extends TestCase
 
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
-            $mock->shouldReceive('write')->withArgs(['image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content'])->once();
+            $mock->shouldReceive('write')->withArgs(['image.jpg/a2c14b0b5cf0e5a5', 'content'])->once();
         }));
 
         $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
@@ -527,7 +527,7 @@ class ServerTest extends TestCase
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
@@ -541,7 +541,7 @@ class ServerTest extends TestCase
 
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+            $mock->shouldReceive('write')->with('image.jpg/a2c14b0b5cf0e5a5', 'content')->once();
         }));
 
         $this->server->setTempDir(__DIR__);
@@ -551,7 +551,7 @@ class ServerTest extends TestCase
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
@@ -563,7 +563,7 @@ class ServerTest extends TestCase
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
@@ -604,7 +604,7 @@ class ServerTest extends TestCase
     public function testMakeImageWithUnwritableCache()
     {
         $this->expectException(FilesystemException::class);
-        $this->expectExceptionMessage('Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
+        $this->expectExceptionMessage('Could not write the image `image.jpg/a2c14b0b5cf0e5a5`.');
 
         $this->server->setSource(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
