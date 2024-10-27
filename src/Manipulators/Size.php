@@ -25,7 +25,7 @@ class Size extends BaseManipulator
     /**
      * Set the maximum image size.
      *
-     * @param int|null Maximum image size in pixels.
+     * @param int|null $maxImageSize Maximum image size in pixels.
      */
     public function setMaxImageSize(?int $maxImageSize = null): void
     {

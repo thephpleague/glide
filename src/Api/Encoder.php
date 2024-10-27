@@ -67,7 +67,7 @@ class Encoder
             $format = 'jpg';
         }
 
-        $encoderOptions = ['extension' => $format];
+        $encoderOptions = [];
         switch ($format) {
             case 'avif':
             case 'heic':
@@ -87,7 +87,7 @@ class Encoder
                 throw new \Exception("Invalid format provided: {$format}");
         }
 
-        return $image->encodeByExtension(...$encoderOptions);
+        return $image->encodeByExtension($format, ...$encoderOptions);
     }
 
     /**

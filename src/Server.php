@@ -361,8 +361,8 @@ class Server
 
         if ($this->cacheWithFileExtensions) {
             /** @psalm-suppress PossiblyUndefinedArrayOffset */
-            $ext = (isset($params['fm']) ? $params['fm'] : pathinfo($path)['extension']);
-            $ext = ('pjpg' === $ext) ? 'jpg' : $ext;
+            $ext = isset($params['fm']) ? $params['fm'] : pathinfo($path, PATHINFO_EXTENSION);
+            $ext = 'pjpg' === $ext ? 'jpg' : $ext;
             $cachedPath .= '.'.$ext;
         }
 
