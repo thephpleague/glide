@@ -108,7 +108,7 @@ class Api implements ApiInterface
      */
     public function encode(ImageInterface $image, array $params): string
     {
-        $encoder = new Encode($params);
+        $encoder = new Encoder($params);
         $encoded = $encoder->run($image);
 
         return $encoded->toString();

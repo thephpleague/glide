@@ -9,9 +9,9 @@ use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-class EncodeTest extends TestCase
+class EncoderTest extends TestCase
 {
-    private Encode $encoder;
+    private Encoder $encoder;
     private ImageInterface $jpg;
     private ImageInterface $png;
     private ImageInterface $gif;
@@ -45,7 +45,7 @@ class EncodeTest extends TestCase
             );
         }
 
-        $this->encoder = new Encode();
+        $this->encoder = new Encoder();
     }
 
     public function tearDown(): void
@@ -58,7 +58,7 @@ class EncodeTest extends TestCase
         /**
          * @psalm-suppress ArgumentTypeCoercion
          */
-        $this->assertInstanceOf('League\Glide\Api\Encode', $this->encoder);
+        $this->assertInstanceOf(Encoder::class, $this->encoder);
     }
 
     public function testRun(): void
@@ -195,7 +195,7 @@ class EncodeTest extends TestCase
             'heic' => 'image/heic',
         ];
 
-        $this->assertSame($expected, Encode::supportedFormats());
+        $this->assertSame($expected, Encoder::supportedFormats());
     }
 
     protected function getMime(EncodedImageInterface $image): string

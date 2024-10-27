@@ -8,7 +8,7 @@ use Intervention\Image\Interfaces\ImageInterface;
 /**
  * Encoder Api class to convert a given image to a specific format.
  */
-class Encode
+class Encoder
 {
     /**
      * The manipulation params.
