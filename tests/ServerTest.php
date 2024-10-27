@@ -4,6 +4,7 @@ namespace League\Glide;
 
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 class ServerTest extends TestCase
@@ -485,9 +486,7 @@ class ServerTest extends TestCase
         $this->server->getImageAsBase64('image.jpg', []);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testOutputImage()
     {
         $this->server->setCache(\Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {

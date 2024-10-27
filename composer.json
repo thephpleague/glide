@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^10.5 || ^11.0",
         "friendsofphp/php-cs-fixer": "^3.48"
     },
     "autoload": {
