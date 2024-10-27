@@ -5,6 +5,7 @@ namespace League\Glide\Manipulators;
 use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Filesystem\FilesystemException;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
 class WatermarkTest extends TestCase
@@ -80,9 +81,7 @@ class WatermarkTest extends TestCase
         );
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
+    #[DoesNotPerformAssertions]
     public function testGetImage()
     {
         $this->manipulator->getWatermarks()
