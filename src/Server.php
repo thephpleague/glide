@@ -620,24 +620,13 @@ class Server
             throw new FilesystemException('Could not read the image `'.$sourcePath.'`.');
         }
 
-        // We need to write the image to the local disk before
-        // doing any manipulations. This is because EXIF data
-        // can only be read from an actual file.
-        $tmp = tempnam($this->tempDir, 'Glide');
-
-        if (false === file_put_contents($tmp, $source)) {
-            throw new FilesystemException('Unable to write temp file for `'.$sourcePath.'`.');
-        }
-
         try {
             $this->cache->write(
                 $cachedPath,
-                $this->api->run($tmp, $this->getAllParams($params))
+                $this->api->run($source, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
             throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
-        } finally {
-            unlink($tmp);
         }
 
         return $cachedPath;
