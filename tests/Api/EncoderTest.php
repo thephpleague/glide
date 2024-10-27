@@ -151,11 +151,11 @@ class EncoderTest extends TestCase
     {
         $this->assertSame(100, $this->encoder->setParams(['q' => '100'])->getQuality());
         $this->assertSame(100, $this->encoder->setParams(['q' => 100])->getQuality());
-        $this->assertSame(90, $this->encoder->setParams(['q' => null])->getQuality());
-        $this->assertSame(90, $this->encoder->setParams(['q' => 'a'])->getQuality());
+        $this->assertSame(85, $this->encoder->setParams(['q' => null])->getQuality());
+        $this->assertSame(85, $this->encoder->setParams(['q' => 'a'])->getQuality());
         $this->assertSame(50, $this->encoder->setParams(['q' => '50.50'])->getQuality());
-        $this->assertSame(90, $this->encoder->setParams(['q' => '-1'])->getQuality());
-        $this->assertSame(90, $this->encoder->setParams(['q' => '101'])->getQuality());
+        $this->assertSame(85, $this->encoder->setParams(['q' => '-1'])->getQuality());
+        $this->assertSame(85, $this->encoder->setParams(['q' => '101'])->getQuality());
     }
 
     /**

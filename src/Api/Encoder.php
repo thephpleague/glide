@@ -135,7 +135,7 @@ class Encoder
      */
     public function getQuality(): int
     {
-        $default = 90;
+        $default = 85;
         $q = $this->getParam('q');
 
         if (
