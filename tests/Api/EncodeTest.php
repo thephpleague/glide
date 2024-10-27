@@ -7,59 +7,18 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Mockery;
-use Mockery\Mock;
 use PHPUnit\Framework\TestCase;
 
 class EncodeTest extends TestCase
 {
-    /**
-     * @var Encode
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $encoder;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $jpg;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $png;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $gif;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $tif;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $webp;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $avif;
-    /**
-     * @var ImageInterface
-     *
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private $heic;
+    private Encode $encoder;
+    private ImageInterface $jpg;
+    private ImageInterface $png;
+    private ImageInterface $gif;
+    private ImageInterface $tif;
+    private ImageInterface $webp;
+    private ImageInterface $avif;
+    private ImageInterface $heic;
 
     public function setUp(): void
     {

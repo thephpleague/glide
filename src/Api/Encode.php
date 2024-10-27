@@ -13,7 +13,7 @@ class Encode
     /**
      * The manipulation params.
      */
-    private $params;
+    protected array $params;
 
     /**
      * Class constructor.
