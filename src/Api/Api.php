@@ -2,6 +2,7 @@
 
 namespace League\Glide\Api;
 
+use Intervention\Image\Decoders\BinaryImageDecoder;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 use League\Glide\Manipulators\ManipulatorInterface;
@@ -88,7 +89,7 @@ class Api implements ApiInterface
      */
     public function run(string $source, array $params): string
     {
-        $image = $this->imageManager->read($source);
+        $image = $this->imageManager->read($source, BinaryImageDecoder::class);
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);

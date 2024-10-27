@@ -2,7 +2,6 @@
 
 namespace League\Glide;
 
-use Hamcrest\Matchers;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
 use PHPUnit\Framework\TestCase;
@@ -522,8 +521,7 @@ class ServerTest extends TestCase
         }));
 
         $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $tmpDirPattern = Matchers::matchesPattern('~\/?'.sys_get_temp_dir().'.*~');
-            $mock->shouldReceive('run')->withArgs([$tmpDirPattern, []])->andReturn('content')->once();
+            $mock->shouldReceive('run')->withArgs(['content', []])->andReturn('content')->once();
         }));
 
         $this->assertEquals(
@@ -546,8 +544,7 @@ class ServerTest extends TestCase
 
         $this->server->setTempDir(__DIR__);
         $this->server->setApi(\Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $tmpDirPattern = Matchers::matchesPattern('~^'.__DIR__.'.*~');
-            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
+            $mock->shouldReceive('run')->with('content', [])->andReturn('content')->once();
         }));
 
         $this->assertEquals(

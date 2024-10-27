@@ -79,6 +79,9 @@ class ApiTest extends TestCase
 
         $api = new Api($manager, [$manipulator]);
 
-        $this->assertEquals('encoded', $api->run(dirname(__FILE__, 2).'/files/red-pixel.png', []));
+        $this->assertEquals('encoded', $api->run(
+            file_get_contents(dirname(__FILE__, 2).'/files/red-pixel.png'),
+            []
+        ));
     }
 }
