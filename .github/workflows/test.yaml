@@ -58,7 +58,7 @@ jobs:
 
       - name: php-cs-fixer
         run: |
-          vendor/bin/php-cs-fixer fix --dry-run --diff
+          vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
 
   static-analysis:
     runs-on: ubuntu-24.04

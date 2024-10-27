@@ -8,6 +8,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
+        'declare_strict_types' => true,
         'phpdoc_annotation_without_dot' => false,
         'nullable_type_declaration_for_default_null_value' => [
             'use_nullable_type_declaration' => true,
