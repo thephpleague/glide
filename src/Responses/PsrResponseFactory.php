@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Responses;
 
 use League\Flysystem\FilesystemOperator;
