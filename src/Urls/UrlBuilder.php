@@ -74,7 +74,11 @@ class UrlBuilder
             throw new \InvalidArgumentException('Not a valid path.');
         }
 
-        /** @psalm-suppress PossiblyNullArgument, PossiblyUndefinedArrayOffset */
+        /**
+         * @psalm-suppress PossiblyNullArgument, PossiblyUndefinedArrayOffset
+         *
+         * @phpstan-ignore-next-line
+         */
         $parts['path'] = '/'.trim($parts['path'], '/');
 
         if ($this->signature) {

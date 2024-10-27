@@ -12,3 +12,4 @@
 /tests export-ignore
 /CHANGELOG.md export-ignore
 /CONTRIBUTING.md export-ignore
+/phpstan.neon export-ignore

@@ -13,7 +13,7 @@ return (new PhpCsFixer\Config())
             'use_nullable_type_declaration' => true,
         ],
         'phpdoc_to_comment' => [
-            'ignored_tags' => ['psalm-suppress'],
+            'ignored_tags' => ['psalm-suppress', 'phpstan-ignore-line', 'phpstan-ignore-next-line'],
         ],
     ])
     ->setFinder($finder)
