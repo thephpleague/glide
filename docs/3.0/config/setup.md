@@ -77,7 +77,6 @@ $manipulators = [
     new League\Glide\Manipulators\Watermark($watermarks),
     new League\Glide\Manipulators\Background(),
     new League\Glide\Manipulators\Border(),
-    new League\Glide\Manipulators\Encode(),
 ];
 
 // Set API

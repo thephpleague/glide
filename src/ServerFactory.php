@@ -13,7 +13,6 @@ use League\Glide\Manipulators\Border;
 use League\Glide\Manipulators\Brightness;
 use League\Glide\Manipulators\Contrast;
 use League\Glide\Manipulators\Crop;
-use League\Glide\Manipulators\Encode;
 use League\Glide\Manipulators\Filter;
 use League\Glide\Manipulators\Flip;
 use League\Glide\Manipulators\Gamma;
@@ -255,7 +254,6 @@ class ServerFactory
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?? ''),
             new Background(),
             new Border(),
-            new Encode(),
         ];
     }
 
