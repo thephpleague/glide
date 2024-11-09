@@ -61,7 +61,7 @@ class Signature implements SignatureInterface
      *
      * @return string The generated HTTP signature.
      */
-    public function generateSignature(string $path, array $params)
+    public function generateSignature(string $path, array $params): string
     {
         unset($params['s']);
         ksort($params);

@@ -172,7 +172,7 @@ class Size extends BaseManipulator
      *
      * @return int[] The modified width and height.
      */
-    public function applyDpr(int $width, int $height, float $dpr)
+    public function applyDpr(int $width, int $height, float $dpr): array
     {
         $width = $width * $dpr;
         $height = $height * $dpr;

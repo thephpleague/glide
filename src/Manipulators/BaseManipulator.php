@@ -20,7 +20,7 @@ abstract class BaseManipulator implements ManipulatorInterface
      *
      * @return $this
      */
-    public function setParams(array $params)
+    public function setParams(array $params): static
     {
         $this->params = $params;
 
