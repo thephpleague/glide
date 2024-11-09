@@ -16,5 +16,5 @@ interface ResponseFactoryInterface
      *
      * @return mixed The response object.
      */
-    public function create(FilesystemOperator $cache, $path);
+    public function create(FilesystemOperator $cache, string $path);
 }

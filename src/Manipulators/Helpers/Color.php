@@ -112,7 +112,7 @@ class Color
      *
      * @return string The formatted color.
      */
-    public function formatted()
+    public function formatted(): string
     {
         return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$this->alpha.')';
     }

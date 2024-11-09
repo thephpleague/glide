@@ -39,7 +39,7 @@ class PsrResponseFactory implements ResponseFactoryInterface
      *
      * @return ResponseInterface Response object.
      */
-    public function create(FilesystemOperator $cache, $path)
+    public function create(FilesystemOperator $cache, string $path): ResponseInterface
     {
         $stream = $this->streamCallback->__invoke(
             $cache->readStream($path)
