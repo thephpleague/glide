@@ -19,6 +19,7 @@ class EncoderTest extends TestCase
     private ImageInterface $gif;
     private ImageInterface $tif;
     private ImageInterface $webp;
+    private ImageInterface $webpx;
     private ImageInterface $avif;
     private ImageInterface $heic;
 
@@ -38,6 +39,9 @@ class EncoderTest extends TestCase
         if (function_exists('imagecreatefromwebp')) {
             $this->webp = $manager->read(
                 $manager->create(100, 100)->encode(new MediaTypeEncoder('image/webp'))->toFilePointer()
+            );
+            $this->webpx = $manager->read(
+                $manager->create(100, 100)->encode(new MediaTypeEncoder('image/x-webp'))->toFilePointer()
             );
         }
 
@@ -87,6 +91,12 @@ class EncoderTest extends TestCase
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->png)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->gif)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->webp)));
+
+            $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->webpx)));
+            $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->webpx)));
+            $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->webpx)));
+            $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->webpx)));
+            $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->webpx)));
         }
         if (function_exists('imagecreatefromavif')) {
             $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->avif)));
@@ -102,6 +112,7 @@ class EncoderTest extends TestCase
         if (function_exists('imagecreatefromwebp') && function_exists('imagecreatefromavif')) {
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->avif)));
             $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->webp)));
+            $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->webpx)));
         }
     }
 

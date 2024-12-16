@@ -7,6 +7,7 @@ namespace League\Glide\Api;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\MediaType;
 use League\Glide\Manipulators\ManipulatorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -68,6 +69,10 @@ class ApiTest extends TestCase
             }));
 
             $mock->shouldReceive('encodeByExtension')->with('png')->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
+                $mock->shouldReceive('toString')->andReturn('encoded');
+            }));
+
+            $mock->shouldReceive('encodeByMediaType')->with(MediaType::IMAGE_PNG)->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
                 $mock->shouldReceive('toString')->andReturn('encoded');
             }));
         });
