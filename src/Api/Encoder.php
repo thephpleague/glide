@@ -79,14 +79,16 @@ class Encoder
         $fm = (string) $this->getParam('fm');
 
         if ($fm !== '') {
-            return self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
+            $mediaType = self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
+        } else {
+            try {
+                $mediaType = MediaType::tryFrom($image->origin()->mediaType());
+            } catch (\Exception) {
+                $mediaType = MediaType::IMAGE_JPEG;
+            }
         }
 
-        try {
-            return MediaType::tryFrom($image->origin()->mediaType());
-        } catch (\Exception) {
-            return MediaType::IMAGE_JPEG;
-        }
+        return $image->driver()->supports($mediaType) ? $mediaType : throw new \Exception("Unsupported format: {$mediaType->value}");
     }
 
     /**
@@ -116,7 +118,7 @@ class Encoder
     {
         return [
             'avif' => MediaType::IMAGE_AVIF,
-            'bpm' => MediaType::IMAGE_BMP,
+            'bmp' => MediaType::IMAGE_BMP,
             'gif' => MediaType::IMAGE_GIF,
             'heic' => MediaType::IMAGE_HEIC,
             'jpg' => MediaType::IMAGE_JPEG,
