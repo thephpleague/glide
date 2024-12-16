@@ -169,6 +169,8 @@ class Server
      * @param string $path Image path.
      *
      * @return bool Whether the source file exists.
+     *
+     * @throws FileNotFoundException
      */
     public function sourceFileExists(string $path): bool
     {
@@ -328,6 +330,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @return string Cache path.
+     *
+     * @throws FileNotFoundException
      */
     public function getCachePath(string $path, array $params = []): string
     {
@@ -525,6 +529,8 @@ class Server
      * @return mixed Image response.
      *
      * @throws \InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function getImageResponse(string $path, array $params): mixed
     {
@@ -545,6 +551,7 @@ class Server
      *
      * @return string Base64 encoded image.
      *
+     * @throws FileNotFoundException
      * @throws FilesystemException
      */
     public function getImageAsBase64(string $path, array $params): string
@@ -567,6 +574,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @throws \InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function outputImage(string $path, array $params): void
     {
