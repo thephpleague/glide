@@ -6,6 +6,7 @@ namespace League\Glide\Api;
 
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\MediaType;
 
 /**
  * Encoder Api class to convert a given image to a specific format.
@@ -60,36 +61,40 @@ class Encoder
      */
     public function run(ImageInterface $image): EncodedImageInterface
     {
-        $format = $this->getFormat($image);
+        $mediaType = $this->getMediaType($image);
         $quality = $this->getQuality();
         $shouldInterlace = filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN);
 
-        if ('pjpg' === $format) {
-            $shouldInterlace = true;
-            $format = 'jpg';
+        $encoderOptions = array_filter([
+            'quality' => $quality,
+            'interlaced' => $mediaType === MediaType::IMAGE_PNG ? $shouldInterlace : null,
+        ]);
+
+        return $image->encodeByMediaType($mediaType, ...$encoderOptions);
+    }
+
+    public function getMediaType(ImageInterface $image): MediaType
+    {
+        $fm = (string) $this->getParam('fm');
+
+        if ($fm && array_key_exists($fm, static::supportedFormats())) {
+            return match ($fm) {
+                'avif' => MediaType::IMAGE_AVIF,
+                'gif' => MediaType::IMAGE_GIF,
+                'jpg' => MediaType::IMAGE_JPEG,
+                'pjpg' => MediaType::IMAGE_PJPEG,
+                'png' => MediaType::IMAGE_PNG,
+                'webp' => MediaType::IMAGE_WEBP,
+                'tiff' => MediaType::IMAGE_TIFF,
+                'heic' => MediaType::IMAGE_HEIC,
+            };
         }
 
-        $encoderOptions = [];
-        switch ($format) {
-            case 'avif':
-            case 'heic':
-            case 'tiff':
-            case 'webp':
-                $encoderOptions['quality'] = $quality;
-                break;
-            case 'jpg':
-                $encoderOptions['quality'] = $quality;
-                $encoderOptions['progressive'] = $shouldInterlace;
-                break;
-            case 'gif':
-            case 'png':
-                $encoderOptions['interlaced'] = $shouldInterlace;
-                break;
-            default:
-                throw new \Exception("Invalid format provided: {$format}");
+        try {
+            return MediaType::tryFrom($image->origin()->mediaType());
+        } catch (\Exception) {
+            return MediaType::IMAGE_JPEG;
         }
-
-        return $image->encodeByExtension($format, ...$encoderOptions);
     }
 
     /**
@@ -107,8 +112,14 @@ class Encoder
             return $fm;
         }
 
-        /** @psalm-suppress RiskyTruthyFalsyComparison */
-        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
+        try {
+            $format    = MediaType::tryFrom($image->origin()->mediaType())->format();
+            $extension = $format->fileExtension()->value;
+
+            return isset(static::supportedFormats()[$extension]) ? $extension : 'jpg';
+        } catch (\Exception) {
+            return 'jpg';
+        }
     }
 
     /**
