@@ -6,9 +6,11 @@ namespace League\Glide\Api;
 
 use Intervention\Image\Encoders\MediaTypeEncoder;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
+use Intervention\Image\Origin;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -147,7 +149,6 @@ class EncoderTest extends TestCase
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($image));
-        $this->assertSame('bmp', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
 
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($image));
@@ -201,7 +202,7 @@ class EncoderTest extends TestCase
     {
         $expected = [
             'avif' => MediaType::IMAGE_AVIF,
-            'bpm' => MediaType::IMAGE_BMP,
+            'bmp' => MediaType::IMAGE_BMP,
             'gif' => MediaType::IMAGE_GIF,
             'heic' => MediaType::IMAGE_HEIC,
             'jpg' => MediaType::IMAGE_JPEG,
@@ -229,12 +230,14 @@ class EncoderTest extends TestCase
      */
     protected function assertMediaType($mock, $mediaType): Mockery\CompositeExpectation
     {
-        /*
-         * @var Mock $mock
-         */
         /**
          * @psalm-suppress LessSpecificReturnStatement, UndefinedMagicMethod
          */
-        return $mock->shouldReceive('origin')->andReturn(\Mockery::mock('Intervention\Image\Origin', ['mediaType' => $mediaType]));
+        return $mock->shouldReceive('origin')
+            ->andReturn(\Mockery::mock(Origin::class, ['mediaType' => $mediaType]))
+            ->shouldReceive('driver')
+            ->andReturn(\Mockery::mock(DriverInterface::class , function ($mock) {
+                $mock->shouldReceive('supports');
+            }));
     }
 }

@@ -68,7 +68,7 @@ class Encoder
 
         $encoderOptions = array_filter([
             'quality' => $quality,
-            'interlaced' => $mediaType === MediaType::IMAGE_PNG ? $shouldInterlace : null,
+            'interlaced' => MediaType::IMAGE_PNG === $mediaType ? $shouldInterlace : null,
         ]);
 
         return $image->encodeByMediaType($mediaType, ...$encoderOptions);
@@ -78,7 +78,7 @@ class Encoder
     {
         $fm = (string) $this->getParam('fm');
 
-        if ($fm !== '') {
+        if ('' !== $fm) {
             $mediaType = self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
         } else {
             try {
