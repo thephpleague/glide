@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace League\Glide\Api;
 
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
+use Intervention\Image\Origin;
 use League\Glide\Manipulators\ManipulatorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -64,7 +66,7 @@ class ApiTest extends TestCase
     public function testRun()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('\Intervention\Image\Origin', function ($mock) {
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock(Origin::class, function ($mock) {
                 $mock->shouldReceive('mediaType')->andReturn('image/png');
             }));
 
@@ -74,6 +76,10 @@ class ApiTest extends TestCase
 
             $mock->shouldReceive('encodeByMediaType')->with(MediaType::IMAGE_PNG)->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
                 $mock->shouldReceive('toString')->andReturn('encoded');
+            }));
+
+            $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
+                $mock->shouldReceive('supports');
             }));
         });
 

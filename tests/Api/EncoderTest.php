@@ -236,7 +236,7 @@ class EncoderTest extends TestCase
         return $mock->shouldReceive('origin')
             ->andReturn(\Mockery::mock(Origin::class, ['mediaType' => $mediaType]))
             ->shouldReceive('driver')
-            ->andReturn(\Mockery::mock(DriverInterface::class , function ($mock) {
+            ->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
                 $mock->shouldReceive('supports');
             }));
     }
