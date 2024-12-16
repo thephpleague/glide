@@ -8,6 +8,7 @@ use Intervention\Image\Encoders\MediaTypeEncoder;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\MediaType;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
@@ -146,6 +147,7 @@ class EncoderTest extends TestCase
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($image));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => null])->getFormat($image));
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
 
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($image));
@@ -198,14 +200,15 @@ class EncoderTest extends TestCase
     public function testSupportedFormats(): void
     {
         $expected = [
-            'avif' => 'image/avif',
-            'gif' => 'image/gif',
-            'jpg' => 'image/jpeg',
-            'pjpg' => 'image/jpeg',
-            'png' => 'image/png',
-            'webp' => 'image/webp',
-            'tiff' => 'image/tiff',
-            'heic' => 'image/heic',
+            'avif' => MediaType::IMAGE_AVIF,
+            'bpm' => MediaType::IMAGE_BMP,
+            'gif' => MediaType::IMAGE_GIF,
+            'heic' => MediaType::IMAGE_HEIC,
+            'jpg' => MediaType::IMAGE_JPEG,
+            'pjpg' => MediaType::IMAGE_PJPEG,
+            'png' => MediaType::IMAGE_PNG,
+            'tiff' => MediaType::IMAGE_TIFF,
+            'webp' => MediaType::IMAGE_WEBP,
         ];
 
         $this->assertSame($expected, Encoder::supportedFormats());

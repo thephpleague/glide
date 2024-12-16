@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
+use Intervention\Image\Format;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
@@ -77,17 +78,8 @@ class Encoder
     {
         $fm = (string) $this->getParam('fm');
 
-        if ($fm && array_key_exists($fm, static::supportedFormats())) {
-            return match ($fm) {
-                'avif' => MediaType::IMAGE_AVIF,
-                'gif' => MediaType::IMAGE_GIF,
-                'jpg' => MediaType::IMAGE_JPEG,
-                'pjpg' => MediaType::IMAGE_PJPEG,
-                'png' => MediaType::IMAGE_PNG,
-                'webp' => MediaType::IMAGE_WEBP,
-                'tiff' => MediaType::IMAGE_TIFF,
-                'heic' => MediaType::IMAGE_HEIC,
-            };
+        if ($fm !== '') {
+            return self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
         }
 
         try {
@@ -106,17 +98,10 @@ class Encoder
      */
     public function getFormat(ImageInterface $image): string
     {
-        $fm = (string) $this->getParam('fm');
-
-        if ($fm && array_key_exists($fm, static::supportedFormats())) {
-            return $fm;
-        }
-
         try {
-            $format    = MediaType::tryFrom($image->origin()->mediaType())->format();
-            $extension = $format->fileExtension()->value;
+            $mediaType = $this->getMediaType($image);
 
-            return isset(static::supportedFormats()[$extension]) ? $extension : 'jpg';
+            return $mediaType->format()->fileExtension()->value;
         } catch (\Exception) {
             return 'jpg';
         }
@@ -125,19 +110,20 @@ class Encoder
     /**
      * Get a list of supported image formats and MIME types.
      *
-     * @return array<string,string>
+     * @return array<string,MediaType>
      */
     public static function supportedFormats(): array
     {
         return [
-            'avif' => 'image/avif',
-            'gif' => 'image/gif',
-            'jpg' => 'image/jpeg',
-            'pjpg' => 'image/jpeg',
-            'png' => 'image/png',
-            'webp' => 'image/webp',
-            'tiff' => 'image/tiff',
-            'heic' => 'image/heic',
+            'avif' => MediaType::IMAGE_AVIF,
+            'bpm' => MediaType::IMAGE_BMP,
+            'gif' => MediaType::IMAGE_GIF,
+            'heic' => MediaType::IMAGE_HEIC,
+            'jpg' => MediaType::IMAGE_JPEG,
+            'pjpg' => MediaType::IMAGE_PJPEG,
+            'png' => MediaType::IMAGE_PNG,
+            'tiff' => MediaType::IMAGE_TIFF,
+            'webp' => MediaType::IMAGE_WEBP,
         ];
     }
 
