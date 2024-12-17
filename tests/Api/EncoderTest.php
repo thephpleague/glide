@@ -126,6 +126,11 @@ class EncoderTest extends TestCase
         $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/gif')));
         $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/bmp')));
 
+        // Make sure 'fm' parameter takes precedence
+        $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/jpeg')));
+
         // Make sure we keep the current format if no format is provided
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/png')));
@@ -138,10 +143,12 @@ class EncoderTest extends TestCase
 
         if (function_exists('imagecreatefromwebp')) {
             $this->assertSame('webp', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/webp')));
+            $this->assertSame('webp', $this->encoder->setParams(['fm' => 'webp'])->getFormat($this->getImageByMimeType('image/jpeg')));
         }
 
         if (function_exists('imagecreatefromavif')) {
             $this->assertSame('avif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/avif')));
+            $this->assertSame('avif', $this->encoder->setParams(['fm' => 'avif'])->getFormat($this->getImageByMimeType('image/jpeg')));
         }
     }
 
@@ -190,6 +197,23 @@ class EncoderTest extends TestCase
     public function testSupportedFormats(): void
     {
         $expected = [
+            'avif' => 'image/avif',
+            'bmp' => 'image/bmp',
+            'gif' => 'image/gif',
+            'heic' => 'image/heic',
+            'jpg' => 'image/jpeg',
+            'pjpg' => 'image/pjpeg',
+            'png' => 'image/png',
+            'tiff' => 'image/tiff',
+            'webp' => 'image/webp',
+        ];
+
+        $this->assertSame($expected, Encoder::supportedFormats());
+    }
+
+    public function testSupportedMediaTypes(): void
+    {
+        $expected = [
             'avif' => MediaType::IMAGE_AVIF,
             'bmp' => MediaType::IMAGE_BMP,
             'gif' => MediaType::IMAGE_GIF,
@@ -201,7 +225,7 @@ class EncoderTest extends TestCase
             'webp' => MediaType::IMAGE_WEBP,
         ];
 
-        $this->assertSame($expected, Encoder::supportedFormats());
+        $this->assertSame($expected, Encoder::supportedMediaTypes());
     }
 
     protected function getMime(EncodedImageInterface $image): string
@@ -212,12 +236,11 @@ class EncoderTest extends TestCase
     /**
      * Creates an assertion to check media type.
      *
-     * @param Mock   $mock
-     * @param string $mediaType
+     * @param Mockery\Mock $mock
      *
      * @psalm-suppress MoreSpecificReturnType
      */
-    protected function assertMediaType($mock, $mediaType): Mockery\CompositeExpectation
+    protected function assertMediaType($mock, string $mediaType): Mockery\CompositeExpectation
     {
         /**
          * @psalm-suppress LessSpecificReturnStatement, UndefinedMagicMethod

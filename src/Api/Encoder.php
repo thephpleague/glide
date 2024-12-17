@@ -89,7 +89,7 @@ class Encoder
         $fm = (string) $this->getParam('fm');
 
         if ('' !== $fm) {
-            return self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
+            return self::supportedMediaTypes()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
         }
 
         try {
@@ -121,9 +121,19 @@ class Encoder
     /**
      * Get a list of supported image formats and MIME types.
      *
-     * @return array<string,MediaType>
+     * @return array<string,string>
      */
     public static function supportedFormats(): array
+    {
+        return array_map(fn (MediaType $mediaType) => $mediaType->value, self::supportedMediaTypes());
+    }
+
+    /**
+     * Get a list of supported image formats and media types.
+     *
+     * @return array<string,MediaType>
+     */
+    public static function supportedMediaTypes(): array
     {
         return [
             'avif' => MediaType::IMAGE_AVIF,
