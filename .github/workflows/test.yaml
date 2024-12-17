@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -44,7 +44,7 @@ jobs:
         uses: codecov/codecov-action@v3
 
   coding-style:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -61,7 +61,7 @@ jobs:
           vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
 
   static-analysis:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
