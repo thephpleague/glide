@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
+use Intervention\Image\Format;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
@@ -61,18 +62,18 @@ class Encoder
      */
     public function run(ImageInterface $image): EncodedImageInterface
     {
-        $mediaType = $this->getMediaType($image);
+        $encoderOptions = [];
+        $mediaType      = $this->getMediaType($image);
 
         if (MediaType::IMAGE_PJPEG === $mediaType) {
             $encoderOptions['progressive'] = true;
         }
 
-        if (
-            MediaType::IMAGE_PNG !== $mediaType
-            || MediaType::IMAGE_GIF !== $mediaType
-        ) {
+        if ($this->allowsQuality($mediaType)) {
             $encoderOptions['quality'] = $this->getQuality();
-        } else {
+        }
+
+        if ($this->allowsInterlaced($mediaType)) {
             $encoderOptions['interlaced'] = filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN);
         }
 
@@ -82,11 +83,7 @@ class Encoder
     /**
      * Resolve media type.
      *
-     * @param ImageInterface $image
-     *
      * @throws \Exception
-     *
-     * @return MediaType
      */
     public function getMediaType(ImageInterface $image): MediaType
     {
@@ -139,6 +136,38 @@ class Encoder
             'tiff' => MediaType::IMAGE_TIFF,
             'webp' => MediaType::IMAGE_WEBP,
         ];
+    }
+
+    /**
+     * Checks if we can pass the quality parameter to the encoder.
+     */
+    public function allowsQuality(MediaType $mediaType): bool
+    {
+        return !in_array($mediaType, [
+            MediaType::IMAGE_GIF,
+            MediaType::IMAGE_PNG,
+            MediaType::IMAGE_X_PNG,
+            MediaType::IMAGE_BMP,
+            MediaType::IMAGE_MS_BMP,
+            MediaType::IMAGE_X_BITMAP,
+            MediaType::IMAGE_X_BMP,
+            MediaType::IMAGE_X_MS_BMP,
+            MediaType::IMAGE_X_XBITMAP,
+            MediaType::IMAGE_X_WINDOWS_BMP,
+            MediaType::IMAGE_X_WIN_BITMAP,
+        ]);
+    }
+
+    /**
+     * hecks if we can pass the interlaced parameter to the encoder.
+     */
+    public function allowsInterlaced(MediaType $mediaType): bool
+    {
+        return in_array($mediaType, [
+            MediaType::IMAGE_PNG,
+            MediaType::IMAGE_X_PNG,
+            MediaType::IMAGE_GIF,
+        ]);
     }
 
     /**
