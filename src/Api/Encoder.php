@@ -63,7 +63,7 @@ class Encoder
     public function run(ImageInterface $image): EncodedImageInterface
     {
         $encoderOptions = [];
-        $mediaType      = $this->getMediaType($image);
+        $mediaType = $this->getMediaType($image);
 
         if (MediaType::IMAGE_PJPEG === $mediaType) {
             $encoderOptions['progressive'] = true;
@@ -110,9 +110,10 @@ class Encoder
     public function getFormat(ImageInterface $image): string
     {
         try {
-            $mediaType = $this->getMediaType($image);
+            $mediaType  = $this->getMediaType($image);
+            $extensions = $mediaType->format()->fileExtensions();
 
-            return $mediaType->format()->fileExtension()->value;
+            return reset($extensions)->value;
         } catch (\Exception) {
             return 'jpg';
         }
