@@ -25,7 +25,7 @@ interface ManipulatorInterface
     /**
      * Get the names of the manipulator API parameters.
      *
-     * @rerun list<string>
+     * @return list<string>
      */
     public function getApiParams(): array;
 

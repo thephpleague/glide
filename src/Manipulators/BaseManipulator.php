@@ -40,7 +40,7 @@ abstract class BaseManipulator implements ManipulatorInterface
     /**
      * Get the names of the manipulator API parameters.
      *
-     * @rerun list<string>
+     * @return list<string>
      */
     abstract public function getApiParams(): array;
 

@@ -12,7 +12,7 @@ use League\Glide\Manipulators\ManipulatorInterface;
 class Api implements ApiInterface
 {
     public const GLOBAL_API_PARAMS = [
-        'p', // presets
+        'p', // preset
         'q', // quality
         'fm', // format
         's', // signature
@@ -139,15 +139,15 @@ class Api implements ApiInterface
      */
     public function setApiParams(): array
     {
-        $params = [];
+        $this->apiParams = self::GLOBAL_API_PARAMS;
 
-        array_walk($this->manipulators, function (ManipulatorInterface $manipulator) use (&$params) {
+        foreach ($this->manipulators as $manipulator) {
             foreach ($manipulator->getApiParams() as $param) {
-                $params[] = $param;
+                $this->apiParams[] = $param;
             }
-        });
+        }
 
-        return $this->apiParams = array_values(array_unique(array_merge(self::GLOBAL_API_PARAMS, $params)));
+        return $this->apiParams = array_values(array_unique($this->apiParams));
     }
 
     /**
