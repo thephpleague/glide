@@ -62,7 +62,13 @@ class Api implements ApiInterface
      */
     public function setManipulators(array $manipulators): void
     {
-        $this->manipulators = array_filter($manipulators, fn ($manipulator) => $manipulator instanceof ManipulatorInterface);
+        foreach ($manipulators as $manipulator) {
+            if (!($manipulator instanceof ManipulatorInterface)) {
+                throw new \InvalidArgumentException('Not a valid manipulator.');
+            }
+        }
+
+        $this->manipulators = $manipulators; // @phpstan-ignore-line
     }
 
     /**
