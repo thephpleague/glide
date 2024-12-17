@@ -79,16 +79,14 @@ class Encoder
         $fm = (string) $this->getParam('fm');
 
         if ('' !== $fm) {
-            $mediaType = self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
-        } else {
-            try {
-                $mediaType = MediaType::tryFrom($image->origin()->mediaType());
-            } catch (\Exception) {
-                $mediaType = MediaType::IMAGE_JPEG;
-            }
+            return self::supportedFormats()[$fm] ?? throw new \Exception("Invalid format provided: {$fm}");
         }
 
-        return $image->driver()->supports($mediaType) ? $mediaType : throw new \Exception("Unsupported format: {$mediaType->value}");
+        try {
+            return MediaType::tryFrom($image->origin()->mediaType());
+        } catch (\Exception) {
+            return MediaType::IMAGE_JPEG;
+        }
     }
 
     /**
@@ -104,7 +102,8 @@ class Encoder
             $mediaType = $this->getMediaType($image);
 
             return $mediaType->format()->fileExtension()->value;
-        } catch (\Exception) {
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
             return 'jpg';
         }
     }

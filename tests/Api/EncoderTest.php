@@ -121,46 +121,35 @@ class EncoderTest extends TestCase
 
     public function testGetFormat(): void
     {
-        /**
-         * @psalm-suppress MissingClosureParamType
-         */
-        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            /*
-             * @var Mock $mock
-             */
-            $this->assertMediaType($mock, 'image/jpeg')->once();
-            $this->assertMediaType($mock, 'image/png')->once();
-            $this->assertMediaType($mock, 'image/gif')->once();
-            $this->assertMediaType($mock, 'image/bmp')->once();
-            $this->assertMediaType($mock, 'image/jpeg')->twice();
+        $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'jpg'])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($this->getImageByMimeType('image/png')));
+        $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/gif')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/bmp')));
 
-            if (function_exists('imagecreatefromwebp')) {
-                $this->assertMediaType($mock, 'image/webp')->once();
-            }
+        // Make sure we keep the current format if no format is provided
+        $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/png')));
+        $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/gif')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/bmp')));
 
-            if (function_exists('imagecreatefromavif')) {
-                $this->assertMediaType($mock, 'image/avif')->once();
-            }
-        });
-
-        $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'jpg'])->getFormat($image));
-        $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($image));
-        $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($image));
-        $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
-        $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($image));
-        $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($image));
-        $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($image));
-
-        $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($image));
-        $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'invalid'])->getFormat($image));
+        $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('png', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/png')));
+        $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'invalid'])->getFormat($this->getImageByMimeType('image/jpeg')));
 
         if (function_exists('imagecreatefromwebp')) {
-            $this->assertSame('webp', $this->encoder->setParams(['fm' => null])->getFormat($image));
+            $this->assertSame('webp', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/webp')));
         }
 
         if (function_exists('imagecreatefromavif')) {
-            $this->assertSame('avif', $this->encoder->setParams(['fm' => null])->getFormat($image));
+            $this->assertSame('avif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/avif')));
         }
+    }
+
+    protected function getImageByMimeType(string $mimeType): ImageInterface
+    {
+        return \Mockery::mock(ImageInterface::class, function ($mock) use ($mimeType) {
+            $this->assertMediaType($mock, $mimeType);
+        });
     }
 
     public function testGetQuality(): void
