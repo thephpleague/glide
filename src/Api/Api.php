@@ -27,7 +27,7 @@ class Api implements ApiInterface
      * Create API instance.
      *
      * @param ImageManager $imageManager Intervention image manager.
-     * @param array        $manipulators Collection of manipulators.
+     * @param list<ManipulatorInterface|null> $manipulators Collection of manipulators.
      */
     public function __construct(ImageManager $imageManager, array $manipulators)
     {
@@ -58,17 +58,11 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      *
-     * @param ManipulatorInterface[] $manipulators Collection of manipulators.
+     * @param list<ManipulatorInterface|null> $manipulators Collection of manipulators.
      */
     public function setManipulators(array $manipulators): void
     {
-        foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof ManipulatorInterface)) {
-                throw new \InvalidArgumentException('Not a valid manipulator.');
-            }
-        }
-
-        $this->manipulators = $manipulators;
+        $this->manipulators = array_filter($manipulators, fn ($manipulator) => $manipulator instanceof ManipulatorInterface);
     }
 
     /**

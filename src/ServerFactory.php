@@ -18,6 +18,7 @@ use League\Glide\Manipulators\Crop;
 use League\Glide\Manipulators\Filter;
 use League\Glide\Manipulators\Flip;
 use League\Glide\Manipulators\Gamma;
+use League\Glide\Manipulators\ManipulatorInterface;
 use League\Glide\Manipulators\Orientation;
 use League\Glide\Manipulators\Pixelate;
 use League\Glide\Manipulators\Sharpen;
@@ -237,7 +238,7 @@ class ServerFactory
     /**
      * Get image manipulators.
      *
-     * @return array Image manipulators.
+     * @return list<ManipulatorInterface> Image manipulators.
      */
     public function getManipulators(): array
     {

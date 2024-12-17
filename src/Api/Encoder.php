@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
+use Intervention\Image\FileExtension;
 use Intervention\Image\Format;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -110,10 +111,10 @@ class Encoder
     public function getFormat(ImageInterface $image): string
     {
         try {
-            $mediaType  = $this->getMediaType($image);
+            $mediaType = $this->getMediaType($image);
             $extensions = $mediaType->format()->fileExtensions();
 
-            return reset($extensions)->value;
+            return reset($extensions)->value; // @phpstan-ignore-line
         } catch (\Exception) {
             return 'jpg';
         }
