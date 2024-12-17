@@ -105,6 +105,8 @@ class Encoder
      * @param ImageInterface $image The source image.
      *
      * @return string The resolved format.
+     *
+     * @psalm-suppress RiskyTruthyFalsyComparison
      */
     public function getFormat(ImageInterface $image): string
     {
