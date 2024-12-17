@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
-use Intervention\Image\Format;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
@@ -64,19 +63,31 @@ class Encoder
     {
         $mediaType = $this->getMediaType($image);
 
-        $encoderOptions = [
-            'shouldInterlace' => filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN),
-            'quality' => $this->getQuality(),
-            'progressive' => null,
-        ];
-
         if (MediaType::IMAGE_PJPEG === $mediaType) {
             $encoderOptions['progressive'] = true;
+        }
+
+        if (
+            MediaType::IMAGE_PNG !== $mediaType
+            || MediaType::IMAGE_GIF !== $mediaType
+        ) {
+            $encoderOptions['quality'] = $this->getQuality();
+        } else {
+            $encoderOptions['interlaced'] = filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN);
         }
 
         return $mediaType->format()->encoder(...array_filter($encoderOptions))->encode($image);
     }
 
+    /**
+     * Resolve media type.
+     *
+     * @param ImageInterface $image
+     *
+     * @throws \Exception
+     *
+     * @return MediaType
+     */
     public function getMediaType(ImageInterface $image): MediaType
     {
         $fm = (string) $this->getParam('fm');

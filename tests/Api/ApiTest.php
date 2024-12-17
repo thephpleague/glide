@@ -8,7 +8,6 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\DriverInterface;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\MediaType;
 use Intervention\Image\Origin;
 use League\Glide\Manipulators\ManipulatorInterface;
 use PHPUnit\Framework\TestCase;
