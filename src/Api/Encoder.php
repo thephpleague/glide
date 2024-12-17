@@ -110,9 +110,8 @@ class Encoder
     {
         try {
             $mediaType = $this->getMediaType($image);
-            $extensions = $mediaType->format()->fileExtensions();
 
-            return reset($extensions)->value; // @phpstan-ignore-line
+            return array_search($mediaType->value, self::supportedFormats(), true) ?: 'jpg';
         } catch (\Exception) {
             return 'jpg';
         }

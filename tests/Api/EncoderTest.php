@@ -130,12 +130,14 @@ class EncoderTest extends TestCase
         $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('pjpg', $this->encoder->setParams(['fm' => 'pjpg'])->getFormat($this->getImageByMimeType('image/jpeg')));
 
         // Make sure we keep the current format if no format is provided
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/png')));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/gif')));
         $this->assertSame('bmp', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/bmp')));
+        $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'null'])->getFormat($this->getImageByMimeType('image/pjpeg')));
 
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/png')));
