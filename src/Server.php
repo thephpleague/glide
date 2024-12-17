@@ -374,6 +374,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @return string Cache path.
+     *
+     * @throws FileNotFoundException
      */
     public function getCachePath($path, array $params = [])
     {
@@ -575,6 +577,8 @@ class Server
      * @return mixed Image response.
      *
      * @throws InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function getImageResponse($path, array $params)
     {
@@ -595,6 +599,7 @@ class Server
      *
      * @return string Base64 encoded image.
      *
+     * @throws FileNotFoundException
      * @throws FilesystemException
      */
     public function getImageAsBase64($path, array $params)
@@ -617,6 +622,8 @@ class Server
      * @param array  $params Image manipulation params.
      *
      * @throws InvalidArgumentException
+     * @throws FileNotFoundException
+     * @throws FilesystemException
      *
      * @return void
      */
