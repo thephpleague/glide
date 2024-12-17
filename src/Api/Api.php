@@ -26,7 +26,7 @@ class Api implements ApiInterface
     /**
      * Create API instance.
      *
-     * @param ImageManager $imageManager Intervention image manager.
+     * @param ImageManager                    $imageManager Intervention image manager.
      * @param list<ManipulatorInterface|null> $manipulators Collection of manipulators.
      */
     public function __construct(ImageManager $imageManager, array $manipulators)
