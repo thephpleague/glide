@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Gamma extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['gam'];
+    }
+
     /**
      * Perform gamma image manipulation.
      *

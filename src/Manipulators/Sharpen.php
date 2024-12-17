@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Sharpen extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['sharp'];
+    }
+
     /**
      * Perform sharpen image manipulation.
      *

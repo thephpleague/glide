@@ -11,6 +11,13 @@ use League\Glide\Manipulators\ManipulatorInterface;
 
 class Api implements ApiInterface
 {
+    public const GLOBAL_API_PARAMS = [
+        'p', // presets
+        'q', // quality
+        'fm', // format
+        's', // signature
+    ];
+
     /**
      * Intervention image manager.
      */
@@ -24,6 +31,13 @@ class Api implements ApiInterface
     protected array $manipulators;
 
     /**
+     * API parameters.
+     *
+     * @var list<string>
+     */
+    protected array $apiParams;
+
+    /**
      * Create API instance.
      *
      * @param ImageManager $imageManager Intervention image manager.
@@ -33,6 +47,7 @@ class Api implements ApiInterface
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
+        $this->setApiParams();
     }
 
     /**
@@ -115,5 +130,33 @@ class Api implements ApiInterface
         $encoded = $encoder->run($image);
 
         return $encoded->toString();
+    }
+
+    /**
+     * Sets the API parameters for all manipulators.
+     *
+     * @return list<string>
+     */
+    public function setApiParams(): array
+    {
+        $params = [];
+
+        array_walk($this->manipulators, function (ManipulatorInterface $manipulator) use (&$params) {
+            foreach ($manipulator->getApiParams() as $param) {
+                $params[] = $param;
+            }
+        });
+
+        return $this->apiParams = array_values(array_unique(array_merge(self::GLOBAL_API_PARAMS, $params)));
+    }
+
+    /**
+     * Retun the list of API params.
+     *
+     * @return list<string>
+     */
+    public function getApiParams(): array
+    {
+        return $this->apiParams;
     }
 }

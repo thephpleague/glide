@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Pixelate extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['pixel'];
+    }
+
     /**
      * Perform pixelate image manipulation.
      *

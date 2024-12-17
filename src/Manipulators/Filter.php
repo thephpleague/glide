@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Filter extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['filt'];
+    }
+
     /**
      * Perform filter image manipulation.
      *

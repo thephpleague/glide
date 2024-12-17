@@ -38,6 +38,13 @@ abstract class BaseManipulator implements ManipulatorInterface
     }
 
     /**
+     * Get the names of the manipulator API parameters.
+     *
+     * @rerun list<string>
+     */
+    abstract public function getApiParams(): array;
+
+    /**
      * Perform the image manipulation.
      *
      * @return ImageInterface The manipulated image.

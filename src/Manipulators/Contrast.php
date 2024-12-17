@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Contrast extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['con'];
+    }
+
     /**
      * Perform contrast image manipulation.
      *

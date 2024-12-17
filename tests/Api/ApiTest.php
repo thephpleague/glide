@@ -60,6 +60,19 @@ class ApiTest extends TestCase
         $this->assertEquals([], $this->api->getManipulators());
     }
 
+    public function testGetApiParams(): void
+    {
+        $manipulator1 = \Mockery::mock(ManipulatorInterface::class, function ($mock) {
+            $mock->shouldReceive('getApiParams')->andReturn(['foo', 'bar']);
+        });
+        $manipulator2 = \Mockery::mock(ManipulatorInterface::class, function ($mock) {
+            $mock->shouldReceive('getApiParams')->andReturn(['foo', 'baz']);
+        });
+
+        $api = new Api(ImageManager::gd(), [$manipulator1, $manipulator2]);
+        $this->assertEquals(array_merge(Api::GLOBAL_API_PARAMS, ['foo', 'bar', 'baz']), $api->getApiParams());
+    }
+
     public function testRun()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
@@ -77,6 +90,7 @@ class ApiTest extends TestCase
         $manipulator = \Mockery::mock(ManipulatorInterface::class, function ($mock) use ($image) {
             $mock->shouldReceive('setParams')->with([]);
             $mock->shouldReceive('run')->andReturn($image);
+            $mock->shouldReceive('getApiParams')->andReturn(['p', 'q', 'fm', 's']);
         });
 
         $api = new Api($manager, [$manipulator]);

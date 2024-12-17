@@ -366,8 +366,7 @@ class Server
         }
 
         if ($this->cacheWithFileExtensions) {
-            /** @psalm-suppress PossiblyUndefinedArrayOffset */
-            $ext = isset($params['fm']) ? $params['fm'] : pathinfo($path, PATHINFO_EXTENSION);
+            $ext = $params['fm'] ?? pathinfo($path, PATHINFO_EXTENSION);
             $ext = 'pjpg' === $ext ? 'jpg' : $ext;
             $cachedPath .= '.'.$ext;
         }
@@ -481,23 +480,23 @@ class Server
     /**
      * Get all image manipulations params, including defaults and presets.
      *
-     * @param array $params Image manipulation params.
+     * @param array<string, string|int> $params Image manipulation params.
      *
-     * @return array All image manipulation params.
+     * @return array<string, string|int> All image manipulation params.
      */
     public function getAllParams(array $params): array
     {
         $all = $this->defaults;
 
         if (isset($params['p'])) {
-            foreach (explode(',', $params['p']) as $preset) {
+            foreach (explode(',', (string) $params['p']) as $preset) {
                 if (isset($this->presets[$preset])) {
                     $all = array_merge($all, $this->presets[$preset]);
                 }
             }
         }
 
-        return array_merge($all, $params);
+        return array_filter(array_merge($all, $params), fn ($key) => in_array($key, $this->api->getApiParams(), true), ARRAY_FILTER_USE_KEY);
     }
 
     /**
