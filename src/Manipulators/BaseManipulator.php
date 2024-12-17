@@ -36,18 +36,4 @@ abstract class BaseManipulator implements ManipulatorInterface
             ? $this->params[$name]
             : null;
     }
-
-    /**
-     * Get the names of the manipulator API parameters.
-     *
-     * @return list<string>
-     */
-    abstract public function getApiParams(): array;
-
-    /**
-     * Perform the image manipulation.
-     *
-     * @return ImageInterface The manipulated image.
-     */
-    abstract public function run(ImageInterface $image): ImageInterface;
 }
