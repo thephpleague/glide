@@ -183,6 +183,7 @@ class EncoderTest extends TestCase
             );
         }
         $manager = ImageManager::imagick();
+
         // These need to be recreated with the imagick driver selected in the manager
         $this->jpg = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/jpeg'))->toFilePointer());
         $this->png = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/png'))->toFilePointer());
