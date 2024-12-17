@@ -142,9 +142,7 @@ class Api implements ApiInterface
         $this->apiParams = self::GLOBAL_API_PARAMS;
 
         foreach ($this->manipulators as $manipulator) {
-            foreach ($manipulator->getApiParams() as $param) {
-                $this->apiParams[] = $param;
-            }
+            $this->apiParams = array_merge($this->apiParams, $manipulator->getApiParams());
         }
 
         return $this->apiParams = array_values(array_unique($this->apiParams));
