@@ -102,8 +102,7 @@ class Encoder
             $mediaType = $this->getMediaType($image);
 
             return $mediaType->format()->fileExtension()->value;
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
+        } catch (\Exception) {
             return 'jpg';
         }
     }
