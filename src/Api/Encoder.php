@@ -63,15 +63,18 @@ class Encoder
     public function run(ImageInterface $image): EncodedImageInterface
     {
         $mediaType = $this->getMediaType($image);
-        $quality = $this->getQuality();
-        $shouldInterlace = filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN);
 
-        $encoderOptions = array_filter([
-            'quality' => $quality,
-            'interlaced' => MediaType::IMAGE_PNG === $mediaType ? $shouldInterlace : null,
-        ]);
+        $encoderOptions = [
+            'shouldInterlace' => filter_var($this->getParam('interlace'), FILTER_VALIDATE_BOOLEAN),
+            'quality' => $this->getQuality(),
+            'progressive' => null,
+        ];
 
-        return $image->encodeByMediaType($mediaType, ...$encoderOptions);
+        if (MediaType::IMAGE_PJPEG === $mediaType) {
+            $encoderOptions['progressive'] = true;
+        }
+
+        return $mediaType->format()->encoder(...array_filter($encoderOptions))->encode($image);
     }
 
     public function getMediaType(ImageInterface $image): MediaType
@@ -83,8 +86,8 @@ class Encoder
         }
 
         try {
-            return MediaType::tryFrom($image->origin()->mediaType());
-        } catch (\Exception) {
+            return MediaType::from($image->origin()->mediaType());
+        } catch (\ValueError) {
             return MediaType::IMAGE_JPEG;
         }
     }
