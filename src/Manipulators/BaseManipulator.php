@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Interfaces\ImageInterface;
-
 abstract class BaseManipulator implements ManipulatorInterface
 {
     /**
