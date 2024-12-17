@@ -58,17 +58,11 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      *
-     * @param list<ManipulatorInterface|null> $manipulators Collection of manipulators.
+     * @param array $manipulators Collection of manipulators.
      */
     public function setManipulators(array $manipulators): void
     {
-        foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof ManipulatorInterface)) {
-                throw new \InvalidArgumentException('Not a valid manipulator.');
-            }
-        }
-
-        $this->manipulators = $manipulators; // @phpstan-ignore-line
+        $this->manipulators = array_filter($manipulators, fn ($manipulator) => $manipulator instanceof ManipulatorInterface || throw new \InvalidArgumentException('Not a valid manipulator.'));
     }
 
     /**

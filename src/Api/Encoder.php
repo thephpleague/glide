@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
-use Intervention\Image\FileExtension;
-use Intervention\Image\Format;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\MediaType;
