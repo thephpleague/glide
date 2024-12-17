@@ -58,7 +58,7 @@ class Api implements ApiInterface
     /**
      * Set the manipulators.
      *
-     * @param ManipulatorInterface[] $manipulators Collection of manipulators.
+     * @param array $manipulators Collection of manipulators.
      */
     public function setManipulators(array $manipulators): void
     {
