@@ -6,6 +6,7 @@ namespace League\Glide\Api;
 
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\MediaType;
 
 /**
  * Encoder Api class to convert a given image to a specific format.
@@ -102,13 +103,18 @@ class Encoder
     public function getFormat(ImageInterface $image): string
     {
         $fm = (string) $this->getParam('fm');
-
-        if ($fm && array_key_exists($fm, static::supportedFormats())) {
-            return $fm;
+        if ($fm) {
+            return array_key_exists($fm, static::supportedFormats()) ? $fm : 'jpg';
         }
 
-        /** @psalm-suppress RiskyTruthyFalsyComparison */
-        return array_search($image->origin()->mediaType(), static::supportedFormats(), true) ?: 'jpg';
+        $mediaType = MediaType::tryFrom($image->origin()->mediaType());
+        if (null === $mediaType) {
+            return 'jpg';
+        }
+
+        $fm = $mediaType->format()->fileExtension()->value;
+
+        return array_key_exists($fm, static::supportedFormats()) ? $fm : 'jpg';
     }
 
     /**
