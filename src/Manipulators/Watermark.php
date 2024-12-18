@@ -33,6 +33,11 @@ class Watermark extends BaseManipulator
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
     }
 
+    public function getApiParams(): array
+    {
+        return ['mark', 'markw', 'markh', 'markx', 'marky', 'markpad', 'markfit', 'markpos', 'markalpha', 'dpr'];
+    }
+
     /**
      * Set the watermarks file system.
      *

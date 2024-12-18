@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Crop extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['crop'];
+    }
+
     /**
      * Perform crop image manipulation.
      *

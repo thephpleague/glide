@@ -11,6 +11,11 @@ use League\Glide\Manipulators\Helpers\Dimension;
 
 class Border extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['border'];
+    }
+
     /**
      * Perform border image manipulation.
      *
@@ -50,8 +55,8 @@ class Border extends BaseManipulator
         $values = explode(',', $border);
 
         $width = $this->getWidth($image, $this->getDpr(), $values[0]);
-        $color = $this->getColor(isset($values[1]) ? $values[1] : 'ffffff');
-        $method = $this->getMethod(isset($values[2]) ? $values[2] : 'overlay');
+        $color = $this->getColor($values[1] ?? 'ffffff');
+        $method = $this->getMethod($values[2] ?? 'overlay');
 
         if (null !== $width) {
             return [$width, $color, $method];

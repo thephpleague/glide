@@ -24,6 +24,11 @@ class Size extends BaseManipulator
         $this->maxImageSize = $maxImageSize;
     }
 
+    public function getApiParams(): array
+    {
+        return ['w', 'f', 'fit', 'dpr'];
+    }
+
     /**
      * Set the maximum image size.
      *
@@ -427,7 +432,7 @@ class Size extends BaseManipulator
         }
 
         if (preg_match('/^crop-([\d]{1,3})-([\d]{1,3})(?:-([\d]{1,3}(?:\.\d+)?))*$/', $fit, $matches)) {
-            $matches[3] = isset($matches[3]) ? $matches[3] : 1;
+            $matches[3] = $matches[3] ?? 1;
 
             if ($matches[1] > 100 || $matches[2] > 100 || $matches[3] > 100) {
                 return [50, 50, 1.0];

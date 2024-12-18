@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Flip extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['flip'];
+    }
+
     /**
      * Perform flip image manipulation.
      *

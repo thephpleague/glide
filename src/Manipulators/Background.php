@@ -10,6 +10,11 @@ use League\Glide\Manipulators\Helpers\Color;
 
 class Background extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['bg'];
+    }
+
     /**
      * Perform background image manipulation.
      *

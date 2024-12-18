@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Orientation extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['or'];
+    }
+
     /**
      * Perform orientation image manipulation.
      *

@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Blur extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['blur'];
+    }
+
     /**
      * Perform blur image manipulation.
      *

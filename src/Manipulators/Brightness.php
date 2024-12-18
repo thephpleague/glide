@@ -8,6 +8,11 @@ use Intervention\Image\Interfaces\ImageInterface;
 
 class Brightness extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['bri'];
+    }
+
     /**
      * Perform brightness image manipulation.
      *
