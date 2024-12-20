@@ -35,7 +35,7 @@ class Watermark extends BaseManipulator
 
     public function getApiParams(): array
     {
-        return ['mark', 'markw', 'markh', 'markx', 'marky', 'markpad', 'markfit', 'markpos', 'markalpha', 'dpr'];
+        return ['mark', 'markw', 'markh', 'markx', 'marky', 'markpad', 'markfit', 'markpos', 'markalpha', 'dpr', 'w', 'h'];
     }
 
     /**

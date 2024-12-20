@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
 {
-    private $api;
+    private Api $api;
 
     public function setUp(): void
     {
@@ -24,30 +24,30 @@ class ApiTest extends TestCase
         \Mockery::close();
     }
 
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
         $this->assertInstanceOf(Api::class, $this->api);
     }
 
-    public function testSetImageManager()
+    public function testSetImageManager(): void
     {
         $this->api->setImageManager(ImageManager::gd());
         $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
-    public function testGetImageManager()
+    public function testGetImageManager(): void
     {
         $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
-    public function testSetManipulators()
+    public function testSetManipulators(): void
     {
         $this->api->setManipulators([\Mockery::mock(ManipulatorInterface::class)]);
         $manipulators = $this->api->getManipulators();
         $this->assertInstanceOf(ManipulatorInterface::class, $manipulators[0]);
     }
 
-    public function testSetInvalidManipulator()
+    public function testSetInvalidManipulator(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Not a valid manipulator.');
@@ -55,7 +55,7 @@ class ApiTest extends TestCase
         $this->api->setManipulators([new \stdClass()]);
     }
 
-    public function testGetManipulators()
+    public function testGetManipulators(): void
     {
         $this->assertEquals([], $this->api->getManipulators());
     }
@@ -73,7 +73,7 @@ class ApiTest extends TestCase
         $this->assertEquals(array_merge(Api::GLOBAL_API_PARAMS, ['foo', 'bar', 'baz']), $api->getApiParams());
     }
 
-    public function testRun()
+    public function testRun(): void
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('origin')->andReturn(\Mockery::mock('\Intervention\Image\Origin', function ($mock) {
@@ -96,7 +96,7 @@ class ApiTest extends TestCase
         $api = new Api($manager, [$manipulator]);
 
         $this->assertEquals('encoded', $api->run(
-            file_get_contents(dirname(__FILE__, 2).'/files/red-pixel.png'),
+            (string) file_get_contents(dirname(__FILE__, 2).'/files/red-pixel.png'),
             []
         ));
     }

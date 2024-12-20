@@ -26,7 +26,7 @@ class Size extends BaseManipulator
 
     public function getApiParams(): array
     {
-        return ['w', 'f', 'fit', 'dpr'];
+        return ['w', 'h', 'fit', 'dpr'];
     }
 
     /**
