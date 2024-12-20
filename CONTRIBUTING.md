@@ -17,7 +17,30 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 ## Running Tests
 
 ``` bash
-$ phpunit
+## Local environment
+$ ./vendor/bin/phpunit
+
+## Docker
+$ docker compose run --rm tests
+```
+## Statis Analysis
+
+``` bash
+## Local environment
+$ ./vendor/bin/phpstan
+
+## Docker
+$ docker compose run --rm analysis
+```
+
+## Code standards
+
+``` bash
+## Local environment
+$ ./vendor/bin/php-cs-fixer fix --allow-risky=yes
+
+## Docker
+$ docker compose run --rm cs
 ```
 
 **Happy coding**!
