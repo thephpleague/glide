@@ -20,7 +20,7 @@ abstract class BaseManipulator implements ManipulatorInterface
      */
     public function setParams(array $params): static
     {
-        $this->params = $params;
+        $this->params = array_filter($params, fn (string $key): bool => in_array($key, $this->getApiParams()), ARRAY_FILTER_USE_KEY);
 
         return $this;
     }
@@ -30,8 +30,6 @@ abstract class BaseManipulator implements ManipulatorInterface
      */
     public function getParam(string $name): mixed
     {
-        return array_key_exists($name, $this->params)
-            ? $this->params[$name]
-            : null;
+        return $this->params[$name] ?? null;
     }
 }

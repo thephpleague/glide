@@ -13,7 +13,7 @@ class Border extends BaseManipulator
 {
     public function getApiParams(): array
     {
-        return ['border'];
+        return ['border', 'dpr'];
     }
 
     /**
