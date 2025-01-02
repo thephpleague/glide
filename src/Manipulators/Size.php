@@ -107,7 +107,7 @@ class Size extends BaseManipulator
     {
         $fit = (string) $this->getParam('fit');
 
-        if (in_array($fit, ['contain', 'fill', 'max', 'stretch', 'fill-max'], true)) {
+        if (in_array($fit, ['contain', 'fill', 'max', 'stretch', 'fill-max', 'cover'], true)) {
             return $fit;
         }
 
