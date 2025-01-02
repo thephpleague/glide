@@ -333,71 +333,7 @@ class Size extends BaseManipulator
      */
     public function runCropResize(ImageInterface $image, int $width, int $height): ImageInterface
     {
-        [$resize_width, $resize_height] = $this->resolveCropResizeDimensions($image, $width, $height);
-
-        $zoom = $this->getCrop()[2];
-
-        $image->scale((int) round($resize_width * $zoom), (int) round($resize_height * $zoom));
-
-        [$offset_x, $offset_y] = $this->resolveCropOffset($image, $width, $height);
-
-        return $image->crop($width, $height, $offset_x, $offset_y);
-    }
-
-    /**
-     * Resolve the crop resize dimensions.
-     *
-     * @param ImageInterface $image  The source image.
-     * @param int            $width  The width.
-     * @param int            $height The height.
-     *
-     * @return array The resize dimensions.
-     */
-    public function resolveCropResizeDimensions(ImageInterface $image, int $width, int $height): array
-    {
-        if ($height > $width * ($image->height() / $image->width())) {
-            return [$height * ($image->width() / $image->height()), $height];
-        }
-
-        return [$width, $width * ($image->height() / $image->width())];
-    }
-
-    /**
-     * Resolve the crop offset.
-     *
-     * @param ImageInterface $image  The source image.
-     * @param int            $width  The width.
-     * @param int            $height The height.
-     *
-     * @return array The crop offset.
-     */
-    public function resolveCropOffset(ImageInterface $image, int $width, int $height): array
-    {
-        [$offset_percentage_x, $offset_percentage_y] = $this->getCrop();
-
-        $offset_x = (int) (($image->width() * $offset_percentage_x / 100) - ($width / 2));
-        $offset_y = (int) (($image->height() * $offset_percentage_y / 100) - ($height / 2));
-
-        $max_offset_x = $image->width() - $width;
-        $max_offset_y = $image->height() - $height;
-
-        if ($offset_x < 0) {
-            $offset_x = 0;
-        }
-
-        if ($offset_y < 0) {
-            $offset_y = 0;
-        }
-
-        if ($offset_x > $max_offset_x) {
-            $offset_x = $max_offset_x;
-        }
-
-        if ($offset_y > $max_offset_y) {
-            $offset_y = $max_offset_y;
-        }
-
-        return [$offset_x, $offset_y];
+        return $image->cover($width, $height);
     }
 
     /**
