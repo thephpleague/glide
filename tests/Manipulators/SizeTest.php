@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SizeTest extends TestCase
 {
-    private $manipulator;
+    private Size $manipulator;
 
     public function setUp(): void
     {
@@ -21,9 +21,9 @@ class SizeTest extends TestCase
         \Mockery::close();
     }
 
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
-        $this->assertInstanceOf('League\Glide\Manipulators\Size', $this->manipulator);
+        $this->assertInstanceOf(Size::class, $this->manipulator);
     }
 
     public function testSetMaxImageSize()
@@ -76,7 +76,8 @@ class SizeTest extends TestCase
         $this->assertSame('fill-max', $this->manipulator->setParams(['fit' => 'fill-max'])->getFit());
         $this->assertSame('max', $this->manipulator->setParams(['fit' => 'max'])->getFit());
         $this->assertSame('stretch', $this->manipulator->setParams(['fit' => 'stretch'])->getFit());
-        $this->assertSame('crop', $this->manipulator->setParams(['fit' => 'crop'])->getFit());
+        $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop'])->getFit());
+        $this->assertSame('crop', $this->manipulator->setParams(['fit' => 'crop-27-75'])->getFit());
         $this->assertSame('contain', $this->manipulator->setParams(['fit' => 'invalid'])->getFit());
     }
 
@@ -188,6 +189,11 @@ class SizeTest extends TestCase
 
         $this->assertInstanceOf(
             ImageInterface::class,
+            $this->manipulator->runResize($image, 'crop-top-right', 100, 100)
+        );
+
+        $this->assertInstanceOf(
+            ImageInterface::class,
             $this->manipulator->runResize($image, 'invalid', 100, 100)
         );
     }
@@ -251,7 +257,23 @@ class SizeTest extends TestCase
 
         $this->assertInstanceOf(
             ImageInterface::class,
-            $this->manipulator->runCropResize($image, 100, 100, 'center')
+            $this->manipulator->runCropResize($image, 100, 100)
+        );
+    }
+
+    public function testRunCoverResizePosition()
+    {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100);
+            $mock->shouldReceive('height')->andReturn(100);
+            $mock->shouldReceive('cover')->with(50, 50, 'top-left')->andReturn($mock)->once();
+        });
+
+        $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-top-left']);
+
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->run($image)
         );
     }
 
