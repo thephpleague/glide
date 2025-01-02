@@ -78,9 +78,10 @@ class SizeTest extends TestCase
         $this->assertSame('stretch', $this->manipulator->setParams(['fit' => 'stretch'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'cover'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop'])->getFit());
+        $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop-bottom'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop-top-left'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop-center'])->getFit());
-        $this->assertSame('crop', $this->manipulator->setParams(['fit' => 'crop-27-75'])->getFit());
+        $this->assertSame('crop', $this->manipulator->setParams(['fit' => 'crop-25-75'])->getFit());
         $this->assertSame('contain', $this->manipulator->setParams(['fit' => 'invalid'])->getFit());
     }
 
@@ -286,13 +287,23 @@ class SizeTest extends TestCase
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
             $mock->shouldReceive('cover')->with(50, 50, 'top-left')->andReturn($mock)->once();
+            $mock->shouldReceive('cover')->with(50, 50, 'bottom')->andReturn($mock)->once();
+            $mock->shouldReceive('cover')->with(50, 50, 'bottom-right')->andReturn($mock)->once();
         });
 
         $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-top-left']);
 
         $this->assertInstanceOf(
             ImageInterface::class,
-            $this->manipulator->run($image)
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-top-left'])->run($image)
+        );
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-bottom'])->run($image)
+        );
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-bottom-right'])->run($image)
         );
     }
 
