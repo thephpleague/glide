@@ -264,6 +264,22 @@ class SizeTest extends TestCase
         );
     }
 
+    public function testRunCoverResize()
+    {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('width')->andReturn(100);
+            $mock->shouldReceive('height')->andReturn(100);
+            $mock->shouldReceive('cover')->with(50, 50, 'center')->andReturn($mock)->once();
+        });
+
+        $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop']);
+
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->run($image)
+        );
+    }
+
     public function testRunCoverResizePosition()
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {

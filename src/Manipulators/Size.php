@@ -366,7 +366,9 @@ class Size extends BaseManipulator
     {
         $position ??= str_replace('crop-', '', (string) $this->getParam('fit'));
 
-        return $image->cover($width, $height, $position ?? 'center');
+        $position = empty($position) || in_array($position, ['crop', 'cover']) ? 'center' : $position;
+
+        return $image->cover($width, $height, $position);
     }
 
     /**
