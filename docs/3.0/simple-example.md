@@ -16,7 +16,7 @@ In your templates simply define how the image will be manipulated. Using Glide's
 <h1><?=$user->name?></h1>
 
 <!-- display profile image cropped to 300x400 -->
-<img src="/img/users/<?=$user->id?>.jpg?w=300&h=400&fit=crop">
+<img src="/img/users/<?=$user->id?>.jpg?w=300&h=400&fit=cover">
 ~~~
 
 <p class="message-notice">For simplicity this example has omitted HTTP signatures, however in a production environment it's very important to <a href="/2.0/config/security/">secure your images</a>.</p>

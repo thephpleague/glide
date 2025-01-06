@@ -111,7 +111,7 @@ class Size extends BaseManipulator
             return $fit;
         }
 
-        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right?)*$/', $fit)) {
+        if (preg_match('/^(crop|cover)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right?)*$/', $fit)) {
             return 'cover';
         }
 
@@ -364,7 +364,7 @@ class Size extends BaseManipulator
      */
     public function runCoverResize(ImageInterface $image, int $width, int $height, ?string $position = null): ImageInterface
     {
-        $position ??= str_replace('crop-', '', (string) $this->getParam('fit'));
+        $position ??= str_replace(['crop-', 'cover-'], '', (string) $this->getParam('fit'));
 
         $position = empty($position) || in_array($position, ['crop', 'cover']) ? 'center' : $position;
 

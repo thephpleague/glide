@@ -77,6 +77,8 @@ class SizeTest extends TestCase
         $this->assertSame('max', $this->manipulator->setParams(['fit' => 'max'])->getFit());
         $this->assertSame('stretch', $this->manipulator->setParams(['fit' => 'stretch'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'cover'])->getFit());
+        $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'cover-top-left'])->getFit());
+        $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'cover-center'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop-bottom'])->getFit());
         $this->assertSame('cover', $this->manipulator->setParams(['fit' => 'crop-top-left'])->getFit());
@@ -270,14 +272,17 @@ class SizeTest extends TestCase
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
-            $mock->shouldReceive('cover')->with(50, 50, 'center')->andReturn($mock)->once();
+            $mock->shouldReceive('cover')->with(50, 50, 'center')->andReturn($mock)->twice();
         });
-
-        $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop']);
 
         $this->assertInstanceOf(
             ImageInterface::class,
-            $this->manipulator->run($image)
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'cover'])->run($image)
+        );
+
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop'])->run($image)
         );
     }
 
@@ -286,16 +291,18 @@ class SizeTest extends TestCase
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
-            $mock->shouldReceive('cover')->with(50, 50, 'top-left')->andReturn($mock)->once();
+            $mock->shouldReceive('cover')->with(50, 50, 'top-left')->andReturn($mock)->twice();
             $mock->shouldReceive('cover')->with(50, 50, 'bottom')->andReturn($mock)->once();
             $mock->shouldReceive('cover')->with(50, 50, 'bottom-right')->andReturn($mock)->once();
         });
 
-        $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-top-left']);
-
         $this->assertInstanceOf(
             ImageInterface::class,
             $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'crop-top-left'])->run($image)
+        );
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->setParams(['w' => 50, 'h' => 50, 'fit' => 'cover-top-left'])->run($image)
         );
         $this->assertInstanceOf(
             ImageInterface::class,

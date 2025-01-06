@@ -42,12 +42,12 @@ $server = League\Glide\ServerFactory::create([
         'small' => [
             'w' => 200,
             'h' => 200,
-            'fit' => 'crop',
+            'fit' => 'cover',
         ],
         'medium' => [
             'w' => 600,
             'h' => 400,
-            'fit' => 'crop',
+            'fit' => 'cover',
         ]
     ]
 ]);
@@ -57,12 +57,12 @@ $server->setPresets([
     'small' => [
         'w' => 200,
         'h' => 200,
-        'fit' => 'crop',
+        'fit' => 'cover',
     ],
     'medium' => [
         'w' => 600,
         'h' => 400,
-        'fit' => 'crop',
+        'fit' => 'cover',
     ]
 ]);
 ~~~
