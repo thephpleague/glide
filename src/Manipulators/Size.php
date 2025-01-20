@@ -107,11 +107,15 @@ class Size extends BaseManipulator
     {
         $fit = (string) $this->getParam('fit');
 
-        if (in_array($fit, ['contain', 'fill', 'max', 'stretch', 'fill-max'], true)) {
+        if (in_array($fit, ['contain', 'fill', 'max', 'stretch', 'fill-max', 'cover'], true)) {
             return $fit;
         }
 
-        if (preg_match('/^(crop)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right|-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $fit)) {
+        if (preg_match('/^(crop|cover)(-top-left|-top|-top-right|-left|-center|-right|-bottom-left|-bottom|-bottom-right?)*$/', $fit)) {
+            return 'cover';
+        }
+
+        if (preg_match('/^(crop)(-[\d]{1,3}-[\d]{1,3}(?:-[\d]{1,3}(?:\.\d+)?)?)*$/', $fit)) {
             return 'crop';
         }
 
@@ -245,6 +249,10 @@ class Size extends BaseManipulator
             return $this->runStretchResize($image, $width, $height);
         }
 
+        if ('cover' === $fit) {
+            return $this->runCoverResize($image, $width, $height);
+        }
+
         if ('crop' === $fit) {
             return $this->runCropResize($image, $width, $height);
         }
@@ -342,6 +350,25 @@ class Size extends BaseManipulator
         [$offset_x, $offset_y] = $this->resolveCropOffset($image, $width, $height);
 
         return $image->crop($width, $height, $offset_x, $offset_y);
+    }
+
+    /**
+     * Perform crop resize image manipulation.
+     *
+     * @param ImageInterface $image    The source image.
+     * @param int            $width    The width.
+     * @param int            $height   The height.
+     * @param ?string        $position The position of the crop
+     *
+     * @return ImageInterface The manipulated image.
+     */
+    public function runCoverResize(ImageInterface $image, int $width, int $height, ?string $position = null): ImageInterface
+    {
+        $position ??= str_replace(['crop-', 'cover-'], '', (string) $this->getParam('fit'));
+
+        $position = empty($position) || in_array($position, ['crop', 'cover']) ? 'center' : $position;
+
+        return $image->cover($width, $height, $position);
     }
 
     /**

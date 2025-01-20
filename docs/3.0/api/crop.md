@@ -5,25 +5,25 @@ title: Crop
 
 # Crop
 
-## Fit `fit=crop`
+## Fit `fit=cover` - Crop to cover the dimensions
 
 Resizes the image to fill the width and height boundaries and crops any excess image data. The resulting image will match the width and height constraints without distorting the image.
 
 ~~~ html
-<img src="kayaks.jpg?w=300&h=300&fit=crop">
+<img src="kayaks.jpg?w=300&h=300&fit=cover">
 ~~~
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop)
 
 ### Crop Position
 
-You can also set where the image is cropped by adding a crop position. Accepts `crop-top-left`, `crop-top`, `crop-top-right`, `crop-left`, `crop-center`, `crop-right`, `crop-bottom-left`, `crop-bottom` or `crop-bottom-right`. Default is `crop-center`, and is the same as `crop`.
+You can also set where the image is cropped by adding a crop position. Accepts `cover-top-left`, `cover-top`, `cover-top-right`, `cover-left`, `cover-center`, `cover-right`, `cover-bottom-left`, `cover-bottom` or `cover-bottom-right`. Default is `cover-center`, and is the same as `crop`.
 
 ~~~ html
-<img src="kayaks.jpg?w=300&h=300&fit=crop-left">
+<img src="kayaks.jpg?w=300&h=300&fit=cover-left">
 ~~~
 
-### Crop Focal Point
+## Fit `fit=crop-x%-y%` - Crop based on Focal Point
 
 In addition to the crop position, you can be more specific about the exact crop position using a focal point. This is defined using two offset percentages: `crop-x%-y%`.
 
