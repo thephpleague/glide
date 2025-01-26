@@ -10,7 +10,7 @@ title: Introduction
 [![Source Code](https://img.shields.io/badge/github-thephpleague/glide-blue.svg?style=flat-square)](https://github.com/thephpleague/glide)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/glide.svg?style=flat-square)](https://github.com/thephpleague/glide/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/glide/blob/master/LICENSE)<br>
-[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/glide/glide/master?style=flat-square)](https://github.com/thephpleague/glide/actions/workflows/test.yaml?query=branch%3Amaster++)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/thephpleague/glide/test.yaml?style=flat-square&branch=master)](https://github.com/thephpleague/glide/actions/workflows/test.yaml?query=branch%3Amaster++)
 [![Code Coverage](https://img.shields.io/codecov/c/github/thephpleague/glide/master?style=flat-square)](https://app.codecov.io/gh/thephpleague/glide/)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/glide.svg?style=flat-square)](https://packagist.org/packages/league/glide)
 
@@ -25,7 +25,7 @@ Glide is a wonderfully easy on-demand image manipulation library written in PHP.
 - Adjust, resize and add effects to images using a simple HTTP based API.
 - Manipulated images are automatically cached and served with far-future expires headers.
 - Create your own image processing server or integrate Glide directly into your app.
-- Supports both the [GD](http://php.net/manual/en/book.image.php) library and the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension.
+- Supports the [GD](http://php.net/manual/en/book.image.php) library, the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension and [libvips](https://github.com/libvips/php-vips) PHP extension.
 - Supports many response methods, including [PSR-7](http://www.php-fig.org/psr/psr-7/), [HttpFoundation](http://symfony.com/doc/current/components/http_foundation/introduction.html) and more.
 - Ability to secure image URLs using HTTP signatures.
 - Works with many different file systems, thanks to the [Flysystem](http://flysystem.thephpleague.com/) library.
