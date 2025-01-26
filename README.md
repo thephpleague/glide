@@ -19,7 +19,7 @@ Glide is a wonderfully easy on-demand image manipulation library written in PHP.
 - Adjust, resize and add effects to images using a simple HTTP based API.
 - Manipulated images are automatically cached and served with far-future expires headers.
 - Create your own image processing server or integrate Glide directly into your app.
-- Supports both the [GD](http://php.net/manual/en/book.image.php) library and the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension.
+- Supports the [GD](http://php.net/manual/en/book.image.php) library, the [Imagick](http://php.net/manual/en/book.imagick.php) PHP extension and [libvips](https://github.com/libvips/php-vips) PHP extension.
 - Supports many response methods, including PSR-7, HttpFoundation and more.
 - Ability to secure image URLs using HTTP signatures.
 - Works with many different file systems, thanks to the [Flysystem](http://flysystem.thephpleague.com/) library.
