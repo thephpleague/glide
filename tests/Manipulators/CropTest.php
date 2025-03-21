@@ -9,6 +9,8 @@ class CropTest extends TestCase
 {
     private $manipulator;
 
+    private $image;
+
     public function setUp(): void
     {
         $this->manipulator = new Crop();
