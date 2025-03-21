@@ -33,7 +33,7 @@ composer require league/glide-symfony
 composer require league/glide-zend
 ~~~
 
-<p class="message-notice">See <a href="/2.0/config/responses/">responses</a> for more information about integrating with a specific framework.</p>
+<p class="message-notice">See <a href="/3.0/config/responses/">responses</a> for more information about integrating with a specific framework.</p>
 
 ## Downloading .zip file
 
