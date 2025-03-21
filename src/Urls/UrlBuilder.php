@@ -34,7 +34,7 @@ class UrlBuilder
      * @param string                  $baseUrl   The base URL.
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
      */
-    public function __construct($baseUrl = '', SignatureInterface $signature = null)
+    public function __construct($baseUrl = '', ?SignatureInterface $signature = null)
     {
         $this->setBaseUrl($baseUrl);
         $this->setSignature($signature);
@@ -64,7 +64,7 @@ class UrlBuilder
      *
      * @return void
      */
-    public function setSignature(SignatureInterface $signature = null)
+    public function setSignature(?SignatureInterface $signature = null)
     {
         $this->signature = $signature;
     }
