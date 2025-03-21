@@ -1,60 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 use League\Flysystem\FilesystemException as FilesystemV2Exception;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Filesystem\FilesystemException;
 use League\Glide\Manipulators\Helpers\Dimension;
 
-/**
- * @property string $dpr
- * @property string $mark
- * @property string $markfit
- * @property string $markh
- * @property string $markpad
- * @property string $markpos
- * @property string $markw
- * @property string $markx
- * @property string $marky
- * @property string $markalpha
- */
 class Watermark extends BaseManipulator
 {
     /**
      * The watermarks file system.
-     *
-     * @var FilesystemOperator|null
      */
-    protected $watermarks;
+    protected ?FilesystemOperator $watermarks = null;
 
     /**
      * The watermarks path prefix.
-     *
-     * @var string
      */
-    protected $watermarksPathPrefix;
+    protected string $watermarksPathPrefix = '';
 
     /**
      * Create Watermark instance.
      *
      * @param FilesystemOperator $watermarks The watermarks file system.
      */
-    public function __construct(?FilesystemOperator $watermarks = null, $watermarksPathPrefix = '')
+    public function __construct(?FilesystemOperator $watermarks = null, string $watermarksPathPrefix = '')
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
+    }
+
+    public function getApiParams(): array
+    {
+        return ['mark', 'markw', 'markh', 'markx', 'marky', 'markpad', 'markfit', 'markpos', 'markalpha', 'dpr', 'w', 'h'];
     }
 
     /**
      * Set the watermarks file system.
      *
      * @param FilesystemOperator $watermarks The watermarks file system.
-     *
-     * @return void
      */
-    public function setWatermarks(?FilesystemOperator $watermarks = null)
+    public function setWatermarks(?FilesystemOperator $watermarks = null): void
     {
         $this->watermarks = $watermarks;
     }
@@ -64,7 +53,7 @@ class Watermark extends BaseManipulator
      *
      * @return FilesystemOperator|null The watermarks file system.
      */
-    public function getWatermarks()
+    public function getWatermarks(): ?FilesystemOperator
     {
         return $this->watermarks;
     }
@@ -73,10 +62,8 @@ class Watermark extends BaseManipulator
      * Set the watermarks path prefix.
      *
      * @param string $watermarksPathPrefix The watermarks path prefix.
-     *
-     * @return void
      */
-    public function setWatermarksPathPrefix($watermarksPathPrefix = '')
+    public function setWatermarksPathPrefix(string $watermarksPathPrefix = ''): void
     {
         $this->watermarksPathPrefix = trim($watermarksPathPrefix, '/');
     }
@@ -86,7 +73,7 @@ class Watermark extends BaseManipulator
      *
      * @return string The watermarks path prefix.
      */
-    public function getWatermarksPathPrefix()
+    public function getWatermarksPathPrefix(): string
     {
         return $this->watermarksPathPrefix;
     }
@@ -94,95 +81,100 @@ class Watermark extends BaseManipulator
     /**
      * Perform watermark image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
-        if ($watermark = $this->getImage($image)) {
-            $markw = $this->getDimension($image, 'markw');
-            $markh = $this->getDimension($image, 'markh');
-            $markx = $this->getDimension($image, 'markx');
-            $marky = $this->getDimension($image, 'marky');
-            $markpad = $this->getDimension($image, 'markpad');
-            $markfit = $this->getFit();
-            $markpos = $this->getPosition();
-            $markalpha = $this->getAlpha();
+        $watermark = $this->getImage($image);
 
-            if ($markpad) {
-                $markx = $marky = $markpad;
-            }
-
-            $size = new Size();
-            $size->setParams([
-                'w' => $markw,
-                'h' => $markh,
-                'fit' => $markfit,
-            ]);
-            $watermark = $size->run($watermark);
-
-            if ($markalpha < 100) {
-                $watermark->opacity($markalpha);
-            }
-
-            $image->insert($watermark, $markpos, intval($markx), intval($marky));
+        if (null === $watermark) {
+            return $image;
         }
 
-        return $image;
+        $markw = $this->getDimension($image, 'markw');
+        $markh = $this->getDimension($image, 'markh');
+        $markx = $this->getDimension($image, 'markx');
+        $marky = $this->getDimension($image, 'marky');
+        $markpad = $this->getDimension($image, 'markpad');
+        $markfit = $this->getFit();
+        $markpos = $this->getPosition();
+        $markalpha = $this->getAlpha();
+
+        if (null !== $markpad) {
+            $markx = $marky = $markpad;
+        }
+
+        $size = new Size();
+        $size->setParams([
+            'w' => $markw,
+            'h' => $markh,
+            'fit' => $markfit,
+        ]);
+        $watermark = $size->run($watermark);
+
+        return $image->place($watermark, $markpos, intval($markx), intval($marky), $markalpha);
     }
 
     /**
      * Get the watermark image.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image|null The watermark image.
+     * @return ImageInterface|null The watermark image.
      */
-    public function getImage(Image $image)
+    public function getImage(ImageInterface $image): ?ImageInterface
     {
-        if (is_null($this->watermarks)) {
-            return;
+        if (null === $this->watermarks) {
+            return null;
         }
 
-        if (!is_string($this->mark)) {
-            return;
-        }
+        $path = (string) $this->getParam('mark');
 
-        if ('' === $this->mark) {
-            return;
+        if ('' === $path) {
+            return null;
         }
-
-        $path = $this->mark;
 
         if ($this->watermarksPathPrefix) {
             $path = $this->watermarksPathPrefix.'/'.$path;
         }
 
+        $mark = null;
         try {
             if ($this->watermarks->fileExists($path)) {
                 $source = $this->watermarks->read($path);
 
-                return $image->getDriver()->init($source);
+                $mark = $image->driver()->handleInput($source);
             }
         } catch (FilesystemV2Exception $exception) {
             throw new FilesystemException('Could not read the image `'.$path.'`.');
         }
+
+        if ($mark instanceof ImageInterface) {
+            return $mark;
+        }
+
+        return null;
     }
 
     /**
      * Get a dimension.
      *
-     * @param Image  $image The source image.
-     * @param string $field The requested field.
+     * @param ImageInterface $image The source image.
+     * @param string         $field The requested field.
      *
      * @return float|null The dimension.
      */
-    public function getDimension(Image $image, $field)
+    public function getDimension(ImageInterface $image, string $field): ?float
     {
-        if ($this->{$field}) {
-            return (new Dimension($image, $this->getDpr()))->get($this->{$field});
+        $dim = $this->getParam($field);
+
+        if ($dim) {
+            return (new Dimension($image, $this->getDpr()))->get((string) $dim);
         }
+
+        return null;
     }
 
     /**
@@ -190,17 +182,19 @@ class Watermark extends BaseManipulator
      *
      * @return float The device pixel ratio.
      */
-    public function getDpr()
+    public function getDpr(): float
     {
-        if (!is_numeric($this->dpr)) {
+        $dpr = $this->getParam('dpr');
+
+        if (!is_numeric($dpr)) {
             return 1.0;
         }
 
-        if ($this->dpr < 0 or $this->dpr > 8) {
+        if ($dpr < 0 || $dpr > 8) {
             return 1.0;
         }
 
-        return (float) $this->dpr;
+        return (float) $dpr;
     }
 
     /**
@@ -208,7 +202,7 @@ class Watermark extends BaseManipulator
      *
      * @return string|null The fit.
      */
-    public function getFit()
+    public function getFit(): ?string
     {
         $fitMethods = [
             'contain',
@@ -226,9 +220,13 @@ class Watermark extends BaseManipulator
             'crop-bottom-right',
         ];
 
-        if (in_array($this->markfit, $fitMethods, true)) {
-            return $this->markfit;
+        $markfit = $this->getParam('markfit');
+
+        if (in_array($markfit, $fitMethods, true)) {
+            return $markfit;
         }
+
+        return null;
     }
 
     /**
@@ -236,7 +234,7 @@ class Watermark extends BaseManipulator
      *
      * @return string The position.
      */
-    public function getPosition()
+    public function getPosition(): string
     {
         $positions = [
             'top-left',
@@ -250,8 +248,10 @@ class Watermark extends BaseManipulator
             'bottom-right',
         ];
 
-        if (in_array($this->markpos, $positions, true)) {
-            return $this->markpos;
+        $markpos = $this->getParam('markpos');
+
+        if (in_array($markpos, $positions, true)) {
+            return $markpos;
         }
 
         return 'bottom-right';
@@ -262,16 +262,18 @@ class Watermark extends BaseManipulator
      *
      * @return int The alpha.
      */
-    public function getAlpha()
+    public function getAlpha(): int
     {
-        if (!is_numeric($this->markalpha)) {
+        $markalpha = $this->getParam('markalpha');
+
+        if (!is_numeric($markalpha)) {
             return 100;
         }
 
-        if ($this->markalpha < 0 or $this->markalpha > 100) {
+        if ($markalpha < 0 || $markalpha > 100) {
             return 100;
         }
 
-        return (int) $this->markalpha;
+        return (int) $markalpha;
     }
 }

@@ -1,17 +1,15 @@
 <?php
 
-namespace League\Glide\Manipulators;
+declare(strict_types=1);
 
-use Intervention\Image\Image;
+namespace League\Glide\Manipulators;
 
 abstract class BaseManipulator implements ManipulatorInterface
 {
     /**
      * The manipulation params.
-     *
-     * @var array
      */
-    public $params = [];
+    protected array $params = [];
 
     /**
      * Set the manipulation params.
@@ -20,31 +18,18 @@ abstract class BaseManipulator implements ManipulatorInterface
      *
      * @return $this
      */
-    public function setParams(array $params)
+    public function setParams(array $params): static
     {
-        $this->params = $params;
+        $this->params = array_filter($params, fn (string $key): bool => in_array($key, $this->getApiParams()), ARRAY_FILTER_USE_KEY);
 
         return $this;
     }
 
     /**
      * Get a specific manipulation param.
-     *
-     * @param string $name The manipulation name.
-     *
-     * @return string The manipulation value.
      */
-    public function __get($name)
+    public function getParam(string $name): mixed
     {
-        if (array_key_exists($name, $this->params)) {
-            return $this->params[$name];
-        }
+        return $this->params[$name] ?? null;
     }
-
-    /**
-     * Perform the image manipulation.
-     *
-     * @return Image The manipulated image.
-     */
-    abstract public function run(Image $image);
 }

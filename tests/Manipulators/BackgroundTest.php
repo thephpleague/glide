@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Mockery;
+use Intervention\Image\Interfaces\DriverInterface;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Origin;
 use PHPUnit\Framework\TestCase;
 
 class BackgroundTest extends TestCase
@@ -11,7 +15,7 @@ class BackgroundTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -21,19 +25,28 @@ class BackgroundTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $originMock = \Mockery::mock(Origin::class, ['mediaType' => 'image/jpeg']);
+
             $mock->shouldReceive('width')->andReturn(100)->once();
             $mock->shouldReceive('height')->andReturn(100)->once();
-            $mock->shouldReceive('getDriver')->andReturn(Mockery::mock('Intervention\Image\AbstractDriver', function ($mock) {
-                $mock->shouldReceive('newImage')->with(100, 100, 'rgba(0, 0, 0, 1)')->andReturn(Mockery::mock('Intervention\Image\Image', function ($mock) {
-                    $mock->shouldReceive('insert')->andReturn($mock)->once();
+            $mock->shouldReceive('origin')->andReturn($originMock)->once();
+
+            $mock->shouldReceive('driver')->andReturn(\Mockery::mock(DriverInterface::class, function ($mock) {
+                $mock->shouldReceive('createImage')->with(100, 100)->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
+                    $mock->shouldReceive('fill')->with('rgba(0, 0, 0, 1)')->andReturn(\Mockery::mock(ImageInterface::class, function ($mock) {
+                        $mock->shouldReceive('setOrigin')->withArgs(function ($arg1) {
+                            return $arg1 instanceof Origin;
+                        })->andReturn($mock)->once();
+                        $mock->shouldReceive('place')->andReturn($mock)->once();
+                    }))->once();
                 }))->once();
             }))->once();
         });
 
         $border = new Background();
 
-        $this->assertInstanceOf('Intervention\Image\Image', $border->run($image));
-        $this->assertInstanceOf('Intervention\Image\Image', $border->setParams(['bg' => 'black'])->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->run($image));
+        $this->assertInstanceOf(ImageInterface::class, $border->setParams(['bg' => 'black'])->run($image));
     }
 }

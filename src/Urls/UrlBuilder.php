@@ -1,32 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Urls;
 
-use InvalidArgumentException;
 use League\Glide\Signatures\SignatureInterface;
 
 class UrlBuilder
 {
     /**
      * The base URL.
-     *
-     * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl;
 
     /**
      * Whether the base URL is a relative domain.
-     *
-     * @var bool
      */
-    protected $isRelativeDomain = false;
+    protected bool $isRelativeDomain = false;
 
     /**
      * The HTTP signature used to sign URLs.
-     *
-     * @var SignatureInterface
      */
-    protected $signature;
+    protected ?SignatureInterface $signature = null;
 
     /**
      * Create UrlBuilder instance.
@@ -34,7 +29,7 @@ class UrlBuilder
      * @param string                  $baseUrl   The base URL.
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
      */
-    public function __construct($baseUrl = '', ?SignatureInterface $signature = null)
+    public function __construct(string $baseUrl = '', ?SignatureInterface $signature = null)
     {
         $this->setBaseUrl($baseUrl);
         $this->setSignature($signature);
@@ -44,10 +39,8 @@ class UrlBuilder
      * Set the base URL.
      *
      * @param string $baseUrl The base URL.
-     *
-     * @return void
      */
-    public function setBaseUrl($baseUrl)
+    public function setBaseUrl(string $baseUrl): void
     {
         if ('//' === substr($baseUrl, 0, 2)) {
             $baseUrl = 'http:'.$baseUrl;
@@ -61,10 +54,8 @@ class UrlBuilder
      * Set the HTTP signature.
      *
      * @param SignatureInterface|null $signature The HTTP signature used to sign URLs.
-     *
-     * @return void
      */
-    public function setSignature(?SignatureInterface $signature = null)
+    public function setSignature(?SignatureInterface $signature = null): void
     {
         $this->signature = $signature;
     }
@@ -77,14 +68,19 @@ class UrlBuilder
      *
      * @return string The URL.
      */
-    public function getUrl($path, array $params = [])
+    public function getUrl(string $path, array $params = []): string
     {
         $parts = parse_url($this->baseUrl.'/'.trim($path, '/'));
 
         if (false === $parts) {
-            throw new InvalidArgumentException('Not a valid path.');
+            throw new \InvalidArgumentException('Not a valid path.');
         }
 
+        /**
+         * @psalm-suppress PossiblyNullArgument, PossiblyUndefinedArrayOffset
+         *
+         * @phpstan-ignore-next-line
+         */
         $parts['path'] = '/'.trim($parts['path'], '/');
 
         if ($this->signature) {
@@ -102,7 +98,7 @@ class UrlBuilder
      *
      * @return string The built URL.
      */
-    protected function buildUrl($parts, $params)
+    protected function buildUrl(array $parts, array $params): string
     {
         $url = '';
 

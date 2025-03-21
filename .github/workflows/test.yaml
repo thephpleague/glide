@@ -1,74 +1,84 @@
 name: glide
 
 on:
-    pull_request: ~
-    push:
-        branches:
-            - master
+  pull_request: ~
+  push:
+    branches:
+      - master
 
 jobs:
-    coding-style:
-        runs-on: ubuntu-22.04
-        steps:
-            - uses: actions/checkout@v4
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '7.4'
-                  extensions: gd, imagick
-            - name: php-cs-fixer
-              run: |
-                  wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.4/php-cs-fixer.phar -q
-                  php php-cs-fixer.phar fix --dry-run --diff
+  tests:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.2', '8.3', '8.4']
+        dependencies: [highest]
+        include:
+          - php-version: '8.1'
+            dependencies: lowest
+    steps:
+      - uses: actions/checkout@v4
 
-    tests:
-        runs-on: ubuntu-22.04
-        strategy:
-            fail-fast: false
-            matrix:
-                php-version: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
-                prefer-lowest: ['']
-                include:
-                    - php-version: '7.2'
-                      prefer-lowest: 'prefer-lowest'
-        steps:
-            - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: gd, imagick
+          coverage: pcov
 
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php-version }}
-                  extensions: gd, imagick
-                  coverage: pcov
+      - name: Composer install
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
 
-            - name: Composer
-              run: |
-                  if ${{ matrix.prefer-lowest == 'prefer-lowest' }}; then
-                      composer update --no-interaction --no-ansi --no-progress --prefer-lowest
-                  else
-                      composer update --no-interaction --no-ansi --no-progress
-                  fi
+      - name: PHPUnit
+        run: |
+          if [[ ${{ matrix.php-version }} == '8.3' ]]; then
+            vendor/bin/phpunit --display-incomplete --display-skipped --display-deprecations --display-phpunit-deprecations --coverage-clover=coverage.xml
+          else
+            vendor/bin/phpunit
+          fi
 
-            - name: PHPUnit
-              run: |
-                  if [[ ${{ matrix.php-version }} == '8.3' ]]; then
-                      vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
-                  else
-                      vendor/bin/phpunit
-                  fi
+      - name: Code Coverage Report
+        if: matrix.php-version == '8.3'
+        uses: codecov/codecov-action@v3
 
-            - name: Code Coverage Report
-              if: matrix.php-version == '8.3'
-              uses: codecov/codecov-action@v3
+  coding-style:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
-    psalm:
-        runs-on: ubuntu-22.04
-        steps:
-            - uses: actions/checkout@v4
-            - uses: shivammathur/setup-php@v2
-              with:
-                  php-version: '8.3'
-                  extensions: gd, imagick
-                  tools: vimeo/psalm:5
-            - name: psalm
-              run: |
-                  composer update --no-interaction --no-ansi --no-progress
-                  psalm --output-format=github
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, imagick
+
+      - name: Composer install
+        uses: ramsey/composer-install@v3
+
+      - name: php-cs-fixer
+        run: |
+          vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes
+
+  static-analysis:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, imagick
+          tools: vimeo/psalm:5, phpstan:2
+
+      - name: Composer install
+        uses: ramsey/composer-install@v3
+
+      - name: psalm
+        run: |
+          psalm --output-format=github
+
+      - name: phpstan
+        if: always()
+        run: |
+          phpstan --error-format=github

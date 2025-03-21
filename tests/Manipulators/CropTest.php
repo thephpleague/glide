@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Mockery;
+use Intervention\Image\Interfaces\ImageInterface;
 use PHPUnit\Framework\TestCase;
 
 class CropTest extends TestCase
 {
     private $manipulator;
-
     private $image;
 
     public function setUp(): void
     {
         $this->manipulator = new Crop();
-        $this->image = Mockery::mock('Intervention\Image\Image', function ($mock) {
+        $this->image = \Mockery::mock(ImageInterface::class, function ($mock) {
             $mock->shouldReceive('width')->andReturn(100);
             $mock->shouldReceive('height')->andReturn(100);
         });
@@ -22,7 +23,7 @@ class CropTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -35,7 +36,7 @@ class CropTest extends TestCase
         $this->image->shouldReceive('crop')->with(100, 100, 0, 0)->once();
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['crop' => '100,100,0,0'])->run($this->image)
         );
     }

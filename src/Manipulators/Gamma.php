@@ -1,26 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $gam
- */
 class Gamma extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['gam'];
+    }
+
     /**
      * Perform gamma image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $gamma = $this->getGamma();
 
-        if ($gamma) {
+        if (null !== $gamma) {
             $image->gamma($gamma);
         }
 
@@ -32,16 +36,18 @@ class Gamma extends BaseManipulator
      *
      * @return float|null The resolved gamma amount.
      */
-    public function getGamma()
+    public function getGamma(): ?float
     {
-        if (null === $this->gam || !preg_match('/^[0-9]\.*[0-9]*$/', $this->gam)) {
-            return;
+        $gam = (string) $this->getParam('gam');
+
+        if ('' === $gam
+            || !preg_match('/^[0-9]\.*[0-9]*$/', $gam)
+            || $gam < 0.1
+            || $gam > 9.99
+        ) {
+            return null;
         }
 
-        if ($this->gam < 0.1 or $this->gam > 9.99) {
-            return;
-        }
-
-        return (float) $this->gam;
+        return (float) $gam;
     }
 }

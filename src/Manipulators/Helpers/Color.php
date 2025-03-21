@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators\Helpers;
 
 class Color
@@ -7,60 +9,53 @@ class Color
     /**
      * 3 digit color code expression.
      */
-    const SHORT_RGB = '/^[0-9a-f]{3}$/i';
+    public const SHORT_RGB = '/^[0-9a-f]{3}$/i';
 
     /**
      * 4 digit color code expression.
      */
-    const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
+    public const SHORT_ARGB = '/^[0-9]{1}[0-9a-f]{3}$/i';
 
     /**
      * 6 digit color code expression.
      */
-    const LONG_RGB = '/^[0-9a-f]{6}$/i';
+    public const LONG_RGB = '/^[0-9a-f]{6}$/i';
 
     /**
      * 8 digit color code expression.
      */
-    const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
+    public const LONG_ARGB = '/^[0-9]{2}[0-9a-f]{6}$/i';
 
     /**
      * The red value.
-     *
-     * @var int
      */
-    protected $red;
+    protected int $red;
 
     /**
      * The green value.
-     *
-     * @var int
      */
-    protected $green;
+    protected int $green;
 
     /**
      * The blue value.
-     *
-     * @var int
      */
-    protected $blue;
+    protected int $blue;
 
     /**
      * The alpha value.
-     *
-     * @var int|float
      */
-    protected $alpha;
+    protected int|float $alpha;
 
     /**
      * Create color helper instance.
      *
      * @param string $value The color value.
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
         do {
-            if ($hex = $this->getHexFromColorName($value)) {
+            $hex = $this->getHexFromColorName($value);
+            if (null !== $hex) {
                 $rgba = $this->parseHex($hex);
                 $alpha = 1;
                 break;
@@ -92,7 +87,7 @@ class Color
 
             $rgba = [255, 255, 255];
             $alpha = 0;
-        } while (false);
+        } while (false); // @phpstan-ignore-line
 
         $this->red = $rgba[0];
         $this->green = $rgba[1];
@@ -107,7 +102,7 @@ class Color
      *
      * @return array The RGB values.
      */
-    public function parseHex($hex)
+    public function parseHex(string $hex): array
     {
         return array_map('hexdec', str_split($hex, 2));
     }
@@ -117,7 +112,7 @@ class Color
      *
      * @return string The formatted color.
      */
-    public function formatted()
+    public function formatted(): string
     {
         return 'rgba('.$this->red.', '.$this->green.', '.$this->blue.', '.$this->alpha.')';
     }
@@ -129,7 +124,7 @@ class Color
      *
      * @return string|null The hex code.
      */
-    public function getHexFromColorName($name)
+    public function getHexFromColorName(string $name): ?string
     {
         $colors = [
             'aliceblue' => 'F0F8FF',
@@ -280,5 +275,7 @@ class Color
         if (array_key_exists($name, $colors)) {
             return $colors[$name];
         }
+
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Signatures;
 
 interface SignatureInterface
@@ -12,7 +14,7 @@ interface SignatureInterface
      *
      * @return array The updated manipulation params.
      */
-    public function addSignature($path, array $params);
+    public function addSignature(string $path, array $params): array;
 
     /**
      * Validate a request signature.
@@ -22,5 +24,5 @@ interface SignatureInterface
      *
      * @throws SignatureException
      */
-    public function validateRequest($path, array $params);
+    public function validateRequest(string $path, array $params): void;
 }

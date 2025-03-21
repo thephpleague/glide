@@ -1,0 +1,19 @@
+services:
+  tests:
+    build: ./
+    working_dir: /project
+    command: bash -c "composer install && ./vendor/bin/phpunit"
+    volumes:
+      - ./:/project
+  analysis:
+    build: ./
+    working_dir: /project
+    command: bash -c "composer install && ./vendor/bin/phpstan analyze --memory-limit=512M"
+    volumes:
+      - ./:/project
+  cs:
+    build: ./
+    working_dir: /project
+    command: bash -c "composer install && ./vendor/bin/php-cs-fixer fix --allow-risky=yes"
+    volumes:
+      - ./:/project

@@ -1,6 +1,8 @@
 build
 vendor
 docs/_site
-.php_cs.cache
+.php-cs-fixer.cache
 .phpunit.result.cache
+.phpunit.cache
 composer.lock
+.history

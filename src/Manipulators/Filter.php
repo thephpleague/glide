@@ -1,42 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $filt
- */
 class Filter extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['filt'];
+    }
+
     /**
      * Perform filter image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
-        if ('greyscale' === $this->filt) {
-            return $this->runGreyscaleFilter($image);
-        }
-
-        if ('sepia' === $this->filt) {
-            return $this->runSepiaFilter($image);
-        }
-
-        return $image;
+        return match ($this->getParam('filt')) {
+            'greyscale' => $this->runGreyscaleFilter($image),
+            'sepia' => $this->runSepiaFilter($image),
+            default => $image,
+        };
     }
 
     /**
      * Perform greyscale manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runGreyscaleFilter(Image $image)
+    public function runGreyscaleFilter(ImageInterface $image): ImageInterface
     {
         return $image->greyscale();
     }
@@ -44,18 +44,18 @@ class Filter extends BaseManipulator
     /**
      * Perform sepia manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function runSepiaFilter(Image $image)
+    public function runSepiaFilter(ImageInterface $image): ImageInterface
     {
-        $image->greyscale();
-        $image->brightness(-10);
-        $image->contrast(10);
-        $image->colorize(38, 27, 12);
-        $image->brightness(-10);
-        $image->contrast(10);
+        $image->greyscale()
+            ->brightness(-10)
+            ->contrast(10)
+            ->colorize(38, 27, 12)
+            ->brightness(-10)
+            ->contrast(10);
 
         return $image;
     }

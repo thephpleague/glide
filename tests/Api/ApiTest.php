@@ -1,80 +1,103 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Api;
 
-use InvalidArgumentException;
-use Mockery;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\EncodedImageInterface;
+use Intervention\Image\Interfaces\ImageInterface;
+use League\Glide\Manipulators\ManipulatorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
 {
-    private $output;
-
-    private $api;
+    private Api $api;
 
     public function setUp(): void
     {
-        $this->api = new Api(Mockery::mock('Intervention\Image\ImageManager'), []);
+        $this->api = new Api(ImageManager::gd(), []);
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
-        $this->assertInstanceOf('League\Glide\Api\Api', $this->api);
+        $this->assertInstanceOf(Api::class, $this->api);
     }
 
-    public function testSetImageManager()
+    public function testSetImageManager(): void
     {
-        $this->api->setImageManager(Mockery::mock('Intervention\Image\ImageManager'));
-        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+        $this->api->setImageManager(ImageManager::gd());
+        $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
-    public function testGetImageManager()
+    public function testGetImageManager(): void
     {
-        $this->assertInstanceOf('Intervention\Image\ImageManager', $this->api->getImageManager());
+        $this->assertInstanceOf(ImageManager::class, $this->api->getImageManager());
     }
 
-    public function testSetManipulators()
+    public function testSetManipulators(): void
     {
-        $this->api->setManipulators([Mockery::mock('League\Glide\Manipulators\ManipulatorInterface')]);
+        $this->api->setManipulators([\Mockery::mock(ManipulatorInterface::class)]);
         $manipulators = $this->api->getManipulators();
-        $this->assertInstanceOf('League\Glide\Manipulators\ManipulatorInterface', $manipulators[0]);
+        $this->assertInstanceOf(ManipulatorInterface::class, $manipulators[0]);
     }
 
-    public function testSetInvalidManipulator()
+    public function testSetInvalidManipulator(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Not a valid manipulator.');
 
-        $this->api->setManipulators([new \StdClass()]);
+        $this->api->setManipulators([new \stdClass()]);
     }
 
-    public function testGetManipulators()
+    public function testGetManipulators(): void
     {
         $this->assertEquals([], $this->api->getManipulators());
     }
 
-    public function testRun()
+    public function testGetApiParams(): void
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('getEncoded')->andReturn('encoded');
+        $manipulator1 = \Mockery::mock(ManipulatorInterface::class, function ($mock) {
+            $mock->shouldReceive('getApiParams')->andReturn(['foo', 'bar']);
+        });
+        $manipulator2 = \Mockery::mock(ManipulatorInterface::class, function ($mock) {
+            $mock->shouldReceive('getApiParams')->andReturn(['foo', 'baz']);
         });
 
-        $manager = Mockery::mock('Intervention\Image\ImageManager', function ($mock) use ($image) {
-            $mock->shouldReceive('make')->andReturn($image);
+        $api = new Api(ImageManager::gd(), [$manipulator1, $manipulator2]);
+        $this->assertEquals(array_merge(Api::GLOBAL_API_PARAMS, ['foo', 'bar', 'baz']), $api->getApiParams());
+    }
+
+    public function testRun(): void
+    {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('origin')->andReturn(\Mockery::mock('\Intervention\Image\Origin', function ($mock) {
+                $mock->shouldReceive('mediaType')->andReturn('image/png');
+            }));
+
+            $mock->shouldReceive('encodeByExtension')->with('png')->andReturn(\Mockery::mock(EncodedImageInterface::class, function ($mock) {
+                $mock->shouldReceive('toString')->andReturn('encoded');
+            }));
         });
 
-        $manipulator = Mockery::mock('League\Glide\Manipulators\ManipulatorInterface', function ($mock) use ($image) {
+        $manager = ImageManager::gd();
+
+        $manipulator = \Mockery::mock(ManipulatorInterface::class, function ($mock) use ($image) {
             $mock->shouldReceive('setParams')->with([]);
             $mock->shouldReceive('run')->andReturn($image);
+            $mock->shouldReceive('getApiParams')->andReturn(['p', 'q', 'fm', 's']);
         });
 
         $api = new Api($manager, [$manipulator]);
 
-        $this->assertEquals('encoded', $api->run('source', []));
+        $this->assertEquals('encoded', $api->run(
+            (string) file_get_contents(dirname(__FILE__, 2).'/files/red-pixel.png'),
+            []
+        ));
     }
 }

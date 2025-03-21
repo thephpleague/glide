@@ -1,32 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators\Helpers;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
 class Dimension
 {
     /**
      * The source image.
-     *
-     * @var Image
      */
-    protected $image;
+    protected ImageInterface $image;
 
     /**
      * The device pixel ratio.
-     *
-     * @var float
      */
-    protected $dpr;
+    protected float $dpr;
 
     /**
      * Create dimension helper instance.
      *
-     * @param Image $image The source image.
-     * @param float $dpr   The device pixel ratio.
+     * @param ImageInterface $image The source image.
+     * @param float          $dpr   The device pixel ratio.
      */
-    public function __construct(Image $image, $dpr = 1)
+    public function __construct(ImageInterface $image, float $dpr = 1)
     {
         $this->image = $image;
         $this->dpr = $dpr;
@@ -39,7 +37,7 @@ class Dimension
      *
      * @return float|null The resolved dimension.
      */
-    public function get($value)
+    public function get(string $value): ?float
     {
         if (is_numeric($value) and $value > 0) {
             return (float) $value * $this->dpr;
@@ -52,5 +50,7 @@ class Dimension
 
             return (float) $this->image->width() * ((float) $matches[1] / 100);
         }
+
+        return null;
     }
 }

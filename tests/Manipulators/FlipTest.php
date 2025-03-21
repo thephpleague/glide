@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Mockery;
+use Intervention\Image\Interfaces\ImageInterface;
 use PHPUnit\Framework\TestCase;
 
 class FlipTest extends TestCase
@@ -16,7 +18,7 @@ class FlipTest extends TestCase
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
     public function testCreateInstance()
@@ -26,19 +28,32 @@ class FlipTest extends TestCase
 
     public function testRun()
     {
-        $image = Mockery::mock('Intervention\Image\Image', function ($mock) {
-            $mock->shouldReceive('flip')->andReturn($mock)->with('h')->once();
-            $mock->shouldReceive('flip')->andReturn($mock)->with('v')->once();
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('flip')->andReturn($mock)->once();
+            $mock->shouldReceive('flop')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['flip' => 'h'])->run($image)
         );
 
         $this->assertInstanceOf(
-            'Intervention\Image\Image',
+            ImageInterface::class,
             $this->manipulator->setParams(['flip' => 'v'])->run($image)
+        );
+    }
+
+    public function testRunBoth()
+    {
+        $image = \Mockery::mock(ImageInterface::class, function ($mock) {
+            $mock->shouldReceive('flip')->andReturn($mock)->once();
+            $mock->shouldReceive('flop')->andReturn($mock)->once();
+        });
+
+        $this->assertInstanceOf(
+            ImageInterface::class,
+            $this->manipulator->setParams(['flip' => 'both'])->run($image)
         );
     }
 

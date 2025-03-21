@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="vendor/autoload.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="vendor/autoload.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
     <php>
         <ini name="error_reporting" value="32767"/>
     </php>
@@ -8,10 +8,9 @@
             <directory suffix="Test.php">tests/</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
+    <source>
+        <include>
             <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
 </phpunit>

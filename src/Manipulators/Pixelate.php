@@ -1,22 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string $pixel
- */
 class Pixelate extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['pixel'];
+    }
+
     /**
      * Perform pixelate image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $pixelate = $this->getPixelate();
 
@@ -32,16 +36,17 @@ class Pixelate extends BaseManipulator
      *
      * @return int|null The resolved pixelate amount.
      */
-    public function getPixelate()
+    public function getPixelate(): ?int
     {
-        if (!is_numeric($this->pixel)) {
-            return;
+        $pixel = $this->getParam('pixel');
+
+        if (!is_numeric($pixel)
+            || $pixel < 0
+            || $pixel > 1000
+        ) {
+            return null;
         }
 
-        if ($this->pixel < 0 or $this->pixel > 1000) {
-            return;
-        }
-
-        return (int) $this->pixel;
+        return (int) $pixel;
     }
 }

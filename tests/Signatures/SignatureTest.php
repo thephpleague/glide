@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Signatures;
 
 use PHPUnit\Framework\TestCase;
 
 class SignatureTest extends TestCase
 {
-    private $httpSignature;
+    private Signature $httpSignature;
 
     public function setUp(): void
     {

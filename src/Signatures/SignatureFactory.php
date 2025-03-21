@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Signatures;
 
 class SignatureFactory
@@ -11,7 +13,7 @@ class SignatureFactory
      *
      * @return Signature The HttpSignature instance.
      */
-    public static function create($signKey)
+    public static function create(string $signKey): Signature
     {
         return new Signature($signKey);
     }

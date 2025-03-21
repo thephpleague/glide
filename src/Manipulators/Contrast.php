@@ -1,22 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $con
- */
 class Contrast extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['con'];
+    }
+
     /**
      * Perform contrast image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $contrast = $this->getContrast();
 
@@ -32,16 +36,18 @@ class Contrast extends BaseManipulator
      *
      * @return int|null The resolved contrast amount.
      */
-    public function getContrast()
+    public function getContrast(): ?int
     {
-        if (null === $this->con || !preg_match('/^-*[0-9]+$/', $this->con)) {
-            return;
+        $con = (string) $this->getParam('con');
+
+        if ('' === $con
+            || !preg_match('/^-*[0-9]+$/', $con)
+            || $con < -100
+            || $con > 100
+        ) {
+            return null;
         }
 
-        if ($this->con < -100 or $this->con > 100) {
-            return;
-        }
-
-        return (int) $this->con;
+        return (int) $con;
     }
 }

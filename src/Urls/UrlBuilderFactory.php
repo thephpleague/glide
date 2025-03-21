@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Urls;
 
 use League\Glide\Signatures\SignatureFactory;
@@ -14,7 +16,7 @@ class UrlBuilderFactory
      *
      * @return UrlBuilder The UrlBuilder instance.
      */
-    public static function create($baseUrl, $signKey = null)
+    public static function create(string $baseUrl, ?string $signKey = null): UrlBuilder
     {
         $httpSignature = null;
 

@@ -1,36 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Origin;
 use League\Glide\Manipulators\Helpers\Color;
 
-/**
- * @property string $bg
- */
 class Background extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['bg'];
+    }
+
     /**
      * Perform background image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
-        if (is_null($this->bg)) {
+        $bg = (string) $this->getParam('bg');
+
+        if ('' === $bg) {
             return $image;
         }
 
-        $color = (new Color($this->bg))->formatted();
+        $color = (new Color($bg))->formatted();
 
-        if ($color) {
-            $new = $image->getDriver()->newImage($image->width(), $image->height(), $color);
-            $new->mime = $image->mime;
-            $image = $new->insert($image, 'top-left', 0, 0);
-        }
-
-        return $image;
+        return $image->driver()->createImage($image->width(), $image->height())
+            ->fill($color)
+            ->place($image, 'top-left', 0, 0)
+            ->setOrigin(
+                new Origin($image->origin()->mediaType())
+            );
     }
 }

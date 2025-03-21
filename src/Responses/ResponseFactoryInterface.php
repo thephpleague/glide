@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Responses;
 
 use League\Flysystem\FilesystemOperator;
@@ -14,5 +16,5 @@ interface ResponseFactoryInterface
      *
      * @return mixed The response object.
      */
-    public function create(FilesystemOperator $cache, $path);
+    public function create(FilesystemOperator $cache, string $path);
 }

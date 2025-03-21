@@ -1,77 +1,75 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide;
 
-use Hamcrest\Matchers;
-use InvalidArgumentException;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\UnableToCheckFileExistence;
+use League\Flysystem\UnableToReadFile;
+use League\Flysystem\UnableToWriteFile;
+use League\Glide\Api\ApiInterface;
 use League\Glide\Filesystem\FileNotFoundException;
 use League\Glide\Filesystem\FilesystemException;
-use Mockery;
+use League\Glide\Responses\ResponseFactoryInterface;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 class ServerTest extends TestCase
 {
-    private $server;
+    private Server $server;
 
     public function setUp(): void
     {
-        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
-
-        $responseFactory = Mockery::mock('League\Glide\Responses\ResponseFactoryInterface');
-        $responseFactory
-            ->shouldReceive('create')
-            ->andReturn($response)
-            ->shouldReceive('send')
-            ->andReturnUsing(function () {
-                echo 'content';
-            });
-
         $this->server = new Server(
-            Mockery::mock('League\Flysystem\FilesystemOperator'),
-            Mockery::mock('League\Flysystem\FilesystemOperator'),
-            Mockery::mock('League\Glide\Api\ApiInterface'),
-            $responseFactory
+            \Mockery::mock(FilesystemOperator::class),
+            \Mockery::mock(FilesystemOperator::class),
+            \Mockery::mock(ApiInterface::class, function ($mock) {
+                $mock->shouldReceive('run')->andReturn('content');
+                $mock->shouldReceive('getApiParams')->andReturn(['p', 'q', 'fm', 's', 'w', 'h', 'fit', 'crop', 'dpr']);
+            })
         );
     }
 
     public function tearDown(): void
     {
-        Mockery::close();
+        \Mockery::close();
     }
 
-    public function testCreateInstance()
+    public function testCreateInstance(): void
     {
-        $this->assertInstanceOf('League\Glide\Server', $this->server);
+        $this->assertInstanceOf(Server::class, $this->server);
     }
 
-    public function testSetSource()
+    public function testSetSource(): void
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator'));
-        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getSource());
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class));
+        $this->assertInstanceOf(FilesystemOperator::class, $this->server->getSource());
     }
 
-    public function testGetSource()
+    public function testGetSource(): void
     {
-        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getSource());
+        $this->assertInstanceOf(FilesystemOperator::class, $this->server->getSource());
     }
 
-    public function testSetSourcePathPrefix()
+    public function testSetSourcePathPrefix(): void
     {
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('img', $this->server->getSourcePathPrefix());
     }
 
-    public function testGetSourcePathPrefix()
+    public function testGetSourcePathPrefix(): void
     {
         $this->assertEquals('', $this->server->getSourcePathPrefix());
     }
 
-    public function testGetSourcePath()
+    public function testGetSourcePath(): void
     {
         $this->assertEquals('image.jpg', $this->server->getSourcePath('image.jpg'));
     }
 
-    public function testGetSourcePathWithBaseUrl()
+    public function testGetSourcePathWithBaseUrl(): void
     {
         $this->server->setBaseUrl('img/');
         $this->assertEquals('image.jpg', $this->server->getSourcePath('img/image.jpg'));
@@ -81,13 +79,13 @@ class ServerTest extends TestCase
         $this->assertEquals('imgur.jpg', $this->server->getSourcePath('imgur.jpg'));
     }
 
-    public function testGetSourcePathWithPrefix()
+    public function testGetSourcePathWithPrefix(): void
     {
         $this->server->setSourcePathPrefix('img/');
         $this->assertEquals('img/image.jpg', $this->server->getSourcePath('image.jpg'));
     }
 
-    public function testGetSourcePathWithMissingPath()
+    public function testGetSourcePathWithMissingPath(): void
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('Image path missing.');
@@ -95,77 +93,77 @@ class ServerTest extends TestCase
         $this->server->getSourcePath('');
     }
 
-    public function testGetSourcePathWithEncodedEntities()
+    public function testGetSourcePathWithEncodedEntities(): void
     {
         $this->assertEquals('an image.jpg', $this->server->getSourcePath('an%20image.jpg'));
     }
 
-    public function testSourceFileExists()
+    public function testSourceFileExists(): void
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->with('image.jpg')->andReturn(true)->once();
         }));
 
         $this->assertTrue($this->server->sourceFileExists('image.jpg'));
     }
 
-    public function testSetBaseUrl()
+    public function testSetBaseUrl(): void
     {
         $this->server->setBaseUrl('img/');
         $this->assertEquals('img', $this->server->getBaseUrl());
     }
 
-    public function testGetBaseUrl()
+    public function testGetBaseUrl(): void
     {
         $this->assertEquals('', $this->server->getBaseUrl());
     }
 
-    public function testSetCache()
+    public function testSetCache(): void
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator'));
-        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getCache());
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class));
+        $this->assertInstanceOf(FilesystemOperator::class, $this->server->getCache());
     }
 
-    public function testGetCache()
+    public function testGetCache(): void
     {
-        $this->assertInstanceOf('League\Flysystem\FilesystemOperator', $this->server->getCache());
+        $this->assertInstanceOf(FilesystemOperator::class, $this->server->getCache());
     }
 
-    public function testSetCachePathPrefix()
+    public function testSetCachePathPrefix(): void
     {
         $this->server->setCachePathPrefix('img/');
         $this->assertEquals('img', $this->server->getCachePathPrefix());
     }
 
-    public function testGetCachePathPrefix()
+    public function testGetCachePathPrefix(): void
     {
         $this->assertEquals('', $this->server->getCachePathPrefix());
     }
 
-    public function testSetInvalidTempDir()
+    public function testSetInvalidTempDir(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->server->setTempDir('/invalid/path');
     }
 
-    public function testSetGetTempDir()
+    public function testSetGetTempDir(): void
     {
         $this->server->setTempDir(__DIR__);
         $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $this->server->getTempDir());
     }
 
-    public function testSetCachePathCallable()
+    public function testSetCachePathCallable(): void
     {
         $this->server->setCachePathCallable(null);
         $this->assertEquals(null, $this->server->getCachePathCallable());
     }
 
-    public function testGetCachePathCallable()
+    public function testGetCachePathCallable(): void
     {
         $this->assertEquals(null, $this->server->getCachePathCallable());
     }
 
-    public function testCachePathCallableIsCalledOnGetCachePath()
+    public function testCachePathCallableIsCalledOnGetCachePath(): void
     {
         $expected = 'TEST';
         $callable = function () use ($expected) {
@@ -177,18 +175,21 @@ class ServerTest extends TestCase
         self::assertEquals($expected, $this->server->getCachePath(''));
     }
 
-    public function testSetCachePathCallableIsBoundClosure()
+    public function testSetCachePathCallableIsBoundClosure(): void
     {
         $server = $this->server;
         $phpUnit = $this;
-        $this->server->setCachePathCallable(function () use ($phpUnit, $server) {
+
+        $this->server->setCachePathCallable(function () use ($server, $phpUnit) {
             $phpUnit::assertEquals($server, $this);
+
+            return '';
         });
 
         $this->server->getCachePath('');
     }
 
-    public function testSetCachePathCallableArgumentsAreSameAsGetCachePath()
+    public function testSetCachePathCallableArgumentsAreSameAsGetCachePath(): void
     {
         $phpUnit = $this;
         $pathArgument = 'TEST';
@@ -200,98 +201,100 @@ class ServerTest extends TestCase
             $phpUnit::assertCount(2, $arguments);
             $phpUnit::assertEquals($arguments[0], $pathArgument);
             $phpUnit::assertEquals($arguments[1], $optionsArgument);
+
+            return '';
         });
 
         $this->server->getCachePath($pathArgument, $optionsArgument);
     }
 
-    public function testSetGroupCacheInFolders()
+    public function testSetGroupCacheInFolders(): void
     {
         $this->server->setGroupCacheInFolders(false);
 
         $this->assertFalse($this->server->getGroupCacheInFolders());
     }
 
-    public function testGetGroupCacheInFolders()
+    public function testGetGroupCacheInFolders(): void
     {
         $this->assertTrue($this->server->getGroupCacheInFolders());
     }
 
-    public function testSetCacheWithFileExtensions()
+    public function testSetCacheWithFileExtensions(): void
     {
         $this->server->setCacheWithFileExtensions(true);
 
         $this->assertTrue($this->server->getCacheWithFileExtensions());
     }
 
-    public function testGetCacheWithFileExtensions()
+    public function testGetCacheWithFileExtensions(): void
     {
         $this->assertFalse($this->server->getCacheWithFileExtensions());
     }
 
-    public function testGetCachePath()
+    public function testGetCachePath(): void
     {
         $this->assertEquals(
-            'image.jpg/e863e008b6f09807c3b0aa3805bc9c63',
+            'image.jpg/382a458ecb704818',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }
 
-    public function testGetCachePathWithNoFolderGrouping()
+    public function testGetCachePathWithNoFolderGrouping(): void
     {
         $this->server->setGroupCacheInFolders(false);
 
         $this->assertEquals(
-            'e863e008b6f09807c3b0aa3805bc9c63',
+            '382a458ecb704818',
             $this->server->getCachePath('image.jpg', ['w' => '100'])
         );
     }
 
-    public function testGetCachePathWithPrefix()
+    public function testGetCachePathWithPrefix(): void
     {
         $this->server->setCachePathPrefix('img/');
-        $this->assertEquals('img/image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('img/image.jpg/a2c14b0b5cf0e5a5', $this->server->getCachePath('image.jpg', []));
     }
 
-    public function testGetCachePathWithSourcePrefix()
+    public function testGetCachePathWithSourcePrefix(): void
     {
         $this->server->setSourcePathPrefix('img/');
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/a2c14b0b5cf0e5a5', $this->server->getCachePath('image.jpg', []));
     }
 
-    public function testGetCachePathWithExtension()
+    public function testGetCachePathWithExtension(): void
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/75094881e9fd2b93063d6a5cb083091c.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/a2c14b0b5cf0e5a5.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
-    public function testGetCachePathWithExtensionAndFmParam()
+    public function testGetCachePathWithExtensionAndFmParam(): void
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', ['fm' => 'gif']));
     }
 
-    public function testGetCachePathWithExtensionAndPjpgFmParam()
+    public function testGetCachePathWithExtensionAndPjpgFmParam(): void
     {
         $this->server->setCacheWithFileExtensions(true);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', ['fm' => 'pjpg']));
     }
 
-    public function testGetCachePathWithExtensionAndFmFromDefaults()
+    public function testGetCachePathWithExtensionAndFmFromDefaults(): void
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'gif']);
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', []));
     }
 
-    public function testGetCachePathWithExtensionAndPjpgFmFromDefaults()
+    public function testGetCachePathWithExtensionAndPjpgFmFromDefaults(): void
     {
         $this->server->setCacheWithFileExtensions(true);
         $this->server->setDefaults(['fm' => 'pjpg']);
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', []));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', []));
     }
 
-    public function testGetCachePathWithExtensionAndFmFromPreset()
+    public function testGetCachePathWithExtensionAndFmFromPreset(): void
     {
         $this->server->setCacheWithFileExtensions(true);
 
@@ -299,10 +302,10 @@ class ServerTest extends TestCase
             'fm' => 'gif',
         ]]);
 
-        $this->assertEquals('image.jpg/eb6091e07fb06219634a3c82afb88239.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
+        $this->assertEquals('image.jpg/1521d6d426c257b2.gif', $this->server->getCachePath('image.jpg', ['p' => 'gif']));
     }
 
-    public function testGetCachePathWithExtensionAndPjpgFmFromPreset()
+    public function testGetCachePathWithExtensionAndPjpgFmFromPreset(): void
     {
         $this->server->setCacheWithFileExtensions(true);
 
@@ -310,30 +313,30 @@ class ServerTest extends TestCase
             'fm' => 'pjpg',
         ]]);
 
-        $this->assertEquals('image.jpg/ce5cb75f4a37dec0a0a49854e94123eb.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
+        $this->assertEquals('image.jpg/58b79a7735b61b0d.jpg', $this->server->getCachePath('image.jpg', ['p' => 'pjpg']));
     }
 
-    public function testCacheFileExists()
+    public function testCacheFileExists(): void
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
-            $mock->shouldReceive('fileExists')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c')->andReturn(true)->once();
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
+            $mock->shouldReceive('fileExists')->with('image.jpg/a2c14b0b5cf0e5a5')->andReturn(true)->once();
         }));
 
         $this->assertTrue($this->server->cacheFileExists('image.jpg', []));
     }
 
-    public function testDeleteCache()
+    public function testDeleteCache(): void
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('deleteDirectory')->with('image.jpg')->andReturn(true)->once();
         }));
 
         $this->assertTrue($this->server->deleteCache('image.jpg', []));
     }
 
-    public function testDeleteCacheWithGroupCacheInFoldersDisabled()
+    public function testDeleteCacheWithGroupCacheInFoldersDisabled(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Deleting cached image manipulations is not possible when grouping cache into folders is disabled.');
 
         $this->server->setGroupCacheInFolders(false);
@@ -341,19 +344,19 @@ class ServerTest extends TestCase
         $this->server->deleteCache('image.jpg', []);
     }
 
-    public function testSetApi()
+    public function testSetApi(): void
     {
-        $api = Mockery::mock('League\Glide\Api\ApiInterface');
+        $api = \Mockery::mock(ApiInterface::class);
         $this->server->setApi($api);
-        $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
+        $this->assertInstanceOf(ApiInterface::class, $this->server->getApi());
     }
 
-    public function testGetApi()
+    public function testGetApi(): void
     {
-        $this->assertInstanceOf('League\Glide\Api\ApiInterface', $this->server->getApi());
+        $this->assertInstanceOf(ApiInterface::class, $this->server->getApi());
     }
 
-    public function testSetDefaults()
+    public function testSetDefaults(): void
     {
         $defaults = [
             'fm' => 'jpg',
@@ -364,12 +367,12 @@ class ServerTest extends TestCase
         $this->assertSame($defaults, $this->server->getDefaults());
     }
 
-    public function testGetDefaults()
+    public function testGetDefaults(): void
     {
         $this->testSetDefaults();
     }
 
-    public function testSetPresets()
+    public function testSetPresets(): void
     {
         $presets = [
             'small' => [
@@ -384,12 +387,12 @@ class ServerTest extends TestCase
         $this->assertSame($presets, $this->server->getPresets());
     }
 
-    public function testGetPresets()
+    public function testGetPresets(): void
     {
         $this->testSetPresets();
     }
 
-    public function testGetAllParams()
+    public function testGetAllParams(): void
     {
         $this->server->setDefaults([
             'fm' => 'jpg',
@@ -406,6 +409,7 @@ class ServerTest extends TestCase
         $all_params = $this->server->getAllParams([
             'w' => '100',
             'p' => 'small',
+            'invalid' => '1',
         ]);
 
         $this->assertSame([
@@ -417,48 +421,48 @@ class ServerTest extends TestCase
         ], $all_params);
     }
 
-    public function testSetResponseFactory()
+    public function testSetResponseFactory(): void
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'));
+        $this->server->setResponseFactory(\Mockery::mock(ResponseFactoryInterface::class));
 
         $this->assertInstanceOf(
-            'League\Glide\Responses\ResponseFactoryInterface',
+            ResponseFactoryInterface::class,
             $this->server->getResponseFactory()
         );
     }
 
-    public function testGetResponseFactory()
+    public function testGetResponseFactory(): void
     {
         $this->testSetResponseFactory();
     }
 
-    public function testGetImageResponse()
+    public function testGetImageResponse(): void
     {
-        $this->server->setResponseFactory(Mockery::mock('League\Glide\Responses\ResponseFactoryInterface', function ($mock) {
-            $mock->shouldReceive('create')->andReturn(Mockery::mock('Psr\Http\Message\ResponseInterface'));
+        $this->server->setResponseFactory(\Mockery::mock(ResponseFactoryInterface::class, function ($mock) {
+            $mock->shouldReceive('create')->andReturn(\Mockery::mock(ResponseInterface::class));
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
         }));
 
         $this->assertInstanceOf(
-            'Psr\Http\Message\ResponseInterface',
+            ResponseInterface::class,
             $this->server->getImageResponse('image.jpg', [])
         );
     }
 
-    public function testGetImageResponseWithoutResponseFactory()
+    public function testGetImageResponseWithoutResponseFactory(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unable to get image response, no response factory defined.');
 
         $this->server->getImageResponse('image.jpg', []);
     }
 
-    public function testGetImageAsBase64()
+    public function testGetImageAsBase64(): void
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('read')->andReturn('content')->once();
@@ -473,9 +477,9 @@ class ServerTest extends TestCase
     public function testGetImageAsBase64WithUnreadableSource()
     {
         $this->expectException(FilesystemException::class);
-        $this->expectExceptionMessage('Could not read the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
+        $this->expectExceptionMessage('Could not read the image `image.jpg/a2c14b0b5cf0e5a5`.');
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('read')->andThrow('League\Flysystem\UnableToReadFile')->once();
@@ -484,12 +488,10 @@ class ServerTest extends TestCase
         $this->server->getImageAsBase64('image.jpg', []);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testOutputImage()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
             $mock->shouldReceive('mimeType')->andReturn('image/jpeg');
             $mock->shouldReceive('fileSize')->andReturn(0);
@@ -509,59 +511,57 @@ class ServerTest extends TestCase
 
     public function testMakeImageFromSource()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+            $mock->shouldReceive('write')->withArgs(['image.jpg/a2c14b0b5cf0e5a5', 'content'])->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $tmpDirPattern = Matchers::matchesPattern('~^'.sys_get_temp_dir().'.*~');
-            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
+        $this->server->setApi(\Mockery::mock(ApiInterface::class, function ($mock) {
+            $mock->shouldReceive('run')->withArgs(['content', []])->andReturn('content')->once();
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
 
     public function testMakeImageFromSourceWithCustomTmpDir()
     {
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
-            $mock->shouldReceive('write')->with('image.jpg/75094881e9fd2b93063d6a5cb083091c', 'content')->once();
+            $mock->shouldReceive('write')->with('image.jpg/a2c14b0b5cf0e5a5', 'content')->once();
         }));
 
         $this->server->setTempDir(__DIR__);
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
-            $tmpDirPattern = Matchers::matchesPattern('~^'.__DIR__.'.*~');
-            $mock->shouldReceive('run')->with($tmpDirPattern, [])->andReturn('content')->once();
+        $this->server->setApi(\Mockery::mock(ApiInterface::class, function ($mock) {
+            $mock->shouldReceive('run')->with('content', [])->andReturn('content')->once();
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
 
     public function testMakeImageFromCache()
     {
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true);
         }));
 
         $this->assertEquals(
-            'image.jpg/75094881e9fd2b93063d6a5cb083091c',
+            'image.jpg/a2c14b0b5cf0e5a5',
             $this->server->makeImage('image.jpg', [])
         );
     }
@@ -571,50 +571,50 @@ class ServerTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('Could not find the image `image.jpg`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(false)->once();
         }));
 
         $this->server->makeImage('image.jpg', []);
     }
 
-    public function testMakeImageWithUnreadableSource()
+    public function testMakeImageWithUnreadableSource(): void
     {
         $this->expectException(FilesystemException::class);
         $this->expectExceptionMessage('Could not read the image `image.jpg`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
-            $mock->shouldReceive('read')->andThrow('League\Flysystem\UnableToReadFile')->once();
+            $mock->shouldReceive('read')->andThrow(UnableToReadFile::class)->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
-            $mock->shouldReceive('fileExists')->andThrow('League\Flysystem\UnableToCheckFileExistence')->once();
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
+            $mock->shouldReceive('fileExists')->andThrow(UnableToCheckFileExistence::class)->once();
         }));
 
         $this->server->makeImage('image.jpg', []);
     }
 
-    public function testMakeImageWithUnwritableCache()
+    public function testMakeImageWithUnwritableCache(): void
     {
         $this->expectException(FilesystemException::class);
-        $this->expectExceptionMessage('Could not write the image `image.jpg/75094881e9fd2b93063d6a5cb083091c`.');
+        $this->expectExceptionMessage('Could not write the image `image.jpg/a2c14b0b5cf0e5a5`.');
 
-        $this->server->setSource(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
+        $this->server->setSource(\Mockery::mock(FilesystemOperator::class, function ($mock) {
             $mock->shouldReceive('fileExists')->andReturn(true)->once();
             $mock->shouldReceive('read')->andReturn('content')->once();
         }));
 
-        $this->server->setCache(Mockery::mock('League\Flysystem\FilesystemOperator', function ($mock) {
-            $mock->shouldReceive('fileExists')->andThrow('League\Flysystem\UnableToCheckFileExistence')->once();
-            $mock->shouldReceive('write')->andThrow('League\Flysystem\UnableToWriteFile')->once();
+        $this->server->setCache(\Mockery::mock(FilesystemOperator::class, function ($mock) {
+            $mock->shouldReceive('fileExists')->andThrow(UnableToCheckFileExistence::class)->once();
+            $mock->shouldReceive('write')->andThrow(UnableToWriteFile::class)->once();
         }));
 
-        $this->server->setApi(Mockery::mock('League\Glide\Api\ApiInterface', function ($mock) {
+        $this->server->setApi(\Mockery::mock(ApiInterface::class, function ($mock) {
             $mock->shouldReceive('run')->andReturn('content')->once();
         }));
 

@@ -1,22 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Image;
+use Intervention\Image\Interfaces\ImageInterface;
 
-/**
- * @property string|null $bri
- */
 class Brightness extends BaseManipulator
 {
+    public function getApiParams(): array
+    {
+        return ['bri'];
+    }
+
     /**
      * Perform brightness image manipulation.
      *
-     * @param Image $image The source image.
+     * @param ImageInterface $image The source image.
      *
-     * @return Image The manipulated image.
+     * @return ImageInterface The manipulated image.
      */
-    public function run(Image $image)
+    public function run(ImageInterface $image): ImageInterface
     {
         $brightness = $this->getBrightness();
 
@@ -32,16 +36,18 @@ class Brightness extends BaseManipulator
      *
      * @return int|null The resolved brightness amount.
      */
-    public function getBrightness()
+    public function getBrightness(): ?int
     {
-        if (null === $this->bri || !preg_match('/^-*[0-9]+$/', $this->bri)) {
-            return;
+        $bri = (string) $this->getParam('bri');
+
+        if ('' === $bri
+            || !preg_match('/^-*[0-9]+$/', $bri)
+            || $bri < -100
+            || $bri > 100
+        ) {
+            return null;
         }
 
-        if ($this->bri < -100 or $this->bri > 100) {
-            return;
-        }
-
-        return (int) $this->bri;
+        return (int) $bri;
     }
 }
