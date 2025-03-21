@@ -10,6 +10,8 @@ class ApiTest extends TestCase
 {
     private $output;
 
+    private $api;
+
     public function setUp(): void
     {
         $this->api = new Api(Mockery::mock('Intervention\Image\ImageManager'), []);
