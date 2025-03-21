@@ -553,7 +553,7 @@ class Server
      *
      * @return void
      */
-    public function setResponseFactory(ResponseFactoryInterface $responseFactory = null)
+    public function setResponseFactory(?ResponseFactoryInterface $responseFactory = null)
     {
         $this->responseFactory = $responseFactory;
     }
