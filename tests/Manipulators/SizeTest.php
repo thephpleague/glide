@@ -219,7 +219,7 @@ class SizeTest extends TestCase
     public function testRunFillResize(): void
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
-            $mock->shouldReceive('pad')->with(100, 100)->andReturn($mock)->once();
+            $mock->shouldReceive('pad')->with(100, 100, 'transparent')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
@@ -258,7 +258,7 @@ class SizeTest extends TestCase
             $mock->shouldReceive('width')->andReturn(100)->times(4);
             $mock->shouldReceive('height')->andReturn(100)->times(4);
             $mock->shouldReceive('scale')->with(100, 100)->andReturn($mock)->once();
-            $mock->shouldReceive('crop')->with(100, 100, 0, 0)->andReturn($mock)->once();
+            $mock->shouldReceive('crop')->with(100, 100, 0, 0, 'transparent')->andReturn($mock)->once();
         });
 
         $this->assertInstanceOf(
