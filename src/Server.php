@@ -627,7 +627,7 @@ class Server
                 $sourcePath
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not read the image `'.$sourcePath.'`.');
+            throw new FilesystemException('Could not read the image `'.$sourcePath.'`.', 0, $exception);
         }
 
         try {
@@ -636,7 +636,7 @@ class Server
                 $this->api->run($source, $this->getAllParams($params))
             );
         } catch (FilesystemV2Exception $exception) {
-            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.');
+            throw new FilesystemException('Could not write the image `'.$cachedPath.'`.', 0, $exception);
         }
 
         return $cachedPath;
