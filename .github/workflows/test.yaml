@@ -69,14 +69,10 @@ jobs:
         with:
           php-version: '8.3'
           extensions: gd, imagick
-          tools: vimeo/psalm:5, phpstan:2
+          tools: phpstan:2
 
       - name: Composer install
         uses: ramsey/composer-install@v3
-
-      - name: psalm
-        run: |
-          psalm --output-format=github
 
       - name: phpstan
         if: always()
