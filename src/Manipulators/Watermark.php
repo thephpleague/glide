@@ -41,7 +41,7 @@ class Watermark extends BaseManipulator
      *
      * @param FilesystemOperator $watermarks The watermarks file system.
      */
-    public function __construct(FilesystemOperator $watermarks = null, $watermarksPathPrefix = '')
+    public function __construct(?FilesystemOperator $watermarks = null, $watermarksPathPrefix = '')
     {
         $this->setWatermarks($watermarks);
         $this->setWatermarksPathPrefix($watermarksPathPrefix);
@@ -54,7 +54,7 @@ class Watermark extends BaseManipulator
      *
      * @return void
      */
-    public function setWatermarks(FilesystemOperator $watermarks = null)
+    public function setWatermarks(?FilesystemOperator $watermarks = null)
     {
         $this->watermarks = $watermarks;
     }
