@@ -58,9 +58,9 @@ $watermarks = new League\Flysystem\Filesystem(
 );
 
 // Set image manager
-$imageManager = new Intervention\Image\ImageManager([
-    'driver' => 'gd',
-]);
+$imageManager = new Intervention\Image\ImageManager(
+    new Intervention\Image\Drivers\Gd\Driver()
+);
 
 // Set manipulators
 $manipulators = [
