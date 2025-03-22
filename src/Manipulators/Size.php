@@ -299,7 +299,7 @@ class Size extends BaseManipulator
      */
     public function runFillResize(ImageInterface $image, int $width, int $height): ImageInterface
     {
-        return $image->pad($width, $height);
+        return $image->pad($width, $height, 'transparent');
     }
 
     /**
@@ -313,7 +313,7 @@ class Size extends BaseManipulator
      */
     public function runFillMaxResize(ImageInterface $image, int $width, int $height): ImageInterface
     {
-        return $image->contain($width, $height);
+        return $image->contain($width, $height, 'transparent');
     }
 
     /**
@@ -349,7 +349,7 @@ class Size extends BaseManipulator
 
         [$offset_x, $offset_y] = $this->resolveCropOffset($image, $width, $height);
 
-        return $image->crop($width, $height, $offset_x, $offset_y);
+        return $image->crop($width, $height, $offset_x, $offset_y, 'transparent');
     }
 
     /**
