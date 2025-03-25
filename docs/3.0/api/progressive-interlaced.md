@@ -13,7 +13,7 @@ The `interlace` parameter controls whether an image is rendered in a progressive
 
 ### Supported Formats
 
-- **JPG**: The `onterlace` parameter applies a progressive scan to JPG images.
+- **JPG**: The `interlace` parameter applies a progressive scan to JPG images.
 - **PNG** and **GIF**: The `interlace` parameter enables interlacing for GIF/PNG images.
 
 > Note: When `ext` is set to `.pjpg`, it will automatically generate a progressive JPG image, regardless of the `interlace` parameter.
