@@ -21,6 +21,7 @@ class EncoderTest extends TestCase
     private ImageInterface $webp;
     private ImageInterface $avif;
     private ImageInterface $heic;
+    private ImageInterface $bmp;
 
     public function setUp(): void
     {
@@ -33,6 +34,9 @@ class EncoderTest extends TestCase
         );
         $this->gif = $manager->read(
             $manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'))->toFilePointer()
+        );
+        $this->bmp = $manager->read(
+            $manager->create(100, 100)->encode(new MediaTypeEncoder('image/bmp'))->toFilePointer()
         );
 
         if (function_exists('imagecreatefromwebp')) {
@@ -68,35 +72,47 @@ class EncoderTest extends TestCase
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->jpg)));
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->png)));
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->gif)));
+        $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->bmp)));
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->jpg)));
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->png)));
         $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->gif)));
+        $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->bmp)));
         $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->jpg)));
         $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->png)));
         $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->gif)));
+        $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->bmp)));
         $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->jpg)));
         $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->png)));
         $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->gif)));
+        $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->bmp)));
+        $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->jpg)));
+        $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->png)));
+        $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->gif)));
+        $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->bmp)));
 
         if (function_exists('imagecreatefromwebp')) {
             $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->webp)));
             $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->webp)));
             $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->webp)));
             $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->webp)));
+            $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->webp)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->jpg)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->png)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->gif)));
             $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->webp)));
+            $this->assertSame('image/webp', $this->getMime($this->encoder->setParams(['fm' => 'webp'])->run($this->bmp)));
         }
         if (function_exists('imagecreatefromavif')) {
             $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'jpg'])->run($this->avif)));
             $this->assertSame('image/jpeg', $this->getMime($this->encoder->setParams(['fm' => 'pjpg'])->run($this->avif)));
             $this->assertSame('image/png', $this->getMime($this->encoder->setParams(['fm' => 'png'])->run($this->avif)));
             $this->assertSame('image/gif', $this->getMime($this->encoder->setParams(['fm' => 'gif'])->run($this->avif)));
+            $this->assertSame('image/bmp', $this->getMime($this->encoder->setParams(['fm' => 'bmp'])->run($this->avif)));
             $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->jpg)));
             $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->png)));
             $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->gif)));
             $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->avif)));
+            $this->assertSame('image/avif', $this->getMime($this->encoder->setParams(['fm' => 'avif'])->run($this->bmp)));
         }
 
         if (function_exists('imagecreatefromwebp') && function_exists('imagecreatefromavif')) {
@@ -110,16 +126,19 @@ class EncoderTest extends TestCase
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => 'jpg'])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($this->getImageByMimeType('image/png')));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/gif')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/bmp')));
 
         // Make sure 'fm' parameter takes precedence
         $this->assertSame('png', $this->encoder->setParams(['fm' => 'png'])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => 'gif'])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('pjpg', $this->encoder->setParams(['fm' => 'pjpg'])->getFormat($this->getImageByMimeType('image/jpeg')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => 'bmp'])->getFormat($this->getImageByMimeType('image/jpeg')));
 
         // Make sure we keep the current format if no format is provided
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/png')));
         $this->assertSame('gif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/gif')));
+        $this->assertSame('bmp', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/bmp')));
 
         $this->assertSame('jpg', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/jpeg')));
         $this->assertSame('png', $this->encoder->setParams(['fm' => ''])->getFormat($this->getImageByMimeType('image/png')));
@@ -171,17 +190,20 @@ class EncoderTest extends TestCase
         $this->gif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/gif'))->toFilePointer());
         $this->heic = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/heic'))->toFilePointer());
         $this->tif = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/tiff'))->toFilePointer());
+        $this->bmp = $manager->read($manager->create(100, 100)->encode(new MediaTypeEncoder('image/bmp'))->toFilePointer());
 
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->jpg)));
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->png)));
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->gif)));
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->heic)));
+        $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->bmp)));
     }
 
     public function testSupportedFormats(): void
     {
         $expected = [
             'avif' => 'image/avif',
+            'bmp' => 'image/bmp',
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
             'pjpg' => 'image/jpeg',

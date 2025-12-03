@@ -72,6 +72,8 @@ class Encoder
 
         $encoderOptions = [];
         switch ($format) {
+            case 'bmp':
+                break;
             case 'avif':
             case 'heic':
             case 'tiff':
@@ -126,6 +128,7 @@ class Encoder
     {
         return [
             'avif' => 'image/avif',
+            'bmp' => 'image/bmp',
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
             'pjpg' => 'image/jpeg',
