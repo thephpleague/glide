@@ -93,6 +93,4 @@ $server = new League\Glide\Server(
 $server->setResponseFactory(new SymfonyResponseFactory());
 ~~~
 
-<p class="message-notice">Be sure to always include the <code>League\Glide\Manipulators\Encode()</code> manipulator as the last item in your list of manipulators. This manipulator is required, and Glide will break without it.</p>
-
 <p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>symfony/http-foundation</code> package with your project. For more information, see <a href="config/responses/">responses</a>.</p>
