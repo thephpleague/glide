@@ -5,7 +5,7 @@ title: Advanced usage
 
 # Advanced usage
 
-Once your Glide [server](/2.0/config/setup/) is configured, there are a number of methods available to interact with it. For basic setups you'll likely only need the `outputImage()` method. However, if you plan to use Glide with a queuing server or in other more complex configurations, these methods can be useful.
+Once your Glide [server](config/setup/) is configured, there are a number of methods available to interact with it. For basic setups you'll likely only need the `outputImage()` method. However, if you plan to use Glide with a queuing server or in other more complex configurations, these methods can be useful.
 
 ## Source
 
