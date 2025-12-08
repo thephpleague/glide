@@ -31,6 +31,11 @@ class Api implements ApiInterface
     protected array $manipulators;
 
     /**
+     * Image encoder.
+     */
+    protected ?Encoder $encoder = null;
+
+    /**
      * API parameters.
      *
      * @var list<string>
@@ -42,12 +47,14 @@ class Api implements ApiInterface
      *
      * @param ImageManager $imageManager Intervention image manager.
      * @param array        $manipulators Collection of manipulators.
+     * @param Encoder|null $encoder      Image encoder.
      */
-    public function __construct(ImageManager $imageManager, array $manipulators)
+    public function __construct(ImageManager $imageManager, array $manipulators, ?Encoder $encoder = null)
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
         $this->setApiParams();
+        $this->encoder = $encoder;
     }
 
     /**
@@ -97,6 +104,26 @@ class Api implements ApiInterface
     }
 
     /**
+     * Set the encoder.
+     *
+     * @param Encoder $encoder Image encoder.
+     */
+    public function setEncoder(Encoder $encoder): void
+    {
+        $this->encoder = $encoder;
+    }
+
+    /**
+     * Get the encoder.
+     *
+     * @return Encoder Image encoder.
+     */
+    public function getEncoder(): Encoder
+    {
+        return $this->encoder ??= new Encoder();
+    }
+
+    /**
      * Perform image manipulations.
      *
      * @param string $source Source image binary data.
@@ -126,10 +153,7 @@ class Api implements ApiInterface
      */
     public function encode(ImageInterface $image, array $params): string
     {
-        $encoder = new Encoder($params);
-        $encoded = $encoder->run($image);
-
-        return $encoded->toString();
+        return $this->getEncoder()->setParams($params)->run($image)->toString();
     }
 
     /**
