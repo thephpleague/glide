@@ -32,6 +32,7 @@ $server = League\Glide\ServerFactory::create([
     'presets' =>                    // Preset image manipulations
     'base_url' =>                   // Base URL of the images
     'response' =>                   // Response factory
+    'encoder'  =>                   // Image encoder, available in v3.1
 ]);
 ~~~
 

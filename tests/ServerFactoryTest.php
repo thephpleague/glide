@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace League\Glide;
 
+use League\Glide\Api\Encoder;
 use PHPUnit\Framework\TestCase;
 
 class ServerFactoryTest extends TestCase
@@ -257,14 +258,17 @@ class ServerFactoryTest extends TestCase
 
     public function testCreate()
     {
+        $encoder = \Mockery::mock(Encoder::class);
         $server = ServerFactory::create([
             'source' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
             'cache' => \Mockery::mock('League\Flysystem\FilesystemOperator'),
             'response' => \Mockery::mock('League\Glide\Responses\ResponseFactoryInterface'),
             'temp_dir' => __DIR__,
+            'encoder' => $encoder,
         ]);
 
         $this->assertInstanceOf('League\Glide\Server', $server);
         $this->assertSame(__DIR__.DIRECTORY_SEPARATOR, $server->getTempDir());
+        $this->assertSame($encoder, $server->getApi()->getEncoder());
     }
 }

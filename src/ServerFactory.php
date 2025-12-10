@@ -9,6 +9,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Glide\Api\Api;
+use League\Glide\Api\Encoder;
 use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
 use League\Glide\Manipulators\Border;
@@ -210,8 +211,19 @@ class ServerFactory
     {
         return new Api(
             $this->getImageManager(),
-            $this->getManipulators()
+            $this->getManipulators(),
+            $this->getEncoder()
         );
+    }
+
+    /**
+     * Get image encoder.
+     *
+     * @return Encoder|null Image encoder.
+     */
+    public function getEncoder(): ?Encoder
+    {
+        return $this->config['encoder'] ?? null;
     }
 
     /**
