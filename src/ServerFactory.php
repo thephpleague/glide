@@ -23,6 +23,7 @@ use League\Glide\Manipulators\Orientation;
 use League\Glide\Manipulators\Pixelate;
 use League\Glide\Manipulators\Sharpen;
 use League\Glide\Manipulators\Size;
+use League\Glide\Manipulators\Trim;
 use League\Glide\Manipulators\Watermark;
 use League\Glide\Responses\ResponseFactoryInterface;
 
@@ -264,6 +265,7 @@ class ServerFactory
             new Filter(),
             new Flip(),
             new Blur(),
+            new Trim(),
             new Pixelate(),
             new Watermark($this->getWatermarks(), $this->getWatermarksPathPrefix() ?? ''),
             new Background(),
