@@ -39,6 +39,6 @@ interface ResponseFactoryInterface
      * @param  string              $path  The cached file path.
      * @return mixed               The response object.
      */
-    public function create(FilesystemOperator $cache, $path);
+    public function create(FilesystemOperator $cache, string $path);
 }
 ~~~

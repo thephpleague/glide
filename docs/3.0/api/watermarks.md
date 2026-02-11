@@ -23,7 +23,7 @@ Configuring the watermarks file system is exactly the same as configuring the `s
 <?php
 
 $server = ServerFactory::create([
-    'watermarks' => new Filesystem(new Local('path/to/watermarks/folder')),
+    'watermarks' => new Filesystem(new LocalFilesystemAdapter('path/to/watermarks/folder')),
     'watermarks_path_prefix' => 'images/watermarks', // optional
 ]);
 ~~~

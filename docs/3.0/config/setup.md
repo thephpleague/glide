@@ -59,9 +59,7 @@ $watermarks = new League\Flysystem\Filesystem(
 );
 
 // Set image manager
-$imageManager = new Intervention\Image\ImageManager(
-    new Intervention\Image\Drivers\Gd\Driver()
-);
+$imageManager = Intervention\Image\ImageManager::gd();
 
 // Set manipulators
 $manipulators = [
@@ -73,6 +71,7 @@ $manipulators = [
     new League\Glide\Manipulators\Gamma(),
     new League\Glide\Manipulators\Sharpen(),
     new League\Glide\Manipulators\Filter(),
+    new League\Glide\Manipulators\Flip(),
     new League\Glide\Manipulators\Blur(),
     new League\Glide\Manipulators\Pixelate(),
     new League\Glide\Manipulators\Watermark($watermarks),
