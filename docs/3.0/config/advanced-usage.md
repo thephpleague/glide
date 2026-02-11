@@ -13,10 +13,10 @@ Once your Glide [server](config/setup/) is configured, there are a number of met
 <?php
 
 // Set the source file system
-public function setSource(FilesystemOperator $source): void
+public function setSource(League\Flysystem\FilesystemOperator $source): void
 
 // Get the source file system
-public function getSource(): FilesystemOperator
+public function getSource(): League\Flysystem\FilesystemOperator
 
 // Set the source path prefix
 public function setSourcePathPrefix(string $sourcePathPrefix): void
@@ -37,10 +37,10 @@ public function sourceFileExists(string $path): bool
 <?php
 
 // Set the cache file system
-public function setCache(FilesystemOperator $cache): void
+public function setCache(League\Flysystem\FilesystemOperator $cache): void
 
 // Get the cache file system
-public function getCache(): FilesystemOperator
+public function getCache(): League\Flysystem\FilesystemOperator
 
 // Set the cache path prefix
 public function setCachePathPrefix(string $cachePathPrefix): void
@@ -76,10 +76,10 @@ public function getTempDir(): string
 <?php
 
 // Set the image manipulation Api
-public function setApi(ApiInterface $api): void
+public function setApi(League\Glide\Api\ApiInterface $api): void
 
 // Get the image manipulation Api
-public function getApi(): ApiInterface
+public function getApi(): League\Glide\Api\ApiInterface
 ~~~
 
 ## Responses
@@ -88,10 +88,10 @@ public function getApi(): ApiInterface
 <?php
 
 // Set the response factory
-public function setResponseFactory(?ResponseFactoryInterface $responseFactory = null): void
+public function setResponseFactory(?League\Glide\Responses\ResponseFactoryInterface $responseFactory = null): void
 
 // Get the response factory
-public function getResponseFactory(): ?ResponseFactoryInterface
+public function getResponseFactory(): ?League\Glide\Responses\ResponseFactoryInterface
 ~~~
 
 ## Default manipulations

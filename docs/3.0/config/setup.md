@@ -90,7 +90,7 @@ $server = new League\Glide\Server(
 );
 
 // Set response factory
-$server->setResponseFactory(new SymfonyResponseFactory());
+$server->setResponseFactory(new League\Glide\Responses\SymfonyResponseFactory());
 ~~~
 
 <p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>symfony/http-foundation</code> package with your project. For more information, see <a href="config/responses/">responses</a>.</p>
