@@ -85,7 +85,7 @@ class Api implements ApiInterface
     public function setManipulators(array $manipulators): void
     {
         foreach ($manipulators as $manipulator) {
-            if (!($manipulator instanceof ManipulatorInterface)) {
+            if (!$manipulator instanceof ManipulatorInterface) {
                 throw new \InvalidArgumentException('Not a valid manipulator.');
             }
         }
