@@ -87,7 +87,7 @@ class Color
 
             $rgba = [255, 255, 255];
             $alpha = 0;
-        } while (false); // @phpstan-ignore-line
+        } while (false);
 
         $this->red = $rgba[0];
         $this->green = $rgba[1];
