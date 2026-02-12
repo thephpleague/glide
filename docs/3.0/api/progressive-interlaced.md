@@ -23,4 +23,4 @@ The `interlace` parameter controls whether an image is rendered in a progressive
 <img src="logo.png?interlace=1">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?interlace=1)](https://glide.herokuapp.com/1.0/kayaks.jpg?interlace=1)
+![© Photo Joel Reynolds](/images/kayaks-interlace-1.jpg?interlace=1)

@@ -13,7 +13,7 @@ Adjusts the image brightness. Use values between `-100` and `+100`, where `0` re
 <img src="kayaks.jpg?w=500&bri=-25">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&bri=-25)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&bri=-25)
+![© Photo Joel Reynolds](/images/kayaks-bri-neg25_w-500.jpg?w=500&bri=-25)
 
 ## Contrast `con`
 
@@ -23,7 +23,7 @@ Adjusts the image contrast. Use values between `-100` and `+100`, where `0` repr
 <img src="kayaks.jpg?w=500&con=25">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&con=25)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&con=25)
+![© Photo Joel Reynolds](/images/kayaks-con-25_w-500.jpg?w=500&con=25)
 
 ## Gamma `gam`
 
@@ -33,7 +33,7 @@ Adjusts the image gamma. Use values between `0.1` and `9.99`.
 <img src="kayaks.jpg?w=500&gam=1.5">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&gam=1.5)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&gam=1.5)
+![© Photo Joel Reynolds](/images/kayaks-gam-1p5_w-500.jpg?w=500&gam=1.5)
 
 ## Sharpen `sharp`
 
@@ -43,4 +43,4 @@ Sharpen the image. Use values between `0` and `100`.
 <img src="kayaks.jpg?w=500&sharp=15">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&sharp=15)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&sharp=15)
+![© Photo Joel Reynolds](/images/kayaks-sharp-15_w-500.jpg?w=500&sharp=15)

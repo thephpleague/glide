@@ -13,7 +13,7 @@ Resizes the image to fill the width and height boundaries and crops any excess i
 <img src="kayaks.jpg?w=300&h=300&fit=cover">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=crop)
+![© Photo Joel Reynolds](/images/kayaks-fit-crop_h-300_w-300.jpg?w=300&h=300&fit=crop)
 
 ### Crop Position
 
@@ -45,4 +45,4 @@ Crops the image to specific dimensions prior to any other resize operations. Req
 <img src="kayaks.jpg?crop=100,100,915,155">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?crop=100,100,915,155)](https://glide.herokuapp.com/1.0/kayaks.jpg?crop=100,100,915,155)
+![© Photo Joel Reynolds](/images/kayaks-crop-100_100_915_155.jpg?crop=100,100,915,155)

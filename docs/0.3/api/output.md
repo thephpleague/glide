@@ -13,7 +13,7 @@ Defines the quality of the image. Use values between `0` and `100`. Defaults to 
 <img src="kayaks.jpg?w=500&q=25>
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500&q=25)](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500&q=25)
+![© Photo Joel Reynolds](/images/kayaks-q-25_w-500.jpg?w=500&q=25)
 
 
 ## Format `fm`
@@ -24,4 +24,4 @@ Encodes the image to a specific format. Accepts `jpg`, `png` or `gif`. Defaults 
 <img src="kayaks.jpg?w=500&fm=gif>
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500&fm=gif)](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500&fm=gif)
+![© Photo Joel Reynolds](/images/kayaks-fm-gif_w-500.gif?w=500&fm=gif)

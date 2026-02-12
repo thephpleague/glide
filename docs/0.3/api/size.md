@@ -13,7 +13,7 @@ Sets the width of the image, in pixels.
 <img src="kayaks.jpg?w=500">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500)](https://glide.herokuapp.com/0.3/kayaks.jpg?w=500)
+![© Photo Joel Reynolds](/images/kayaks-w-500.jpg?w=500)
 
 ## Height `h`
 
@@ -23,7 +23,7 @@ Sets the height of the image, in pixels.
 <img src="kayaks.jpg?h=333">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?h=333)](https://glide.herokuapp.com/0.3/kayaks.jpg?h=333)
+![© Photo Joel Reynolds](/images/kayaks-h-333.jpg?h=333)
 
 ## Fit `fit`
 
@@ -40,7 +40,7 @@ Sets how the image is fitted to its target dimensions.
 <img src="kayaks.jpg?w=300&h=300&fit=crop">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?w=300&h=300&fit=crop)](https://glide.herokuapp.com/0.3/kayaks.jpg?w=300&h=300&fit=crop)
+![© Photo Joel Reynolds](/images/kayaks-fit-crop_h-300_w-300.jpg?w=300&h=300&fit=crop)
 
 ## Crop Mode `crop`
 
@@ -50,7 +50,7 @@ Sets where the image is cropped when the `fit` parameter is set to `crop`. Accep
 <img src="kayaks.jpg?w=300&h=300&fit=crop&crop=left">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?w=300&h=300&fit=crop&crop=left)](https://glide.herokuapp.com/0.3/kayaks.jpg?w=300&h=300&fit=crop&crop=left)
+![© Photo Joel Reynolds](/images/kayaks-fit-cropnegleft_h-300_w-300.jpg?w=300&h=300&fit=crop&crop=left)
 
 ## Rectangle `rect`
 
@@ -60,7 +60,7 @@ Crops the image to specific dimensions prior to any other resize operations. Req
 <img src="kayaks.jpg?rect=100,100,915,155">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?rect=100,100,915,155)](https://glide.herokuapp.com/0.3/kayaks.jpg?rect=100,100,915,155)
+![© Photo Joel Reynolds](/images/kayaks-crop-100_100_915_155.jpg?rect=100,100,915,155)
 
 
 ## Orientation `or`
@@ -71,4 +71,4 @@ Rotates the image. Accepts `auto`, `0`, `90`, `180` or `270`. Default is `auto`.
 <img src="kayaks.jpg?h=500&or=90">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/0.3/kayaks.jpg?h=500&or=90)](https://glide.herokuapp.com/0.3/kayaks.jpg?h=500&or=90)
+![© Photo Joel Reynolds](/images/kayaks-h-500_or-90.jpg?h=500&or=90)
