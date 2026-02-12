@@ -65,7 +65,7 @@ In addition signing URLs, you can also limit how large images can be generated. 
 ~~~ php
 <?php
 
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'max_image_size' => 2000*2000,
 ]);
 ~~~

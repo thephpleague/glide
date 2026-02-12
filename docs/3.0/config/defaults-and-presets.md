@@ -11,7 +11,7 @@ In certain situations you may want to define default image manipulations. For ex
 <?php
 
 // Set using factory
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'defaults' => [
         'mark' => 'logo.png',
         'markw' => '30w',
@@ -37,7 +37,7 @@ Glide also makes it possible to define groups of defaults, known as presets. Thi
 <?php
 
 // Set using factory
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'presets' => [
         'small' => [
             'w' => 200,

@@ -14,7 +14,7 @@ The easiest way to configure the `Server` is using the supplied factory.
 ~~~ php
 <?php
 
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'source' =>                     // Source filesystem
     'source_path_prefix' =>         // Source filesystem path prefix
     'cache' =>                      // Cache filesystem
@@ -44,53 +44,53 @@ You can also choose to instantiate the `Server` object manually. This allows fin
 <?php
 
 // Set source filesystem
-$source = new League\Flysystem\Filesystem(
-    new League\Flysystem\Local\LocalFilesystemAdapter('path/to/source/folder')
+$source = new \League\Flysystem\Filesystem(
+    new \League\Flysystem\Local\LocalFilesystemAdapter('path/to/source/folder')
 );
 
 // Set cache filesystem
-$cache = new League\Flysystem\Filesystem(
-    new League\Flysystem\Local\LocalFilesystemAdapter('path/to/cache/folder')
+$cache = new \League\Flysystem\Filesystem(
+    new \League\Flysystem\Local\LocalFilesystemAdapter('path/to/cache/folder')
 );
 
 // Set watermarks filesystem
-$watermarks = new League\Flysystem\Filesystem(
-    new League\Flysystem\Local\LocalFilesystemAdapter('path/to/watermarks/folder')
+$watermarks = new \League\Flysystem\Filesystem(
+    new \League\Flysystem\Local\LocalFilesystemAdapter('path/to/watermarks/folder')
 );
 
 // Set image manager
-$imageManager = Intervention\Image\ImageManager::gd();
+$imageManager = \Intervention\Image\ImageManager::gd();
 
 // Set manipulators
 $manipulators = [
-    new League\Glide\Manipulators\Orientation(),
-    new League\Glide\Manipulators\Crop(),
-    new League\Glide\Manipulators\Size(2000*2000),
-    new League\Glide\Manipulators\Brightness(),
-    new League\Glide\Manipulators\Contrast(),
-    new League\Glide\Manipulators\Gamma(),
-    new League\Glide\Manipulators\Sharpen(),
-    new League\Glide\Manipulators\Filter(),
-    new League\Glide\Manipulators\Flip(),
-    new League\Glide\Manipulators\Blur(),
-    new League\Glide\Manipulators\Pixelate(),
-    new League\Glide\Manipulators\Watermark($watermarks),
-    new League\Glide\Manipulators\Background(),
-    new League\Glide\Manipulators\Border(),
+    new \League\Glide\Manipulators\Orientation(),
+    new \League\Glide\Manipulators\Crop(),
+    new \League\Glide\Manipulators\Size(2000*2000),
+    new \League\Glide\Manipulators\Brightness(),
+    new \League\Glide\Manipulators\Contrast(),
+    new \League\Glide\Manipulators\Gamma(),
+    new \League\Glide\Manipulators\Sharpen(),
+    new \League\Glide\Manipulators\Filter(),
+    new \League\Glide\Manipulators\Flip(),
+    new \League\Glide\Manipulators\Blur(),
+    new \League\Glide\Manipulators\Pixelate(),
+    new \League\Glide\Manipulators\Watermark($watermarks),
+    new \League\Glide\Manipulators\Background(),
+    new \League\Glide\Manipulators\Border(),
 ];
 
 // Set API
-$api = new League\Glide\Api\Api($imageManager, $manipulators);
+$api = new \League\Glide\Api\Api($imageManager, $manipulators);
 
 // Setup Glide server
-$server = new League\Glide\Server(
+$server = new \League\Glide\Server(
     $source,
     $cache,
     $api,
 );
 
 // Set response factory
-$server->setResponseFactory(new League\Glide\Responses\SymfonyResponseFactory());
+$server->setResponseFactory(new \League\Glide\Responses\SymfonyResponseFactory());
 ~~~
 
 <p class="message-notice">To use the <code>SymfonyResponseFactory</code> class, you must also include the <code>symfony/http-foundation</code> package with your project. For more information, see <a href="config/responses/">responses</a>.</p>

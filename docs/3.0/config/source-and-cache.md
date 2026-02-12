@@ -32,7 +32,7 @@ Alternatively, if you are only using the local disk, you can simply provide the 
 ~~~ php
 <?php
 
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'source' => 'path/to/source/folder',
     'cache' => 'path/to/cache/folder',
 ]);
@@ -46,7 +46,7 @@ While it's normally possible to set the full source and cache path using Flysyst
 <?php
 
 // Set using factory
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'source' => $filesystem,
     'cache' => $filesystem,
     'source_path_prefix' => 'source',
@@ -72,7 +72,7 @@ The `base_url` allows you to define which part of the URL should be omitted from
 <?php
 
 // Set using factory
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'base_url' => '/img/',
 ]);
 
@@ -98,7 +98,7 @@ By default Glide groups cached images into folders. For example, all variations 
 <?php
 
 // Set using factory
-$server = League\Glide\ServerFactory::create([
+$server = \League\Glide\ServerFactory::create([
     'group_cache_in_folders' => false
 ]);
 
