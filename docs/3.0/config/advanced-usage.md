@@ -13,22 +13,22 @@ Once your Glide [server](config/setup/) is configured, there are a number of met
 <?php
 
 // Set the source file system
-public function setSource(FilesystemOperator $source)
+public function setSource(\League\Flysystem\FilesystemOperator $source): void
 
 // Get the source file system
-public function getSource()
+public function getSource(): \League\Flysystem\FilesystemOperator
 
 // Set the source path prefix
-public function setSourcePathPrefix($sourcePathPrefix)
+public function setSourcePathPrefix(string $sourcePathPrefix): void
 
 // Get the source path prefix
-public function getSourcePathPrefix()
+public function getSourcePathPrefix(): string
 
 // Get the source path for an image
-public function getSourcePath($path)
+public function getSourcePath(string $path): string
 
 // Check if a source file exists
-public function sourceFileExists($path)
+public function sourceFileExists(string $path): bool
 ~~~
 
 ## Cache
@@ -37,37 +37,37 @@ public function sourceFileExists($path)
 <?php
 
 // Set the cache file system
-public function setCache(FilesystemOperator $cache)
+public function setCache(\League\Flysystem\FilesystemOperator $cache): void
 
 // Get the cache file system
-public function getCache()
+public function getCache(): \League\Flysystem\FilesystemOperator
 
 // Set the cache path prefix
-public function setCachePathPrefix($cachePathPrefix)
+public function setCachePathPrefix(string $cachePathPrefix): void
 
 // Get the cache path prefix
-public function getCachePathPrefix()
+public function getCachePathPrefix(): string
 
 // Set the group cache in folders setting
-public function setGroupCacheInFolders(true|false)
+public function setGroupCacheInFolders(bool $groupCacheInFolders): void
 
 // Get the group cache in folders setting
-public function getGroupCacheInFolders()
+public function getGroupCacheInFolders(): bool
 
 // Delete an image from the cache
-public function deleteCache($path)
+public function deleteCache(string $path): bool
 
 // Get the cache path for an image
-public function getCachePath($path, array $params)
+public function getCachePath(string $path, array $params = []): string
 
 // Check if a cache file exists
-public function cacheFileExists($path, array $params)
+public function cacheFileExists(string $path, array $params): bool
 
 // Set the temporary directory that should be used to store EXIF data
-public function setTempDir($tempDir)
+public function setTempDir(string $tempDir): void
 
 // Get the current temporary directory
-public function getTempDir()
+public function getTempDir(): string
 ~~~
 
 ## Api
@@ -76,10 +76,10 @@ public function getTempDir()
 <?php
 
 // Set the image manipulation Api
-public function setApi(ApiInterface $api)
+public function setApi(\League\Glide\Api\ApiInterface $api): void
 
 // Get the image manipulation Api
-public function getApi()
+public function getApi(): \League\Glide\Api\ApiInterface
 ~~~
 
 ## Responses
@@ -88,10 +88,10 @@ public function getApi()
 <?php
 
 // Set the response factory
-public function setResponseFactory(ResponseFactoryInterface $responseFactory)
+public function setResponseFactory(?\League\Glide\Responses\ResponseFactoryInterface $responseFactory = null): void
 
 // Get the response factory
-public function getResponseFactory()
+public function getResponseFactory(): ?\League\Glide\Responses\ResponseFactoryInterface
 ~~~
 
 ## Default manipulations
@@ -99,11 +99,17 @@ public function getResponseFactory()
 ~~~ php
 <?php
 
-// Set the default manipulators
-public function setManipulators(array $manipulators)
+// Set the default manipulations
+public function setDefaults(array $defaults): void
 
-// Get the default manipulators
-public function getManipulators()
+// Get the default manipulations
+public function getDefaults(): array
+
+// Set the preset manipulations
+public function setPresets(array $presets): void
+
+// Get the preset manipulations
+public function getPresets(): array
 ~~~
 
 ## Base URL
@@ -112,10 +118,10 @@ public function getManipulators()
 <?php
 
 // Set the base url
-public function setBaseUrl($baseUrl)
+public function setBaseUrl(string $baseUrl): void
 
 // Get the base url
-public function getBaseUrl()
+public function getBaseUrl(): string
 ~~~
 
 ## Image generation
@@ -124,14 +130,14 @@ public function getBaseUrl()
 <?php
 
 // Generates and outputs the image
-$server->outputImage($path, array $params);
+$server->outputImage(string $path, array $params): void
 
-// Generates and returns the image reponse
-$server->getImageResponse($path, array $params);
+// Generates and returns the image response
+$server->getImageResponse(string $path, array $params): mixed
 
 // Generates and returns the image Base64 encoded
-$server->getImageAsBase64($path, array $params);
+$server->getImageAsBase64(string $path, array $params): string
 
 // Generates the image
-$server->makeImage($path, array $params);
+$server->makeImage(string $path, array $params): string
 ~~~
