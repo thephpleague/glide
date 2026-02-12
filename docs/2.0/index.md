@@ -14,6 +14,8 @@ title: Introduction
 [![Code Coverage](https://img.shields.io/codecov/c/github/thephpleague/glide/master?style=flat-square)](https://app.codecov.io/gh/thephpleague/glide/)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/glide.svg?style=flat-square)](https://packagist.org/packages/league/glide)
 
+<p class="message-notice">Version 2.0 is no longer actively maintained. Consider using <a href="/">latest version</a> instead.</p>
+
 Glide is a wonderfully easy on-demand image manipulation library written in PHP. Its straightforward API is exposed via HTTP, similar to cloud image processing services like [Imgix](http://www.imgix.com/) and [Cloudinary](http://cloudinary.com/). Glide leverages powerful libraries like [Intervention Image](http://image.intervention.io/) (for image handling and manipulation) and [Flysystem](http://flysystem.thephpleague.com/) (for file system abstraction).
 
 [![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=1000&gam=.9&sharp=8)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=1000&gam=.9&sharp=8)
