@@ -13,7 +13,7 @@ Adds a blur effect to the image. Use values between `0` and `100`.
 <img src="kayaks.jpg?w=500&blur=5">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&blur=5)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&blur=5)
+![© Photo Joel Reynolds](/images/kayaks-blur-5_w-500.jpg?w=500&blur=5)
 
 <p class="message-notice">Performance intensive on larger amounts of blur with GD driver. Use with care.</p>
 
@@ -25,7 +25,7 @@ Applies a pixelation effect to the image. Use values between `0` and `1000`.
 <img src="kayaks.jpg?w=500&pixel=5">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&pixel=5)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&pixel=5)
+![© Photo Joel Reynolds](/images/kayaks-pixel-5_w-500.jpg?w=500&pixel=5)
 
 ## Filter `filt`
 
@@ -35,4 +35,4 @@ Applies a filter effect to the image. Accepts `greyscale` or `sepia`.
 <img src="kayaks.jpg?w=500&filt=sepia">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&filt=sepia)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&filt=sepia)
+![© Photo Joel Reynolds](/images/kayaks-filt-sepia_w-500.jpg?w=500&filt=sepia)

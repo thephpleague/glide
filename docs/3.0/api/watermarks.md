@@ -13,7 +13,7 @@ Adds a watermark to the image. Must be a path to an image in the watermarks file
 <img src="kayaks.jpg?mark=logo.png">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)
+![© Photo Joel Reynolds](/images/kayaks-mark-billabongppng_markpad-3w_markpos-topnegright_markw-30w_w-500.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-right)
 
 ### Configuring the watermarks file system
 
@@ -93,7 +93,7 @@ Sets where the watermark is positioned. Accepts `top-left`, `top`, `top-right`, 
 <img src="kayaks.jpg?mark=logo.png&markpos=top-left">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)
+![© Photo Joel Reynolds](/images/kayaks-mark-billabongppng_markpad-3w_markpos-topnegleft_markw-30w_w-500.jpg?w=500&mark=billabong.png&markw=30w&markpad=3w&markpos=top-left)
 
 ## Alpha `markalpha`
 
@@ -103,4 +103,4 @@ Sets the opacity of the watermark. Use values between `0` and `100`, where `100`
 <img src="kayaks.jpg?mark=logo.png&markalpha=50">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)
+![© Photo Joel Reynolds](/images/kayaks-mark-billabongppng_markalpha-50_markpad-3w_markpos-topnegright_markw-94w_w-500.jpg?w=500&mark=billabong.png&markw=94w&markpad=3w&markpos=top-right&markalpha=50)

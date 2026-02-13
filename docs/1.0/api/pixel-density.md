@@ -13,4 +13,4 @@ The device pixel ratio is used to easily convert between CSS pixels and device p
 <img src="kayaks.jpg?w=250&dpr=2">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=250&dpr=2)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=250&dpr=2)
+![© Photo Joel Reynolds](/images/kayaks-dpr-2_w-250.jpg?w=250&dpr=2)

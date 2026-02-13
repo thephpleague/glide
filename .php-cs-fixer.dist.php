@@ -1,6 +1,7 @@
 <?php
 
 $finder = (new PhpCsFixer\Finder())
+    ->in('scripts')
     ->in('src')
     ->in('tests')
 ;

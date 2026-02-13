@@ -13,4 +13,4 @@ Flips the image. Accepts `v`, `h` and `both`.
 <img src="kayaks.jpg?h=500&flip=v">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?h=500&flip=v)](https://glide.herokuapp.com/1.0/kayaks.jpg?h=500&flip=v)
+![© Photo Joel Reynolds](/images/kayaks-flip-v_h-500.jpg?h=500&flip=v)

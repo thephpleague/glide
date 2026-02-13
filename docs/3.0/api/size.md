@@ -13,7 +13,7 @@ Sets the width of the image, in pixels.
 <img src="kayaks.jpg?w=500">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=500)
+![© Photo Joel Reynolds](/images/kayaks-w-500.jpg?w=500)
 
 ## Height `h`
 
@@ -23,7 +23,7 @@ Sets the height of the image, in pixels.
 <img src="kayaks.jpg?h=333">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?h=333)](https://glide.herokuapp.com/1.0/kayaks.jpg?h=333)
+![© Photo Joel Reynolds](/images/kayaks-h-333.jpg?h=333)
 
 ## Fit `fit`
 
@@ -44,4 +44,4 @@ Sets how the image is fitted to its target dimensions.
 <img src="kayaks.jpg?w=300&h=300&fit=stretch">
 ~~~
 
-[![© Photo Joel Reynolds](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=stretch)](https://glide.herokuapp.com/1.0/kayaks.jpg?w=300&h=300&fit=stretch)
+![© Photo Joel Reynolds](/images/kayaks-fit-stretch_h-300_w-300.jpg?w=300&h=300&fit=stretch)
