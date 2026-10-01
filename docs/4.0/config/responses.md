@@ -13,12 +13,12 @@ However, the type of response object needed depends on your application or frame
 
 | Vendor                                       | Message interface   | Adapter package            |
 |----------------------------------------------|---------------------|----------------------------|
-| [PSR-7](/2.0/config/integrations/psr-7/)     | PSR-7               | *Included in base package* |
-| [CakePHP](/2.0/config/integrations/cakephp/) | PSR-7               | *Included in base package* |
-| [Laravel](/2.0/config/integrations/laravel/) | HttpFoundation      | league/glide-laravel       |
-| [Slim](/2.0/config/integrations/slim/)       | PSR-7               | league/glide-slim          |
-| [Symfony](/2.0/config/integrations/symfony/) | HttpFoundation      | league/glide-symfony       |
-| [Zend](/2.0/config/integrations/zend/)       | PSR-7               | league/glide-zend          |
+| [PSR-7](/4.0/config/integrations/psr-7/)     | PSR-7               | *Included in base package* |
+| [CakePHP](/4.0/config/integrations/cakephp/) | PSR-7               | *Included in base package* |
+| [Laravel](/4.0/config/integrations/laravel/) | HttpFoundation      | league/glide-laravel       |
+| [Slim](/4.0/config/integrations/slim/)       | PSR-7               | league/glide-slim          |
+| [Symfony](/4.0/config/integrations/symfony/) | HttpFoundation      | league/glide-symfony       |
+| [Zend](/4.0/config/integrations/zend/)       | PSR-7               | league/glide-zend          |
 
 ## Custom responses
 

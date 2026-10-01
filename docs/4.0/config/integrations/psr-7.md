@@ -30,5 +30,5 @@ $server = ServerFactory::create([
 
 However, for simplicity, Glide provides a vendor specific PSR-7 adapters to make this easier:
 
-- [Slim](/2.0/config/integrations/slim/)
-- [Zend](/2.0/config/integrations/zend/)
+- [Slim](/4.0/config/integrations/slim/)
+- [Zend](/4.0/config/integrations/zend/)
