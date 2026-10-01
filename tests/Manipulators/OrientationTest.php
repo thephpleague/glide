@@ -103,6 +103,11 @@ class OrientationTest extends TestCase
             $this->markTestSkipped(sprintf('The %s driver and the %s and exif extensions are required.', $driver, $extension));
         }
 
+        // libvips < 8.13 stores vips-sequential as a VipsArea, which the vips driver cannot read when orienting
+        if ($extension === 'ffi' && version_compare(\Jcupitt\Vips\Config::version(), '8.13', '<')) {
+            $this->markTestSkipped('The vips driver requires libvips 8.13 or later to orient images.');
+        }
+
         $manager = ImageManager::usingDriver($driver, autoOrientation: $autoOrientation);
 
         // EXIF orientation 6: the stored 80x40 image is displayed rotated 90° clockwise (40x80).

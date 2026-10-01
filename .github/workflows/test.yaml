@@ -8,7 +8,8 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-22.04
+    # Ubuntu 22.04 ships libvips 8.12, which the vips driver cannot orient images with
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +24,7 @@ jobs:
       - name: Install libvips
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libvips42
+          sudo apt-get install -y --no-install-recommends libvips42t64
 
       - uses: shivammathur/setup-php@v2
         with:
