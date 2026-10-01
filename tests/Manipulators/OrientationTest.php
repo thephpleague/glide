@@ -79,24 +79,28 @@ class OrientationTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{class-string<DriverInterface>, string, bool}>
+     * @return iterable<string, array{string, string, bool}>
      */
     public static function driverProvider(): iterable
     {
-        foreach (['gd' => GdDriver::class, 'imagick' => ImagickDriver::class] as $extension => $driver) {
-            yield $extension . ', decoder orients' => [$driver, $extension, true];
-            yield $extension . ', decoder keeps orientation' => [$driver, $extension, false];
+        $drivers = [
+            'gd' => [GdDriver::class, 'gd'],
+            'imagick' => [ImagickDriver::class, 'imagick'],
+            // The vips driver lives in the optional intervention/image-driver-vips package (installed in CI)
+            'vips' => ['Intervention\\Image\\Drivers\\Vips\\Driver', 'ffi'],
+        ];
+
+        foreach ($drivers as $name => [$driver, $extension]) {
+            yield $name . ', decoder orients' => [$driver, $extension, true];
+            yield $name . ', decoder keeps orientation' => [$driver, $extension, false];
         }
     }
 
-    /**
-     * @param class-string<DriverInterface> $driver
-     */
     #[DataProvider('driverProvider')]
     public function testRunAutoOrientsDecodedJpeg(string $driver, string $extension, bool $autoOrientation)
     {
-        if (!extension_loaded($extension) || !function_exists('exif_read_data')) {
-            $this->markTestSkipped(sprintf('The %s and exif extensions are required.', $extension));
+        if (!class_exists($driver) || !extension_loaded($extension) || !function_exists('exif_read_data')) {
+            $this->markTestSkipped(sprintf('The %s driver and the %s and exif extensions are required.', $driver, $extension));
         }
 
         $manager = ImageManager::usingDriver($driver, autoOrientation: $autoOrientation);

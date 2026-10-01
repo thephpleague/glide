@@ -25,12 +25,12 @@ class Orientation extends BaseManipulator
         $orientation = $this->getOrientation();
 
         if ($orientation === 'auto') {
-            // The decoder already aligned the image. Only GD resets the EXIF orientation afterwards, and vips'
-            // orient() always renders the image into memory, so it must not run a second time.
+            // The decoder already aligned the image (only GD resets the EXIF orientation afterwards).
             if ($image->driver()->config()->autoOrientation) {
                 return $image;
             }
 
+            // Skip upright images: on vips, orient() always renders the image into memory.
             $exifOrientation = $image->exif('IFD0.Orientation');
 
             return is_numeric($exifOrientation) && (int) $exifOrientation > 1 ? $image->orient() : $image;
