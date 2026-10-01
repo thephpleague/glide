@@ -42,6 +42,9 @@
     {% comment %}DocSearch version tokens must be SemVer or alphanumeric, so "4.0" is exposed as "4.0.0".{% endcomment %}
     {% capture docsearch_version %}{{ version }}.0{% endcapture %}
     <meta name="docsearch:version" content="{{ docsearch_version }}">
+    {% if site.data.project.docsearch.site_verification %}
+        <meta name="algolia-site-verification" content="{{ site.data.project.docsearch.site_verification }}">
+    {% endif %}
 
     <link rel="stylesheet" href="https://theme.thephpleague.com/css/all.css?2">
     {% if site.data.project.docsearch.app_id %}

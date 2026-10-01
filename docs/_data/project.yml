@@ -9,3 +9,4 @@ docsearch:
     app_id: GGD5TRIL22
     api_key: 3c1b483dce5983d8e5a26e47f75c4ecd
     index_name: Glide
+    site_verification: B6A773DB4844041A # Algolia domain ownership check
