@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.3', '8.4', '8.5']
+        php-version: ['8.3', '8.4', '8.5', '8.6']
         dependencies: [highest]
         include:
           - php-version: '8.3'
@@ -20,16 +20,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install libvips
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libvips42
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: gd, imagick
+          extensions: gd, imagick, ffi
+          ini-values: ffi.enable=true
           coverage: pcov
+
+      # The vips driver is optional and requires ext-ffi, so it is only added in CI rather than in require-dev
+      - name: Add vips driver
+        run: composer require --dev --no-update intervention/image-driver-vips
 
       - name: Composer install
         uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Check libvips is loadable
+        run: php -r 'require "vendor/autoload.php"; echo "libvips ", Jcupitt\Vips\Config::version(), PHP_EOL;'
 
       - name: PHPUnit
         run: |
