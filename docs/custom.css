@@ -48,6 +48,20 @@ menu .DocSearch-Button-Keys {
     display: none;
 }
 
+/* The DocSearch modal renders <header> and <footer> elements: undo the theme's page header/footer styles. */
+.DocSearch-SearchBar {
+    max-width: none;
+    padding: 0;
+}
+
+.DocSearch-Footer {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: inherit;
+}
+
 @media screen and (max-width: 549px) {
     menu {
         text-align: center;
