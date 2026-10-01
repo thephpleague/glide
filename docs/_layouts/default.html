@@ -39,9 +39,18 @@
         <link rel="apple-touch-icon-precomposed" href="https://theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
     {% endif %}
 
+    {% comment %}DocSearch version tokens must be SemVer or alphanumeric, so "4.0" is exposed as "4.0.0".{% endcomment %}
+    {% capture docsearch_version %}{{ version }}.0{% endcapture %}
+    <meta name="docsearch:version" content="{{ docsearch_version }}">
+    {% if site.data.project.docsearch.site_verification %}
+        <meta name="algolia-site-verification" content="{{ site.data.project.docsearch.site_verification }}">
+    {% endif %}
+
     <link rel="stylesheet" href="https://theme.thephpleague.com/css/all.css?2">
-    <link rel="stylesheet" href="https://glide.thephpleague.com/custom.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css" />
+    {% if site.data.project.docsearch.app_id %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@5/dist/style.css">
+    {% endif %}
+    <link rel="stylesheet" href="/custom.css">
 </head>
 <body>
 
@@ -93,9 +102,11 @@
             </select>
         </div>
 
-        <div class="tool">
-            <input id="search" class="search" placeholder="Search&hellip;">
-        </div>
+        {% if site.data.project.docsearch.app_id %}
+            <div class="tool">
+                <div id="docsearch"></div>
+            </div>
+        {% endif %}
 
         {% for section in site.data.menu[version] %}
             <h2>{{ section[0] }}</h2>
@@ -133,14 +144,25 @@
     </script>
 {% endif %}
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script>
-<script type="text/javascript">
-    docsearch({
-        apiKey: 'f80ad04b27fad1483c381090747a8be7',
-        indexName: 'glide',
-        inputSelector: '#search'
-    });
-</script>
+{% if site.data.project.docsearch.app_id %}
+    <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@5/dist/umd/docsearch.js"></script>
+    <script>
+        docsearch({
+            container: '#docsearch',
+            appId: '{{ site.data.project.docsearch.app_id }}',
+            apiKey: '{{ site.data.project.docsearch.api_key }}',
+            indices: [
+                {
+                    name: '{{ site.data.project.docsearch.index_name }}',
+                    // Only show results for the version being browsed
+                    searchParameters: {
+                        facetFilters: ['version:{{ docsearch_version }}'],
+                    },
+                },
+            ],
+        });
+    </script>
+{% endif %}
 
 </body>
 </html>

@@ -13,19 +13,39 @@ menu .versions {
     width: 100%;
 }
 
-menu .search {
-    display: inline-block;
+:root {
+    --docsearch-primary-color: #6abcdd;
+}
+
+menu .DocSearch-Button {
+    display: flex;
     width: 100%;
-    padding: 7px 10px;
+    margin: 0;
+    padding: 0 10px;
 
     color: #6abcdd;
     font-size: 14px;
     font-family: "Museo Sans 300";
 
-    border: 0;
-    outline: 0;
     background: #22303f;
     border-radius: 3px;
+    box-shadow: none;
+}
+
+menu .DocSearch-Button:hover,
+menu .DocSearch-Button:focus {
+    color: #fff;
+    background: #22303f;
+    box-shadow: inset 0 0 0 2px #6abcdd;
+}
+
+menu .DocSearch-Button .DocSearch-Search-Icon,
+menu .DocSearch-Button-Placeholder {
+    color: inherit;
+}
+
+menu .DocSearch-Button-Keys {
+    display: none;
 }
 
 @media screen and (max-width: 549px) {
