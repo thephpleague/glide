@@ -19,7 +19,7 @@ $server = \League\Glide\ServerFactory::create([
     'driver' => 'imagick',
 
     // Use libvips. Requires installing the `intervention/image-driver-vips` composer package.
-    'driver' => \Intervention\Image\Drivers\Vips\Driver::class,
+    'driver' => 'vips',
 ]);
 ~~~
 

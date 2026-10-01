@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace League\Glide;
 
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\ImageManager;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Api\Api;
@@ -178,6 +179,22 @@ class ServerFactoryTest extends TestCase
         $server = new ServerFactory([
             'driver' => 'gd',
         ]);
+        $imageManager = $server->getImageManager();
+
+        $this->assertInstanceOf(ImageManager::class, $imageManager);
+    }
+
+    public function testGetImageManagerWithVips()
+    {
+        $server = new ServerFactory([
+            'driver' => 'vips',
+        ]);
+
+        if (!class_exists('Intervention\\Image\\Drivers\\Vips\\Driver')) {
+            // The vips driver lives in the optional intervention/image-driver-vips package
+            $this->expectException(InvalidArgumentException::class);
+        }
+
         $imageManager = $server->getImageManager();
 
         $this->assertInstanceOf(ImageManager::class, $imageManager);
