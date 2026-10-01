@@ -254,6 +254,8 @@ class ServerFactory
         return ImageManager::usingDriver(match ($driver) {
             'gd' => GdDriver::class,
             'imagick' => ImagickDriver::class,
+            // Optional driver: requires the intervention/image-driver-vips package
+            'vips' => 'Intervention\\Image\\Drivers\\Vips\\Driver',
             default => $driver,
         }, ...$options);
     }

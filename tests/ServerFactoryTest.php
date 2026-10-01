@@ -183,6 +183,20 @@ class ServerFactoryTest extends TestCase
         $this->assertInstanceOf(ImageManager::class, $imageManager);
     }
 
+    public function testGetImageManagerWithVips()
+    {
+        if (!class_exists('Intervention\\Image\\Drivers\\Vips\\Driver')) {
+            $this->markTestSkipped('The intervention/image-driver-vips package is not installed.');
+        }
+
+        $server = new ServerFactory([
+            'driver' => 'vips',
+        ]);
+        $imageManager = $server->getImageManager();
+
+        $this->assertInstanceOf(ImageManager::class, $imageManager);
+    }
+
     public function testGetImageManagerWithNoneSet()
     {
         $server = new ServerFactory();
