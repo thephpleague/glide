@@ -3,3 +3,9 @@ tagline: HTTP based image manipulations
 description: Wonderfully easy on-demand image manipulation library with an HTTP based API.
 google_analytics_tracking_id: UA-46050814-13
 default_version: "4.0"
+
+# Algolia DocSearch (https://docsearch.algolia.com). Search is hidden until app_id is set.
+docsearch:
+    app_id: # TODO: fill in once the DocSearch application is approved
+    api_key: # Search-only API key — safe to publish
+    index_name:

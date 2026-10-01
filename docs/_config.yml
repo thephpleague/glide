@@ -1,1 +1,6 @@
 permalink: pretty
+url: https://glide.thephpleague.com
+
+# Generates /sitemap.xml so the DocSearch crawler discovers every version.
+plugins:
+    - jekyll-sitemap
