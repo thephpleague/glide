@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace League\Glide\Manipulators;
 
-use Intervention\Image\Direction;
 use Intervention\Image\Interfaces\ImageInterface;
 
 class Orientation extends BaseManipulator
@@ -26,16 +25,15 @@ class Orientation extends BaseManipulator
         $orientation = $this->getOrientation();
 
         if ($orientation === 'auto') {
-            return match ($image->exif('Orientation')) {
-                2 => $image->flip(Direction::VERTICAL),
-                3 => $image->rotate(180),
-                4 => $image->rotate(180)->flip(Direction::VERTICAL),
-                5 => $image->rotate(270)->flip(Direction::VERTICAL),
-                6 => $image->rotate(270),
-                7 => $image->rotate(90)->flip(Direction::VERTICAL),
-                8 => $image->rotate(90),
-                default => $image,
-            };
+            // The decoder already aligned the image. Only GD resets the EXIF orientation afterwards, and vips'
+            // orient() always renders the image into memory, so it must not run a second time.
+            if ($image->driver()->config()->autoOrientation) {
+                return $image;
+            }
+
+            $exifOrientation = $image->exif('IFD0.Orientation');
+
+            return is_numeric($exifOrientation) && (int) $exifOrientation > 1 ? $image->orient() : $image;
         }
 
         return $image->rotate((float) $orientation);
