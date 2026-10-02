@@ -36,6 +36,11 @@ class Orientation extends BaseManipulator
             return is_numeric($exifOrientation) && (int) $exifOrientation > 1 ? $image->orient() : $image;
         }
 
+        // A 0° rotation is a no-op, but drivers still copy the full canvas (GD: 2-3x slower).
+        if ($orientation === '0') {
+            return $image;
+        }
+
         return $image->rotate((float) $orientation);
     }
 

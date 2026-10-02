@@ -49,6 +49,11 @@ class OrientationTest extends TestCase
             ImageInterface::class,
             $this->manipulator->setParams(['or' => '90'])->run($image),
         );
+
+        $this->assertSame(
+            $image,
+            $this->manipulator->setParams(['or' => '0'])->run($image),
+        );
     }
 
     public function testRunAutoOrientsWhenDecoderDidNot()

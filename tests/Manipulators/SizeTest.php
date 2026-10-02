@@ -121,6 +121,17 @@ class SizeTest extends TestCase
         $this->assertSame(2.0, $this->manipulator->setParams(['dpr' => '2'])->getDpr());
     }
 
+    public function testGetRequiredSourceEdge(): void
+    {
+        $this->assertNull($this->manipulator->setParams([])->getRequiredSourceEdge());
+        $this->assertSame(400, $this->manipulator->setParams(['w' => '400'])->getRequiredSourceEdge());
+        $this->assertSame(300, $this->manipulator->setParams(['w' => '200', 'h' => '300'])->getRequiredSourceEdge());
+        $this->assertSame(800, $this->manipulator->setParams(['w' => '400', 'dpr' => '2'])->getRequiredSourceEdge());
+        $this->assertSame(600, $this->manipulator->setParams(['w' => '200', 'h' => '300', 'fit' => 'crop-50-50-2'])->getRequiredSourceEdge());
+        $this->assertSame(300, $this->manipulator->setParams(['w' => '200', 'h' => '300', 'fit' => 'crop-50-50-0.5'])->getRequiredSourceEdge());
+        $this->assertNull($this->manipulator->setParams(['w' => '400', 'dpr' => '0'])->getRequiredSourceEdge());
+    }
+
     public function testResolveMissingDimensions(): void
     {
         $image = \Mockery::mock(ImageInterface::class, function ($mock) {
