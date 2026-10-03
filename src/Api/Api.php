@@ -35,6 +35,11 @@ class Api implements ApiInterface
     protected ?Encoder $encoder = null;
 
     /**
+     * Image decoder.
+     */
+    protected ?Decoder $decoder = null;
+
+    /**
      * API parameters.
      *
      * @var list<string>
@@ -47,13 +52,15 @@ class Api implements ApiInterface
      * @param ImageManagerInterface $imageManager Intervention image manager.
      * @param array<ManipulatorInterface> $manipulators Collection of manipulators.
      * @param Encoder|null           $encoder      Image encoder.
+     * @param Decoder|null           $decoder      Image decoder.
      */
-    public function __construct(ImageManagerInterface $imageManager, array $manipulators, ?Encoder $encoder = null)
+    public function __construct(ImageManagerInterface $imageManager, array $manipulators, ?Encoder $encoder = null, ?Decoder $decoder = null)
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
         $this->setApiParams();
         $this->encoder = $encoder;
+        $this->decoder = $decoder;
     }
 
     /**
@@ -123,6 +130,26 @@ class Api implements ApiInterface
     }
 
     /**
+     * Set the decoder.
+     *
+     * @param Decoder $decoder Image decoder.
+     */
+    public function setDecoder(Decoder $decoder): void
+    {
+        $this->decoder = $decoder;
+    }
+
+    /**
+     * Get the decoder.
+     *
+     * @return Decoder Image decoder.
+     */
+    public function getDecoder(): Decoder
+    {
+        return $this->decoder ??= new Decoder();
+    }
+
+    /**
      * Perform image manipulations.
      *
      * @param string                $source Source image binary data.
@@ -132,7 +159,7 @@ class Api implements ApiInterface
      */
     public function run(string $source, array $params): string
     {
-        $image = $this->imageManager->decodeBinary($source);
+        $image = $this->decode($source, $params);
 
         foreach ($this->manipulators as $manipulator) {
             $manipulator->setParams($params);
@@ -140,6 +167,19 @@ class Api implements ApiInterface
         }
 
         return $this->encode($image, $params);
+    }
+
+    /**
+     * Decode the source image.
+     *
+     * @param string               $source Source image binary data.
+     * @param array<string, mixed> $params The manipulation params.
+     *
+     * @return ImageInterface The decoded image.
+     */
+    public function decode(string $source, array $params): ImageInterface
+    {
+        return $this->getDecoder()->setParams($params)->run($source, $this->imageManager, $this->manipulators);
     }
 
     /**
