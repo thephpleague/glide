@@ -22,7 +22,7 @@ class Decoder
      * Minimum ratio between the shrunk-on-load source and the requested size, so the final resize
      * still has enough pixels to produce a sharp result.
      */
-    public const SHRINK_ON_LOAD_MARGIN = 2;
+    public const int SHRINK_ON_LOAD_MARGIN = 2;
 
     /**
      * The manipulation params.
@@ -48,7 +48,7 @@ class Decoder
      *
      * @return $this
      */
-    public function setParams(array $params)
+    public function setParams(array $params): static
     {
         $this->params = $params;
 
