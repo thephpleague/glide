@@ -70,6 +70,32 @@ class ApiTest extends TestCase
         $this->assertEquals([], $this->api->getManipulators());
     }
 
+    public function testSetEncoder(): void
+    {
+        $encoder = new Encoder();
+        $this->api->setEncoder($encoder);
+
+        $this->assertSame($encoder, $this->api->getEncoder());
+    }
+
+    public function testGetEncoder(): void
+    {
+        $this->assertInstanceOf(Encoder::class, $this->api->getEncoder());
+    }
+
+    public function testSetDecoder(): void
+    {
+        $decoder = new Decoder();
+        $this->api->setDecoder($decoder);
+
+        $this->assertSame($decoder, $this->api->getDecoder());
+    }
+
+    public function testGetDecoder(): void
+    {
+        $this->assertInstanceOf(Decoder::class, $this->api->getDecoder());
+    }
+
     public function testGetApiParams(): void
     {
         $manipulator1 = \Mockery::mock(ManipulatorInterface::class, function ($mock) {
