@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace League\Glide\Api;
 
-use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Interfaces\ImageManagerInterface;
-use League\Glide\Manipulators\Crop;
 use League\Glide\Manipulators\ManipulatorInterface;
-use League\Glide\Manipulators\Orientation;
-use League\Glide\Manipulators\Size;
 
 class Api implements ApiInterface
 {
@@ -21,12 +16,6 @@ class Api implements ApiInterface
         'fm', // format
         's', // signature
     ];
-
-    /**
-     * Minimum ratio between the shrunk-on-load source and the requested size, so the final resize
-     * still has enough pixels to produce a sharp result.
-     */
-    public const SHRINK_ON_LOAD_MARGIN = 2;
 
     /**
      * Intervention image manager.
@@ -46,6 +35,11 @@ class Api implements ApiInterface
     protected ?Encoder $encoder = null;
 
     /**
+     * Image decoder.
+     */
+    protected ?Decoder $decoder = null;
+
+    /**
      * API parameters.
      *
      * @var list<string>
@@ -58,13 +52,15 @@ class Api implements ApiInterface
      * @param ImageManagerInterface $imageManager Intervention image manager.
      * @param array<ManipulatorInterface> $manipulators Collection of manipulators.
      * @param Encoder|null           $encoder      Image encoder.
+     * @param Decoder|null           $decoder      Image decoder.
      */
-    public function __construct(ImageManagerInterface $imageManager, array $manipulators, ?Encoder $encoder = null)
+    public function __construct(ImageManagerInterface $imageManager, array $manipulators, ?Encoder $encoder = null, ?Decoder $decoder = null)
     {
         $this->setImageManager($imageManager);
         $this->setManipulators($manipulators);
         $this->setApiParams();
         $this->encoder = $encoder;
+        $this->decoder = $decoder;
     }
 
     /**
@@ -134,6 +130,26 @@ class Api implements ApiInterface
     }
 
     /**
+     * Set the decoder.
+     *
+     * @param Decoder $decoder Image decoder.
+     */
+    public function setDecoder(Decoder $decoder): void
+    {
+        $this->decoder = $decoder;
+    }
+
+    /**
+     * Get the decoder.
+     *
+     * @return Decoder Image decoder.
+     */
+    public function getDecoder(): Decoder
+    {
+        return $this->decoder ??= new Decoder();
+    }
+
+    /**
      * Perform image manipulations.
      *
      * @param string                $source Source image binary data.
@@ -154,106 +170,16 @@ class Api implements ApiInterface
     }
 
     /**
-     * Decode the source image, shrinking large JPEGs on load when the requested size allows it.
-     *
-     * Only factors dividing both dimensions are used, so the aspect ratio and every output size stay exact.
+     * Decode the source image.
      *
      * @param string               $source Source image binary data.
      * @param array<string, mixed> $params The manipulation params.
      *
      * @return ImageInterface The decoded image.
      */
-    protected function decode(string $source, array $params): ImageInterface
+    public function decode(string $source, array $params): ImageInterface
     {
-        $edge = $this->getShrinkOnLoadEdge($params);
-        $driver = $this->imageManager instanceof ImageManager ? $this->imageManager->driver : null;
-        $info = $edge !== null && $driver !== null ? @getimagesizefromstring($source) : false;
-
-        if ($edge === null || $driver === null || $info === false || $info[2] !== IMAGETYPE_JPEG) {
-            return $this->imageManager->decodeBinary($source);
-        }
-
-        [$width, $height] = $info;
-
-        // Imagick: let libjpeg decode directly at 1/2, 1/4 or 1/8 scale. Native objects carry no EXIF data, so the
-        // Orientation manipulator could not align the image when the decoder does not do it.
-        $factor = self::getShrinkFactor($width, $height, $edge, [8, 4, 2]);
-        if ($driver instanceof ImagickDriver && $factor > 1 && $driver->config()->autoOrientation) {
-            try {
-                $imagick = new \Imagick();
-                $imagick->setOption('jpeg:size', intdiv($width, $factor) . 'x' . intdiv($height, $factor));
-                $imagick->readImageBlob($source);
-
-                if ($imagick->getImageWidth() * $factor === $width && $imagick->getImageHeight() * $factor === $height) {
-                    return $this->imageManager->decode($imagick);
-                }
-            } catch (\ImagickException) {
-                // Let the regular decoder report the error.
-            }
-        }
-
-        $config = $driver->config();
-        if (!$config->autoOrientation || !function_exists('exif_read_data')) {
-            return $this->imageManager->decodeBinary($source);
-        }
-
-        // Rotating the full-size source is the most expensive step on every driver: shrink EXIF-rotated images first.
-        $config->autoOrientation = false;
-        try {
-            $image = $this->imageManager->decodeBinary($source);
-        } finally {
-            $config->autoOrientation = true;
-        }
-
-        if ((int) $image->exif('IFD0.Orientation') <= 1) {
-            return $image;
-        }
-
-        $factor = self::getShrinkFactor($width, $height, $edge, range(max(intdiv(min($width, $height), $edge), 2), 2));
-        if ($factor > 1) {
-            $image->resize(intdiv($width, $factor), intdiv($height, $factor));
-        }
-
-        return $image->orient();
-    }
-
-    /**
-     * Resolve the shortest source side the resize needs, or null when shrinking on load is not safe.
-     *
-     * @param array<string, mixed> $params The manipulation params.
-     */
-    protected function getShrinkOnLoadEdge(array $params): ?int
-    {
-        foreach ($this->manipulators as $manipulator) {
-            if ($manipulator instanceof Size) {
-                $edge = $manipulator->setParams($params)->getRequiredSourceEdge();
-
-                return $edge === null ? null : $edge * self::SHRINK_ON_LOAD_MARGIN;
-            }
-
-            // Crop coordinates, like any unknown manipulator running before the resize, need the full-size source.
-            if (!$manipulator instanceof Orientation && !($manipulator instanceof Crop && empty($params['crop']))) {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Find the largest candidate factor dividing both dimensions that keeps the shortest side at least $edge long.
-     *
-     * @param list<int> $candidates Candidate factors, from largest to smallest.
-     */
-    private static function getShrinkFactor(int $width, int $height, int $edge, array $candidates): int
-    {
-        foreach ($candidates as $factor) {
-            if ($width % $factor === 0 && $height % $factor === 0 && min($width, $height) / $factor >= $edge) {
-                return $factor;
-            }
-        }
-
-        return 1;
+        return $this->getDecoder()->setParams($params)->run($source, $this->imageManager, $this->manipulators);
     }
 
     /**

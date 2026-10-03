@@ -12,6 +12,7 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Glide\Api\Api;
+use League\Glide\Api\Decoder;
 use League\Glide\Api\Encoder;
 use League\Glide\Manipulators\Background;
 use League\Glide\Manipulators\Blur;
@@ -218,6 +219,7 @@ class ServerFactory
             $this->getImageManager(),
             $this->getManipulators(),
             $this->getEncoder(),
+            $this->getDecoder(),
         );
     }
 
@@ -229,6 +231,16 @@ class ServerFactory
     public function getEncoder(): ?Encoder
     {
         return $this->config['encoder'] ?? null;
+    }
+
+    /**
+     * Get image decoder.
+     *
+     * @return Decoder|null Image decoder.
+     */
+    public function getDecoder(): ?Decoder
+    {
+        return $this->config['decoder'] ?? null;
     }
 
     /**
