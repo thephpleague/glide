@@ -9,6 +9,7 @@ use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\ImageManager;
 use League\Flysystem\FilesystemOperator;
 use League\Glide\Api\Api;
+use League\Glide\Api\Decoder;
 use League\Glide\Api\Encoder;
 use League\Glide\Manipulators\ManipulatorInterface;
 use League\Glide\Responses\ResponseFactoryInterface;
@@ -309,16 +310,19 @@ class ServerFactoryTest extends TestCase
     public function testCreate()
     {
         $encoder = \Mockery::mock(Encoder::class);
+        $decoder = \Mockery::mock(Decoder::class);
         $server = ServerFactory::create([
             'source' => \Mockery::mock(FilesystemOperator::class),
             'cache' => \Mockery::mock(FilesystemOperator::class),
             'response' => \Mockery::mock(ResponseFactoryInterface::class),
             'temp_dir' => __DIR__,
             'encoder' => $encoder,
+            'decoder' => $decoder,
         ]);
 
         $this->assertInstanceOf(Server::class, $server);
         $this->assertSame(__DIR__ . DIRECTORY_SEPARATOR, $server->getTempDir());
         $this->assertSame($encoder, $server->getApi()->getEncoder());
+        $this->assertSame($decoder, $server->getApi()->getDecoder());
     }
 }

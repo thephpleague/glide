@@ -144,6 +144,27 @@ class Size extends BaseManipulator
     }
 
     /**
+     * Resolve the largest edge, in pixels, the resize may need from its source.
+     *
+     * Every fit method downscales a source whose shortest side is at least this long.
+     *
+     * @return int|null The edge length, or null when no resize is requested.
+     */
+    public function getRequiredSourceEdge(): ?int
+    {
+        $edge = max($this->getWidth() ?? 0, $this->getHeight() ?? 0);
+
+        if ($edge === 0) {
+            return null;
+        }
+
+        $zoom = $this->getFit() === 'crop' ? max($this->getCrop()[2], 1.0) : 1.0;
+        $required = (int) ceil($edge * $this->getDpr() * $zoom);
+
+        return $required > 0 ? $required : null;
+    }
+
+    /**
      * Resolve missing image dimensions.
      *
      * @param ImageInterface $image  The source image.
