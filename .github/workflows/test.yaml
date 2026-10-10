@@ -10,6 +10,11 @@ jobs:
   tests:
     # Ubuntu 22.04 ships libvips 8.12, which the vips driver cannot orient images with
     runs-on: ubuntu-24.04
+    # The packaged ImageMagick (6.9) has no JPEG XL support, so ImageMagick is built from
+    # source and Imagick is compiled against it. A single version of each is used.
+    env:
+      IMAGEMAGICK_VERSION: 7.1.2-32
+      IMAGEMAGICK_PREFIX: /home/runner/imagemagick
     strategy:
       fail-fast: false
       matrix:
@@ -25,14 +30,101 @@ jobs:
       - name: Install libvips and HEIC codecs
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libvips42t64 libheif-plugin-x265 libheif-plugin-libde265
+          sudo apt-get install -y --no-install-recommends libvips42t64 libheif-plugin-x265 libheif-plugin-libde265 libheif-plugin-aomenc libheif-plugin-aomdec
+
+      # Delegates ImageMagick is built with: JPEG, PNG, GIF, TIFF, WebP, AVIF, HEIC and JPEG XL.
+      # The packaged ImageMagick 6 stays installed - libvips42t64 depends on it - and is ignored,
+      # because imagick is pointed at the prefix built below.
+      - name: Install ImageMagick build dependencies
+        run: |
+          sudo apt-get install -y --no-install-recommends \
+            libjpeg-dev \
+            libpng-dev \
+            zlib1g-dev \
+            libgif-dev \
+            libtiff-dev \
+            libwebp-dev \
+            libavif-dev \
+            libheif-dev \
+            libjxl-dev \
+            libraqm-dev
 
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: gd, imagick, ffi
+          # imagick is built from source below, against the ImageMagick built above
+          extensions: gd, ffi
           ini-values: ffi.enable=true
           coverage: pcov
+
+      - name: Cache ImageMagick
+        uses: actions/cache@v4
+        id: cache-imagemagick
+        with:
+          path: ${{ env.IMAGEMAGICK_PREFIX }}
+          key: ${{ runner.os }}-imagemagick-${{ env.IMAGEMAGICK_VERSION }}-jxl-${{ hashFiles('.github/workflows/test.yaml') }}
+
+      - name: Build ImageMagick
+        if: steps.cache-imagemagick.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL -o /tmp/ImageMagick.tar.xz "https://download.imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+          tar -xf /tmp/ImageMagick.tar.xz -C /tmp
+          (
+            cd "/tmp/ImageMagick-${IMAGEMAGICK_VERSION}" || exit 1
+            ./configure --prefix="${IMAGEMAGICK_PREFIX}"
+            make -j"$(nproc)"
+            make install
+          )
+
+      # The extension links against the ImageMagick libraries, which live outside the default library path
+      - name: Register ImageMagick libraries
+        run: |
+          echo "${IMAGEMAGICK_PREFIX}/lib" | sudo tee /etc/ld.so.conf.d/imagemagick.conf
+          sudo ldconfig
+
+      - name: Install Imagick PHP extension
+        run: |
+          git clone --depth=1 --single-branch --branch master https://github.com/Imagick/imagick /tmp/imagick
+          (
+            cd /tmp/imagick || exit 1
+            phpize
+            ./configure --with-imagick="${IMAGEMAGICK_PREFIX}"
+            make -j"$(nproc)"
+            sudo make install
+          )
+          # The image can already have imagick enabled from a package; make install replaces that
+          # .so in place, so only add an extension line when PHP does not pick imagick up itself.
+          if ! php -r 'exit(extension_loaded("imagick") ? 0 : 1);'; then
+            php_ini="$(php -r 'echo php_ini_loaded_file();')"
+            if [ -z "$php_ini" ]; then
+              echo "::error::No loaded php.ini to enable imagick in"
+              exit 1
+            fi
+            echo "extension=imagick.so" | sudo tee -a "$php_ini"
+          fi
+          php --ri imagick
+          php -r 'exit(extension_loaded("imagick") ? 0 : 1);'
+
+      # Fails early when a delegate is missing, instead of failing later with a cryptic test error
+      - name: Check Imagick formats
+        run: |
+          # The code below is PHP, not shell
+          php -r 'var_dump(Imagick::getVersion());'
+          # shellcheck disable=SC2016
+          php -r '$formats = Imagick::queryFormats(); foreach (["JXL", "HEIC", "AVIF", "WEBP", "TIFF"] as $name) { printf("%-4s %s\n", $name, in_array($name, $formats, true) ? "ok" : "MISSING"); }'
+          # shellcheck disable=SC2016
+          php -r '
+            $failed = false;
+            foreach (["JXL", "HEIC"] as $format) {
+              $image = new Imagick();
+              $image->newImage(16, 16, "white");
+              $image->setImageFormat($format);
+              $length = strlen($image->getImageBlob());
+              printf("%s encode: %d bytes\n", $format, $length);
+              $failed = $failed || $length === 0;
+            }
+            exit($failed ? 1 : 0);
+          '
 
       # The vips driver is optional and requires ext-ffi, so it is only added in CI rather than in require-dev
       - name: Add vips driver

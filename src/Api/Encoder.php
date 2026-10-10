@@ -76,6 +76,7 @@ class Encoder
         switch ($format) {
             case 'avif':
             case 'heic':
+            case 'jxl':
             case 'tiff':
             case 'webp':
                 $encoderOptions['quality'] = $quality;
@@ -139,6 +140,7 @@ class Encoder
             'webp' => 'image/webp',
             'tiff' => 'image/tiff',
             'heic' => 'image/heic',
+            'jxl' => 'image/jxl',
         ];
     }
 

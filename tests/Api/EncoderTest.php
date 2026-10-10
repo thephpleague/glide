@@ -133,6 +133,9 @@ class EncoderTest extends TestCase
             $this->assertSame('avif', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/avif')));
             $this->assertSame('avif', $this->encoder->setParams(['fm' => 'avif'])->getFormat($this->getImageByMimeType('image/jpeg')));
         }
+
+        $this->assertSame('jxl', $this->encoder->setParams(['fm' => null])->getFormat($this->getImageByMimeType('image/jxl')));
+        $this->assertSame('jxl', $this->encoder->setParams(['fm' => 'jxl'])->getFormat($this->getImageByMimeType('image/jpeg')));
     }
 
     public function testGetFormatThrowsExceptionForInvalidFormat(): void
@@ -182,6 +185,9 @@ class EncoderTest extends TestCase
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->png)));
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->gif)));
         $this->assertSame('image/tiff', $this->getMime($this->encoder->setParams(['fm' => 'tiff'])->run($this->heic)));
+
+        $this->assertSame('image/jxl', $this->getMime($this->encoder->setParams(['fm' => 'jxl'])->run($this->jpg)));
+        $this->assertSame('image/jxl', $this->getMime($this->encoder->setParams(['fm' => 'jxl'])->run($this->png)));
     }
 
     public function testSupportedFormats(): void
@@ -195,6 +201,7 @@ class EncoderTest extends TestCase
             'webp' => 'image/webp',
             'tiff' => 'image/tiff',
             'heic' => 'image/heic',
+            'jxl' => 'image/jxl',
         ];
 
         $this->assertSame($expected, Encoder::supportedFormats());

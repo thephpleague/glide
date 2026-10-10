@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "intervention/image": "^4.0",
+        "intervention/image": "^4.2",
         "league/flysystem": "^3.0",
         "psr/http-message": "^1.0|^2.0"
     },

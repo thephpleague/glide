@@ -7,7 +7,7 @@ title: Encode
 
 ## Quality `q`
 
-Defines the quality of the image. Use values between `0` and `100`. Defaults to `90`. Only relevant if the format is set to `jpg`, `pjpg`, `webp`, `avif` or `heic`.
+Defines the quality of the image. Use values between `0` and `100`. Defaults to `90`. Only relevant if the format is set to `jpg`, `pjpg`, `webp`, `avif`, `heic` or `jxl`.
 
 ~~~ html
 <img src="kayaks.jpg?w=500&q=25">
@@ -18,7 +18,7 @@ Defines the quality of the image. Use values between `0` and `100`. Defaults to 
 
 ## Format `fm`
 
-Encodes the image to a specific format. Accepts `jpg`, `pjpg` (progressive jpeg), `png`, `gif`, `webp`, `avif` or `heic`. Defaults to `jpg`. `heic` is only supported when using Imagick as driver.
+Encodes the image to a specific format. Accepts `jpg`, `pjpg` (progressive jpeg), `png`, `gif`, `webp`, `avif`, `heic` or `jxl`. Defaults to `jpg`. `heic` and `jxl` are only supported when using Imagick as driver.
 
 ~~~ html
 <img src="kayaks.jpg?w=500&fm=gif">
